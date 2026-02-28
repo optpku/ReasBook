@@ -530,10 +530,11 @@ jobs:
           set -euo pipefail
           python3 - <<'PY'
           import json
+          import os
           import shutil
           from pathlib import Path
 
-          projects = json.loads("""${PROJECTS_JSON}""")
+          projects = json.loads(os.environ["PROJECTS_JSON"])
           src_root = Path(".artifacts/monolith")
           dst_root = Path(".site")
 
