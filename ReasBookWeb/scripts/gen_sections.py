@@ -130,6 +130,22 @@ def detect_github_repo() -> tuple[str, str]:
     return ("optsuite", "ReasBook")
 
 
+def write_text_if_changed(path: Path, content: str, *, log: bool = True) -> bool:
+    old_content: str | None
+    try:
+        old_content = path.read_text(encoding="utf-8")
+    except FileNotFoundError:
+        old_content = None
+
+    if old_content == content:
+        return False
+
+    path.write_text(content, encoding="utf-8")
+    if log:
+        print(f"Wrote {path}")
+    return True
+
+
 GITHUB_OWNER, GITHUB_REPO = detect_github_repo()
 GITHUB_BRANCH = (
     os.environ.get("REASBOOK_GITHUB_BRANCH", "").strip()
@@ -1026,8 +1042,7 @@ def write_book_readmes(source_root: Path, entries: list[Entry]) -> None:
             out.append("")
 
         readme = books_root / book / "README.md"
-        readme.write_text("\n".join(out), encoding="utf-8")
-        print(f"Wrote {readme}")
+        write_text_if_changed(readme, "\n".join(out), log=True)
 
 
 def write_paper_readmes(source_root: Path, entries: list[Entry]) -> None:
@@ -1103,8 +1118,7 @@ def write_paper_readmes(source_root: Path, entries: list[Entry]) -> None:
             out.append("")
 
         readme = papers_root / paper / "README.md"
-        readme.write_text("\n".join(out), encoding="utf-8")
-        print(f"Wrote {readme}")
+        write_text_if_changed(readme, "\n".join(out), log=True)
 
 
 def write_root_readme(repo_root: Path, source_root: Path) -> None:
@@ -1171,8 +1185,7 @@ def write_root_readme(repo_root: Path, source_root: Path) -> None:
                         break
 
     if changed:
-        readme_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
-        print(f"Wrote {readme_path}")
+        write_text_if_changed(readme_path, "\n".join(lines) + "\n", log=True)
 
 
 def lean_module_name(s: str) -> str:
@@ -1242,8 +1255,7 @@ def write_work_pages(repo_root: Path, source_root: Path, entries: list[Entry]) -
             lines.append("- (TODO: no chapter/section modules discovered yet)")
             lines.append("")
 
-        page_file.write_text("\n".join(lines), encoding="utf-8")
-        print(f"Wrote {page_file}")
+        write_text_if_changed(page_file, "\n".join(lines), log=True)
 
     for paper, p_entries in sorted(by_paper.items()):
         title = paper_title(paper)
@@ -1286,8 +1298,7 @@ def write_work_pages(repo_root: Path, source_root: Path, entries: list[Entry]) -
             lines.append("- (TODO: no section modules discovered yet)")
             lines.append("")
 
-        page_file.write_text("\n".join(lines), encoding="utf-8")
-        print(f"Wrote {page_file}")
+        write_text_if_changed(page_file, "\n".join(lines), log=True)
 
 
 def is_generated_overview_block(body_lines: list[str]) -> bool:
@@ -1425,7 +1436,11 @@ def write_source_overviews(source_root: Path, entries: list[Entry]) -> None:
                     chapter_lines.append(f"import {module}")
                 chapter_lines.append("-- END AUTO-IMPORTS")
                 chapter_lines.append("")
-                chapter_file.write_text("\n".join(chapter_lines), encoding="utf-8")
+                write_text_if_changed(
+                    chapter_file,
+                    "\n".join(chapter_lines),
+                    log=False,
+                )
                 print(f"Wrote {chapter_file} (generated chapter aggregator)")
 
             chapter_route = f"books/{book.lower()}/chapters/chap{chapter_num:02d}/"
@@ -1526,8 +1541,8 @@ def main() -> None:
     write_source_overviews(source_root, entries)
     entries = collect_entries(source_root)
     out_file.parent.mkdir(parents=True, exist_ok=True)
-    out_file.write_text(emit_sections(entries), encoding="utf-8")
-    route_file.write_text(emit_route_table(entries), encoding="utf-8")
+    write_text_if_changed(out_file, emit_sections(entries), log=False)
+    write_text_if_changed(route_file, emit_route_table(entries), log=False)
     write_work_pages(repo_root, source_root, entries)
     write_book_readmes(source_root, entries)
     write_paper_readmes(source_root, entries)
