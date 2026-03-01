@@ -14,7 +14,7 @@ Chapter 01 -- Part I: Basic Concepts
 - [1.2 Convex Sets and Cones](/ReasBook-main/books/convexanalysis_rockafellar_1970/chapters/chap01/section02/)
 - [1.3 The Algebra of Convex Sets](/ReasBook-main/books/convexanalysis_rockafellar_1970/chapters/chap01/section03/)
 - [1.4 Convex Functions](/ReasBook-main/books/convexanalysis_rockafellar_1970/chapters/chap01/section04/)
-- [Section 1.5](/ReasBook-main/books/convexanalysis_rockafellar_1970/chapters/chap01/section05/)
+- [1.5 Functional Operations](/ReasBook-main/books/convexanalysis_rockafellar_1970/chapters/chap01/section05/)
 
 Chapter 02 -- Part II: Topological Properties
 

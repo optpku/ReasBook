@@ -19,7 +19,7 @@ import Books.ConvexAnalysis_Rockafellar_1970.Chapters.Chap01.section05_part12
 import Books.ConvexAnalysis_Rockafellar_1970.Chapters.Chap01.section05_part13
 
 /-!
-Overview page for Section 1.5.
+Overview page for 1.5 Functional Operations.
 
 This aggregation module imports all currently available part files for this section.
 Use this page to jump to each part page quickly.

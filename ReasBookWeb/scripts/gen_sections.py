@@ -303,7 +303,13 @@ BOOK_SECTION_TITLES = {
         },
     },
     "ConvexAnalysis_Rockafellar_1970": {
-        1: {1: "Affine Sets", 2: "Convex Sets and Cones", 3: "The Algebra of Convex Sets", 4: "Convex Functions"},
+        1: {
+            1: "Affine Sets",
+            2: "Convex Sets and Cones",
+            3: "The Algebra of Convex Sets",
+            4: "Convex Functions",
+            5: "Functional Operations",
+        },
         2: {
             5: "Functional Operations",
             6: "Relative Interiors of Convex Sets",
@@ -954,6 +960,16 @@ def emit_sections(entries: list[Entry]) -> str:
 
 
 def emit_route_table(entries: list[Entry]) -> str:
+    intro_book_slug = "introductiontorealanalysisvolumei_jirilebl_2025"
+
+    def alias_routes(e: Entry) -> list[str]:
+        if e.category != "books":
+            return []
+        prefix = f"books/{intro_book_slug}/"
+        if e.route.startswith(prefix + "chapters/chap00/"):
+            return [e.route[len(prefix) :]]
+        return []
+
     def work_page_module(e: Entry) -> str:
         if e.category == "books":
             return f"ReasBookSite.WorkPages.Books.{e.book_or_paper}"
@@ -999,7 +1015,10 @@ def emit_route_table(entries: list[Entry]) -> str:
             lines.append(f'      "papers/{e.book_or_paper.lower()}/" {target}')
             lines.append(f"      {lean_string(e.route)} {target}")
             continue
-        lines.append(f"      {lean_string(e.route)} Book.{e.module}")
+        target = f"Book.{e.module}"
+        lines.append(f"      {lean_string(e.route)} {target}")
+        for alias in alias_routes(e):
+            lines.append(f"      {lean_string(alias)} {target}")
     lines.append("    )")
     lines.append("")
     lines.append("def reasbook_site : Site := site ReasBookSite.Home /")
@@ -1015,7 +1034,10 @@ def emit_route_table(entries: list[Entry]) -> str:
             lines.append(f'  "papers/{e.book_or_paper.lower()}/" {target}')
             lines.append(f"  {lean_string(e.route)} {target}")
             continue
-        lines.append(f"  {lean_string(e.route)} Book.{e.module}")
+        target = f"Book.{e.module}"
+        lines.append(f"  {lean_string(e.route)} {target}")
+        for alias in alias_routes(e):
+            lines.append(f"  {lean_string(alias)} {target}")
     lines.append("")
     lines.append("end ReasBookSite.RouteTable")
     lines.append("")
