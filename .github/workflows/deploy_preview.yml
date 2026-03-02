@@ -16,7 +16,7 @@ concurrency:
 
 jobs:
   build:
-    if: github.repository == 'imathwy/ReasBook-preview'
+    if: github.repository == 'optpku/ReasBook-preview'
     runs-on: [self-hosted, Linux, X64]
     timeout-minutes: 180
     env:
