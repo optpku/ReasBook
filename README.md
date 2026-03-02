@@ -8,6 +8,9 @@ ReasBook is generated using the tool: [M2F](https://github.com/optsuite/M2F.git)
 
 ## Current Coverage
 
+> Note: `Documentation` is currently maintained and validated for Tao's *Analysis II*.
+> For other books, full aggregation in `Documentation` may temporarily cause naming conflicts.
+
 ### Books
 - [Terence Tao, *Analysis II*, 4th ed., Hindustan Book Agency / Springer, Singapore, 2022, ISBN 978-981-19-7284-3.](./ReasBook/Books/Analysis2_Tao_2022/)
   - Contributors: Chenyi Li, Min Cui, Qiming Dai, Shu Miao, Wanli Ma, Yi Yuan, Zichen Wang, Ziyu Wang.
