@@ -139,6 +139,9 @@ If generated artifacts were previously committed, untrack them (without deleting
 - [SITA](https://github.com/chenyili0818/SITA)
   - A structure-to-instance autoformalization framework for generating Lean definitions/theorems with verification feedback.
 
+- [lean-tools-mcp](https://github.com/optsuite/lean-tools-mcp))
+  - A Lean MCP server with higher parallel throughput and lower memory usage for heavy imports (especially Mathlib).
+
 ## Publications
 
 ### Formalization of Optimization
