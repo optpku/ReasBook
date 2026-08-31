@@ -86,3 +86,7 @@ library_facet literate lib : Array System.FilePath := do
 
 lean_lib IntroductoryLecturesOnConvexOptimization_Nesterov_2004 where
   srcDir := "Books"
+-- Stacks Project migration (Chap04-07)
+lean_lib stacks_project where
+  srcDir := "Books/StacksProject_Chapters_2026"
+  roots := #[`Book, `stacks_project]

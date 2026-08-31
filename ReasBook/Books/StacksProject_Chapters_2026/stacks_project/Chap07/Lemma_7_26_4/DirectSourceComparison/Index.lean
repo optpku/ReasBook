@@ -1,0 +1,8 @@
+module
+
+public import stacks_project.Chap07.Lemma_7_26_4.DirectSourceComparison.SourceRestrictionSections
+public import stacks_project.Chap07.Lemma_7_26_4.DirectSourceComparison.DirectSourceReindexing
+public import stacks_project.Chap07.Lemma_7_26_4.DirectSourceComparison.GlueRestrictionPresheaf
+public import stacks_project.Chap07.Lemma_7_26_4.DirectSourceComparison.PullbackCompTransport
+
+@[expose] public section

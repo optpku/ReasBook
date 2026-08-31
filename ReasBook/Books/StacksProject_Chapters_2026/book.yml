@@ -1,0 +1,22 @@
+schema_version: 1
+id: StacksProject_Chapters_2026
+title: The Stacks Project (Chapters 4-7)
+authors:
+- The Stacks Project contributors
+edition: null
+publisher: The Stacks Project
+year: 2026
+isbn: null
+toolchain: leanprover/lean4:v4.30.0
+mathlib: v4.30.0
+branch: v4.30.0
+contributors:
+- name: Zichen Wang
+coverage: Chapters 4-7 of the Stacks Project (migration snapshot).
+statistics:
+  declarations: 5745
+  lean_files: 1033
+  lean_lines: 312332
+  proof_completion: null
+  sorry: 38
+  admit: 38
