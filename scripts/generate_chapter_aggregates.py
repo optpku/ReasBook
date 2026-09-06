@@ -18,7 +18,6 @@ BOOK_TITLES = {
     "CombinatorialGroupTheory_Magnus_2004": "Combinatorial Group Theory (Magnus, Karrass, Solitar, 2004)",
     "ConvexAnalysisMonotoneOperators_BauschkeCombettes_2017": "Convex Analysis and Monotone Operator Theory (Bauschke & Combettes, 2017)",
     "FirstOrderMethodsOptimization_Beck_2017": "First-Order Methods in Optimization (Beck, 2017)",
-    "ProbabilityTheory_Klenke_2020": "Probability Theory: A Comprehensive Course (Klenke, 2020)",
     "RiemannSurfaces_Forster_1981": "Lectures on Riemann Surfaces (Forster, 1981)",
 }
 

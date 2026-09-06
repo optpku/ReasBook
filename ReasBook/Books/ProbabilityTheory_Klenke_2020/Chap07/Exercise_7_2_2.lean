@@ -1,8 +1,0 @@
-import Mathlib
-
--- Declarations for this item will be appended below by the statement pipeline.
-
-/- Exercise 7.2.2: Minkowski's inequality for real-valued `ℒ^p(μ)` functions is the canonical
-theorem `MeasureTheory.lpNorm_add_le`. The textbook proof route derives this estimate by applying
-Jensen's inequality to the concave map `(x, y) ↦ (x^(1/p) + y^(1/p))^p` from Example 7.14. -/
-recall MeasureTheory.lpNorm_add_le

@@ -195,7 +195,6 @@ PAPER_TITLES = {
 # Keep this list minimal and remove entries once upstream extraction is fixed.
 DEFAULT_SKIP_MODULES = {
     "Books.ConvexAnalysis_Rockafellar_1970.Chap02.section09_part12",
-    "ProbabilityTheory_Klenke_2020.Book",
 }
 
 

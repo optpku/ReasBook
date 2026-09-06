@@ -10,7 +10,6 @@ import ReasBookSite.WorkPages.Books.CombinatorialGroupTheory_Magnus_2004
 import ReasBookSite.WorkPages.Books.ConvexAnalysisMonotoneOperators_BauschkeCombettes_2017
 import ReasBookSite.WorkPages.Books.FirstOrderMethodsOptimization_Beck_2017
 import ReasBookSite.WorkPages.Books.IntroductiontoRealAnalysisVolumeI_JiriLebl_2025
-import ReasBookSite.WorkPages.Books.ProbabilityTheory_Klenke_2020
 import ReasBookSite.WorkPages.Books.RiemannSurfaces_Forster_1981
 import ReasBookSite.WorkPages.Papers.OnSomeLocalRings_Maassaran_2025
 import ReasBookSite.WorkPages.Papers.SmoothMinimization_Nesterov_2004
@@ -233,36 +232,6 @@ macro_rules
       "introductiontorealanalysisvolumei_jirilebl_2025/chapters/chap07/section04/" Book.IntroductiontoRealAnalysisVolumeI_JiriLebl_2025.Chapters.Chap07.section04
       "introductiontorealanalysisvolumei_jirilebl_2025/chapters/chap07/section05/" Book.IntroductiontoRealAnalysisVolumeI_JiriLebl_2025.Chapters.Chap07.section05
       "introductiontorealanalysisvolumei_jirilebl_2025/chapters/chap07/section06/" Book.IntroductiontoRealAnalysisVolumeI_JiriLebl_2025.Chapters.Chap07.section06
-      "books/probabilitytheory_klenke_2020/" ReasBookSite.WorkPages.Books.ProbabilityTheory_Klenke_2020
-      "probabilitytheory_klenke_2020/book/" ReasBookSite.WorkPages.Books.ProbabilityTheory_Klenke_2020
-      "probabilitytheory_klenke_2020/chap01/" Book.ProbabilityTheory_Klenke_2020.Chap01
-      "probabilitytheory_klenke_2020/chap02/" Book.ProbabilityTheory_Klenke_2020.Chap02
-      "probabilitytheory_klenke_2020/chap03/" Book.ProbabilityTheory_Klenke_2020.Chap03
-      "probabilitytheory_klenke_2020/chap04/" Book.ProbabilityTheory_Klenke_2020.Chap04
-      "probabilitytheory_klenke_2020/chap05/" Book.ProbabilityTheory_Klenke_2020.Chap05
-      "probabilitytheory_klenke_2020/chap06/" Book.ProbabilityTheory_Klenke_2020.Chap06
-      "probabilitytheory_klenke_2020/chap07/" Book.ProbabilityTheory_Klenke_2020.Chap07
-      "probabilitytheory_klenke_2020/chap08/" Book.ProbabilityTheory_Klenke_2020.Chap08
-      "probabilitytheory_klenke_2020/chap08/section_8_2_introduction/" Book.ProbabilityTheory_Klenke_2020.Chap08.Section_8_2_introduction
-      "probabilitytheory_klenke_2020/chap08/section_8_3_introduction/" Book.ProbabilityTheory_Klenke_2020.Chap08.Section_8_3_introduction
-      "probabilitytheory_klenke_2020/chap09/" Book.ProbabilityTheory_Klenke_2020.Chap09
-      "probabilitytheory_klenke_2020/chap10/" Book.ProbabilityTheory_Klenke_2020.Chap10
-      "probabilitytheory_klenke_2020/chap11/" Book.ProbabilityTheory_Klenke_2020.Chap11
-      "probabilitytheory_klenke_2020/chap12/" Book.ProbabilityTheory_Klenke_2020.Chap12
-      "probabilitytheory_klenke_2020/chap13/" Book.ProbabilityTheory_Klenke_2020.Chap13
-      "probabilitytheory_klenke_2020/chap14/" Book.ProbabilityTheory_Klenke_2020.Chap14
-      "probabilitytheory_klenke_2020/chap15/" Book.ProbabilityTheory_Klenke_2020.Chap15
-      "probabilitytheory_klenke_2020/chap16/" Book.ProbabilityTheory_Klenke_2020.Chap16
-      "probabilitytheory_klenke_2020/chap17/" Book.ProbabilityTheory_Klenke_2020.Chap17
-      "probabilitytheory_klenke_2020/chap18/" Book.ProbabilityTheory_Klenke_2020.Chap18
-      "probabilitytheory_klenke_2020/chap19/" Book.ProbabilityTheory_Klenke_2020.Chap19
-      "probabilitytheory_klenke_2020/chap20/" Book.ProbabilityTheory_Klenke_2020.Chap20
-      "probabilitytheory_klenke_2020/chap21/" Book.ProbabilityTheory_Klenke_2020.Chap21
-      "probabilitytheory_klenke_2020/chap22/" Book.ProbabilityTheory_Klenke_2020.Chap22
-      "probabilitytheory_klenke_2020/chap23/" Book.ProbabilityTheory_Klenke_2020.Chap23
-      "probabilitytheory_klenke_2020/chap24/" Book.ProbabilityTheory_Klenke_2020.Chap24
-      "probabilitytheory_klenke_2020/chap25/" Book.ProbabilityTheory_Klenke_2020.Chap25
-      "probabilitytheory_klenke_2020/chap26/" Book.ProbabilityTheory_Klenke_2020.Chap26
       "books/riemannsurfaces_forster_1981/" ReasBookSite.WorkPages.Books.RiemannSurfaces_Forster_1981
       "riemannsurfaces_forster_1981/book/" ReasBookSite.WorkPages.Books.RiemannSurfaces_Forster_1981
       "riemannsurfaces_forster_1981/chap01/" Book.RiemannSurfaces_Forster_1981.Chap01
@@ -515,36 +484,6 @@ def reasbook_site : Site := site ReasBookSite.Home /
   "introductiontorealanalysisvolumei_jirilebl_2025/chapters/chap07/section04/" Book.IntroductiontoRealAnalysisVolumeI_JiriLebl_2025.Chapters.Chap07.section04
   "introductiontorealanalysisvolumei_jirilebl_2025/chapters/chap07/section05/" Book.IntroductiontoRealAnalysisVolumeI_JiriLebl_2025.Chapters.Chap07.section05
   "introductiontorealanalysisvolumei_jirilebl_2025/chapters/chap07/section06/" Book.IntroductiontoRealAnalysisVolumeI_JiriLebl_2025.Chapters.Chap07.section06
-  "books/probabilitytheory_klenke_2020/" ReasBookSite.WorkPages.Books.ProbabilityTheory_Klenke_2020
-  "probabilitytheory_klenke_2020/book/" ReasBookSite.WorkPages.Books.ProbabilityTheory_Klenke_2020
-  "probabilitytheory_klenke_2020/chap01/" Book.ProbabilityTheory_Klenke_2020.Chap01
-  "probabilitytheory_klenke_2020/chap02/" Book.ProbabilityTheory_Klenke_2020.Chap02
-  "probabilitytheory_klenke_2020/chap03/" Book.ProbabilityTheory_Klenke_2020.Chap03
-  "probabilitytheory_klenke_2020/chap04/" Book.ProbabilityTheory_Klenke_2020.Chap04
-  "probabilitytheory_klenke_2020/chap05/" Book.ProbabilityTheory_Klenke_2020.Chap05
-  "probabilitytheory_klenke_2020/chap06/" Book.ProbabilityTheory_Klenke_2020.Chap06
-  "probabilitytheory_klenke_2020/chap07/" Book.ProbabilityTheory_Klenke_2020.Chap07
-  "probabilitytheory_klenke_2020/chap08/" Book.ProbabilityTheory_Klenke_2020.Chap08
-  "probabilitytheory_klenke_2020/chap08/section_8_2_introduction/" Book.ProbabilityTheory_Klenke_2020.Chap08.Section_8_2_introduction
-  "probabilitytheory_klenke_2020/chap08/section_8_3_introduction/" Book.ProbabilityTheory_Klenke_2020.Chap08.Section_8_3_introduction
-  "probabilitytheory_klenke_2020/chap09/" Book.ProbabilityTheory_Klenke_2020.Chap09
-  "probabilitytheory_klenke_2020/chap10/" Book.ProbabilityTheory_Klenke_2020.Chap10
-  "probabilitytheory_klenke_2020/chap11/" Book.ProbabilityTheory_Klenke_2020.Chap11
-  "probabilitytheory_klenke_2020/chap12/" Book.ProbabilityTheory_Klenke_2020.Chap12
-  "probabilitytheory_klenke_2020/chap13/" Book.ProbabilityTheory_Klenke_2020.Chap13
-  "probabilitytheory_klenke_2020/chap14/" Book.ProbabilityTheory_Klenke_2020.Chap14
-  "probabilitytheory_klenke_2020/chap15/" Book.ProbabilityTheory_Klenke_2020.Chap15
-  "probabilitytheory_klenke_2020/chap16/" Book.ProbabilityTheory_Klenke_2020.Chap16
-  "probabilitytheory_klenke_2020/chap17/" Book.ProbabilityTheory_Klenke_2020.Chap17
-  "probabilitytheory_klenke_2020/chap18/" Book.ProbabilityTheory_Klenke_2020.Chap18
-  "probabilitytheory_klenke_2020/chap19/" Book.ProbabilityTheory_Klenke_2020.Chap19
-  "probabilitytheory_klenke_2020/chap20/" Book.ProbabilityTheory_Klenke_2020.Chap20
-  "probabilitytheory_klenke_2020/chap21/" Book.ProbabilityTheory_Klenke_2020.Chap21
-  "probabilitytheory_klenke_2020/chap22/" Book.ProbabilityTheory_Klenke_2020.Chap22
-  "probabilitytheory_klenke_2020/chap23/" Book.ProbabilityTheory_Klenke_2020.Chap23
-  "probabilitytheory_klenke_2020/chap24/" Book.ProbabilityTheory_Klenke_2020.Chap24
-  "probabilitytheory_klenke_2020/chap25/" Book.ProbabilityTheory_Klenke_2020.Chap25
-  "probabilitytheory_klenke_2020/chap26/" Book.ProbabilityTheory_Klenke_2020.Chap26
   "books/riemannsurfaces_forster_1981/" ReasBookSite.WorkPages.Books.RiemannSurfaces_Forster_1981
   "riemannsurfaces_forster_1981/book/" ReasBookSite.WorkPages.Books.RiemannSurfaces_Forster_1981
   "riemannsurfaces_forster_1981/chap01/" Book.RiemannSurfaces_Forster_1981.Chap01

@@ -27,9 +27,6 @@ jobs:
           from pathlib import Path
 
           root = Path("ReasBook")
-          # doc-gen4 v4.30.0 segfaults while rendering this project's root
-          # after the shared ReasBook docs target has already covered it.
-          project_doc_exclusions = {"ProbabilityTheory_Klenke_2020"}
           flat_project_roots = set()
           current_lib = None
           for line in (root / "lakefile.lean").read_text(encoding="utf-8").splitlines():
@@ -55,8 +52,6 @@ jobs:
                   if not project.is_dir():
                       continue
                   if not (project / f"{leaf}.lean").is_file():
-                      continue
-                  if project.name in project_doc_exclusions:
                       continue
                   if (kind_dir.name, project.name) in flat_project_roots:
                       module = f"{project.name}.{leaf}"
