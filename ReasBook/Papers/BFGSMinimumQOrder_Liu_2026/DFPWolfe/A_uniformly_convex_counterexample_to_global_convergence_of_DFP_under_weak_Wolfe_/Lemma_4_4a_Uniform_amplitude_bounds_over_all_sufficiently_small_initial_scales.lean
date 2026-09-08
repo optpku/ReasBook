@@ -1,0 +1,29 @@
+module
+
+public import DFPWolfe.A_uniformly_convex_counterexample_to_global_convergence_of_DFP_under_weak_Wolfe_.Lemma_3_11_Real_analytic_extension_of_the_complete_two_leg_map_Map
+public import ReasLib.Optimization.DFP.TwoPhaseOrbit.AmplitudeBounds
+
+public section
+
+open Filter
+open scoped Asymptotics Topology
+
+/- Lemma 4.4a (Uniform amplitude bounds over all sufficiently small initial scales):
+after fixing one slow-curve neighborhood, common positive lower and upper bounds contain
+every cycle amplitude and its positive limit for all sufficiently small initial scales. -/
+#check (DFP.TwoPhaseOrbit.slowCurveAmplitudeUniformBounds :
+  ∀ (p h : ℝ → ℝ),
+    ((fun ε ↦ DFP.TwoLeg.extendedMap (ε, p ε, h ε)) =ᶠ[𝓝 0]
+      (fun ε ↦
+        let ε' := (DFP.TwoLeg.extendedMap (ε, p ε, h ε)).1
+        (ε', p ε', h ε'))) →
+    ((fun ε : ℝ ↦ p ε - (2 + (198 / 5) * ε ^ 3 - (9 / 5) * ε ^ 4)) =O[𝓝 0]
+      (fun ε : ℝ ↦ ε ^ 5)) →
+    ((fun ε : ℝ ↦ h ε - (1 + 8 * ε ^ 3)) =O[𝓝 0]
+      (fun ε : ℝ ↦ ε ^ 5)) →
+    ∃ εbar ∈ Set.Ioo (0 : ℝ) (1 / 4), ∃ Gmin > 0, ∃ Gmax, Gmin ≤ Gmax ∧
+      ∀ ε₀ ∈ Set.Ioc 0 εbar,
+        let orbit := DFP.TwoPhaseOrbit.ofSlowCurve p h ε₀
+        ∃ Glim ∈ Set.Icc Gmin Gmax,
+          Tendsto (fun j : ℕ ↦ (orbit.state j).amplitude) atTop (𝓝 Glim) ∧
+            ∀ j : ℕ, (orbit.state j).amplitude ∈ Set.Icc Gmin Gmax)
