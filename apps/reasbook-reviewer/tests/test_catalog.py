@@ -49,13 +49,14 @@ class CatalogTests(unittest.TestCase):
         records = discover_books(REPOSITORY_ROOT, include_papers=True)
         papers = [record for record in records if record.kind == "paper"]
 
-        self.assertEqual(len(papers), 5)
+        self.assertEqual(len(papers), 6)
         self.assertEqual(
             {paper.slug for paper in papers},
             {
                 "bfgsminimumqorder_liu_2026",
                 "dfp_wolfe_local",
                 "onsomelocalrings_maassaran_2025",
+                "rockafellarsum_2026",
                 "smoothminimization_nesterov_2004",
                 "tr_lalm_theory",
             },
