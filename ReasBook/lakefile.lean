@@ -48,6 +48,12 @@ lean_lib «DFP_wolfe_local» where
   srcDir := "Papers"
   roots := #[`DFP_wolfe_local.Paper]
 
+/-- The counterexample on c₀, with project-prefixed modules to coexist with DFP. -/
+lean_lib «RockafellarSum_2026» where
+  srcDir := "Papers"
+  roots := #[`RockafellarSum_2026.Paper]
+  globs := #[.submodules `RockafellarSum_2026]
+
 lean_exe "literate-extract" where
   root := `LiterateExtract
   supportInterpreter := true

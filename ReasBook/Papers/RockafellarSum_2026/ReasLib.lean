@@ -1,0 +1,73 @@
+/-
+Copyright (c) 2026 Zichen Wang. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Zichen Wang
+-/
+module
+
+public import RockafellarSum_2026.ReasLib.Analysis.Convex.NormalCone
+public import RockafellarSum_2026.ReasLib.Analysis.Convex.NormalCone.ClosedBall
+public import RockafellarSum_2026.ReasLib.Analysis.Convex.NormalCone.Sum
+public import RockafellarSum_2026.ReasLib.Analysis.InfiniteSum.NatTriangle
+public import RockafellarSum_2026.ReasLib.Analysis.InnerProductSpace.HilbertProd2
+public import RockafellarSum_2026.ReasLib.Analysis.Normed.LorentzCone
+public import RockafellarSum_2026.ReasLib.Analysis.Normed.LorentzCone.HilbertProd2
+public import RockafellarSum_2026.ReasLib.Analysis.Normed.LorentzCone.SeedTemplate
+public import RockafellarSum_2026.ReasLib.Analysis.Sequence.L1
+public import RockafellarSum_2026.ReasLib.Analysis.Sequence.L1Synthesis
+public import RockafellarSum_2026.ReasLib.Analysis.SetValuedOperator
+public import RockafellarSum_2026.ReasLib.Data.Countable.RepeatingSchedule
+public import RockafellarSum_2026.ReasLib.FunctionalAnalysis.DualPairing
+public import RockafellarSum_2026.ReasLib.FunctionalAnalysis.DualPairing.MaximalExtension
+public import RockafellarSum_2026.ReasLib.FunctionalAnalysis.DualPairing.Monotone
+public import RockafellarSum_2026.ReasLib.FunctionalAnalysis.SequenceSpace.C0
+public import RockafellarSum_2026.ReasLib.FunctionalAnalysis.SequenceSpace.C0.Coordinate
+public import RockafellarSum_2026.ReasLib.FunctionalAnalysis.SequenceSpace.C0.Dual
+public import RockafellarSum_2026.ReasLib.FunctionalAnalysis.SequenceSpace.C0.DualPairing
+public import RockafellarSum_2026.ReasLib.FunctionalAnalysis.SequenceSpace.C0.DualPairing.Origin
+public import RockafellarSum_2026.ReasLib.FunctionalAnalysis.SequenceSpace.C0.DualPairing.Surjective
+public import RockafellarSum_2026.ReasLib.FunctionalAnalysis.SequenceSpace.C0.Pairing
+public import RockafellarSum_2026.ReasLib.FunctionalAnalysis.SequenceSpace.C0.Single
+public import RockafellarSum_2026.ReasLib.FunctionalAnalysis.SequenceSpace.C0.Transpose
+public import RockafellarSum_2026.ReasLib.FunctionalAnalysis.SequenceSpace.L1.Transpose
+public import RockafellarSum_2026.ReasLib.FunctionalAnalysis.SequenceSpace.RationalTimeOperator
+public import RockafellarSum_2026.ReasLib.FunctionalAnalysis.SequenceSpace.RationalTimeOperator.Bilinear
+public import RockafellarSum_2026.ReasLib.FunctionalAnalysis.SequenceSpace.RationalTimeOperator.Gram
+public import RockafellarSum_2026.ReasLib.FunctionalAnalysis.SequenceSpace.RationalTimeOperator.Norm
+public import RockafellarSum_2026.ReasLib.FunctionalAnalysis.SequenceSpace.RationalTimeOperator.Parametrization
+public import RockafellarSum_2026.ReasLib.FunctionalAnalysis.SequenceSpace.RationalTimeOperator.Parametrization.LorentzCoordinates
+public import RockafellarSum_2026.ReasLib.FunctionalAnalysis.SequenceSpace.RationalTimeOperator.Parametrization.LorentzCoordinates.FixedPositive
+public import RockafellarSum_2026.ReasLib.FunctionalAnalysis.SequenceSpace.RationalTimeOperator.Parametrization.LorentzCoordinates.Kernel
+public import RockafellarSum_2026.ReasLib.FunctionalAnalysis.SequenceSpace.RationalTimeOperator.Parametrization.LorentzEnergy
+public import RockafellarSum_2026.ReasLib.FunctionalAnalysis.SequenceSpace.RationalTimeOperator.Parametrization.Pairing
+public import RockafellarSum_2026.ReasLib.FunctionalAnalysis.SequenceSpace.RationalTimeOperator.Parametrization.Point
+public import RockafellarSum_2026.ReasLib.FunctionalAnalysis.SequenceSpace.RationalTimeOperator.Parametrization.SamePositiveCoordinate
+public import RockafellarSum_2026.ReasLib.FunctionalAnalysis.SequenceSpace.RationalTimeOperator.Parametrization.ScaledDetector
+public import RockafellarSum_2026.ReasLib.FunctionalAnalysis.SequenceSpace.RationalTimeOperator.Parametrization.SeedAssembly
+public import RockafellarSum_2026.ReasLib.FunctionalAnalysis.SequenceSpace.RationalTimeOperator.Parametrization.SeedBase
+public import RockafellarSum_2026.ReasLib.FunctionalAnalysis.SequenceSpace.RationalTimeOperator.Parametrization.SeedComparisons
+public import RockafellarSum_2026.ReasLib.FunctionalAnalysis.SequenceSpace.RationalTimeOperator.Parametrization.SeedCounterexample
+public import RockafellarSum_2026.ReasLib.FunctionalAnalysis.SequenceSpace.RationalTimeOperator.Parametrization.SeedSchedule
+public import RockafellarSum_2026.ReasLib.FunctionalAnalysis.SequenceSpace.RationalTimeOperator.Parametrization.SeedWitnesses
+public import RockafellarSum_2026.ReasLib.FunctionalAnalysis.SequenceSpace.RationalTimeOperator.Parametrization.UnitDifferenceDetector
+public import RockafellarSum_2026.ReasLib.FunctionalAnalysis.SequenceSpace.RationalTimeOperator.Quadratic
+public import RockafellarSum_2026.ReasLib.FunctionalAnalysis.SequenceSpace.RationalTimeOperator.QuadraticIdentity
+public import RockafellarSum_2026.ReasLib.FunctionalAnalysis.SequenceSpace.RationalTimeOperator.SymmetricPart
+public import RockafellarSum_2026.ReasLib.MeasureTheory.Measure.Lebesgue.Conull
+public import RockafellarSum_2026.ReasLib.MeasureTheory.UnitL2
+public import RockafellarSum_2026.ReasLib.MeasureTheory.UnitL2.IntervalCoordinateOperator
+public import RockafellarSum_2026.ReasLib.MeasureTheory.UnitL2.IntervalCoordinateOperator.Adjoint
+public import RockafellarSum_2026.ReasLib.MeasureTheory.UnitL2.IntervalCoordinateOperator.Injective
+public import RockafellarSum_2026.ReasLib.MeasureTheory.UnitL2.IntervalCoordinateOperator.Jump
+public import RockafellarSum_2026.ReasLib.MeasureTheory.UnitL2.IntervalCoordinateOperator.Pointwise
+public import RockafellarSum_2026.ReasLib.MeasureTheory.UnitL2.IntervalIndicator
+public import RockafellarSum_2026.ReasLib.MeasureTheory.UnitL2.RationalIntervalIndicator
+public import RockafellarSum_2026.ReasLib.Order.RationalTime
+public import RockafellarSum_2026.ReasLib.Topology.RationalTime
+public import RockafellarSum_2026.ReasLib.Topology.Sequences
+
+/-!
+# S3 Proof Library
+
+Dependencies of the S3 seed counterexample.
+-/
