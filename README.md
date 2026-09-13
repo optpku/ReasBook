@@ -20,7 +20,7 @@ into compilable Lean 4 projects.
 | --- | --- | --- | ---: |
 | `v4.32.0` | `v4.32.0` | Empty | 1 / 2 |
 | `v4.32.2` | `v4.32.2` | Active | 0 / 2 |
-| `v4.30.0` | `v4.30.0` | Active | 10 / 2 |
+| `v4.30.0` | `v4.30.0` | Active | 9 / 2 |
 | `v4.26.0` | `v4.26.0` | Active | 4 / 2 |
 
 `main` is the cross-version catalog. Source code stays on the registered
@@ -68,6 +68,29 @@ Use the [project catalog](https://optpku.github.io/ReasBook/) or the tables
 below to choose a formalization. Each entry records its exact version branch,
 source directory, and available documentation. Follow the matching branch link
 when you need to inspect or check the Lean source.
+
+### Download One Book with Git
+
+Lean sources live on version branches. First find the book in the table below
+and note the version branch and directory shown by its source link. Git 2.25 or
+newer can use a sparse checkout to download that book without fetching the
+contents of every other book. For example, these commands download **Analysis
+II** from `v4.30.0`:
+
+```bash
+git clone --filter=blob:none --sparse --depth 1 --branch v4.30.0 --single-branch https://github.com/optpku/ReasBook.git ReasBook-Analysis2
+cd ReasBook-Analysis2
+git sparse-checkout set ReasBook/Books/Analysis2_Tao_2022
+git branch --show-current
+git sparse-checkout list
+```
+
+The final two commands should report `v4.30.0` and
+`ReasBook/Books/Analysis2_Tao_2022`. To receive later commits on that version
+branch, run `git pull --ff-only` from the clone. For another title, replace the
+branch and directory with the exact values from its source link; paths are
+case-sensitive. The same procedure works for a paper by using its
+`ReasBook/Papers/<directory>` path.
 
 For local development, documentation generation, comparison, and static-site
 deployment, use the focused SDK guide for the relevant capability:
@@ -137,12 +160,22 @@ Titles open their catalog pages; version links open the Lean source directly.
 
 Titles open their catalog pages; version links open the Lean source directly.
 
+### Open Questions Resolved by Our Team
+
+The following papers present our team's solutions to previously open research
+questions.
+
 | Formalization | Source | Contributors | Resources |
 | --- | :---: | --- | --- |
-| **[Technical note: a counterexample to the Rockafellar sum conjecture on c₀](ReasBook/Papers/RockafellarSum_2026/)**<br><sub>Junyu Zhang, Jinbiao Chen, Zichen Wang, Benqi Liu, and Zaiwen Wen (2026)</sub> | [`v4.32.0`](https://github.com/optpku/ReasBook/tree/v4.32.0/ReasBook/Papers/RockafellarSum_2026/) | Zichen Wang | Source only (documentation pending) |
 | **[A Counterexample to Global Convergence of Classical DFP Under the Standard Strong Wolfe Conditions](ReasBook/Papers/DFP_wolfe_local/)**<br><sub>Benqi Liu, Zichen Wang, Zaiwen Wen, Liwei Zhang, and Yaxiang Yuan</sub> | [`v4.32.0`](https://github.com/optpku/ReasBook/tree/v4.32.0/ReasBook/Papers/DFP_wolfe_local/) | Zichen Wang | [arXiv](https://arxiv.org/html/2608.21708v1) |
-| **[The Minimum Q-Order of BFGS with Exact Line Search Is One](ReasBook/Papers/BFGSMinimumQOrder_Liu_2026/)**<br><sub>Benqi Liu, Chenyi Li, and Zaiwen Wen (2026)</sub> | [`v4.32.2`](https://github.com/optpku/ReasBook/tree/v4.32.2/ReasBook/Papers/BFGSMinimumQOrder_Liu_2026/) | Chenyi Li | Source only (documentation pending) |
 | **[A Fixed-Penalty Linearized Augmented Lagrangian Method with Classical Multiplier Updates](ReasBook/Papers/TR_LALM_theory/)**<br><sub>Benqi Liu, Kangkang Deng, Zichen Wang, and Zaiwen Wen</sub> | [`v4.32.2`](https://github.com/optpku/ReasBook/tree/v4.32.2/ReasBook/Papers/TR_LALM_theory/) | Zichen Wang, Zaiwen Wen | [Docs](https://optpku.github.io/ReasBook/docs/ReasBook/Papers/TR_LALM_theory/Paper.html) &#124; [Verso](https://optpku.github.io/ReasBook/sites/tr_lalm_theory/pages/) &#124; [Theorem map](https://optpku.github.io/ReasBook/theorem-maps/papers/tr_lalm_theory/) |
+| **[The Minimum Q-Order of BFGS with Exact Line Search Is One](ReasBook/Papers/BFGSMinimumQOrder_Liu_2026/)**<br><sub>Benqi Liu, Chenyi Li, and Zaiwen Wen (2026)</sub> | [`v4.32.2`](https://github.com/optpku/ReasBook/tree/v4.32.2/ReasBook/Papers/BFGSMinimumQOrder_Liu_2026/) | Chenyi Li | Source only (documentation pending) |
+| **[Technical note: a counterexample to the Rockafellar sum conjecture on c₀](ReasBook/Papers/RockafellarSum_2026/)**<br><sub>Junyu Zhang, Jinbiao Chen, Zichen Wang, Benqi Liu, and Zaiwen Wen (2026)</sub> | [`v4.32.0`](https://github.com/optpku/ReasBook/tree/v4.32.0/ReasBook/Papers/RockafellarSum_2026/) | Zichen Wang | Source only (documentation pending) |
+
+### Other Formalized Papers
+
+| Formalization | Source | Contributors | Resources |
+| --- | :---: | --- | --- |
 | **[Smooth Minimization of Non-Smooth Functions](ReasBook/Papers/SmoothMinimization_Nesterov_2004/)**<br><sub>Yurii Nesterov (2004)</sub> | [`v4.26.0`](https://github.com/optpku/ReasBook/tree/v4.26.0/ReasBook/Papers/SmoothMinimization_Nesterov_2004/)<br>[`v4.30.0`](https://github.com/optpku/ReasBook/tree/v4.30.0/ReasBook/Papers/SmoothMinimization_Nesterov_2004/) | Wanli Ma, Zichen Wang, Zaiwen Wen | [Docs](https://optpku.github.io/ReasBook/docs/ReasBook/Papers/SmoothMinimization_Nesterov_2004/Paper.html) &#124; [Verso](https://optpku.github.io/ReasBook/sites/smoothminimization_nesterov_2004/pages/) |
 | **[On Some Local Rings](ReasBook/Papers/OnSomeLocalRings_Maassaran_2025/)**<br><sub>Mohamad Maassarani (2025)</sub> | [`v4.26.0`](https://github.com/optpku/ReasBook/tree/v4.26.0/ReasBook/Papers/OnSomeLocalRings_Maassaran_2025/)<br>[`v4.30.0`](https://github.com/optpku/ReasBook/tree/v4.30.0/ReasBook/Papers/OnSomeLocalRings_Maassaran_2025/) | Liang Xiao, Haochen Ju, Zichen Wang, Zaiwen Wen | [Docs](https://optpku.github.io/ReasBook/docs/ReasBook/Papers/OnSomeLocalRings_Maassaran_2025/Paper.html) &#124; [Verso](https://optpku.github.io/ReasBook/sites/onsomelocalrings_maassaran_2025/pages/) |
 

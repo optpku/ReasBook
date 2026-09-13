@@ -12,7 +12,7 @@
 | --- | --- | --- | ---: |
 | `v4.32.0` | `v4.32.0` | 空 | 1 / 2 |
 | `v4.32.2` | `v4.32.2` | 活跃 | 0 / 2 |
-| `v4.30.0` | `v4.30.0` | 活跃 | 10 / 2 |
+| `v4.30.0` | `v4.30.0` | 活跃 | 9 / 2 |
 | `v4.26.0` | `v4.26.0` | 活跃 | 4 / 2 |
 
 `main` 是跨版本目录。源代码保留在已注册的版本分支上；下方的轻量链接目录使每个条目都可以从 `main` 分支找到。
@@ -45,6 +45,26 @@ ReasBook 将带版本的数学源代码、跨版本工具和生成产物分开�
 ## 快速开始
 
 你可以使用[项目目录](https://optpku.github.io/ReasBook/)，或浏览下方表格选择一个形式化项目。每个条目都记录了精确的版本分支、源代码目录和可用文档；需要检查 Lean 源码时，请进入相匹配的版本分支。
+
+### 使用 Git 只下载一本书
+
+Lean 源码位于版本分支。先在下方书籍表格中找到目标书籍，并从源代码链接确认
+版本分支和目录。Git 2.25 或更高版本可通过 sparse checkout 只下载该书内容，
+无需取得其他书籍的文件。下面的命令以 `v4.30.0` 分支的 **Analysis II** 为例：
+
+```bash
+git clone --filter=blob:none --sparse --depth 1 --branch v4.30.0 --single-branch https://github.com/optpku/ReasBook.git ReasBook-Analysis2
+cd ReasBook-Analysis2
+git sparse-checkout set ReasBook/Books/Analysis2_Tao_2022
+git branch --show-current
+git sparse-checkout list
+```
+
+最后两条命令应分别显示 `v4.30.0` 和
+`ReasBook/Books/Analysis2_Tao_2022`。之后在该克隆目录运行
+`git pull --ff-only`，即可获取这个版本分支的后续提交。下载其他书籍时，请把
+分支和目录替换成相应源代码链接中的准确值；路径区分大小写。下载论文的步骤
+相同，只需使用对应的 `ReasBook/Papers/<目录>` 路径。
 
 本地开发、文档生成、比较和静态站点部署请使用对应能力的 SDK 指南：
 
@@ -102,7 +122,7 @@ GitHub Pages 继续发布静态站点，公众评论需要运行 reviewer 后端
 | **[Introduction to Real Analysis, Volume I](ReasBook/Books/IntroductiontoRealAnalysisVolumeI_JiriLebl_2025/)**<br><sub>Jiri Lebl（v6.2，2025）</sub> | [`v4.26.0`](https://github.com/optpku/ReasBook/tree/v4.26.0/ReasBook/Books/IntroductiontoRealAnalysisVolumeI_JiriLebl_2025/)<br>[`v4.30.0`](https://github.com/optpku/ReasBook/tree/v4.30.0/ReasBook/Books/IntroductiontoRealAnalysisVolumeI_JiriLebl_2025/) | Zichen Wang, Zaiwen Wen | [文档](https://optpku.github.io/ReasBook/docs/ReasBook/Books/IntroductiontoRealAnalysisVolumeI_JiriLebl_2025/Book.html) &#124; [Verso](https://optpku.github.io/ReasBook/sites/introductiontorealanalysisvolumei_jirilebl_2025/pages/) |
 | **[Introductory Lectures on Convex Optimization](ReasBook/Books/IntroductoryLecturesOnConvexOptimization_Nesterov_2004/)**<br><sub>Yurii Nesterov (2004)</sub> | [`v4.30.0`](https://github.com/optpku/ReasBook/tree/v4.30.0/ReasBook/Books/IntroductoryLecturesOnConvexOptimization_Nesterov_2004/) | Chenyi Li, Siyuan Shao, Yijie Wang, Feiming Wang, Weiran Shi, Yuhao Jiang, Zebo Liu, Wentao Long | [文档](https://optpku.github.io/ReasBook/docs/ReasBook/Books/IntroductoryLecturesOnConvexOptimization_Nesterov_2004/Book.html) &#124; [Verso](https://optpku.github.io/ReasBook/sites/introductorylecturesonconvexoptimization_nesterov_2004/pages/) |
 | **[Optimization Theory and Methods: Nonlinear Programming](ReasBook/Books/OptimizationTheoryAndMethods_SunYuan_2006/)**<br><sub>Wenyu Sun 与 Ya-xiang Yuan (2006)</sub> | [`v4.30.0`](https://github.com/optpku/ReasBook/tree/v4.30.0/ReasBook/Books/OptimizationTheoryAndMethods_SunYuan_2006/) | Chenyi Li, Wanli Ma, Zichen Wang | [文档](https://optpku.github.io/ReasBook/docs/ReasBook/Books/OptimizationTheoryAndMethods_SunYuan_2006/Book.html) &#124; [Verso](https://optpku.github.io/ReasBook/sites/optimizationtheoryandmethods_sunyuan_2006/pages/) |
-| **[Probability Theory: A Comprehensive Course](ReasBook/Books/ProbabilityTheory_Klenke_2020/)**<br><sub>Achim Klenke（第 3 版，2020）</sub> | [`v4.30.0`](https://github.com/optpku/ReasBook/tree/v4.30.0/ReasBook/Books/ProbabilityTheory_Klenke_2020/) | Xuanzhi Ren, Zichen Wang | 仅源代码（不包含在当前发布配置中） |
+| **[Probability Theory: A Comprehensive Course](ReasBook/Books/ProbabilityTheory_Klenke_2020/)**<br><sub>Achim Klenke（第 3 版，2020）</sub> | [`v4.29.0`](https://github.com/optpku/ReasBook/tree/v4.29.0/ReasBook/Books/ProbabilityTheory_Klenke_2020/) | Xuanzhi Ren, Zichen Wang | 仅源代码（不包含在当前发布配置中） |
 | **[Lectures on Riemann Surfaces](ReasBook/Books/RiemannSurfaces_Forster_1981/)**<br><sub>Otto Forster (1981)</sub> | [`v4.30.0`](https://github.com/optpku/ReasBook/tree/v4.30.0/ReasBook/Books/RiemannSurfaces_Forster_1981/) | Zichen Wang | [文档](https://optpku.github.io/ReasBook/docs/ReasBook/Books/RiemannSurfaces_Forster_1981/Book.html) &#124; [Verso](https://optpku.github.io/ReasBook/sites/riemannsurfaces_forster_1981/pages/) |
 | **[Computational Methods for Inverse Problems](ReasBook/Books/ComputationalMethodsInverseProblems_Vogel_2002/)**<br><sub>Curtis R. Vogel (2002)</sub> | 未分配到活跃发布分支 | Yifan Bai, Wanli Ma, Zichen Wang | 仅源代码（不包含在当前发布配置中） |
 
@@ -110,12 +130,21 @@ GitHub Pages 继续发布静态站点，公众评论需要运行 reviewer 后端
 
 点击标题可打开目录页；点击版本可直接打开 Lean 源代码。
 
+### 我们解决的开放问题
+
+以下论文给出了本团队对既有开放研究问题的解答。
+
 | 形式化项目 | 源代码 | 贡献者 | 资源 |
 | --- | :---: | --- | --- |
-| **[Technical note: a counterexample to the Rockafellar sum conjecture on c₀](ReasBook/Papers/RockafellarSum_2026/)**<br><sub>Junyu Zhang, Jinbiao Chen, Zichen Wang, Benqi Liu, and Zaiwen Wen (2026)</sub> | [`v4.32.0`](https://github.com/optpku/ReasBook/tree/v4.32.0/ReasBook/Papers/RockafellarSum_2026/) | Zichen Wang | 仅源代码（文档待发布） |
 | **[A Counterexample to Global Convergence of Classical DFP Under the Standard Strong Wolfe Conditions](ReasBook/Papers/DFP_wolfe_local/)**<br><sub>Benqi Liu、Zichen Wang、Zaiwen Wen、Liwei Zhang 与 Yaxiang Yuan</sub> | [`v4.32.0`](https://github.com/optpku/ReasBook/tree/v4.32.0/ReasBook/Papers/DFP_wolfe_local/) | Zichen Wang | [arXiv](https://arxiv.org/html/2608.21708v1) |
-| **[The Minimum Q-Order of BFGS with Exact Line Search Is One](ReasBook/Papers/BFGSMinimumQOrder_Liu_2026/)**<br><sub>Benqi Liu、Chenyi Li 与 Zaiwen Wen (2026)</sub> | [`v4.32.2`](https://github.com/optpku/ReasBook/tree/v4.32.2/ReasBook/Papers/BFGSMinimumQOrder_Liu_2026/) | Chenyi Li | 仅源代码（文档待发布） |
 | **[A Fixed-Penalty Linearized Augmented Lagrangian Method with Classical Multiplier Updates](ReasBook/Papers/TR_LALM_theory/)**<br><sub>Benqi Liu、Kangkang Deng、Zichen Wang 与 Zaiwen Wen</sub> | [`v4.32.2`](https://github.com/optpku/ReasBook/tree/v4.32.2/ReasBook/Papers/TR_LALM_theory/) | Zichen Wang, Zaiwen Wen | [文档](https://optpku.github.io/ReasBook/docs/ReasBook/Papers/TR_LALM_theory/Paper.html) &#124; [Verso](https://optpku.github.io/ReasBook/sites/tr_lalm_theory/pages/) &#124; [定理图](https://optpku.github.io/ReasBook/theorem-maps/papers/tr_lalm_theory/) |
+| **[The Minimum Q-Order of BFGS with Exact Line Search Is One](ReasBook/Papers/BFGSMinimumQOrder_Liu_2026/)**<br><sub>Benqi Liu、Chenyi Li 与 Zaiwen Wen (2026)</sub> | [`v4.32.2`](https://github.com/optpku/ReasBook/tree/v4.32.2/ReasBook/Papers/BFGSMinimumQOrder_Liu_2026/) | Chenyi Li | 仅源代码（文档待发布） |
+| **[Technical note: a counterexample to the Rockafellar sum conjecture on c₀](ReasBook/Papers/RockafellarSum_2026/)**<br><sub>Junyu Zhang, Jinbiao Chen, Zichen Wang, Benqi Liu, and Zaiwen Wen (2026)</sub> | [`v4.32.0`](https://github.com/optpku/ReasBook/tree/v4.32.0/ReasBook/Papers/RockafellarSum_2026/) | Zichen Wang | 仅源代码（文档待发布） |
+
+### 其他已形式化论文
+
+| 形式化项目 | 源代码 | 贡献者 | 资源 |
+| --- | :---: | --- | --- |
 | **[Smooth Minimization of Non-Smooth Functions](ReasBook/Papers/SmoothMinimization_Nesterov_2004/)**<br><sub>Yurii Nesterov (2004)</sub> | [`v4.26.0`](https://github.com/optpku/ReasBook/tree/v4.26.0/ReasBook/Papers/SmoothMinimization_Nesterov_2004/)<br>[`v4.30.0`](https://github.com/optpku/ReasBook/tree/v4.30.0/ReasBook/Papers/SmoothMinimization_Nesterov_2004/) | Wanli Ma, Zichen Wang, Zaiwen Wen | [文档](https://optpku.github.io/ReasBook/docs/ReasBook/Papers/SmoothMinimization_Nesterov_2004/Paper.html) &#124; [Verso](https://optpku.github.io/ReasBook/sites/smoothminimization_nesterov_2004/pages/) |
 | **[On Some Local Rings](ReasBook/Papers/OnSomeLocalRings_Maassaran_2025/)**<br><sub>Mohamad Maassarani (2025)</sub> | [`v4.26.0`](https://github.com/optpku/ReasBook/tree/v4.26.0/ReasBook/Papers/OnSomeLocalRings_Maassaran_2025/)<br>[`v4.30.0`](https://github.com/optpku/ReasBook/tree/v4.30.0/ReasBook/Papers/OnSomeLocalRings_Maassaran_2025/) | Liang Xiao, Haochen Ju, Zichen Wang, Zaiwen Wen | [文档](https://optpku.github.io/ReasBook/docs/ReasBook/Papers/OnSomeLocalRings_Maassaran_2025/Paper.html) &#124; [Verso](https://optpku.github.io/ReasBook/sites/onsomelocalrings_maassaran_2025/pages/) |
 
