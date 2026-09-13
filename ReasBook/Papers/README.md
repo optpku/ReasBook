@@ -5,6 +5,7 @@ Open a paper below and use its source link to jump to the matching version branc
 
 | Formalization | Links |
 | --- | :---: |
+| **[Technical note: a counterexample to the Rockafellar sum conjecture on c₀](./RockafellarSum_2026/)**<br><sub>Junyu Zhang, Jinbiao Chen, Zichen Wang, Benqi Liu, and Zaiwen Wen (2026)</sub> | [`v4.32.0 source`](https://github.com/optpku/ReasBook/tree/v4.32.0/ReasBook/Papers/RockafellarSum_2026/) |
 | **[A Counterexample to Global Convergence of Classical DFP Under the Standard Strong Wolfe Conditions](./DFP_wolfe_local/)**<br><sub>Benqi Liu, Zichen Wang, Zaiwen Wen, Liwei Zhang, and Yaxiang Yuan</sub> | [`v4.32.0 source`](https://github.com/optpku/ReasBook/tree/v4.32.0/ReasBook/Papers/DFP_wolfe_local/)<br>[arXiv](https://arxiv.org/html/2608.21708v1) |
 | **[The Minimum Q-Order of BFGS with Exact Line Search Is One](./BFGSMinimumQOrder_Liu_2026/)**<br><sub>Benqi Liu, Chenyi Li, and Zaiwen Wen (2026)</sub> | [`v4.32.2 source`](https://github.com/optpku/ReasBook/tree/v4.32.2/ReasBook/Papers/BFGSMinimumQOrder_Liu_2026/) |
 | **[A Fixed-Penalty Linearized Augmented Lagrangian Method with Classical Multiplier Updates](./TR_LALM_theory/)**<br><sub>Benqi Liu, Kangkang Deng, Zichen Wang, and Zaiwen Wen</sub> | [`v4.32.2 source`](https://github.com/optpku/ReasBook/tree/v4.32.2/ReasBook/Papers/TR_LALM_theory/)<br>[Theorem map](https://optpku.github.io/ReasBook/theorem-maps/papers/tr_lalm_theory/) |

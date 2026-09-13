@@ -10,7 +10,7 @@
 
 | 分支 | Lean/mathlib | 注册状态 | 书籍/论文 |
 | --- | --- | --- | ---: |
-| `v4.32.0` | `v4.32.0` | 空 | 1 / 1 |
+| `v4.32.0` | `v4.32.0` | 空 | 1 / 2 |
 | `v4.32.2` | `v4.32.2` | 活跃 | 0 / 2 |
 | `v4.30.0` | `v4.30.0` | 活跃 | 10 / 2 |
 | `v4.26.0` | `v4.26.0` | 活跃 | 4 / 2 |
@@ -112,6 +112,7 @@ GitHub Pages 继续发布静态站点，公众评论需要运行 reviewer 后端
 
 | 形式化项目 | 源代码 | 贡献者 | 资源 |
 | --- | :---: | --- | --- |
+| **[Technical note: a counterexample to the Rockafellar sum conjecture on c₀](ReasBook/Papers/RockafellarSum_2026/)**<br><sub>Junyu Zhang, Jinbiao Chen, Zichen Wang, Benqi Liu, and Zaiwen Wen (2026)</sub> | [`v4.32.0`](https://github.com/optpku/ReasBook/tree/v4.32.0/ReasBook/Papers/RockafellarSum_2026/) | Zichen Wang | 仅源代码（文档待发布） |
 | **[A Counterexample to Global Convergence of Classical DFP Under the Standard Strong Wolfe Conditions](ReasBook/Papers/DFP_wolfe_local/)**<br><sub>Benqi Liu、Zichen Wang、Zaiwen Wen、Liwei Zhang 与 Yaxiang Yuan</sub> | [`v4.32.0`](https://github.com/optpku/ReasBook/tree/v4.32.0/ReasBook/Papers/DFP_wolfe_local/) | Zichen Wang | [arXiv](https://arxiv.org/html/2608.21708v1) |
 | **[The Minimum Q-Order of BFGS with Exact Line Search Is One](ReasBook/Papers/BFGSMinimumQOrder_Liu_2026/)**<br><sub>Benqi Liu、Chenyi Li 与 Zaiwen Wen (2026)</sub> | [`v4.32.2`](https://github.com/optpku/ReasBook/tree/v4.32.2/ReasBook/Papers/BFGSMinimumQOrder_Liu_2026/) | Chenyi Li | 仅源代码（文档待发布） |
 | **[A Fixed-Penalty Linearized Augmented Lagrangian Method with Classical Multiplier Updates](ReasBook/Papers/TR_LALM_theory/)**<br><sub>Benqi Liu、Kangkang Deng、Zichen Wang 与 Zaiwen Wen</sub> | [`v4.32.2`](https://github.com/optpku/ReasBook/tree/v4.32.2/ReasBook/Papers/TR_LALM_theory/) | Zichen Wang, Zaiwen Wen | [文档](https://optpku.github.io/ReasBook/docs/ReasBook/Papers/TR_LALM_theory/Paper.html) &#124; [Verso](https://optpku.github.io/ReasBook/sites/tr_lalm_theory/pages/) &#124; [定理图](https://optpku.github.io/ReasBook/theorem-maps/papers/tr_lalm_theory/) |
