@@ -368,13 +368,15 @@ end LineSearch.IsStrongWolfe
 
 namespace DFP.StrongWolfeCounterexample
 
-/-- TASK-03: Adjoining an identity quadratic block transports a strong-Wolfe
-counterexample while preserving all inherited weak-certificate fields. -/
-theorem orthogonalSum {ι : Type u} {κ : Type v}
+/-- Helper for thm:main: orthogonal extension retains the exact objective,
+so additional regularity properties can be transported with the certificate. -/
+theorem orthogonalSumWithObjective {ι : Type u} {κ : Type v}
     [Fintype ι] [Fintype κ] {m M c₁ c₂ : ℝ}
     (c : DFP.StrongWolfeCounterexample ι m M c₁ c₂)
     (hm : m ≤ 1) (hM : 1 ≤ M) :
-    Nonempty (DFP.StrongWolfeCounterexample (ι ⊕ κ) m M c₁ c₂) := by
+    ∃ d : DFP.StrongWolfeCounterexample (ι ⊕ κ) m M c₁ c₂,
+      d.iteration.objective = DFP.OrthogonalSum.objective (κ := κ) c.iteration.objective ∧
+      ∀ k, d.iteration.point k = DFP.OrthogonalSum.embed (c.iteration.point k) := by
   classical
   let iteration : DFP.InverseIteration (ι ⊕ κ) :=
     c.iteration.orthogonalSum (κ := κ) c.stepLengthPos
@@ -436,16 +438,29 @@ theorem orthogonalSum {ι : Type u} {κ : Type v}
     }
     strongWolfe := strongWolfe
   }
-  exact ⟨result⟩
+  exact ⟨result, DFP.InverseIteration.orthogonalSum_objective c.iteration c.stepLengthPos,
+    fun k ↦ DFP.InverseIteration.orthogonalSum_point c.iteration c.stepLengthPos k⟩
 
-/-- TASK-03: Pulling a strong-Wolfe counterexample back through a linear
-isometry equivalence preserves its trajectory, bounds, and strong field. -/
-theorem pullback_linearIsometryEquiv {ι : Type u} {κ : Type v}
+/-- TASK-03: Adjoining an identity quadratic block transports a strong-Wolfe
+counterexample while preserving all inherited weak-certificate fields. -/
+theorem orthogonalSum {ι : Type u} {κ : Type v}
+    [Fintype ι] [Fintype κ] {m M c₁ c₂ : ℝ}
+    (c : DFP.StrongWolfeCounterexample ι m M c₁ c₂)
+    (hm : m ≤ 1) (hM : 1 ≤ M) :
+    Nonempty (DFP.StrongWolfeCounterexample (ι ⊕ κ) m M c₁ c₂) := by
+  obtain ⟨d, _⟩ := orthogonalSumWithObjective (κ := κ) c hm hM
+  exact ⟨d⟩
+
+/-- Helper for thm:main: isometric transport retains the objective composition
+needed to preserve additional analytic properties of a counterexample. -/
+theorem pullbackWithObjective {ι : Type u} {κ : Type v}
     [Fintype ι] [Fintype κ] {m M c₁ c₂ : ℝ}
     (c : DFP.StrongWolfeCounterexample ι m M c₁ c₂)
     (Q : EuclideanSpace ℝ κ ≃ₗᵢ[ℝ] EuclideanSpace ℝ ι)
     (hm : 0 ≤ m) (hM : 0 ≤ M) :
-    Nonempty (DFP.StrongWolfeCounterexample κ m M c₁ c₂) := by
+    ∃ d : DFP.StrongWolfeCounterexample κ m M c₁ c₂,
+      d.iteration.objective = c.iteration.objective ∘ Q ∧
+      ∀ k, d.iteration.point k = Q.symm (c.iteration.point k) := by
   classical
   let iteration : DFP.InverseIteration κ :=
     c.iteration.pullback_linearIsometryEquiv c.stepLengthPos Q
@@ -502,6 +517,20 @@ theorem pullback_linearIsometryEquiv {ι : Type u} {κ : Type v}
     }
     strongWolfe := strongWolfe
   }
-  exact ⟨result⟩
+  exact ⟨result,
+    DFP.InverseIteration.pullback_linearIsometryEquiv_objective c.iteration c.stepLengthPos Q,
+    fun k ↦ DFP.InverseIteration.pullback_linearIsometryEquiv_point
+      c.iteration c.stepLengthPos Q k⟩
+
+/-- TASK-03: Pulling a strong-Wolfe counterexample back through a linear
+isometry equivalence preserves its trajectory, bounds, and strong field. -/
+theorem pullback_linearIsometryEquiv {ι : Type u} {κ : Type v}
+    [Fintype ι] [Fintype κ] {m M c₁ c₂ : ℝ}
+    (c : DFP.StrongWolfeCounterexample ι m M c₁ c₂)
+    (Q : EuclideanSpace ℝ κ ≃ₗᵢ[ℝ] EuclideanSpace ℝ ι)
+    (hm : 0 ≤ m) (hM : 0 ≤ M) :
+    Nonempty (DFP.StrongWolfeCounterexample κ m M c₁ c₂) := by
+  obtain ⟨d, _⟩ := pullbackWithObjective c Q hm hM
+  exact ⟨d⟩
 
 end DFP.StrongWolfeCounterexample

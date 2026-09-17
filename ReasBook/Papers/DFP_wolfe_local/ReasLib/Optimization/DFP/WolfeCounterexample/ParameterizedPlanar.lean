@@ -28,14 +28,23 @@ quadratic bounds and symbolic line-search coefficients. -/
 abbrev PlanarStrongWolfeCounterexample (c₁ c₂ : ℝ) :=
   DFP.StrongWolfeCounterexample (Fin 2) (1 / 2) (3 / 2) c₁ c₂
 
-/-- TASK-08: Parameterized planar strong-Wolfe assembly. The invariant
-slow-curve construction supplies a planar certificate for every admissible
-pair of symbolic Wolfe coefficients. -/
-theorem existsPlanarStrongWolfeCounterexample
+/-- Helper for thm:main: any objective and point-sequence property that holds
+uniformly for sufficiently small realizations of every invariant slow curve can
+be imposed on the same parameterized strong-Wolfe counterexample. -/
+theorem existsPlanarStrongWolfeCounterexampleWithProperty
+    (P : (EuclideanSpace ℝ (Fin 2) → ℝ) → (ℕ → EuclideanSpace ℝ (Fin 2)) → Prop)
+    (hP : ∀ curve : DFP.TwoLeg.SlowCurve,
+      ∃ η ∈ Set.Ioo (0 : ℝ) (1 / 4), ∀ ε₀ ∈ Set.Ioc 0 η,
+        let orbit := DFP.TwoPhaseOrbit.ofSlowCurve curve.shape curve.high ε₀
+        ∀ Clim, Tendsto (fun j : ℕ ↦ (orbit.state j).center) atTop (𝓝 Clim) →
+          ∀ Glim > 0,
+            Tendsto (fun j : ℕ ↦ (orbit.state j).amplitude) atTop (𝓝 Glim) →
+              P (orbit.realizedObjective Clim Glim) orbit.endpoint)
     {c₁ c₂ : ℝ} (hc₁_pos : 0 < c₁)
     (hc₁_lt_two_thirds : c₁ < 2 / 3)
     (hc₂_ge_two_thirds : (2 / 3 : ℝ) ≤ c₂) (hc₂_lt_one : c₂ < 1) :
-    Nonempty (PlanarStrongWolfeCounterexample c₁ c₂) := by
+    ∃ c : PlanarStrongWolfeCounterexample c₁ c₂,
+      P c.iteration.objective c.iteration.point := by
   have hc₁_lt_c₂ : c₁ < c₂ :=
     lt_of_lt_of_le hc₁_lt_two_thirds hc₂_ge_two_thirds
   obtain ⟨p, h, _, _, _, h_invariant, h_pJet, h_hJet, _⟩ :=
@@ -70,33 +79,38 @@ theorem existsPlanarStrongWolfeCounterexample
   obtain ⟨ηArmijo, hηArmijo, hArmijoCurveAt⟩ :=
     DFP.TwoLeg.SlowCurve.endpointArmijo_of_lt_two_thirds curve
       hc₁_pos hc₁_lt_two_thirds
-  let threshold : Fin 9 → ℝ :=
+  obtain ⟨ηProperty, hηProperty, hPropertyAt⟩ := hP curve
+  let threshold : Fin 10 → ℝ :=
     ![ηExact, ηCenter, ηAmplitude, ηGradient, ηRadius, ηDisjoint,
-      ηSmooth, ηHessian, ηArmijo]
-  have h_threshold (i : Fin 9) : 0 < threshold i := by
-    fin_cases i <;>
+      ηSmooth, ηHessian, ηArmijo, ηProperty]
+  have h_threshold (i : Fin 10) : 0 < threshold i := by
+    fin_cases i
+    all_goals
       simp [threshold, hηExact.1, hηCenter.1, hηAmplitude, hηGradient,
-        hηRadius.1, hηDisjoint.1, hηSmooth.1, hηHessian.1, hηArmijo.1]
+        hηRadius.1, hηDisjoint.1, hηSmooth.1, hηHessian.1, hηArmijo.1, hηProperty.1]
   obtain ⟨ε₀, hε₀, hεThreshold⟩ :=
     existsCommonInitialScale threshold K h_threshold hK
   have hεExactLe : ε₀ ≤ ηExact := by
-    simpa [threshold] using hεThreshold (0 : Fin 9)
+    simpa [threshold] using hεThreshold (0 : Fin 10)
   have hεCenterLe : ε₀ ≤ ηCenter := by
-    simpa [threshold] using hεThreshold (1 : Fin 9)
+    simpa [threshold] using hεThreshold (1 : Fin 10)
   have hεAmplitudeLe : ε₀ ≤ ηAmplitude := by
-    simpa [threshold] using hεThreshold (2 : Fin 9)
+    simpa [threshold] using hεThreshold (2 : Fin 10)
   have hεGradientLe : ε₀ ≤ ηGradient := by
-    simpa [threshold] using hεThreshold (3 : Fin 9)
+    simpa [threshold] using hεThreshold (3 : Fin 10)
   have hεRadiusLe : ε₀ ≤ ηRadius := by
-    simpa [threshold] using hεThreshold (4 : Fin 9)
+    simpa [threshold] using hεThreshold (4 : Fin 10)
   have hεDisjointLe : ε₀ ≤ ηDisjoint := by
-    simpa [threshold] using hεThreshold (5 : Fin 9)
+    simpa [threshold] using hεThreshold (5 : Fin 10)
   have hεSmoothLe : ε₀ ≤ ηSmooth := by
-    simpa [threshold] using hεThreshold (6 : Fin 9)
+    simpa [threshold] using hεThreshold (6 : Fin 10)
   have hεHessianLe : ε₀ ≤ ηHessian := by
-    simpa [threshold] using hεThreshold (7 : Fin 9)
+    simpa [threshold] using hεThreshold (7 : Fin 10)
   have hεArmijoLe : ε₀ ≤ ηArmijo := by
-    simpa [threshold] using hεThreshold (8 : Fin 9)
+    simpa [threshold] using hεThreshold (8 : Fin 10)
+  have hεProperty : ε₀ ∈ Set.Ioc 0 ηProperty := by
+    refine ⟨hε₀.1, ?_⟩
+    simpa only [threshold, Matrix.cons_val] using hεThreshold (9 : Fin 10)
   have hεExact : ε₀ ∈ Set.Ioc 0 ηExact := ⟨hε₀.1, hεExactLe⟩
   have hεCenter : ε₀ ∈ Set.Ioc 0 ηCenter := ⟨hε₀.1, hεCenterLe⟩
   have hεAmplitude : ε₀ ∈ Set.Ioc 0 ηAmplitude := ⟨hε₀.1, hεAmplitudeLe⟩
@@ -288,9 +302,41 @@ theorem existsPlanarStrongWolfeCounterexample
         (weak.iteration.point (k + 1) - weak.iteration.point k) := by
     simpa only [weak] using
       hIterationStrongWolfe k
-  have strong : DFP.StrongWolfeCounterexample
+  let strong : DFP.StrongWolfeCounterexample
       (Fin 2) (1 / 2) (3 / 2) c₁ c₂ :=
-    DFP.StrongWolfeCounterexample.ofWeak weak hStrongForWeak
-  exact ⟨strong⟩
+    { toWolfeCounterexample := weak, strongWolfe := hStrongForWeak }
+  have hProperty : P (orbit.realizedObjective Clim Glim) orbit.endpoint := by
+    have hlocal := hPropertyAt ε₀ hεProperty
+    simp only [curve, DFP.TwoLeg.SlowCurve.ofAsymptotics_shape,
+      DFP.TwoLeg.SlowCurve.ofAsymptotics_high] at hlocal
+    exact hlocal Clim hCenterTendsto Glim hGlim hAmplitudeTendsto
+  refine ⟨strong, ?_⟩
+  simpa only [strong, weak, iteration,
+    DFP.IsOrbit.toInverseIteration_objective, DFP.IsOrbit.toInverseIteration_point_eq,
+    f, x] using hProperty
+
+/-- TASK-08: Parameterized planar strong-Wolfe assembly. The invariant
+slow-curve construction supplies a planar certificate for every admissible
+pair of symbolic Wolfe coefficients. -/
+theorem existsPlanarStrongWolfeCounterexample
+    {c₁ c₂ : ℝ} (hc₁_pos : 0 < c₁)
+    (hc₁_lt_two_thirds : c₁ < 2 / 3)
+    (hc₂_ge_two_thirds : (2 / 3 : ℝ) ≤ c₂) (hc₂_lt_one : c₂ < 1) :
+    Nonempty (PlanarStrongWolfeCounterexample c₁ c₂) := by
+  have hP (curve : DFP.TwoLeg.SlowCurve) :
+      ∃ η ∈ Set.Ioo (0 : ℝ) (1 / 4), ∀ ε₀ ∈ Set.Ioc 0 η,
+        let orbit := DFP.TwoPhaseOrbit.ofSlowCurve curve.shape curve.high ε₀
+        ∀ Clim, Tendsto (fun j : ℕ ↦ (orbit.state j).center) atTop (𝓝 Clim) →
+          ∀ Glim > 0,
+            Tendsto (fun j : ℕ ↦ (orbit.state j).amplitude) atTop (𝓝 Glim) → True := by
+    refine ⟨1 / 8, ?_, ?_⟩
+    · norm_num
+    · intro ε₀ hε₀
+      dsimp only
+      intro Clim hClim Glim hGlim hGlimTendsto
+      trivial
+  obtain ⟨c, _⟩ := existsPlanarStrongWolfeCounterexampleWithProperty
+    (fun _ _ ↦ True) hP hc₁_pos hc₁_lt_two_thirds hc₂_ge_two_thirds hc₂_lt_one
+  exact ⟨c⟩
 
 end DFP

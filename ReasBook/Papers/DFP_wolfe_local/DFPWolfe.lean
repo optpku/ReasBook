@@ -19,5 +19,8 @@ public import ReasLib.Optimization.DFP.WolfeCounterexample.AutomaticMatrixIdenti
 The top-level module exposes the fixed and paper-range strong-Wolfe
 counterexamples, their all-dimensional transport, the identity-initialization
 operator and matrix interfaces, the level-set semantics, and the resulting
-global-convergence negations.
+global-convergence negations. It also exposes planar DFP convergence under
+locally Lipschitz Hessian regularity, with weak/strong Wolfe interfaces,
+arbitrary positive-definite initialization, stationary termination, and the
+C3 specialization.
 -/
