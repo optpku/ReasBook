@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 Zichen Wang. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Zichen Wang
+-/
 module
 
 public import DFPWolfe.A_uniformly_convex_counterexample_to_global_convergence_of_DFP_under_weak_Wolfe_.Theorem_2_4_Counterexample_in_every_dimension_n_ge2
@@ -6,8 +11,30 @@ public import ReasLib.Optimization.DFP.LevelSetGlobalConvergence
 public import ReasLib.Optimization.DFP.WolfeCounterexample.ParameterizedTransport
 public import ReasLib.Optimization.DFP.WolfeCounterexample.ParameterizedIdentityInitialization
 public import ReasLib.Optimization.DFP.WolfeCounterexample.AutomaticMatrixIdentityLiminf
+public import ReasLib.Optimization.DFP.PlanarConvergence
+public import ReasLib.Optimization.DFP.SecantDegeneration
+public import ReasLib.Optimization.DFP.WolfeCounterexample.HolderSharpness
+
+/-!
+# Main DFP counterexample and planar convergence statements
+
+The counterexample interfaces cover the paper's Wolfe parameter range.
+The planar convergence interfaces apply to arbitrary fixed admissible Wolfe
+coefficients under local Hessian Lipschitz regularity near the initial sublevel.
+
+The strengthened counterexample is exported as
+`existsStrongWolfeCounterexampleHolderSharp_of_dimension_ge_two`: its single
+objective has a globally one-half Hölder Hessian, and no greater exponent works
+on its initial sublevel. `existsMatrixIdentityLiminfStrongWolfeHolder` preserves
+the Hölder bound with identity initialization.
+`SecantIteration.planarDegeneration` requires only a positive-definite search
+sequence and the secant equation, and includes vanishing of the smallest eigenvalue.
+-/
 
 public section
+
+open Filter
+open scoped Topology
 
 namespace DFP
 
@@ -206,5 +233,53 @@ theorem not_universalGlobalWeakWolfeConvergence_fixedParameters :
     norm_num
   exact not_universalGlobalWeakWolfeConvergence_of_counterexample
     counterexample hdimension hlower hupper hc₁ hc₁₂ hc₂
+
+/-- Paper-facing form of thm:planar-convergence: arbitrary initial
+positive-definite planar DFP data converge under the full fixed weak-Wolfe
+range when the globally strongly convex C2 objective has locally Lipschitz
+Hessian near its initial sublevel. Stationary termination is included through
+constant continuation of the point sequence. -/
+theorem main_planarWeakWolfeConvergence
+    {f : EuclideanSpace ℝ (Fin 2) → ℝ} {α : ℕ → ℝ}
+    {x g : ℕ → EuclideanSpace ℝ (Fin 2)} {H : ℕ → Matrix (Fin 2) (Fin 2) ℝ}
+    (orbit : IsOrbit f α x g H) {μ c₁ c₂ : ℝ}
+    (hf : ContDiff ℝ 2 f) (hμ : 0 < μ)
+    (hHessian : ∀ z v, μ * ‖v‖ ^ 2 ≤ inner ℝ (fderiv ℝ (gradient f) z v) v)
+    (hH₀ : (H 0).PosDef)
+    (hWolfe : ∀ k, LineSearch.IsWeakWolfe c₁ c₂ f (x k) (x (k + 1) - x k))
+    (hNeighborhood : ∃ U : Set (EuclideanSpace ℝ (Fin 2)), IsOpen U ∧
+      {z | f z ≤ f (x 0)} ⊆ U ∧ LocallyLipschitzOn U (fderiv ℝ (gradient f))) :
+    ∃ xstar, (∀ z, f xstar ≤ f z) ∧ (∀ z, f z ≤ f xstar → z = xstar) ∧
+      Tendsto x atTop (𝓝 xstar) ∧
+      Tendsto (fun k ↦ ‖gradient f (x k)‖) atTop (𝓝 0) := by
+  obtain ⟨xstar, hresult, _⟩ := PlanarConvergence.rawOrbitConvergenceOfNeighborhood
+    orbit hf hμ hHessian hH₀ hWolfe hNeighborhood
+  obtain ⟨y, _, hunique⟩ := PlanarConvergence.existsUniqueGlobalMinimizerOfHessian hf hμ hHessian
+  refine ⟨xstar, hresult.1, ?_, hresult.2⟩
+  intro z hz
+  have hminz : ∀ w, f z ≤ f w := fun w ↦ hz.trans (hresult.1 w)
+  exact (hunique z hminz).trans (hunique xstar hresult.1).symm
+
+/-- Paper-facing strong-Wolfe consequence of thm:planar-convergence:
+strong curvature implies weak curvature after the descent property is
+derived from Armijo and strong convexity. -/
+theorem main_planarStrongWolfeConvergence
+    {f : EuclideanSpace ℝ (Fin 2) → ℝ} {α : ℕ → ℝ}
+    {x g : ℕ → EuclideanSpace ℝ (Fin 2)} {H : ℕ → Matrix (Fin 2) (Fin 2) ℝ}
+    (orbit : IsOrbit f α x g H) {μ c₁ c₂ : ℝ}
+    (hf : ContDiff ℝ 2 f) (hμ : 0 < μ)
+    (hHessian : ∀ z v, μ * ‖v‖ ^ 2 ≤ inner ℝ (fderiv ℝ (gradient f) z v) v)
+    (hH₀ : (H 0).PosDef)
+    (hWolfe : ∀ k, LineSearch.IsStrongWolfe c₁ c₂ f (x k) (x (k + 1) - x k))
+    (hNeighborhood : ∃ U : Set (EuclideanSpace ℝ (Fin 2)), IsOpen U ∧
+      {z | f z ≤ f (x 0)} ⊆ U ∧ LocallyLipschitzOn U (fderiv ℝ (gradient f))) :
+    ∃ xstar, (∀ z, f xstar ≤ f z) ∧ (∀ z, f z ≤ f xstar → z = xstar) ∧
+      Tendsto x atTop (𝓝 xstar) ∧
+      Tendsto (fun k ↦ ‖gradient f (x k)‖) atTop (𝓝 0) := by
+  have hWeak (k : ℕ) : LineSearch.IsWeakWolfe c₁ c₂ f (x k) (x (k + 1) - x k) := by
+    apply (hWolfe k).toWeakWolfe
+    exact PlanarConvergence.armijoDescentOfHessianLowerBound hf hμ hHessian
+      ((hWolfe k).c₁_lt_c₂.trans (hWolfe k).c₂_lt_one) (hWolfe k).armijo
+  exact main_planarWeakWolfeConvergence orbit hf hμ hHessian hH₀ hWeak hNeighborhood
 
 end DFP

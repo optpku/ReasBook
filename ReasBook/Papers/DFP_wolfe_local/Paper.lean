@@ -8,8 +8,9 @@ strong Wolfe conditions
 
 This module is the ReasBook entry point for the DFP Wolfe counterexample
 formalization. `DFPWolfe` exposes the complete paper-facing surface, including
-the all-dimensional counterexample, level-set formulation, and
-identity-initialized matrix `liminf` certificate.
+the all-dimensional counterexample with sharp one-half Hölder Hessian regularity,
+identity-initialized matrix `liminf` certificate, planar convergence under weak
+and strong Wolfe conditions, and degeneration for general secant iterations.
 -/
 
 public section

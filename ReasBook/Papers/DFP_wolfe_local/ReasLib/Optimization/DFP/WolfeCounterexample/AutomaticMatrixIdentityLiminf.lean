@@ -47,9 +47,9 @@ theorem scalar_le_of_identity_loewner_bounds
   have hvnorm : 0 < ‖v‖ ^ 2 := sq_pos_of_pos (norm_pos_iff.mpr hv)
   nlinarith
 
-/-- Helper for TASK-16: an explicit factorized strong-Wolfe trajectory yields a classical matrix
-identity-initialized certificate with the paper-facing positive gradient liminf. -/
-theorem matrixIdentityLiminfStrongWolfe_of_factorized
+/-- Helper for cor:identity-initialization: square-root normalization and
+matrix reconstruction retain the exact pullback objective. -/
+theorem matrixIdentityLiminfStrongWolfeWithObjective
     {n : ℕ} (hn : 2 ≤ n) {c₁ c₂ a b q : ℝ}
     (c : DFP.StrongWolfeCounterexample (Fin n) (1 / 2) (3 / 2) c₁ c₂)
     (L : EuclideanSpace ℝ (Fin n) ≃L[ℝ] EuclideanSpace ℝ (Fin n))
@@ -65,8 +65,9 @@ theorem matrixIdentityLiminfStrongWolfe_of_factorized
       b • (1 : EuclideanSpace ℝ (Fin n) →L[ℝ] EuclideanSpace ℝ (Fin n)))
     (gradientMapLower : q • (1 : EuclideanSpace ℝ (Fin n) →L[ℝ] EuclideanSpace ℝ (Fin n)) ≤
       L.toContinuousLinearMap.pushforward 1) :
-    Nonempty (MatrixIdentityLiminfStrongWolfeCertificate n
-      ((1 / 2 : ℝ) * a) ((3 / 2 : ℝ) * b) c₁ c₂) := by
+    ∃ d : MatrixIdentityLiminfStrongWolfeCertificate n
+      ((1 / 2 : ℝ) * a) ((3 / 2 : ℝ) * b) c₁ c₂,
+      d.iteration.objective = c.iteration.objective ∘ L := by
   let f' : EuclideanSpace ℝ (Fin n) → ℝ := c.iteration.objective ∘ L
   let α' : ℕ → ℝ := c.iteration.stepLength
   let x' : ℕ → EuclideanSpace ℝ (Fin n) := fun k ↦ L.symm (c.iteration.point k)
@@ -257,8 +258,36 @@ theorem matrixIdentityLiminfStrongWolfe_of_factorized
         (result.point (k + 1) - result.point k) := by
     intro k
     simpa only [result, base] using hSecant k
-  exact MatrixIdentityLiminfStrongWolfeCertificate.ofOperator_ofIdentityAndSecantCurvature
-    result hResultPos hmM hResultLiminf hResultSecant
+  have hPosDef := canonicalMatrixSequence_posDef_of_identityOrbit result hResultSecant
+  have hDenominator :=
+    canonicalMatrixSequence_denominator_ne_of_operatorOrbit result.orbit hResultSecant
+  obtain ⟨d, hd⟩ := MatrixIdentityLiminfStrongWolfeCertificate.ofOperatorWithObjective
+    result hResultPos hmM hResultLiminf hPosDef hDenominator
+  exact ⟨d, hd⟩
+
+/-- Helper for TASK-16: an explicit factorized strong-Wolfe trajectory yields a classical matrix
+identity-initialized certificate with the paper-facing positive gradient liminf. -/
+theorem matrixIdentityLiminfStrongWolfe_of_factorized
+    {n : ℕ} (hn : 2 ≤ n) {c₁ c₂ a b q : ℝ}
+    (c : DFP.StrongWolfeCounterexample (Fin n) (1 / 2) (3 / 2) c₁ c₂)
+    (L : EuclideanSpace ℝ (Fin n) ≃L[ℝ] EuclideanSpace ℝ (Fin n))
+    (factor : (Matrix.toEuclideanCLM : Matrix (Fin n) (Fin n) ℝ ≃⋆ₐ[ℝ]
+        EuclideanSpace ℝ (Fin n) →L[ℝ] EuclideanSpace ℝ (Fin n))
+        (c.iteration.inverseHessian 0) =
+      L.toContinuousLinearMap.pushforward 1)
+    (ha : 0 < a) (hb : 0 < b) (hq : 0 < q)
+    (hc₁_pos : 0 < c₁) (hc₁_lt_c₂ : c₁ < c₂) (hc₂_lt_one : c₂ < 1)
+    (lowerMap : a • (1 : EuclideanSpace ℝ (Fin n) →L[ℝ] EuclideanSpace ℝ (Fin n)) ≤
+      L.toContinuousLinearMap.pullback 1)
+    (upperMap : L.toContinuousLinearMap.pullback 1 ≤
+      b • (1 : EuclideanSpace ℝ (Fin n) →L[ℝ] EuclideanSpace ℝ (Fin n)))
+    (gradientMapLower : q • (1 : EuclideanSpace ℝ (Fin n) →L[ℝ] EuclideanSpace ℝ (Fin n)) ≤
+      L.toContinuousLinearMap.pushforward 1) :
+    Nonempty (MatrixIdentityLiminfStrongWolfeCertificate n
+      ((1 / 2 : ℝ) * a) ((3 / 2 : ℝ) * b) c₁ c₂) := by
+  obtain ⟨d, _⟩ := matrixIdentityLiminfStrongWolfeWithObjective hn c L factor
+    ha hb hq hc₁_pos hc₁_lt_c₂ hc₂_lt_one lowerMap upperMap gradientMapLower
+  exact ⟨d⟩
 
 /-- TASK-16: every paper-range strong-Wolfe counterexample with positive-definite
 initial inverse Hessian admits a matrix identity-initialized certificate with

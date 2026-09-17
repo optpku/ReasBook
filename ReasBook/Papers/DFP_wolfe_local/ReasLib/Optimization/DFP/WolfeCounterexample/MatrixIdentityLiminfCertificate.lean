@@ -85,10 +85,9 @@ theorem MatrixIdentityLiminfStrongWolfeCertificate.hessianBounds_pos_le
     0 < m ∧ m ≤ M :=
   ⟨c.hessianLowerPos, c.hessianLowerLeUpper⟩
 
-/-- Helper for TASK-16: assemble the matrix-facing certificate from an identity-initialized
-operator certificate.  The matrix positive-definiteness, secant denominator,
-and gradient-liminf obligations are explicit hypotheses of this bridge. -/
-theorem MatrixIdentityLiminfStrongWolfeCertificate.ofOperator
+/-- Helper for cor:identity-initialization: the operator-to-matrix bridge
+retains the objective exactly, preserving its analytic regularity. -/
+theorem MatrixIdentityLiminfStrongWolfeCertificate.ofOperatorWithObjective
     {n : ℕ} {m M c₁ c₂ : ℝ}
     (c : IdentityInitializedStrongWolfeOperatorCertificate (Fin n) m M c₁ c₂)
     (hm : 0 < m) (hmM : m ≤ M)
@@ -99,7 +98,8 @@ theorem MatrixIdentityLiminfStrongWolfeCertificate.ofOperator
           (DFP.steps c.stepLength
             (DFP.directions (canonicalMatrixSequence c.inverseHessian) c.gradient) k) ⬝ᵥ
         WithLp.ofLp (DFP.gradientChanges c.gradient k) ≠ 0) :
-    Nonempty (MatrixIdentityLiminfStrongWolfeCertificate n m M c₁ c₂) := by
+    ∃ d : MatrixIdentityLiminfStrongWolfeCertificate n m M c₁ c₂,
+      d.iteration.objective = c.objective := by
   let H : ℕ → Matrix (Fin n) (Fin n) ℝ := canonicalMatrixSequence c.inverseHessian
   have hPosDef' : ∀ k, (H k).PosDef := by
     intro k
@@ -198,7 +198,25 @@ theorem MatrixIdentityLiminfStrongWolfeCertificate.ofOperator
     gradientNormLiminfPos := hLiminf
     gradientNormEventuallyPositive := hTail
   }
-  exact ⟨result⟩
+  exact ⟨result, hObjective⟩
+
+/-- Helper for TASK-16: assemble the matrix-facing certificate from an identity-initialized
+operator certificate.  The matrix positive-definiteness, secant denominator,
+and gradient-liminf obligations are explicit hypotheses of this bridge. -/
+theorem MatrixIdentityLiminfStrongWolfeCertificate.ofOperator
+    {n : ℕ} {m M c₁ c₂ : ℝ}
+    (c : IdentityInitializedStrongWolfeOperatorCertificate (Fin n) m M c₁ c₂)
+    (hm : 0 < m) (hmM : m ≤ M)
+    (hGradientNormLiminf : 0 < liminf (fun k ↦ ‖c.gradient k‖) atTop)
+    (hPosDef : ∀ k, (canonicalMatrixSequence c.inverseHessian k).PosDef)
+    (hDenominator : ∀ k,
+      WithLp.ofLp
+          (DFP.steps c.stepLength
+            (DFP.directions (canonicalMatrixSequence c.inverseHessian) c.gradient) k) ⬝ᵥ
+        WithLp.ofLp (DFP.gradientChanges c.gradient k) ≠ 0) :
+    Nonempty (MatrixIdentityLiminfStrongWolfeCertificate n m M c₁ c₂) := by
+  obtain ⟨d, _⟩ := ofOperatorWithObjective c hm hmM hGradientNormLiminf hPosDef hDenominator
+  exact ⟨d⟩
 
 /-- Helper for TASK-16: a convenience bridge deriving the matrix denominator hypothesis from
 strict positive secant curvature of the operator orbit. -/
