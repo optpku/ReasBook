@@ -1,0 +1,35 @@
+{
+  "edges": 6624,
+  "generation": {
+    "compiledItemCount": 2271,
+    "dependencyCoverage": "partial",
+    "dependencyModel": "statement-and-proof-v1",
+    "extractorSha256": "289fb0f2033a900ed29169e757b3d19b4a38532d5d43c9279f1f0c4764b2daca",
+    "inventoryMode": "source-plus-compiled",
+    "mergedItemCount": 3402,
+    "mode": "lean-environment",
+    "moduleOwnership": [
+      "DFP_wolfe_local",
+      "DFPWolfe",
+      "ReasLib"
+    ],
+    "rawDeclarationCount": 5702,
+    "rootModule": "DFP_wolfe_local.Paper",
+    "sdkSha256": "962421c7ab9227372ee813ac09ed8b8b60b4e1ad2397b2bc2f63d2ffa34f1cee",
+    "selection": "All public source-declared theorems/lemmas; dependencies are available for Paper.lean's compiled environment; definitions and private/generated helpers are contracted",
+    "sourceInventoryItemCount": 3402,
+    "sourceOnlyItemCount": 1131,
+    "sourceSha256": "b46788dae978318d914497546e0ff818315487566c1b1cb6091c2ef32c06a1d0"
+  },
+  "nodes": 3402,
+  "project": {
+    "branch": "v4.32.0",
+    "commit": "1a74e5e51ee05415c98410f9052ba371ec546b43",
+    "id": "DFP_wolfe_local",
+    "kind": "papers",
+    "repository": "https://github.com/optpku/ReasBook",
+    "sourceRoot": "ReasBook/Papers/DFP_wolfe_local/",
+    "title": "A Counterexample to Global Convergence of Classical DFP Under the Standard Strong Wolfe Conditions"
+  },
+  "schemaVersion": 1
+}
