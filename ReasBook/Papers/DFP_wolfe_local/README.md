@@ -80,6 +80,57 @@ validation root for the complete public surface.
 - `DFP.main_planarStrongWolfeConvergence`
 - `DFP.SecantIteration.planarDegeneration`
 
+## Theorem dependency map
+
+The [interactive theorem map](theorem-map/index.html) and its
+[machine-readable graph](theorem-map/data.json) cover the latest formalization
+at ReasBook commit `1a74e5e51ee05415c98410f9052ba371ec546b43` on `v4.32.0`.
+The map includes all 3,402 public source-declared theorems and lemmas:
+2,271 have dependencies extracted from the compiled `DFP_wolfe_local.Paper`
+environment, and 1,131 appear as source-only inventory entries. There are
+6,624 distinct directed dependency edges. The source-only entries belong to
+modules outside that aggregate root and have no inferred edges; the map does
+not present their missing dependency evidence as independence.
+
+The main-results group includes planar weak/strong Wolfe convergence, general
+secant degeneration, sharp one-half Hölder regularity, and identity
+initialization. Statement dependencies and proof dependencies are distinguished.
+Definitions, private helpers, and compiler-generated declarations are contracted
+using the ReasBook theorem graph SDK. Mathlib dependencies are outside this
+project graph. Source links point to exact declaration lines in the immutable
+source commit. Older docstrings retain their original labels; graph identities
+use Lean declaration names rather than assigning new manuscript numbers.
+
+GitHub displays the HTML source rather than executing the interactive viewer.
+For local browsing, run this command from the repository root and open
+`http://localhost:8000`:
+
+```bash
+python3 -m http.server 8000 --directory ReasBook/Papers/DFP_wolfe_local/theorem-map
+```
+
+The directory follows the SDK's project-owned `theorem-map/` convention and can
+be copied into a future ReasBook site release. Adding it to the source branch
+does not itself deploy GitHub Pages.
+
+To reproduce the graph with Python 3.11+ and a current ReasBook SDK checkout,
+first check `Paper.lean` as below, then run from the repository root:
+
+```bash
+python3.11 ReasBook/Papers/DFP_wolfe_local/tools/generate_theorem_map.py \
+  --sdk-root /path/to/ReasBook/sdk/theorem_graph \
+  --output /tmp/dfp-theorem-map-new \
+  --evidence /tmp/dfp-theorem-map-evidence-new
+```
+
+Both output paths must be new. The evidence directory retains raw exported
+declarations, an extraction log, and checksums. It is intentionally not committed.
+The adapter includes the `DFPWolfe` and `ReasLib` module roots and handles the
+Lean 4.32.0 extractor configuration explicitly. It uses one Lean thread and an
+8 GiB Lean allocator limit; imported memory-mapped files can add to process RSS.
+For rendering-only changes, `--reuse-evidence` accepts an existing evidence
+directory after checking its source, extractor, and raw-data hashes.
+
 ## Build and verification
 
 From the `ReasBook` directory on branch `v4.32.0`:

@@ -1,0 +1,12 @@
+{
+  "project": {
+    "branch": "v4.32.0",
+    "commit": "1a74e5e51ee05415c98410f9052ba371ec546b43",
+    "id": "DFP_wolfe_local",
+    "kind": "papers",
+    "repository": "https://github.com/optpku/ReasBook",
+    "sourceRoot": "ReasBook/Papers/DFP_wolfe_local/",
+    "title": "A Counterexample to Global Convergence of Classical DFP Under the Standard Strong Wolfe Conditions"
+  },
+  "schemaVersion": 1
+}

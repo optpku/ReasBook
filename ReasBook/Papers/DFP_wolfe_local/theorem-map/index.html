@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="description" content="Interactive theorem dependency map for a ReasBook formalization.">
+  <title>ReasBook Theorem Map</title>
+  <link rel="stylesheet" href="./styles.css?v=20260907-bounded-layout-1">
+</head>
+<body>
+  <div class="app-shell" id="appShell">
+    <aside class="sidebar" id="sidebar">
+      <header class="brand">
+        <div class="brand-mark" id="brandMark" aria-hidden="true">RB</div>
+        <div class="brand-copy">
+          <h1>Theorem Map</h1>
+          <p id="projectName">ReasBook formalization</p>
+        </div>
+        <button class="icon-button sidebar-toggle" id="sidebarToggle" type="button"
+          title="Collapse index" aria-label="Collapse index" aria-expanded="true">&lt;</button>
+      </header>
+
+      <div class="index-controls">
+        <label class="search-field">
+          <span class="visually-hidden">Search literature items</span>
+          <input id="searchInput" type="search"
+            placeholder="Search label, title, declaration" autocomplete="off">
+        </label>
+        <div class="filter-grid">
+          <label>
+            <span>Section</span>
+            <select id="sectionFilter">
+              <option value="all">All sections</option>
+            </select>
+          </label>
+          <label>
+            <span>Kind</span>
+            <select id="typeFilter">
+              <option value="all">All kinds</option>
+            </select>
+          </label>
+        </div>
+        <div class="index-meta" id="indexMeta">Loading declarations</div>
+      </div>
+
+      <div class="item-list" id="itemList" role="listbox"
+        aria-label="Literature-level declarations" tabindex="0"></div>
+    </aside>
+
+    <main class="main-panel">
+      <header class="toolbar">
+        <div class="toolbar-title">
+          <div class="current-title" id="currentTitle">Loading project data</div>
+        </div>
+        <div class="toolbar-actions">
+          <div class="graph-scope-heading">
+          <div class="current-label graph-selection-label" id="currentLabel" aria-live="polite">Theorem map</div>
+          <div class="segmented" role="group" aria-label="Graph scope">
+            <button id="fullGraphButton" type="button" title="Show every node; large graphs may take longer to lay out">Full graph</button>
+            <button id="focusGraphButton" class="active" type="button">Neighborhood</button>
+          </div>
+          </div>
+          <label class="graph-depth-control" title="Maximum dependency hops upstream and downstream from the selected node">
+            <span>Layers</span>
+            <select id="graphDepthSelect" aria-label="Neighborhood layers">
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3" selected>3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+              <option value="8">8</option>
+            </select>
+          </label>
+          <div class="zoom-controls" role="group" aria-label="Graph zoom">
+            <button class="icon-button" id="zoomOutButton" type="button"
+              title="Zoom out" aria-label="Zoom out">-</button>
+            <button class="icon-button fit-button" id="fitButton" type="button"
+              title="Fit graph" aria-label="Fit graph">Fit</button>
+            <button class="icon-button" id="zoomInButton" type="button"
+              title="Zoom in" aria-label="Zoom in">+</button>
+          </div>
+        </div>
+      </header>
+
+      <div class="mobile-view-switch segmented" role="group" aria-label="Mobile view">
+        <button id="mobileGraphButton" class="active" type="button">Graph</button>
+        <button id="mobileDetailButton" type="button">Statement</button>
+      </div>
+
+      <section class="workspace" id="workspace" data-mobile-view="graph">
+        <section class="graph-panel" aria-label="Theorem dependency graph">
+          <div class="graph-toolbar">
+            <div class="graph-stats" id="graphStats">Loading graph</div>
+            <div class="legend" id="legend" aria-label="Section colors"></div>
+          </div>
+          <div class="graph-viewport" id="graphViewport">
+            <svg id="dependencyGraph" class="dependency-graph"
+              role="img" aria-label="Dependency graph among literature-level declarations">
+              <defs>
+                <marker id="arrowDefault" viewBox="0 0 10 10" refX="9" refY="5"
+                  markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                  <path d="M 0 0 L 10 5 L 0 10 z"></path>
+                </marker>
+                <marker id="arrowActive" viewBox="0 0 10 10" refX="9" refY="5"
+                  markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                  <path d="M 0 0 L 10 5 L 0 10 z"></path>
+                </marker>
+              </defs>
+              <g id="graphScene"></g>
+            </svg>
+            <div class="graph-empty" id="graphEmpty" hidden>No graph items match this view.</div>
+          </div>
+          <div class="graph-zoom-bar">
+            <label for="graphZoomSlider">Zoom</label>
+            <input id="graphZoomSlider" type="range" min="0" max="1000" step="1"
+              value="676" aria-valuetext="100%" title="Zoom graph">
+            <output id="graphZoomValue" for="graphZoomSlider">100%</output>
+          </div>
+        </section>
+
+        <aside class="detail-panel" id="detailPanel" aria-label="Selected literature item">
+          <div class="detail-rail">
+            <button class="icon-button detail-toggle" id="detailToggle" type="button"
+              title="Collapse statement" aria-label="Collapse statement"
+              aria-expanded="true">&gt;</button>
+          </div>
+          <div class="detail-scroll">
+            <div id="detailContent"></div>
+          </div>
+        </aside>
+      </section>
+    </main>
+  </div>
+
+  <div class="fatal-error" id="fatalError" hidden></div>
+  <script src="./app.js?v=20260908-graph-local-lock-2"></script>
+</body>
+</html>
