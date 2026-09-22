@@ -1108,6 +1108,11 @@ select:focus-visible,
 .paper-view .item-row-decl { display: none; }
 .paper-view .detail-section summary { cursor: pointer; font-weight: 600; }
 .paper-view .detail-section li { overflow-wrap: anywhere; margin-bottom: 8px; }
+.paper-view .statement .katex-display { max-width: 100%; overflow-x: auto; overflow-y: hidden; padding: 8px 0; }
+.paper-view .statement .katex { font-size: 1em; }
+.paper-view .statement-provenance { color: #526170; font-size: 12px; line-height: 1.5; }
+.paper-view .statement-latex { margin-top: 12px; font-size: 12px; }
+.paper-view .statement-latex pre { white-space: pre-wrap; overflow-wrap: anywhere; }
 .paper-view .graph-node.dim { opacity: 0.8; }
 .paper-view .graph-node.dim text { fill: #526170; }
 .paper-view .graph-edge.dim { opacity: 0.65; }

@@ -32,7 +32,7 @@ def project_graph(graph, mapping):
         related = [by_declaration[name] for name in result['declarations']]
         item = {**related[0], 'id': result['id'], 'label': result['label'],
                 'title': result['title'], 'type': result['label'].split()[0],
-                'section': result['section'], 'statement': result['summary'],
+                'section': result['section'], 'statement': '',
                 'paperMapping': result['mapping'], 'texLabel': result['texLabel'],
                 'relatedDeclarations': [
                     {key: row[key] for key in ('declaration', 'file', 'line')}
@@ -100,6 +100,24 @@ def verify(graph, paper):
         assert item['id'] not in item['dependencies']
 
 
+def attach_statements(paper, excerpts):
+    """Bind full source statements without changing graph relationships."""
+    statements = {item['id']: item for item in excerpts['items']}
+    if set(statements) != {item['id'] for item in paper['items']}:
+        raise ValueError('Statement inventory differs from paper graph')
+    for item in paper['items']:
+        statement = statements[item['id']]
+        if (statement['texLabel'], statement['label']) != (item['texLabel'], item['label']):
+            raise ValueError('Statement label mismatch')
+        item['statement'] = statement['statementLatex']
+        item['statementSha256'] = statement['statementSha256']
+        item['statementSource'] = dict(manuscript=excerpts['manuscriptName'],
+            manuscriptSha256=excerpts['manuscriptSha256'],
+            startLine=statement['sourceStartLine'], endLine=statement['sourceEndLine'])
+    paper['generation']['statementMode'] = 'verbatim-manuscript-excerpts'
+    paper['generation']['manuscriptSha256'] = excerpts['manuscriptSha256']
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--graph-root', type=Path)
@@ -121,6 +139,10 @@ def main():
             assert '\\label{' + item['texLabel'] + '}' in body
         mapping['manuscriptSha256'] = hashlib.sha256(args.manuscript.read_bytes()).hexdigest()
     result = project_graph(graph, mapping)
+    excerpts = json.loads((root / 'theorem-map/paper-statements.json').read_text())
+    attach_statements(result, excerpts)
+    if args.manuscript and excerpts['manuscriptSha256'] != mapping['manuscriptSha256']:
+        raise ValueError('Statements must be re-extracted for this manuscript revision')
     result['generation']['inputGraphSha256'] = hashlib.sha256(graph_bytes).hexdigest()
     result['generation']['mappingSha256'] = hashlib.sha256(mapping_file.read_bytes()).hexdigest()
     if mapping.get('manuscriptSha256'):

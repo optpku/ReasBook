@@ -13,6 +13,7 @@ from bisect import bisect_left
 import hashlib
 import json
 import re
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -293,6 +294,7 @@ def main() -> None:
     if not (assets / "index.html").is_file():
         assets = resources / "assets"
     copy_generic_map(assets, output, data)
+    shutil.copy2(project_root / "theorem-map/paper-statements.json", output / "paper-statements.json")
     subprocess.run([sys.executable, str(Path(__file__).with_name("generate_paper_graph.py")),
                     "--graph-root", str(output)], check=True)
     print(json.dumps(dict(output=str(output), sourceCommit=commit, nodes=len(items),
