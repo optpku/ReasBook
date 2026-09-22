@@ -6,7 +6,7 @@
   <meta name="color-scheme" content="light">
   <meta name="description" content="Interactive theorem dependency map for a ReasBook formalization.">
   <title>ReasBook Theorem Map</title>
-  <link rel="stylesheet" href="./styles.css?v=20260907-bounded-layout-1">
+  <link rel="stylesheet" href="./styles.css?v=20260922-paper-view">
 </head>
 <body>
   <div class="app-shell" id="appShell">
@@ -22,6 +22,11 @@
       </header>
 
       <div class="index-controls">
+        <nav class="view-switch" aria-label="Node labels">
+          <a id="paperViewLink" href="?view=paper">Paper numbers</a>
+          <a id="leanViewLink" href="?view=lean">Lean declarations</a>
+        </nav>
+        <p class="view-description" id="viewDescription"></p>
         <label class="search-field">
           <span class="visually-hidden">Search literature items</span>
           <input id="searchInput" type="search"
@@ -134,6 +139,6 @@
   </div>
 
   <div class="fatal-error" id="fatalError" hidden></div>
-  <script src="./app.js?v=20260908-graph-local-lock-2"></script>
+  <script src="./app.js?v=20260922-paper-view"></script>
 </body>
 </html>
