@@ -3,7 +3,7 @@ import json
 from pathlib import Path
 import unittest
 
-from generate_paper_graph import project_graph, verify
+from generate_paper_graph import attach_statements, project_graph, verify
 
 
 def declaration(name, statement=(), proof=()):
@@ -45,6 +45,7 @@ class PaperGraphTests(unittest.TestCase):
         mapping = json.loads((root / 'tools/paper_results.json').read_text())
         published = json.loads((root / 'theorem-map/paper-data.json').read_text())
         rebuilt = project_graph(graph, mapping)
+        attach_statements(rebuilt, json.loads((root / 'theorem-map/paper-statements.json').read_text()))
         self.assertEqual(published['items'], rebuilt['items'])
         self.assertEqual(published['edgeWitnesses'], rebuilt['edgeWitnesses'])
         self.assertEqual(len(published['items']), 11)

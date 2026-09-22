@@ -87,7 +87,7 @@ Theorem 1, Corollary 2, Theorem 3, Proposition 4, and Lemmas 5–11; **Lean
 declarations** retains the complete declaration inventory described below.
 Use the view switch above the search box, or append `?view=paper` to the
 interactive map URL. The numbered view opens as an 11-node overview with
-22 dependency edges, mathematical summaries, and expandable Lean source links.
+22 dependency edges, exact statements from the paper, and expandable Lean source links.
 
 Numbering follows the September 2026 `main-new-modify.tex` revision, not the
 older numbered labels in some Lean docstrings. Each paper node groups reviewed
@@ -97,8 +97,11 @@ that scope explicitly. Edges are paths in the compiled declaration graph after
 unassigned helpers are contracted, not manually inferred paper citations.
 The grouping lives in [paper_results.json](tools/paper_results.json), and
 [paper-data.json](theorem-map/paper-data.json) retains an explicit declaration
-path witnessing each edge. Main-result summaries are reading aids; the linked
-Lean statements give the exact formal hypotheses and conclusions.
+path witnessing each edge. The statement panel quotes each complete theorem
+environment from the revised paper, including assumptions, constants,
+quantifiers, equations, and resolved cross-references. These quotations describe
+the paper's statements; the separate Lean correspondence panel explains which
+formal declarations or proof components are linked.
 
 To regenerate just the numbered view from the existing graph, run:
 
@@ -110,6 +113,25 @@ Optionally pass `--manuscript /path/to/main-new-modify.tex` to check all eleven
 environment types, numbers, and TeX labels against the local manuscript. The
 manuscript is not copied into this repository. Full graph regeneration also
 regenerates this numbered projection and preserves the view switch.
+
+Exact excerpts, source line ranges, and SHA-256 values are stored in
+[paper-statements.json](theorem-map/paper-statements.json). The panel also exposes
+the original LaTeX. After a manuscript change, compile it to obtain current
+cross-reference numbers, then re-extract and regenerate:
+
+```bash
+python3 ReasBook/Papers/DFP_wolfe_local/tools/extract_paper_statements.py \
+  --manuscript /path/to/main-new-modify.tex --aux /path/to/main-new-modify.aux \
+  --renderer node ReasBook/Papers/DFP_wolfe_local/tools/render_paper_math.cjs \
+  /path/to/katex/dist/katex.js
+python3 ReasBook/Papers/DFP_wolfe_local/tools/generate_paper_graph.py \
+  --manuscript /path/to/main-new-modify.tex
+```
+
+Extraction uses Pandoc and KaTeX 0.16.22 in strict mode. Only typography,
+cross-reference resolution, and display-equation layout are transformed; prose
+is not rewritten. Rendered HTML/MathML, CSS, and fonts are served locally, so
+mathematical statements do not depend on a third-party CDN.
 
 The [interactive theorem map](theorem-map/index.html) and its
 [machine-readable graph](theorem-map/data.json) cover the latest formalization

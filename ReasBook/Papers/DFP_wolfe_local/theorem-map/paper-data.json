@@ -34,7 +34,7 @@
         "prop-one-step"
       ],
       "section": "main",
-      "statement": "In every dimension n ≥ 2, a uniformly convex C² objective with a globally one-half Hölder Hessian admits a classical DFP sequence satisfying the paper's strong Wolfe parameter range whose gradient norms tend to a positive limit.",
+      "statement": "\\label{thm:main}\nFor every $0<c_1<2/3$ and $2/3\\le c_2<1$, the parameters in this\nsection can be chosen so that $f$ in \\eqref{eq:objective} belongs to\n$C^2(\\R^2)$, has a globally H\\\"older continuous Hessian with exponent\n$1/2$, and satisfies $\\frac12I\\preceq\\nabla^2f(x)\\preceq\\frac32I$\nfor all $x\\in\\R^2$. With the positive definite initial matrix in\n\\eqref{eq:counterexample-initial-data} and positive step lengths in\n\\eqref{eq:counterexample-recurrence}, classical DFP is well defined and\nevery step satisfies \\eqref{eq:armijo} and \\eqref{eq:strong-curvature},\nbut $\\|\\nabla f(x_k)\\|\\longrightarrow G_\\infty>0$.\nThe same conclusion holds in every dimension $n\\ge2$.",
       "statementDependencies": [],
       "title": "DFP can fail under strong Wolfe conditions",
       "type": "Theorem",
@@ -51,7 +51,14 @@
           "file": "ReasLib/Optimization/DFP/WolfeCounterexample/Holder.lean",
           "line": 72
         }
-      ]
+      ],
+      "statementSha256": "a417ea88c994e639dffe59d208d0f34ce58dc07e04fce7a61b795d75f859c85a",
+      "statementSource": {
+        "manuscript": "main-new-modify.tex",
+        "manuscriptSha256": "ea498dae68597a548bb38597a2e36d0a9c68eb31e8a528dd8fe59673f128b178",
+        "startLine": 277,
+        "endLine": 288
+      }
     },
     {
       "declaration": "DFP.existsMatrixIdentityLiminfStrongWolfeHolder",
@@ -67,7 +74,7 @@
         "thm-main"
       ],
       "section": "main",
-      "statement": "An affine coordinate change gives identity initialization, preserves strong Wolfe conditions and one-half Hölder Hessian regularity, and keeps the gradient norms bounded away from zero. The uniform Hessian bounds depend on the coordinate change.",
+      "statement": "\\label{cor:identity-initialization}\nFix any pair $(c_1,c_2)$ in the range of Theorem~\\ref{thm:main}.  There exist\n$\\widetilde f\\in C^2(\\R^2)$ with a globally H\\\"older continuous Hessian of\nexponent $1/2$, an initial point $\\widetilde x_0\\in\\R^2$, a sequence of positive\nstep lengths $\\{\\alpha_k\\}_{k\\ge0}$, and constants\n$0<\\widetilde m\\le \\widetilde M<\\infty$ with\n$\\widetilde m I\\preceq\\nabla^2\\widetilde f(x)\\preceq\\widetilde M I$\nfor all $x\\in\\R^2$. For this objective function, classical DFP initialized with $\\widetilde H_0=I$ is well\ndefined, and every accepted step satisfies \\eqref{eq:armijo} and\n\\eqref{eq:strong-curvature}.  Nevertheless,\n$\\liminf_{k\\to\\infty}\\|\\nabla\\widetilde f(\\widetilde x_k)\\|>0$.\nThe same conclusion holds in every dimension $n\\ge2$.",
       "statementDependencies": [],
       "title": "The counterexample can start from the identity",
       "type": "Corollary",
@@ -79,7 +86,14 @@
           "file": "ReasLib/Optimization/DFP/WolfeCounterexample/Holder.lean",
           "line": 108
         }
-      ]
+      ],
+      "statementSha256": "dd466c497ba8c2b98282d53f370a816a3b2b0547091a885c230292fb2eb015ab",
+      "statementSource": {
+        "manuscript": "main-new-modify.tex",
+        "manuscriptSha256": "ea498dae68597a548bb38597a2e36d0a9c68eb31e8a528dd8fe59673f128b178",
+        "startLine": 303,
+        "endLine": 315
+      }
     },
     {
       "declaration": "DFP.main_planarWeakWolfeConvergence",
@@ -95,7 +109,7 @@
         "lem-planar-degeneration"
       ],
       "section": "main",
-      "statement": "For a globally strongly convex C² objective in two dimensions, a locally Lipschitz Hessian near the initial sublevel set ensures convergence to the unique minimizer under weak Wolfe conditions, from any positive-definite initial matrix. Strong Wolfe follows as a consequence.",
+      "statement": "\\label{thm:planar-convergence}\nLet $f\\in C^2(\\R^2)$ satisfy $\\nabla^2f(x)\\succeq\\mu I$ for all\n$x\\in\\R^2$ and some $\\mu>0$. Let $x_0\\in\\R^2$ and $H_0\\succ0$\nbe arbitrary, and fix $0<c_1<c_2<1$. Suppose $\\nabla^2f$ is locally\nLipschitz continuous on a neighborhood of the initial level set\n$K=\\{x\\in\\R^2:f(x)\\le f(x_0)\\}$.\nThen classical DFP with update \\eqref{eq:dfp-update} and positive step\nlengths satisfying \\eqref{eq:armijo} and \\eqref{eq:weak-curvature}\neither reaches the unique minimizer $x_*$ in finitely many iterations or\ngenerates an infinite sequence satisfying\n$x_k\\longrightarrow x_*$ and $\\|\\nabla f(x_k)\\|\\longrightarrow0$.",
       "statementDependencies": [],
       "title": "A locally Lipschitz Hessian restores planar convergence",
       "type": "Theorem",
@@ -112,7 +126,14 @@
           "file": "DFPWolfe/A_uniformly_convex_counterexample_to_global_convergence_of_DFP_under_weak_Wolfe_/Theorem_Main_theorem.lean",
           "line": 266
         }
-      ]
+      ],
+      "statementSha256": "fea9cdef0548455086e40abf6b34f7e43fe297a607e7635eba42429f8b166b66",
+      "statementSource": {
+        "manuscript": "main-new-modify.tex",
+        "manuscriptSha256": "ea498dae68597a548bb38597a2e36d0a9c68eb31e8a528dd8fe59673f128b178",
+        "startLine": 321,
+        "endLine": 333
+      }
     },
     {
       "declaration": "DFP.AbstractSecantStep.nextGradient_formula",
@@ -124,7 +145,7 @@
       "line": 110,
       "proofDependencies": [],
       "section": "construction",
-      "statement": "The gradient and inverse-Hessian updates have explicit secant formulas with positive denominators. The matrix update is independent of the line-ratio parameter τ.",
+      "statement": "\\label{prop:one-step}\nLet $v=Hg$, $\\delta=g^THg$, $w=Av$, $\\beta=v^TAv$, and\n$\\gamma=w^THw$.  The step in \\eqref{eq:abstract-step} satisfies\n\\begin{align}\ng_+&=g-\\tau\\frac{\\delta}{\\beta}w,\n\\label{eq:one-step-g}\\\\\nH_+&=H-\\frac{Hww^TH}{\\gamma}+\\frac{vv^T}{\\beta}.\n\\label{eq:one-step-H}\n\\end{align}\nIn particular, the matrix update is independent of $\\tau$, and every\ndenominator in \\eqref{eq:one-step-g}--\\eqref{eq:one-step-H} is positive.",
       "statementDependencies": [],
       "title": "Exact formulas for one DFP step",
       "type": "Proposition",
@@ -161,7 +182,14 @@
           "file": "ReasLib/Optimization/DFP/AbstractSecantStep.lean",
           "line": 192
         }
-      ]
+      ],
+      "statementSha256": "8da934cfeb979993cb75a2cc4df2ea3b6f219fdfa4c71c2f38a4f9851cb0218c",
+      "statementSource": {
+        "manuscript": "main-new-modify.tex",
+        "manuscriptSha256": "ea498dae68597a548bb38597a2e36d0a9c68eb31e8a528dd8fe59673f128b178",
+        "startLine": 454,
+        "endLine": 465
+      }
     },
     {
       "declaration": "LocalInvariantGraph.exists_metricInvariantGraph_of_regularFixedPoint",
@@ -173,7 +201,7 @@
       "line": 108,
       "proofDependencies": [],
       "section": "construction",
-      "statement": "A center direction with derivative 1 and contracting stable directions admit a locally forward-invariant smooth graph; invertibility of the stable derivative is not required.",
+      "statement": "\\label{lem:graph-transform}\nLet $\\nu\\ge2$ and $d_s\\ge1$ be integers, and let $F=(F_c,F_s)$ be a\n$C^{\\nu+1}$ map from a neighborhood of $(0,0)\\in\\R\\times\\R^{d_s}$ into\n$\\R\\times\\R^{d_s}$.  Suppose that, for some\n$L\\in\\R^{d_s\\times d_s}$,\n\\[\nF(0,0)=(0,0),\\qquad\nDF(0,0)=\\begin{pmatrix}1&0\\\\0&L\\end{pmatrix},\n\\qquad \\rho(L)<1.\n\\]\nThen, after restricting the neighborhood, there is a $C^\\nu$ function\n$z=\\zeta(u)$ with $\\zeta(0)=D\\zeta(0)=0$ whose graph is locally forward\ninvariant.  The conclusion does not require $L$, or the full derivative\n$DF(0,0)$, to be invertible.",
       "statementDependencies": [],
       "title": "Construct a smooth invariant graph",
       "type": "Lemma",
@@ -190,7 +218,14 @@
           "file": "ReasLib/Analysis/Calculus/LocalInvariantGraph/ExplicitContraction/MetricPicardCertificate.lean",
           "line": 676
         }
-      ]
+      ],
+      "statementSha256": "beea5c265f23afd95b0848613fd4bccea15ea18d2eefa251475960a3bfeae463",
+      "statementSource": {
+        "manuscript": "main-new-modify.tex",
+        "manuscriptSha256": "ea498dae68597a548bb38597a2e36d0a9c68eb31e8a528dd8fe59673f128b178",
+        "startLine": 812,
+        "endLine": 826
+      }
     },
     {
       "declaration": "DFP.TwoLeg.exists_localForwardInvariantSlowCurve",
@@ -206,7 +241,7 @@
         "lem-graph-transform"
       ],
       "section": "construction",
-      "statement": "The canceled two-step map extends analytically near (0, 2, 1). Its invariant center curve has the stated shape and scale expansions, including ε₊ = ε − (3/2)ε⁴ + (5/4)ε⁵ + O(ε⁶).",
+      "statement": "\\label{lem:center-manifold}\nAfter cancellation of the explicit singular factors, $\\mathcal F$ has a real\nanalytic extension near $(0,2,1)$.  Its derivative there has one eigenvalue\nequal to $1$ and two other eigenvalues\n$-1/9$ and $0$, so it has a\nlocally invariant one-dimensional $C^7$ center manifold\n$p=p(\\epsilon)$ and $h=h(\\epsilon)$,\non which\n\\begin{align}\np(\\epsilon)&=2+\\frac{198}{5}\\epsilon^3\n-\\frac95\\epsilon^4+O(\\epsilon^5),\n&h(\\epsilon)&=1+8\\epsilon^3+O(\\epsilon^5),\n\\label{eq:center-curve}\\\\\n\\epsilon_+&=\\epsilon-\\frac32\\epsilon^4\n+\\frac54\\epsilon^5+O(\\epsilon^6).\n\\label{eq:epsilon-map}\n\\end{align}",
       "statementDependencies": [],
       "title": "The two-step map has an invariant C⁷ curve",
       "type": "Lemma",
@@ -233,7 +268,14 @@
           "file": "ReasLib/Optimization/DFP/TwoPhaseControls/RadiusJet.lean",
           "line": 75
         }
-      ]
+      ],
+      "statementSha256": "927295ab160ce4befd3d856b368d5964c527572f920a6ae48fbc131c0035023d",
+      "statementSource": {
+        "manuscript": "main-new-modify.tex",
+        "manuscriptSha256": "ea498dae68597a548bb38597a2e36d0a9c68eb31e8a528dd8fe59673f128b178",
+        "startLine": 939,
+        "endLine": 957
+      }
     },
     {
       "declaration": "DFP.TwoPhaseOrbit.slowCurveFullCenterDrift",
@@ -251,7 +293,7 @@
         "prop-one-step"
       ],
       "section": "construction",
-      "statement": "Along the invariant curve, the two-step amplitude, frame angle, center drift, and within-cycle increments have the asymptotic expansions used in the counterexample construction.",
+      "statement": "\\label{lem:two-step-expansions}\nLet $\\phi_j\\in\\R$ be the angle of the unit eigenvector for the smaller\neigenvalue at iteration $2j$.  Choose this angle continuously along the\nsequence.  Let $G_j$ be the corresponding gradient component in\n\\eqref{eq:coordinate-representation}, and define\n$C_k=x_k-g_k$.\nOn the invariant center manifold,\n\\begin{align}\n\\frac{G_{j+1}}{G_j}\n&=1-\\frac{13}{2}\\epsilon_j^4+O(\\epsilon_j^6),\n\\label{eq:G-map}\\\\\n\\phi_{j+1}-\\phi_j\n&=-3\\epsilon_j^2+O(\\epsilon_j^4),\n\\label{eq:phi-map}\\\\\nC_{2j+2}-C_{2j}\n&=-\\frac{116}{5}G_j\\epsilon_j^6e_j\n+O(G_j\\epsilon_j^7),\n\\label{eq:C-map}\\\\\n\\|C_{2j+1}-C_{2j}\\|&=O(G_j\\epsilon_j^3).\n\\label{eq:C-half}\n\\end{align}\nThe two consecutive increments in the polar angle of the gradient within\na cycle are respectively\n\\begin{equation}\\label{eq:half-angles}\n-2\\epsilon_j^2+o(\\epsilon_j^2),\n\\qquad -\\epsilon_j^2+o(\\epsilon_j^2).\n\\end{equation}\nHere $e_j$ is the unit eigenvector corresponding to the smaller eigenvalue,\nexpressed in the original coordinates.",
       "statementDependencies": [],
       "title": "Control amplitude, angle, and center drift",
       "type": "Lemma",
@@ -283,7 +325,14 @@
           "file": "ReasLib/Optimization/DFP/TwoPhaseOrbit/EndpointAngleRemainder.lean",
           "line": 19
         }
-      ]
+      ],
+      "statementSha256": "5f0e379292478fda70a1512aa148e8cd7be0001f012ded158ef258d9c3b70f80",
+      "statementSource": {
+        "manuscript": "main-new-modify.tex",
+        "manuscriptSha256": "ea498dae68597a548bb38597a2e36d0a9c68eb31e8a528dd8fe59673f128b178",
+        "startLine": 1184,
+        "endLine": 1213
+      }
     },
     {
       "declaration": "DFP.TwoPhaseOrbit.slowCurveAmplitudeAsymptotics",
@@ -301,7 +350,7 @@
         "lem-two-step-expansions"
       ],
       "section": "construction",
-      "statement": "The scale is asymptotic to ((9/2)j)⁻¹ᐟ³, the amplitude has a positive limit with first-order tail coefficient 13/3, and the centers converge with cubic tail bounds. The paper identifies the endpoint accumulation set as a circle.",
+      "statement": "\\label{lem:scalar-asymptotics}\nThere are limits $G_\\infty>0$ and $C_\\infty\\in\\R^2$ such that\n\\begin{align}\n\\epsilon_j&\\sim\\left(\\frac92j\\right)^{-1/3},\n\\label{eq:epsilon-asymptotic}\\\\\nG_j-G_\\infty&\\sim\\frac{13}{3}G_\\infty\\epsilon_j,\n\\label{eq:G-tail}\\\\\n\\|C_{2j}-C_\\infty\\|&=O(\\epsilon_j^3),\n\\qquad\n\\|C_{2j+1}-C_\\infty\\|=O(\\epsilon_j^3).\n\\label{eq:C-tail}\n\\end{align}\nAlso, $\\phi_j\\to-\\infty$, and the accumulation set $\\Gamma$ of\n$\\{x_k\\}$ is the full circle\n\\begin{equation}\\label{eq:limit-circle}\n\\Gamma=\\{C_\\infty+G_\\infty v:\\|v\\|=1\\}.\n\\end{equation}",
       "statementDependencies": [],
       "title": "Positive limiting amplitude and a limiting circle",
       "type": "Lemma",
@@ -328,7 +377,14 @@
           "file": "ReasLib/Optimization/DFP/TwoPhaseOrbit/CenterTailUniform.lean",
           "line": 20
         }
-      ]
+      ],
+      "statementSha256": "e9f2c514f0297250f9acae8935bff8b2b9390c0608e1c3fb0365bfc14ba73d76",
+      "statementSource": {
+        "manuscript": "main-new-modify.tex",
+        "manuscriptSha256": "ea498dae68597a548bb38597a2e36d0a9c68eb31e8a528dd8fe59673f128b178",
+        "startLine": 1307,
+        "endLine": 1324
+      }
     },
     {
       "declaration": "DFP.TwoPhaseOrbit.slowCurveUniformEndpointSeparation",
@@ -350,7 +406,7 @@
         "prop-one-step"
       ],
       "section": "construction",
-      "statement": "Every endpoint stays at least a fixed positive multiple of its squared cycle scale away from all other endpoints and the limiting circle.",
+      "statement": "\\label{lem:separation}\nAfter decreasing $\\epsilon_0$ if necessary, there is a constant $c_*>0$ such\nthat, for every $k$,\n\\begin{equation}\\label{eq:separation}\n\\operatorname{dist}\\!\\left(\nx_k,(\\{x_\\ell:\\ell\\ge0\\}\\cup\\Gamma)\\setminus\\{x_k\\}\n\\right)\n\\ge c_*r(k).\n\\end{equation}",
       "statementDependencies": [],
       "title": "Keep endpoints uniformly separated",
       "type": "Lemma",
@@ -362,7 +418,14 @@
           "file": "ReasLib/Optimization/DFP/TwoPhaseOrbit/EndpointSeparation.lean",
           "line": 346
         }
-      ]
+      ],
+      "statementSha256": "b9a7793cb608ed7d10388edc6ded915236d06ebc8c67555336d0e53f14ca4ded",
+      "statementSource": {
+        "manuscript": "main-new-modify.tex",
+        "manuscriptSha256": "ea498dae68597a548bb38597a2e36d0a9c68eb31e8a528dd8fe59673f128b178",
+        "startLine": 1427,
+        "endLine": 1436
+      }
     },
     {
       "declaration": "contDiff_two_slowCurveBumpCorrection",
@@ -386,7 +449,7 @@
         "prop-one-step"
       ],
       "section": "construction",
-      "statement": "The disjoint bump correction extends as a C² function across the limiting circle, interpolates the endpoint values and gradients, has a globally one-half Hölder Hessian, and obeys the uniform Hessian bound.",
+      "statement": "\\label{lem:disjoint-interpolation}\nThe function $\\Psi$, extended by zero on $\\Gamma$, belongs to\n$C^2(\\R^2)$ and has a globally H\\\"older continuous Hessian with exponent\n$1/2$. It satisfies\n\\begin{equation}\\label{eq:interpolation-jets}\n\\Psi(x_k)=0,\\qquad \\nabla\\Psi(x_k)=a_k,\n\\end{equation}\nand\n\\begin{equation}\\label{eq:interpolation-hessian-bound}\n\\sup_{x\\in\\R^2}\\|\\nabla^2\\Psi(x)\\|\n\\le K\\epsilon_0.\n\\end{equation}",
       "statementDependencies": [],
       "title": "Interpolate with a C², one-half Hölder correction",
       "type": "Lemma",
@@ -418,7 +481,14 @@
           "file": "ReasLib/Optimization/DFP/TwoPhaseOrbit/EndpointBump/GlobalRegularity.lean",
           "line": 188
         }
-      ]
+      ],
+      "statementSha256": "9e8cb4f592fbd3a4d80d0377b8d5f219dc41a8c72009ccb9e97d336ed2cb1f52",
+      "statementSource": {
+        "manuscript": "main-new-modify.tex",
+        "manuscriptSha256": "ea498dae68597a548bb38597a2e36d0a9c68eb31e8a528dd8fe59673f128b178",
+        "startLine": 1591,
+        "endLine": 1604
+      }
     },
     {
       "declaration": "DFP.SecantIteration.planarDegeneration",
@@ -430,7 +500,7 @@
       "line": 727,
       "proofDependencies": [],
       "section": "convergence",
-      "statement": "A nonconvergent planar strongly convex secant orbit satisfying weak Wolfe has a positive free coefficient bounded by adjacent-step products and tending to zero. The matrices remain bounded and their smallest eigenvalue tends to zero.",
+      "statement": "\\label{lem:planar-degeneration}\nLet $f\\in C^2(\\R^2)$ be $\\mu$-strongly convex, where $\\mu>0$.\nConsider an infinite sequence of nonstationary iterates with\n$g_k=\\nabla f(x_k)$, $s_k=-\\alpha_kH_kg_k$,\n$x_{k+1}=x_k+s_k$, and $y_k=g_{k+1}-g_k$, where $H_k\\succ0$,\n$\\alpha_k>0$, and every step satisfies \\eqref{eq:armijo} and\n\\eqref{eq:weak-curvature} for fixed $0<c_1<c_2<1$.\nSuppose $H_ky_{k-1}=s_{k-1}$ for $k\\ge1$. Put\n\\begin{equation}\\label{eq:planar-scalar-definition}\n\\ell_k=\\|s_k\\|,\\qquad\n\\kappa_k=\\frac{s_k^Ty_k}{\\ell_k^2},\\qquad\n\\lambda_k=\\kappa_{k-1}\\det H_k\\quad(k\\ge1).\n\\end{equation}\nIf $x_k$ does not converge to the unique minimizer $x_*$, then\n\\begin{equation}\\label{eq:planar-degeneration}\n0<\\lambda_k\\le C\\ell_{k-1}\\ell_k\\longrightarrow0\n\\end{equation}\nfor all sufficiently large $k$, with $C$ independent of $k$.\nMoreover, $\\{H_k\\}$ is bounded and $\\lambda_{\\min}(H_k)\\to0$.",
       "statementDependencies": [],
       "title": "Nonconvergence forces planar secant degeneration",
       "type": "Lemma",
@@ -452,7 +522,14 @@
           "file": "ReasLib/Optimization/DFP/PlanarConvergence.lean",
           "line": 1437
         }
-      ]
+      ],
+      "statementSha256": "bc0d07f49ad729ec48f8e23b255b1959248894e10b2c29f8feea096a19b945c9",
+      "statementSource": {
+        "manuscript": "main-new-modify.tex",
+        "manuscriptSha256": "ea498dae68597a548bb38597a2e36d0a9c68eb31e8a528dd8fe59673f128b178",
+        "startLine": 1976,
+        "endLine": 1996
+      }
     }
   ],
   "sections": [
@@ -505,9 +582,10 @@
     "mappingScope": "Nodes identify paper results. Linked declarations include full statements and supporting proof components as described individually.",
     "numbering": "Shared theorem counter: Theorem 1, Corollary 2, Theorem 3, Proposition 4, Lemmas 5–11. Older Lean docstring numbers belong to an earlier manuscript and are not used here.",
     "manuscript": "main-new-modify.tex (September 2026 revision)",
+    "statementMode": "verbatim-manuscript-excerpts",
+    "manuscriptSha256": "ea498dae68597a548bb38597a2e36d0a9c68eb31e8a528dd8fe59673f128b178",
     "inputGraphSha256": "13ea23ff2e86b24ba792339f3aee9f3ac5541d7de9ca74b0c4bb531be06a0086",
-    "mappingSha256": "0f9266a9f8e87ab5e4e1d244c957de2183981065b18dbd45625976c4f2eade7f",
-    "manuscriptSha256": "ea498dae68597a548bb38597a2e36d0a9c68eb31e8a528dd8fe59673f128b178"
+    "mappingSha256": "7e9818afdd50dda0ea5c8ba941f8677c7af54cb9ec55f1c8784b5cec49dd76c5"
   },
   "edgeWitnesses": [
     {

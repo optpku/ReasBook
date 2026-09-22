@@ -1289,12 +1289,28 @@
     var statementSection = document.createElement("section");
     statementSection.className = "detail-section";
     var statementHeading = document.createElement("h3");
-    statementHeading.textContent = paperView ? "Mathematical summary" : "Natural-language statement";
+    statementHeading.textContent = paperView ? "Statement from the paper" : "Natural-language statement";
     var statement = document.createElement("article");
     statement.className = "statement";
     renderStatement(statement, item);
     statementSection.appendChild(statementHeading);
     statementSection.appendChild(statement);
+    if (paperView && item.statementSource) {
+      var sourceNote = document.createElement("p");
+      sourceNote.className = "statement-provenance";
+      sourceNote.textContent = item.statementSource.manuscript + ": " + item.label +
+        ". Original wording and formulas; references use the paper's numbering.";
+      statementSection.appendChild(sourceNote);
+      var original = document.createElement("details");
+      var originalTitle = document.createElement("summary");
+      originalTitle.textContent = "Original LaTeX";
+      var latex = document.createElement("pre");
+      latex.textContent = item.statement;
+      original.appendChild(originalTitle);
+      original.appendChild(latex);
+      original.className = "statement-latex";
+      statementSection.appendChild(original);
+    }
 
     var relationSection = document.createElement("section");
     relationSection.className = "detail-section";
@@ -1702,7 +1718,23 @@
       }
       return response.json();
     })
-    .then(function (payload) {
+    .then(async function (payload) {
+      if (paperView) {
+        var response = await fetch("./paper-statements.json", { cache: "no-cache" });
+        if (!response.ok) throw new Error("Could not load original paper statements.");
+        var excerpts = await response.json();
+        var statements = new Map(excerpts.items.map(function (item) { return [item.id, item]; }));
+        if (statements.size !== payload.items.length) throw new Error("Paper statement inventory mismatch.");
+        payload.items.forEach(function (item) {
+          var source = statements.get(item.id);
+          if (!source || source.label !== item.label || source.texLabel !== item.texLabel ||
+              source.statementLatex !== item.statement || source.statementSha256 !== item.statementSha256 ||
+              excerpts.manuscriptSha256 !== item.statementSource.manuscriptSha256) {
+            throw new Error("Original statement does not match " + item.label);
+          }
+          item.statementHtml = source.statementHtml;
+        });
+      }
       validateAndLoad(payload);
       initialize();
     })
