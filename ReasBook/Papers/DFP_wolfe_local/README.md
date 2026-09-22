@@ -82,6 +82,35 @@ validation root for the complete public surface.
 
 ## Theorem dependency map
 
+The map has two views: **Paper numbers** shows the revised manuscript's
+Theorem 1, Corollary 2, Theorem 3, Proposition 4, and Lemmas 5–11; **Lean
+declarations** retains the complete declaration inventory described below.
+Use the view switch above the search box, or append `?view=paper` to the
+interactive map URL. The numbered view opens as an 11-node overview with
+22 dependency edges, mathematical summaries, and expandable Lean source links.
+
+Numbering follows the September 2026 `main-new-modify.tex` revision, not the
+older numbered labels in some Lean docstrings. Each paper node groups reviewed
+Lean proof components; some nodes correspond to several separate declarations
+or only the specified parts of a result. The node's correspondence panel states
+that scope explicitly. Edges are paths in the compiled declaration graph after
+unassigned helpers are contracted, not manually inferred paper citations.
+The grouping lives in [paper_results.json](tools/paper_results.json), and
+[paper-data.json](theorem-map/paper-data.json) retains an explicit declaration
+path witnessing each edge. Main-result summaries are reading aids; the linked
+Lean statements give the exact formal hypotheses and conclusions.
+
+To regenerate just the numbered view from the existing graph, run:
+
+```bash
+python3 ReasBook/Papers/DFP_wolfe_local/tools/generate_paper_graph.py
+```
+
+Optionally pass `--manuscript /path/to/main-new-modify.tex` to check all eleven
+environment types, numbers, and TeX labels against the local manuscript. The
+manuscript is not copied into this repository. Full graph regeneration also
+regenerates this numbered projection and preserves the view switch.
+
 The [interactive theorem map](theorem-map/index.html) and its
 [machine-readable graph](theorem-map/data.json) cover the latest formalization
 at ReasBook commit `1a74e5e51ee05415c98410f9052ba371ec546b43` on `v4.32.0`.

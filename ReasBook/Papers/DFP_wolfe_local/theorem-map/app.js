@@ -1,6 +1,13 @@
 (function () {
   "use strict";
 
+  var paperView = new URLSearchParams(window.location.search).get("view") === "paper";
+  document.body.classList.toggle("paper-view", paperView);
+  document.getElementById(paperView ? "paperViewLink" : "leanViewLink").setAttribute("aria-current", "page");
+  document.getElementById("viewDescription").textContent = paperView
+    ? "11 numbered results from the revised paper. Arrows trace dependencies between their linked Lean proof components; supporting declarations are folded away."
+    : "Full declaration graph. Switch to Paper numbers for a compact mathematical overview.";
+
   var SVG_NS = "http://www.w3.org/2000/svg";
   var NODE_WIDTH = 146;
   var NODE_HEIGHT = 38;
@@ -606,7 +613,7 @@
     var lines = [
       "digraph G {",
       '  graph [rankdir="LR", bgcolor="transparent", pad="0.25", nodesep="0.28", ranksep="0.72", outputorder="edgesfirst", splines="spline"];',
-      '  node [style="rounded,filled", fontname="Segoe UI", fontsize="10", margin="0.15,0.09"];',
+      '  node [style="rounded,filled", fontname="Segoe UI", fontsize="' + (paperView ? '14' : '10') + '", margin="0.15,0.09"];',
       '  edge [arrowhead="normal", arrowsize="0.7"];'
     ];
     model.ids.forEach(function (id) {
@@ -1282,7 +1289,7 @@
     var statementSection = document.createElement("section");
     statementSection.className = "detail-section";
     var statementHeading = document.createElement("h3");
-    statementHeading.textContent = "Natural-language statement";
+    statementHeading.textContent = paperView ? "Mathematical summary" : "Natural-language statement";
     var statement = document.createElement("article");
     statement.className = "statement";
     renderStatement(statement, item);
@@ -1295,7 +1302,7 @@
     var sourceOnly = item.dependencyEvidence === "source-only";
     relationHeading.textContent = sourceOnly
       ? "Dependency evidence unavailable"
-      : "Literature-level relations";
+      : paperView ? "Dependencies between proof components" : "Literature-level relations";
     var relationGrid = document.createElement("div");
     relationGrid.className = "relation-grid";
     if (sourceOnly) {
@@ -1319,10 +1326,10 @@
     relationSection.appendChild(relationHeading);
     relationSection.appendChild(relationGrid);
 
-    var leanSection = document.createElement("section");
+    var leanSection = document.createElement(paperView ? "details" : "section");
     leanSection.className = "detail-section";
-    var leanHeading = document.createElement("h3");
-    leanHeading.textContent = "Lean formalization";
+    var leanHeading = document.createElement(paperView ? "summary" : "h3");
+    leanHeading.textContent = paperView ? "Lean proof components and correspondence" : "Lean formalization";
     var facts = document.createElement("dl");
     facts.className = "lean-facts";
     factRow(facts, "Declaration", item.declaration);
@@ -1331,6 +1338,23 @@
     factRow(facts, "Version", project.branch);
     factRow(facts, "Snapshot", String(project.commit || "").slice(0, 10));
     leanSection.appendChild(leanHeading);
+    if (paperView) {
+      var mappingNote = document.createElement("p");
+      mappingNote.textContent = item.paperMapping;
+      leanSection.appendChild(mappingNote);
+      var related = document.createElement("ul");
+      (item.relatedDeclarations || []).forEach(function (declaration) {
+        var row = document.createElement("li");
+        var link = document.createElement("a");
+        link.href = sourceUrl(declaration);
+        link.target = "_blank";
+        link.rel = "noreferrer";
+        link.textContent = declaration.declaration;
+        row.appendChild(link);
+        related.appendChild(row);
+      });
+      leanSection.appendChild(related);
+    }
     leanSection.appendChild(facts);
     refs.detailContent.replaceChildren(header, statementSection, relationSection, leanSection);
     refs.detailContent.parentElement.scrollTop = 0;
@@ -1552,7 +1576,7 @@
     }
     data = payload;
     project = data.project;
-    preferencePrefix += ":" + String(project.id || "project");
+    preferencePrefix += ":" + String(project.id || "project") + (paperView ? ":paper" : "");
     items = data.items.map(function (item) {
       var statementDependencies = Array.isArray(item.statementDependencies)
         ? item.statementDependencies.slice() : [];
@@ -1628,7 +1652,7 @@
     // v1 defaulted to full and persisted it automatically. Do not migrate that
     // incidental value into the bounded default; explicit v2 choices persist.
     var savedMode = readPreference("graph-mode-v2");
-    state.graphMode = savedMode === "full" ? "full" : "focus";
+    state.graphMode = savedMode === "full" || (paperView && savedMode !== "focus") ? "full" : "focus";
     var savedDepth = Number(readPreference("graph-depth"));
     state.graphDepth = [1, 2, 3, 4, 5, 8].indexOf(savedDepth) >= 0 ? savedDepth : 3;
     state.sidebarCollapsed = readPreference("sidebar-collapsed") === "true";
@@ -1671,7 +1695,7 @@
     }
   };
 
-  fetch("./data.json", { cache: "no-cache" })
+  fetch(paperView ? "./paper-data.json" : "./data.json", { cache: "no-cache" })
     .then(function (response) {
       if (!response.ok) {
         throw new Error("Could not load data.json (HTTP " + response.status + ").");

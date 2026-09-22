@@ -1,0 +1,73 @@
+{
+  "schemaVersion": 1,
+  "manuscript": "main-new-modify.tex (September 2026 revision)",
+  "numbering": "Shared theorem counter: Theorem 1, Corollary 2, Theorem 3, Proposition 4, Lemmas 5–11. Older Lean docstring numbers belong to an earlier manuscript and are not used here.",
+  "items": [
+    {
+      "id": "thm-main", "texLabel": "thm:main", "label": "Theorem 1", "title": "DFP can fail under strong Wolfe conditions", "section": "main",
+      "summary": "In every dimension n ≥ 2, a uniformly convex C² objective with a globally one-half Hölder Hessian admits a classical DFP sequence satisfying the paper's strong Wolfe parameter range whose gradient norms tend to a positive limit.",
+      "mapping": "Main result, strengthened by the sharpness statement proved later in the paper.",
+      "declarations": ["DFP.existsStrongWolfeCounterexampleHolderSharp_of_dimension_ge_two", "DFP.existsStrongWolfeCounterexampleHolder_of_dimension_ge_two"]
+    },
+    {
+      "id": "cor-identity-initialization", "texLabel": "cor:identity-initialization", "label": "Corollary 2", "title": "The counterexample can start from the identity", "section": "main",
+      "summary": "An affine coordinate change gives identity initialization, preserves strong Wolfe conditions and one-half Hölder Hessian regularity, and keeps the gradient norms bounded away from zero. The uniform Hessian bounds depend on the coordinate change.",
+      "mapping": "Main result in every dimension n ≥ 2.",
+      "declarations": ["DFP.existsMatrixIdentityLiminfStrongWolfeHolder"]
+    },
+    {
+      "id": "thm-planar-convergence", "texLabel": "thm:planar-convergence", "label": "Theorem 3", "title": "A locally Lipschitz Hessian restores planar convergence", "section": "main",
+      "summary": "For a globally strongly convex C² objective in two dimensions, a locally Lipschitz Hessian near the initial sublevel set ensures convergence to the unique minimizer under weak Wolfe conditions, from any positive-definite initial matrix. Strong Wolfe follows as a consequence.",
+      "mapping": "Weak- and strong-Wolfe interfaces; finite stationary termination is represented by constant continuation.",
+      "declarations": ["DFP.main_planarWeakWolfeConvergence", "DFP.main_planarStrongWolfeConvergence"]
+    },
+    {
+      "id": "prop-one-step", "texLabel": "prop:one-step", "label": "Proposition 4", "title": "Exact formulas for one DFP step", "section": "construction",
+      "summary": "The gradient and inverse-Hessian updates have explicit secant formulas with positive denominators. The matrix update is independent of the line-ratio parameter τ.",
+      "mapping": "Separate declarations prove the gradient formula, matrix formula, parameter independence, and denominator positivity.",
+      "declarations": ["DFP.AbstractSecantStep.nextGradient_formula", "DFP.AbstractSecantStep.nextInverseHessian_formula", "DFP.AbstractSecantStep.nextInverseHessian_tau_independent", "DFP.AbstractSecantStep.gradientEnergy_pos", "DFP.AbstractSecantStep.preconditionedEnergy_pos", "DFP.AbstractSecantStep.secantImageEnergy_pos"]
+    },
+    {
+      "id": "lem-graph-transform", "texLabel": "lem:graph-transform", "label": "Lemma 5", "title": "Construct a smooth invariant graph", "section": "construction",
+      "summary": "A center direction with derivative 1 and contracting stable directions admit a locally forward-invariant smooth graph; invertibility of the stable derivative is not required.",
+      "mapping": "Linked proof components are the metric graph-transform certificate and its finite-smooth regularity interface. These expose supporting hypotheses explicitly; they are not one verbatim Lean statement of the general lemma.",
+      "declarations": ["LocalInvariantGraph.exists_metricInvariantGraph_of_regularFixedPoint", "LocalInvariantGraph.MetricGraphTransformData.exists_metricFixedGraph"]
+    },
+    {
+      "id": "lem-center-manifold", "texLabel": "lem:center-manifold", "label": "Lemma 6", "title": "The two-step map has an invariant C⁷ curve", "section": "construction",
+      "summary": "The canceled two-step map extends analytically near (0, 2, 1). Its invariant center curve has the stated shape and scale expansions, including ε₊ = ε − (3/2)ε⁴ + (5/4)ε⁵ + O(ε⁶).",
+      "mapping": "Invariant-curve existence, analytic extension, derivative, and signed recurrence are split across declarations.",
+      "declarations": ["DFP.TwoLeg.exists_localForwardInvariantSlowCurve", "DFP.TwoLeg.stateMapAnalytic", "DFP.TwoLeg.stateMap_fderiv_apply", "DFP.TwoLeg.slowGraphSignedRecurrence"]
+    },
+    {
+      "id": "lem-two-step-expansions", "texLabel": "lem:two-step-expansions", "label": "Lemma 7", "title": "Control amplitude, angle, and center drift", "section": "construction",
+      "summary": "Along the invariant curve, the two-step amplitude, frame angle, center drift, and within-cycle increments have the asymptotic expansions used in the counterexample construction.",
+      "mapping": "Representative proof components for the amplitude and angle estimates and the full-/half-cycle center displacement; see the Lean view for the finer expansion lemmas.",
+      "declarations": ["DFP.TwoPhaseOrbit.slowCurveFullCenterDrift", "DFP.TwoPhaseOrbit.slowCurveHalfCenterDisplacement", "DFP.TwoPhaseOrbit.slowCurveAmplitudeDriftModulus", "DFP.TwoPhaseOrbit.slowCurveFrameAngleIncrementUnique", "DFP.TwoPhaseOrbit.slowCurveEndpointAngleRemainderModulus"]
+    },
+    {
+      "id": "lem-scalar-asymptotics", "texLabel": "lem:scalar-asymptotics", "label": "Lemma 8", "title": "Positive limiting amplitude and a limiting circle", "section": "construction",
+      "summary": "The scale is asymptotic to ((9/2)j)⁻¹ᐟ³, the amplitude has a positive limit with first-order tail coefficient 13/3, and the centers converge with cubic tail bounds. The paper identifies the endpoint accumulation set as a circle.",
+      "mapping": "Linked components cover scale, amplitude, and center tails. The circle accumulation-set clause is not represented by this bundle; related topological declarations remain in the full Lean view.",
+      "declarations": ["DFP.TwoPhaseOrbit.slowCurveAmplitudeAsymptotics", "DFP.TwoLeg.slowCurveScaleAsymptotic", "DFP.TwoPhaseOrbit.slowCurveCenterTendsto", "DFP.TwoPhaseOrbit.slowCurveCenterTailUniformBound"]
+    },
+    {
+      "id": "lem-separation", "texLabel": "lem:separation", "label": "Lemma 9", "title": "Keep endpoints uniformly separated", "section": "construction",
+      "summary": "Every endpoint stays at least a fixed positive multiple of its squared cycle scale away from all other endpoints and the limiting circle.",
+      "mapping": "Uniform endpoint separation theorem.",
+      "declarations": ["DFP.TwoPhaseOrbit.slowCurveUniformEndpointSeparation"]
+    },
+    {
+      "id": "lem-disjoint-interpolation", "texLabel": "lem:disjoint-interpolation", "label": "Lemma 10", "title": "Interpolate with a C², one-half Hölder correction", "section": "construction",
+      "summary": "The disjoint bump correction extends as a C² function across the limiting circle, interpolates the endpoint values and gradients, has a globally one-half Hölder Hessian, and obeys the uniform Hessian bound.",
+      "mapping": "The regularity, interpolation jets, Hölder bound, and Hessian bound are separate declarations.",
+      "declarations": ["contDiff_two_slowCurveBumpCorrection", "DFP.PlanarConvergence.bumpCorrectionHessianHolder", "DFP.TwoPhaseOrbit.bumpCorrection_endpoint", "DFP.TwoPhaseOrbit.bumpCorrection_gradient_endpoint", "DFP.TwoLeg.SlowCurve.bumpCorrectionHessianBound"]
+    },
+    {
+      "id": "lem-planar-degeneration", "texLabel": "lem:planar-degeneration", "label": "Lemma 11", "title": "Nonconvergence forces planar secant degeneration", "section": "convergence",
+      "summary": "A nonconvergent planar strongly convex secant orbit satisfying weak Wolfe has a positive free coefficient bounded by adjacent-step products and tending to zero. The matrices remain bounded and their smallest eigenvalue tends to zero.",
+      "mapping": "General secant theorem plus the DFP-specialized degeneration interfaces used in the convergence proof.",
+      "declarations": ["DFP.SecantIteration.planarDegeneration", "DFP.PlanarConvergence.orbitFreeCoefficientDegeneration", "DFP.PlanarConvergence.orbitInverseHessianBoundedOfNonconvergence"]
+    }
+  ]
+}

@@ -288,7 +288,13 @@ def main() -> None:
                                 sourceSha256=source_hash.hexdigest(), sdkSha256=sdk_hash.hexdigest(),
                                 extractorSha256=hashlib.sha256(original.encode()).hexdigest(),
                                 moduleOwnership=["DFP_wolfe_local", "DFPWolfe", "ReasLib"]))
-    copy_generic_map(resources / "assets", output, data)
+    # Keep the paper/Lean view switch when refreshing this project's data.
+    assets = project_root / "theorem-map"
+    if not (assets / "index.html").is_file():
+        assets = resources / "assets"
+    copy_generic_map(assets, output, data)
+    subprocess.run([sys.executable, str(Path(__file__).with_name("generate_paper_graph.py")),
+                    "--graph-root", str(output)], check=True)
     print(json.dumps(dict(output=str(output), sourceCommit=commit, nodes=len(items),
                           edges=sum(len(x["dependencies"]) for x in items)), indent=2))
 
