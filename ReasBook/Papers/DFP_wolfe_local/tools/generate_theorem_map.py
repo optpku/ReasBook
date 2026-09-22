@@ -295,6 +295,14 @@ def main() -> None:
         assets = resources / "assets"
     copy_generic_map(assets, output, data)
     shutil.copy2(project_root / "theorem-map/paper-statements.json", output / "paper-statements.json")
+    code_path = project_root / "theorem-map/paper-lean.json"
+    code_data = json.loads(code_path.read_text())
+    for record in code_data["declarations"].values():
+        actual = hashlib.sha256((project_root / record["file"]).read_bytes()).hexdigest()
+        if actual != record["sourceSha256"]:
+            raise RuntimeError("Lean code excerpts need regeneration for " + record["file"])
+    shutil.copy2(code_path, output / "paper-lean.json")
+    shutil.copy2(assets / "lean-code.js", output / "lean-code.js")
     subprocess.run([sys.executable, str(Path(__file__).with_name("generate_paper_graph.py")),
                     "--graph-root", str(output)], check=True)
     print(json.dumps(dict(output=str(output), sourceCommit=commit, nodes=len(items),

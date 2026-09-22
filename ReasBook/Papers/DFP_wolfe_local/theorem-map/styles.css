@@ -1113,6 +1113,26 @@ select:focus-visible,
 .paper-view .statement-provenance { color: #526170; font-size: 12px; line-height: 1.5; }
 .paper-view .statement-latex { margin-top: 12px; font-size: 12px; }
 .paper-view .statement-latex pre { white-space: pre-wrap; overflow-wrap: anywhere; }
+.lean-code-section { min-width: 0; }
+.lean-select-label { display: block; margin-bottom: 5px; font-size: 12px; color: #526170; }
+#leanDeclarationSelect { width: 100%; min-width: 0; padding: 7px; border: 1px solid #cbd5df; border-radius: 5px; font-size: 12px; background: #fff; }
+.lean-code-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; margin: 10px 0; font-size: 12px; }
+.lean-code-actions a { color: #245aa8; }
+.lean-code-actions button { padding: 5px 9px; border: 1px solid #cbd5df; border-radius: 5px; background: #f7f9fb; cursor: pointer; }
+.lean-code-block { max-height: 420px; max-width: 100%; margin: 0; padding: 12px; overflow: auto; border: 1px solid #d8e0e8; border-radius: 6px; background: #f6f8fb; color: #243344; font: 12px/1.6 ui-monospace, SFMono-Regular, Consolas, monospace; tab-size: 2; white-space: pre-wrap; overflow-wrap: anywhere; }
+.lean-code-correspondence { margin: 10px 0 0; color: #526170; font-size: 12px; line-height: 1.5; }
+.lean-keyword { color: #7136b7; font-weight: 600; }
+.lean-command, .lean-attribute { color: #245aa8; }
+.lean-constant { color: #0f6e5a; }
+.lean-comment { color: #66727d; font-style: italic; }
+.lean-string { color: #b23a33; }
+.lean-number { color: #956013; }
+.lean-symbol { color: #40546a; }
+@media (min-width: 1200px) {
+  .paper-view .app-shell:not(.detail-collapsed) .workspace {
+    grid-template-columns: minmax(300px, 1fr) minmax(390px, 52%);
+  }
+}
 .paper-view .graph-node.dim { opacity: 0.8; }
 .paper-view .graph-node.dim text { fill: #526170; }
 .paper-view .graph-edge.dim { opacity: 0.65; }
