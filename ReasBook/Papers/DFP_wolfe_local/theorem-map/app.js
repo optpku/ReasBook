@@ -55,6 +55,7 @@
   };
 
   var data = null;
+  var leanCode = null;
   var project = null;
   var items = [];
   var sections = [];
@@ -1372,8 +1373,74 @@
       leanSection.appendChild(related);
     }
     leanSection.appendChild(facts);
-    refs.detailContent.replaceChildren(header, statementSection, relationSection, leanSection);
+    if (paperView) {
+      refs.detailContent.replaceChildren(header, statementSection, renderLeanCode(item), relationSection, leanSection);
+    } else {
+      refs.detailContent.replaceChildren(header, statementSection, relationSection, leanSection);
+    }
     refs.detailContent.parentElement.scrollTop = 0;
+  }
+
+  function renderLeanCode(item) {
+    var section = document.createElement("section");
+    section.className = "detail-section lean-code-section";
+    var heading = document.createElement("h3");
+    heading.textContent = "Corresponding Lean code";
+    section.appendChild(heading);
+    var label = document.createElement("label");
+    label.htmlFor = "leanDeclarationSelect";
+    label.className = "lean-select-label";
+    label.textContent = item.relatedDeclarations.length > 1 ? "Choose a declaration" : "Declaration";
+    var select = document.createElement("select");
+    select.id = "leanDeclarationSelect";
+    item.relatedDeclarations.forEach(function (related, index) {
+      var option = document.createElement("option");
+      option.value = related.declaration;
+      option.textContent = (index + 1) + ". " + related.declaration;
+      select.appendChild(option);
+    });
+    section.appendChild(label);
+    section.appendChild(select);
+    var actions = document.createElement("div");
+    actions.className = "lean-code-actions";
+    var source = document.createElement("a");
+    source.target = "_blank";
+    source.rel = "noreferrer";
+    var copy = document.createElement("button");
+    copy.type = "button";
+    copy.textContent = "Copy code";
+    var status = document.createElement("span");
+    status.setAttribute("role", "status");
+    actions.append(source, copy, status);
+    var pre = document.createElement("pre");
+    pre.className = "lean-code-block";
+    pre.tabIndex = 0;
+    pre.setAttribute("aria-label", "Original Lean declaration and proof");
+    var code = document.createElement("code");
+    pre.appendChild(code);
+    var correspondence = document.createElement("p");
+    correspondence.className = "lean-code-correspondence";
+    correspondence.textContent = item.paperMapping;
+    section.append(actions, pre, correspondence);
+    function showCode() {
+      var record = leanCode.declarations[select.value];
+      code.innerHTML = window.DFPLeanCode.highlight(record.code);
+      source.href = sourceUrl({ file: record.file, line: record.startLine });
+      source.textContent = "GitHub · lines " + record.startLine + "–" + record.endLine;
+      status.textContent = "";
+      pre.scrollTop = 0;
+    }
+    select.addEventListener("change", showCode);
+    copy.addEventListener("click", async function () {
+      try {
+        await navigator.clipboard.writeText(leanCode.declarations[select.value].code);
+        status.textContent = "Copied";
+      } catch (_) {
+        status.textContent = "Select the code to copy it.";
+      }
+    });
+    showCode();
+    return section;
   }
 
   function renderHeader() {
@@ -1723,6 +1790,9 @@
         var response = await fetch("./paper-statements.json", { cache: "no-cache" });
         if (!response.ok) throw new Error("Could not load original paper statements.");
         var excerpts = await response.json();
+        var codeResponse = await fetch("./paper-lean.json", { cache: "no-cache" });
+        if (!codeResponse.ok) throw new Error("Could not load corresponding Lean code.");
+        leanCode = await codeResponse.json();
         var statements = new Map(excerpts.items.map(function (item) { return [item.id, item]; }));
         if (statements.size !== payload.items.length) throw new Error("Paper statement inventory mismatch.");
         payload.items.forEach(function (item) {
@@ -1733,6 +1803,13 @@
             throw new Error("Original statement does not match " + item.label);
           }
           item.statementHtml = source.statementHtml;
+          item.relatedDeclarations.forEach(function (related) {
+            var record = leanCode.declarations[related.declaration];
+            if (!record || record.declaration !== related.declaration ||
+                record.file !== related.file || record.startLine !== related.line || !record.code) {
+              throw new Error("Lean code does not match " + related.declaration);
+            }
+          });
         });
       }
       validateAndLoad(payload);

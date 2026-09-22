@@ -133,6 +133,27 @@ cross-reference resolution, and display-equation layout are transformed; prose
 is not rewritten. Rendered HTML/MathML, CSS, and fonts are served locally, so
 mathematical statements do not depend on a third-party CDN.
 
+Following the ReasBook Reviewer layout, each numbered result displays the
+original paper statement above **Corresponding Lean code**, before the
+dependency lists. The code block includes the declaration and its proof,
+syntax colors, a copy button, and a GitHub source-range link. A selector exposes
+all linked declarations when a paper result has several formal components;
+the correspondence note keeps their coverage explicit.
+
+[paper-lean.json](theorem-map/paper-lean.json) contains 35 exact source excerpts.
+Their end positions come from the compiled doc-gen4 database, and every source
+file is checked against the documentation manifest's SHA-256 before slicing.
+Regenerate after a source change with:
+
+```bash
+python3 ReasBook/Papers/DFP_wolfe_local/tools/extract_paper_lean.py \
+  --docs-root /path/to/verified/project-docs
+```
+
+Full graph regeneration rejects stale code excerpts and retains the code-panel
+assets. The syntax highlighter is adapted from ReasBook Reviewer and escapes
+source text; it changes presentation only.
+
 The [interactive theorem map](theorem-map/index.html) and its
 [machine-readable graph](theorem-map/data.json) cover the latest formalization
 at ReasBook commit `1a74e5e51ee05415c98410f9052ba371ec546b43` on `v4.32.0`.
