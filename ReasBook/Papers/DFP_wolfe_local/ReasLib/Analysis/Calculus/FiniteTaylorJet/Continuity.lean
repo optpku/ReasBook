@@ -2,7 +2,6 @@ module
 
 public import ReasLib.Analysis.Calculus.FiniteTaylorJet.Operations
 public import Mathlib.Analysis.Calculus.ContDiff.Defs
-
 public section
 
 namespace FiniteTaylorJet
@@ -14,7 +13,7 @@ variable [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable [NormedAddCommGroup F] [NormedSpace ℝ F]
 variable [NormedAddCommGroup G] [NormedSpace ℝ G]
 
-/-- Helper for Infrastructure I.16a: coefficients of a finite jet built from a
+/-- Supporting fact: coefficients of a finite jet built from a
 smooth map vary continuously with the base point. -/
 theorem continuous_ofFunction_coeff (m : ℕ) (f : E → F) (hf : ContDiff ℝ m f)
     (n : Fin (m + 1)) :
@@ -33,7 +32,7 @@ theorem continuous_ofFunction_coeff (m : ℕ) (f : E → F) (hf : ContDiff ℝ m
   exact hscalar.smul
     hderiv
 
-/-- Helper for Infrastructure I.16a: continuity of degree-zero coefficient maps
+/-- Supporting fact: continuity of degree-zero coefficient maps
 implies continuity of the corresponding constant-coefficient family. -/
 theorem continuous_constantCoeff_of_coeff_zero {α : Type u}
     [TopologicalSpace α] {m : ℕ} (P : α → FiniteTaylorJet ℝ ℝ F m)
@@ -46,7 +45,7 @@ theorem continuous_constantCoeff_of_coeff_zero {α : Type u}
   rw [hconstant_eq]
   exact hP.eval continuous_const
 
-/-- Helper for Infrastructure I.16a: coefficientwise continuous families of
+/-- Supporting fact: coefficientwise continuous families of
 finite jets remain coefficientwise continuous after pairing their values. -/
 theorem continuous_prod_coeff {α : Type u} [TopologicalSpace α] {m : ℕ}
     (P : α → FiniteTaylorJet ℝ E F m) (Q : α → FiniteTaylorJet ℝ E G m)
@@ -62,7 +61,7 @@ theorem continuous_prod_coeff {α : Type u} [TopologicalSpace α] {m : ℕ}
   exact (ContinuousMultilinearMap.prodL ℝ (fun _ : Fin (n : ℕ) ↦ E) F G).continuous.comp
     ((hP n).prodMk (hQ n))
 
-/-- Helper for Infrastructure I.16a: scalar evaluation of a continuous
+/-- Supporting fact: scalar evaluation of a continuous
 one-variable coefficient family is continuous. -/
 theorem continuous_scalarCoeff {α : Type u} [TopologicalSpace α]
     {F : Type v} [NormedAddCommGroup F] [NormedSpace ℝ F] {m : ℕ}
@@ -78,7 +77,7 @@ theorem continuous_scalarCoeff {α : Type u} [TopologicalSpace α]
   rw [heq]
   exact hcoeff.eval continuous_const
 
-/-- Helper for Infrastructure I.16a: a family of multilinear maps is continuous
+/-- Supporting fact: a family of multilinear maps is continuous
 when its evaluation on the all-ones vector is continuous. -/
 theorem continuous_multilinearMap_of_apply_one {Y : Type v}
     [NormedAddCommGroup Y] [NormedSpace ℝ Y] {n : ℕ}
@@ -93,7 +92,7 @@ theorem continuous_multilinearMap_of_apply_one {Y : Type v}
   rw [hfactor]
   exact (ContinuousMultilinearMap.piFieldEquiv ℝ (Fin n) Y).continuous.comp hf
 
-/-- Helper for Infrastructure I.16a: coefficientwise continuous scalar-source
+/-- Supporting fact: coefficientwise continuous scalar-source
 jets remain coefficientwise continuous under finite Taylor composition. -/
 theorem continuous_comp_coeff {F G : Type v}
     [NormedAddCommGroup F] [NormedSpace ℝ F]

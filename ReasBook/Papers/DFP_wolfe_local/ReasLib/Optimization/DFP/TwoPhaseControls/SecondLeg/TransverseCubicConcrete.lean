@@ -25,7 +25,7 @@ def lowGradientTransverseDenominator (x : ℝ × ℝ × ℝ) : ℝ :=
   let metric := outputMetric x.1 x.2.1 x.2.2
   RealSymmetric2.lowDenom (metric 0 0) (metric 0 1) (metric 1 1)
 
-/-- Lemma 4.15 adapter: frame-entry formulas and the normalized coordinate identity recover
+/-- Supporting Lemma adapter: frame-entry formulas and the normalized coordinate identity recover
 the low-gradient factor as the explicit transverse quotient. -/
 theorem gradientFactors_low_eq_transverseQuotient_of_frame
     (x : ℝ × ℝ × ℝ)

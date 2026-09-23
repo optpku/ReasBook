@@ -18,7 +18,7 @@ This companion transports scalar quadratic-germ certificates into the coefficien
 interface used by the independent-radius uniform remainder theorems.
 -/
 
-/-- Appendix Lemma A.6: `C³` quadratic germs determine an independent-radius coefficient
+/-- Supporting Lemma: `C³` quadratic germs determine an independent-radius coefficient
     germ with the factorial-normalized coefficients `[a₀, a₁, a₂]`. -/
 theorem independentRadiusCoefficientGerm_of_quadraticGerms
     {f : (ℝ × ℝ × ℝ) → ℝ → ℝ} {K : Set (ℝ × ℝ × ℝ)}
@@ -38,23 +38,18 @@ theorem independentRadiusCoefficientGerm_of_quadraticGerms
     rw [FiniteTaylorJet.scalarCoeff_ofFunction]
     have hsliceMap : ContDiffAt ℝ 3 (fun r : ℝ ↦ (θ, r)) 0 := by
       fun_prop
-    have hslice : ContDiffAt ℝ 3 (f θ) 0 := by
-      have hcomp := (hregular θ hθ).comp 0 hsliceMap
-      have hfun : (Function.uncurry f ∘ Prod.mk θ) = f θ := by
-        funext r
-        rfl
-      rw [hfun] at hcomp
-      exact hcomp
+    have hslice : ContDiffAt ℝ 3 (f θ) 0 :=
+      (hregular θ hθ).comp 0 hsliceMap
     have hcoeff :=
       (hgerm θ hθ).iteratedDeriv_coefficients_of_contDiffAt hslice
     fin_cases n
-    · simpa [hcoeff.1]
-    · simpa [hcoeff.2.1]
+    · simp [hcoeff.1]
+    · simp [hcoeff.2.1]
     · rw [hcoeff.2.2]
       norm_num
       ring
 
-/-- Helper for Appendix Lemma A.6: the same quadratic certificates give the truncated
+/-- Supporting fact: the same quadratic certificates give the truncated
     three-term germ whose compact-uniform remainder has order three. -/
 theorem independentRadiusTruncatedGerm_of_quadraticGerms
     {f : (ℝ × ℝ × ℝ) → ℝ → ℝ} {K : Set (ℝ × ℝ × ℝ)}
@@ -65,28 +60,10 @@ theorem independentRadiusTruncatedGerm_of_quadraticGerms
       HasQuadraticGerm (f θ) (a₀ θ) (a₁ θ) (a₂ θ)) :
     IndependentRadiusTruncatedGerm f K 3
       (fun n θ ↦ (![a₀ θ, a₁ θ, a₂ θ] : Fin 3 → ℝ) n) := by
-  have horder : (2 : WithTop ENat) ≤ (3 : WithTop ENat) := by
-    norm_num
+  have hcoeff := independentRadiusCoefficientGerm_of_quadraticGerms hregular hgerm
   refine ⟨hregular, ?_⟩
   intro n θ hθ
-  rw [FiniteTaylorJet.scalarCoeff_ofFunction]
-  have hsliceMap : ContDiffAt ℝ 3 (fun r : ℝ ↦ (θ, r)) 0 := by
-    fun_prop
-  have hslice : ContDiffAt ℝ 3 (f θ) 0 := by
-    have hcomp := (hregular θ hθ).comp 0 hsliceMap
-    have hfun : (Function.uncurry f ∘ Prod.mk θ) = f θ := by
-      funext r
-      rfl
-    rw [hfun] at hcomp
-    exact hcomp
-  have hcoeff :=
-    (hgerm θ hθ).iteratedDeriv_coefficients_of_contDiffAt hslice
-  fin_cases n
-  · simpa [hcoeff.1]
-  · simpa [hcoeff.2.1]
-  · norm_num
-    rw [hcoeff.2.2]
-    norm_num
-    ring
+  simpa only [FiniteTaylorJet.scalarCoeff_ofFunction, Fin.val_castSucc] using
+    hcoeff.coefficient_eq n θ hθ
 
 end DFP.TwoLeg.Mixed

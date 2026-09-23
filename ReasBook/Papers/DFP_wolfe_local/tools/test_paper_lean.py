@@ -22,7 +22,8 @@ class LeanExcerptTests(unittest.TestCase):
         data = json.loads((root / 'theorem-map/paper-lean.json').read_text())
         expected = {row['declaration'] for item in graph['items'] for row in item['relatedDeclarations']}
         self.assertEqual(set(data['declarations']), expected)
-        self.assertEqual(len(expected), 35)
+        self.assertEqual(len(expected), 32)
+        self.assertEqual(data['sourceCommit'], graph['project']['commit'])
         for name, row in data['declarations'].items():
             source = (root / row['file']).read_bytes()
             self.assertEqual(hashlib.sha256(source).hexdigest(), row['sourceSha256'])

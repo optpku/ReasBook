@@ -18,7 +18,7 @@ def recoveryFactors (S G : E → ℝ × ℝ) (x : E) : ℝ × ℝ × ℝ :=
     (S x).2 * (G x).2 ^ 2 / ((S x).1 * (G x).1 ^ 2),
     (S x).2)
 
-/-- Helper for Appendix Lemma A.5: analytic spectral and gradient factor pairs give an
+/-- Supporting fact: analytic spectral and gradient factor pairs give an
 analytic recovery package whenever the two quotient denominators are nonzero. -/
 theorem analyticAt_recoveryFactors
     {S G : E → ℝ × ℝ} {x : E}

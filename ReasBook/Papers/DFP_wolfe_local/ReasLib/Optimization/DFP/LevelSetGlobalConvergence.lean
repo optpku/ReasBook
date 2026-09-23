@@ -1,7 +1,6 @@
 module
 
 public import ReasLib.Optimization.DFP.GlobalConvergence
-
 public section
 
 noncomputable section
@@ -14,13 +13,13 @@ open scoped Matrix
 
 namespace DFP
 
-/-- Helper for TASK-15: The initial objective sublevel set of a finite-dimensional DFP
+/-- Helper for The initial objective sublevel set of a finite-dimensional DFP
 iteration. -/
 def objectiveSublevel {n : ℕ} (iteration : InverseIteration (Fin n)) :
     Set (EuclideanSpace ℝ (Fin n)) :=
   {z | iteration.objective z ≤ iteration.objective (iteration.point 0)}
 
-/-- Helper for TASK-15: membership in the initial objective sublevel set is
+/-- Helper for membership in the initial objective sublevel set is
 exactly the corresponding objective-value inequality. -/
 theorem mem_objectiveSublevel_iff {n : ℕ}
     (iteration : InverseIteration (Fin n)) (z : EuclideanSpace ℝ (Fin n)) :
@@ -28,14 +27,14 @@ theorem mem_objectiveSublevel_iff {n : ℕ}
       iteration.objective z ≤ iteration.objective (iteration.point 0) := by
   rfl
 
-/-- Helper for TASK-15: Hessian bounds restricted to the initial objective sublevel set.
+/-- Helper for Hessian bounds restricted to the initial objective sublevel set.
 The bounds are not imposed at points outside that set. -/
 def HasHessianBoundsOnObjectiveSublevel {n : ℕ} (m M : ℝ)
     (iteration : InverseIteration (Fin n)) : Prop :=
   ∀ z ∈ objectiveSublevel iteration,
     HasHessianBoundsAt m M iteration.objective z
 
-/-- Helper for TASK-15: a global Hessian bound restricts to every objective
+/-- Helper for a global Hessian bound restricts to every objective
 sublevel set. -/
 theorem HasHessianBounds.toObjectiveSublevel {n : ℕ} {m M : ℝ}
     {iteration : InverseIteration (Fin n)}
@@ -44,7 +43,7 @@ theorem HasHessianBounds.toObjectiveSublevel {n : ℕ} {m M : ℝ}
   intro z hz
   exact HasHessianBounds.at h z
 
-/-- Helper for TASK-15: the nonzero secant denominator of an inverse-form DFP
+/-- Helper for the nonzero secant denominator of an inverse-form DFP
 iteration rules out a zero gradient at every index. -/
 theorem InverseIteration.gradientNeZeroOfSecantDenominator {n : ℕ}
     (iteration : InverseIteration (Fin n)) (k : ℕ) :
@@ -54,7 +53,7 @@ theorem InverseIteration.gradientNeZeroOfSecantDenominator {n : ℕ}
   rw [steps_apply, directions_apply, hzero]
   simp
 
-/-- Helper for TASK-15: a positive DFP step length and a positive-definite
+/-- Helper for a positive DFP step length and a positive-definite
 inverse Hessian make the actual displacement a strict descent step. -/
 theorem InverseIteration.gradientInnerDisplacementNeg {n : ℕ}
     (iteration : InverseIteration (Fin n)) (k : ℕ)
@@ -95,7 +94,7 @@ theorem InverseIteration.gradientInnerDisplacementNeg {n : ℕ}
   rw [hDisplacement, steps_apply, real_inner_smul_right, hDirection]
   nlinarith
 
-/-- Helper for TASK-15: Armijo along a positive inverse-form DFP step makes the
+/-- Helper for Armijo along a positive inverse-form DFP step makes the
 objective value nonincreasing at that step. -/
 theorem InverseIteration.objectiveSuccLeOfWeakWolfe {n : ℕ}
     (iteration : InverseIteration (Fin n)) {c₁ c₂ : ℝ} (k : ℕ)
@@ -118,7 +117,7 @@ theorem InverseIteration.objectiveSuccLeOfWeakWolfe {n : ℕ}
   rw [hEndpoint] at hArmijo
   exact hArmijo.trans (add_le_of_nonpos_right hCorrection)
 
-/-- Helper for TASK-15: positive inverse-form DFP weak-Wolfe steps make the
+/-- Helper for positive inverse-form DFP weak-Wolfe steps make the
 objective values along the whole trajectory antitone. -/
 theorem InverseIteration.objectiveValuesAntitoneOfWeakWolfe {n : ℕ}
     (iteration : InverseIteration (Fin n)) {c₁ c₂ : ℝ}
@@ -130,7 +129,7 @@ theorem InverseIteration.objectiveValuesAntitoneOfWeakWolfe {n : ℕ}
   intro k
   exact iteration.objectiveSuccLeOfWeakWolfe k (hStep k) (hWolfe k)
 
-/-- Helper for TASK-15: every point of a positive-step inverse-form DFP
+/-- Helper for every point of a positive-step inverse-form DFP
 weak-Wolfe trajectory stays in its initial objective sublevel set. -/
 theorem InverseIteration.pointMemObjectiveSublevelOfWeakWolfe {n : ℕ}
     (iteration : InverseIteration (Fin n)) {c₁ c₂ : ℝ}
@@ -143,7 +142,7 @@ theorem InverseIteration.pointMemObjectiveSublevelOfWeakWolfe {n : ℕ}
   rw [mem_objectiveSublevel_iff]
   exact hAntitone (Nat.zero_le k)
 
-/-- Helper for TASK-15: Paper-facing admissibility for an inverse-form DFP trajectory when
+/-- Helper for Paper-facing admissibility for an inverse-form DFP trajectory when
 the Hessian bounds are assumed only on the initial objective sublevel set. -/
 def LevelSetWeakWolfeAdmissible {n : ℕ} (m M c₁ c₂ : ℝ)
     (iteration : InverseIteration (Fin n)) : Prop :=
@@ -156,7 +155,7 @@ def LevelSetWeakWolfeAdmissible {n : ℕ} (m M c₁ c₂ : ℝ)
     (∀ k, LineSearch.IsWeakWolfe c₁ c₂ iteration.objective
       (iteration.point k) (iteration.point (k + 1) - iteration.point k))
 
-/-- Helper for TASK-15: The level-set weak-Wolfe global convergence claim for fixed
+/-- Helper for The level-set weak-Wolfe global convergence claim for fixed
 coefficients. -/
 def LevelSetGlobalWeakWolfeConvergenceAt (c₁ c₂ : ℝ) : Prop :=
   ∀ (n : ℕ), 2 ≤ n →
@@ -166,13 +165,13 @@ def LevelSetGlobalWeakWolfeConvergenceAt (c₁ c₂ : ℝ) : Prop :=
           (fun k ↦ ‖gradients iteration.objective iteration.point k‖)
           atTop (𝓝 0)
 
-/-- Helper for TASK-15: The universal level-set weak-Wolfe global convergence claim,
+/-- Helper for The universal level-set weak-Wolfe global convergence claim,
 including all admissible Wolfe coefficients. -/
 def UniversalLevelSetGlobalWeakWolfeConvergence : Prop :=
   ∀ (c₁ c₂ : ℝ), 0 < c₁ → c₁ < c₂ → c₂ < 1 →
     LevelSetGlobalWeakWolfeConvergenceAt c₁ c₂
 
-/-- Helper for TASK-15: A certified global weak-Wolfe counterexample supplies the
+/-- Helper for A certified global weak-Wolfe counterexample supplies the
 level-set admissibility data used by the paper-facing predicate. -/
 theorem WolfeCounterexample.levelSetWeakWolfeAdmissible
     {n : ℕ} {m M c₁ c₂ : ℝ}
@@ -188,7 +187,7 @@ theorem WolfeCounterexample.levelSetWeakWolfeAdmissible
   exact ⟨hm, hmM, counterexample.objectiveContDiff,
     counterexample.stepLengthPos, hBounds, hContainment, counterexample.weakWolfe⟩
 
-/-- TASK-15: Any weak-Wolfe counterexample disproves the level-set global
+/-- Any weak-Wolfe counterexample disproves the level-set global
 convergence claim at its own coefficients. -/
 theorem not_levelSetGlobalWeakWolfeConvergenceAt_of_counterexample
     {n : ℕ} {m M c₁ c₂ : ℝ}
@@ -201,7 +200,7 @@ theorem not_levelSetGlobalWeakWolfeConvergenceAt_of_counterexample
   exact (not_tendsto_zero_of_pos_limit counterexample.gradientLimitPos
     counterexample.gradientNormTendsto) hzero
 
-/-- Helper for TASK-15: A single admissible counterexample refutes the universal
+/-- Helper for A single admissible counterexample refutes the universal
 level-set global convergence claim over all Wolfe coefficients. -/
 theorem not_universalLevelSetGlobalWeakWolfeConvergence_of_counterexample
     {n : ℕ} {m M c₁ c₂ : ℝ}

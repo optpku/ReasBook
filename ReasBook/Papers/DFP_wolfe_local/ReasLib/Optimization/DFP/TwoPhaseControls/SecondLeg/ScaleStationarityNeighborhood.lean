@@ -19,7 +19,7 @@ point.  The positivity assumptions are exactly the domain on which the zero-scal
 stationarity formula is available.
 -/
 
-/-- Helper for Infrastructure I.16a and Lemma 4.15: an analytic scalar family whose
+/-- Supporting fact: and Supporting Lemma: an analytic scalar family whose
 scale derivative vanishes on the positive transverse slice has zero scale/transverse
 Hessian at every positive transverse base point. -/
 theorem iteratedFDeriv_scale_transverse_eq_zero_at_positive
@@ -98,7 +98,7 @@ theorem iteratedFDeriv_scale_transverse_eq_zero_at_positive
 with the corresponding mixed Hessian.  Keeping this interface separate avoids
 unfolding the concrete gradient-factor construction in downstream estimates. -/
 
-/-- Helper for Infrastructure I.16a and Lemma 4.15: a zero scale/transverse
+/-- Supporting fact: and Supporting Lemma: a zero scale/transverse
 Hessian forces every fixed transverse direction of the partial transverse
 derivative to have zero scale derivative. -/
 theorem partialFDeriv_apply_hasDerivAt_of_scaleTransverseHessian
@@ -192,7 +192,7 @@ theorem partialFDeriv_apply_hasDerivAt_of_scaleTransverseHessian
       htransverseFDeriv, ContinuousLinearMap.comp_apply] using hcompositionApplied
   exact hpartialZero.congr_of_eventuallyEq heventuallyEq
 
-/-- Helper for Infrastructure I.16a and Lemma 4.15: pointwise zero scale
+/-- Supporting fact: and Supporting Lemma: pointwise zero scale
 derivatives after evaluation imply that the first iterated derivative of a
 continuous-linear-map-valued scale family is the zero multilinear map. -/
 theorem iteratedFDeriv_one_eq_zero_of_apply_scale_hasDerivAt
@@ -226,7 +226,7 @@ theorem iteratedFDeriv_one_eq_zero_of_apply_scale_hasDerivAt
   rw [hdirection, map_smul]
   simp only [smul_apply, hmapOne, smul_zero, zero_apply]
 
-/-- Helper for Infrastructure I.16a and Lemma 4.15: under analytic positive-slice
+/-- Supporting fact: and Supporting Lemma: under analytic positive-slice
 data, every fixed transverse direction of the low-gradient derivative family has
 zero scale derivative at scale zero. -/
 theorem lowGradientTransverseFDerivFamily_apply_scale_hasDerivAt_of_analytic
@@ -243,7 +243,7 @@ theorem lowGradientTransverseFDerivFamily_apply_scale_hasDerivAt_of_analytic
     partialFDeriv_apply_hasDerivAt_of_scaleTransverseHessian
       lowGradientFactor p h w hf hzero
 
-/-- Helper for Infrastructure I.16a and Lemma 4.15: the first scale jet of the
+/-- Supporting fact: and Supporting Lemma: the first scale jet of the
 low-gradient transverse derivative family vanishes throughout a neighborhood of
 the positive transverse base point. -/
 theorem lowGradientTransverseFDerivFamily_firstScaleJet_eventually_zero :
@@ -297,7 +297,7 @@ theorem lowGradientTransverseFDerivFamily_firstScaleJet_eventually_zero :
   exact iteratedFDeriv_one_eq_zero_of_apply_scale_hasDerivAt
     (lowGradientTransverseFDerivFamily z) hregular happly
 
-/-- Helper for Lemma 4.15: after the neighborhood first scale jet is supplied by
+/-- Supporting fact: after the neighborhood first scale jet is supplied by
 the stationarity bridge, the cubic transverse derivative estimate only needs
 the corresponding second scale jet. -/
 theorem lowGradientFactorTransverseFDeriv_norm_bound_of_secondScaleJet

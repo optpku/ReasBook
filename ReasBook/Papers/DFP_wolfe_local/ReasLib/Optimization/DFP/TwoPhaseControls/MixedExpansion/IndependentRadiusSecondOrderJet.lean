@@ -16,7 +16,7 @@ boundary file records the exact second-order derivative interface still needed
 by the physical-drift calculation, without unfolding the large quotient map.
 -/
 
-/-- Helper for Appendix Lemma A.6: a second derivative of an abstract scalar
+/-- Supporting fact: a second derivative of an abstract scalar
     factor path transports through a pointwise identification of that path. -/
 theorem iteratedDeriv_two_of_secondDerivativeTransport
     {f g : ℝ → ℝ} {c : ℝ}
@@ -31,7 +31,7 @@ theorem iteratedDeriv_two_of_secondDerivativeTransport
     exact hsecond
   simpa only [iteratedDeriv_zero, iteratedDeriv_succ] using hsecondG.deriv
 
-/-- Helper for Appendix Lemma A.6: a factor-level second derivative gives the
+/-- Supporting fact: a factor-level second derivative gives the
     displayed second-radius derivative of the normalized low-gradient coordinate. -/
 theorem independentRadiusSecondGradientLow_iteratedDeriv_two_of_factor
     (θ : ℝ × ℝ × ℝ) (F : ℝ → ℝ)
@@ -43,7 +43,7 @@ theorem independentRadiusSecondGradientLow_iteratedDeriv_two_of_factor
       (θ.1 ^ 2 * (24 * θ.2.2 - 4 * θ.2.1 + 384) - 117) / 9 := by
   exact iteratedDeriv_two_of_secondDerivativeTransport hsecond hpath
 
-/-- Helper for Appendix Lemma A.6: a quadratic germ and `C³` regularity transport
+/-- Supporting fact: a quadratic germ and `C³` regularity transport
     the displayed second-radius derivative through the normalized low-gradient path. -/
 theorem independentRadiusSecondGradientLow_iteratedDeriv_two_of_quadraticGerm
     (θ : ℝ × ℝ × ℝ) (F : ℝ → ℝ) (c : ℝ)
@@ -62,7 +62,7 @@ theorem independentRadiusSecondGradientLow_iteratedDeriv_two_of_quadraticGerm
         iteratedDeriv 2 F 0 := by rw [← hfun]
     _ = 2 * c := hF
 
-/-- Helper for Appendix Lemma A.6: the low-coordinate chart formed from a metric
+/-- Supporting fact: the low-coordinate chart formed from a metric
     triple and a gradient pair, with the radius factor kept explicit. -/
 def lowGradientChartPath
     (radius metricA metricC metricD gradientQ gradientU : ℝ → ℝ) : ℝ → ℝ :=
@@ -75,7 +75,7 @@ def lowGradientChartPath
     ((metricD r - low) * gradientQ r -
       radius r * metricC r * gradientU r) / denominator
 
-/-- Appendix Lemma A.6 companion: component quadratic germs combine into the
+/-- Supporting Lemma companion: component quadratic germs combine into the
     canonical low-gradient quadratic germ.  The quadratic coefficient is
     independent of the metric diagonal jets and equals `q₂ - c₁² / 2`. -/
 theorem lowGradientChartPath_quadraticGerm_of_componentGerms
@@ -188,7 +188,7 @@ theorem lowGradientChartPath_quadraticGerm_of_componentGerms
   · ring
   · ring
 
-/-- Helper for Appendix Lemma A.6: a pointwise chart factorization transfers the
+/-- Supporting fact: a pointwise chart factorization transfers the
     component quadratic germ to the normalized second-gradient low coordinate. -/
 theorem independentRadiusSecondGradientLow_quadraticGerm_of_chartFactorization
     (θ : ℝ × ℝ × ℝ)

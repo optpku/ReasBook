@@ -5,7 +5,6 @@ public import ReasLib.Analysis.InnerProductSpace.FiniteDimensionalOperatorLowerB
 public import ReasLib.Analysis.InnerProductSpace.SquareRoot
 public import ReasLib.LinearAlgebra.Matrix.PosDef.Operator
 import Mathlib.Tactic
-
 /-!
 # Automatic identity factorization
 
@@ -41,7 +40,7 @@ The factor helper is stated for an arbitrary positive-definite initial matrix;
 the strong-Wolfe trajectory is only needed by the downstream assembly theorem.
 -/
 
-/-- Helper for TASK-14: a positive-definite initial inverse Hessian determines
+/-- Helper for a positive-definite initial inverse Hessian determines
 an invertible self-adjoint factor and explicit lower and upper Loewner bounds
 for its pullback and pushforward identity operators. -/
 theorem factorAndBounds_of_initialPosDef
@@ -113,7 +112,7 @@ theorem factorAndBounds_of_initialPosDef
   · rw [← hfactor]
     exact hAlower
 
-/-- TASK-14: Every parameterized strong-Wolfe counterexample with a
+/-- Every parameterized strong-Wolfe counterexample with a
 positive-definite initial inverse Hessian admits an automatically normalized
 identity-initialized strong-Wolfe operator certificate.  The existential
 output displays the factor and the positive distortion constants

@@ -210,7 +210,7 @@ private lemma secondLegAmplitudeZeroScaleTransverseFDeriv (p h : ℝ) (hp : 0 < 
   rw [hconst.fderiv_eq]
   simp
 
-/-- Lemma 4.15 (Near-return winding number is nonzero): the amplitude defect is cubic in the
+/-- Supporting Lemma (Near-return winding number is nonzero): the amplitude defect is cubic in the
 signed scale and linear in the transverse defect. -/
 private theorem secondLegAmplitude_sub_slowGraph_isBigO_weightedTransverse
     (p h : ℝ → ℝ)

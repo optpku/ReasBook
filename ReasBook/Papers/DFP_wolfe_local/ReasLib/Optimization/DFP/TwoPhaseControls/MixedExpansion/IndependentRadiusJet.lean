@@ -230,7 +230,7 @@ theorem scaleRemainderOn_of_germ
       ring
     _ ≤ C * |r| ^ (2 : ℝ) := hbound'
 
-/-- Helper for Infrastructure I.16a: the three independent-radius coefficient germs and their
+/-- Supporting fact: the three independent-radius coefficient germs and their
 positive constants form one reusable certificate for the radius, shape, and scale remainders. -/
 structure IndependentRadiusMixedRemainderCertificate
     (K : Set (ℝ × ℝ × ℝ))
@@ -245,7 +245,7 @@ structure IndependentRadiusMixedRemainderCertificate
   shapeConstant_pos : 0 < shapeConstant
   scaleConstant_pos : 0 < scaleConstant
 
-/-- Infrastructure I.16a: a mixed independent-radius remainder certificate exposes all three
+/-- Supporting infrastructure: a mixed independent-radius remainder certificate exposes all three
 uniform estimates consumed by the paper-facing expansion layer. -/
 theorem IndependentRadiusMixedRemainderCertificate.uniformRemainders
     {K : Set (ℝ × ℝ × ℝ)}

@@ -3,7 +3,6 @@ module
 public import ReasLib.Optimization.DFP.WolfeCounterexample.ParameterizedPlanar
 public import ReasLib.Optimization.DFP.StrongWolfeCounterexample
 import Mathlib.Tactic
-
 /-!
 # All-dimensional parameterized strong-Wolfe certificates
 
@@ -25,7 +24,7 @@ open scoped Topology
 
 namespace DFP
 
-/-- TASK-09: A parameterized planar strong-Wolfe counterexample extends to every
+/-- A parameterized planar strong-Wolfe counterexample extends to every
 finite dimension `n ≥ 2` with the same Hessian bounds and Wolfe coefficients. -/
 theorem existsStrongWolfeCounterexample_of_dimension_ge_two
     (n : ℕ) (hn : 2 ≤ n) {c₁ c₂ : ℝ}

@@ -12,13 +12,13 @@ open scoped Topology
 
 namespace DFP.SecondLeg
 
-/-- Helper for Lemma 4.15 (Near-return winding number is nonzero): the low
+/-- Supporting fact: (Near-return winding number is nonzero): the low
 second-leg gradient factor as a scalar function of signed scale and transverse
 coordinates. -/
 def lowGradientFactor (x : ℝ × ℝ × ℝ) : ℝ :=
   (gradientFactors x.1 x.2.1 x.2.2).1
 
-/-- Helper for Lemma 4.15 (Near-return winding number is nonzero): the low
+/-- Supporting fact: (Near-return winding number is nonzero): the low
 second-leg gradient factor is analytic at the canceled base point. -/
 theorem lowGradientFactor_analyticAt :
     AnalyticAt ℝ lowGradientFactor ((0, 2, 1) : ℝ × ℝ × ℝ) := by
@@ -27,14 +27,14 @@ theorem lowGradientFactor_analyticAt :
   filter_upwards [] with x
   rfl
 
-/-- Helper for Lemma 4.15 (Near-return winding number is nonzero): the transverse
+/-- Supporting fact: (Near-return winding number is nonzero): the transverse
 Fréchet derivative of the low second-leg gradient factor, viewed as a family in the
 signed scale. -/
 def lowGradientTransverseFDerivFamily
     (z : ℝ × ℝ) (ε : ℝ) : (ℝ × ℝ) →L[ℝ] ℝ :=
   fderiv ℝ (fun w : ℝ × ℝ ↦ (gradientFactors ε w.1 w.2).1) z
 
-/-- Helper for Lemma 4.15 (Near-return winding number is nonzero): analyticity of
+/-- Supporting fact: (Near-return winding number is nonzero): analyticity of
 the gradient factors makes their transverse derivative family jointly `C³` at the
 canceled base point. -/
 theorem lowGradientTransverseFDerivFamily_contDiffAt :
@@ -66,7 +66,7 @@ theorem lowGradientTransverseFDerivFamily_contDiffAt :
   filter_upwards [] with q
   rfl
 
-/-- Helper for Lemma 4.15 (Near-return winding number is nonzero): on the positive
+/-- Supporting fact: (Near-return winding number is nonzero): on the positive
 zero-scale slice, the transverse derivative of the low gradient factor vanishes. -/
 theorem lowGradientTransverseFDerivFamily_zeroScale
     (z : ℝ × ℝ) (hz : 0 < z.1) :
@@ -82,7 +82,7 @@ theorem lowGradientTransverseFDerivFamily_zeroScale
   rw [lowGradientTransverseFDerivFamily, hconstant.fderiv_eq]
   simp
 
-/-- Helper for Lemma 4.15 (Near-return winding number is nonzero): the zeroth scale
+/-- Supporting fact: (Near-return winding number is nonzero): the zeroth scale
 jet of the transverse derivative family vanishes on the positive slice. -/
 theorem iteratedFDeriv_zero_lowGradientTransverseFDerivFamily
     (z : ℝ × ℝ) (hz : 0 < z.1) :
@@ -93,10 +93,10 @@ theorem iteratedFDeriv_zero_lowGradientTransverseFDerivFamily
     lowGradientTransverseFDerivFamily_zeroScale z hz]
   rfl
 
-/-- Lemma 4.15 (Near-return winding number is nonzero): joint `C³` regularity and
+/-- Supporting Lemma (Near-return winding number is nonzero): joint `C³` regularity and
 vanishing of the first two nonconstant scale jets imply the required uniform cubic
 bound for the transverse derivative of the low second-leg gradient factor.  This is
-the finite-jet input consumed by Infrastructure I.16. -/
+the finite-jet input consumed by Supporting infrastructure. -/
 theorem lowGradientFactorTransverseFDeriv_norm_bound_of_scaleJet
     {K : Set (ℝ × ℝ)}
     (hKcompact : IsCompact K)
@@ -119,7 +119,7 @@ theorem lowGradientFactorTransverseFDeriv_norm_bound_of_scaleJet
     exact iteratedFDeriv_zero_lowGradientTransverseFDerivFamily z (hpositive z hz)
   · exact hhigherZero z hz n (Nat.pos_of_ne_zero hnzero) hn
 
-/-- Helper for Lemma 4.15 (Near-return winding number is nonzero): a base-point
+/-- Supporting fact: (Near-return winding number is nonzero): a base-point
 `C³` certificate and locally vanishing first and second scale jets suffice for the
 uniform cubic transverse-derivative bound. -/
 theorem lowGradientFactorTransverseFDeriv_norm_bound_of_localScaleJet
@@ -162,7 +162,7 @@ theorem lowGradientFactorTransverseFDeriv_norm_bound_of_localScaleJet
   · intro z hz n hn hnlt
     exact (hball hz).2.2 n hn hnlt
 
-/-- Helper for Lemma 4.15 (Near-return winding number is nonzero): vanishing of
+/-- Supporting fact: (Near-return winding number is nonzero): vanishing of
 the first and second scale derivatives of the transverse family is the only
 remaining local input needed for the uniform cubic estimate. -/
 theorem lowGradientFactorTransverseFDeriv_norm_bound_of_firstSecondScaleJet

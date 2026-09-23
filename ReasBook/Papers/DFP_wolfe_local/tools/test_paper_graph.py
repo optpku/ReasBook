@@ -1,6 +1,7 @@
 """Checks for proof-component contraction and the checked-in paper projection."""
 import json
 from pathlib import Path
+import re
 import unittest
 
 from generate_paper_graph import attach_statements, project_graph, verify
@@ -19,6 +20,18 @@ def result(name, declarations):
 
 
 class PaperGraphTests(unittest.TestCase):
+    def test_numbered_files_and_graph_mapping_agree(self):
+        root = Path(__file__).resolve().parents[1]
+        mapping = json.loads((root / 'tools/paper_results.json').read_text())
+        all_names = []
+        for row in mapping['items']:
+            navigation = (root / row['navigationFile']).read_text()
+            names = re.findall(r'^#check\s+(\S+)', navigation, re.MULTILINE)
+            self.assertEqual(names, row['declarations'], row['label'])
+            all_names.extend(names)
+        self.assertEqual(len(all_names), 32)
+        self.assertEqual(len(set(all_names)), 32)
+
     def test_contract_helpers_and_retain_origin_class(self):
         graph = dict(project={}, generation={'compiledItemCount': 5}, items=[
             declaration('a', statement=['helper'], proof=['a_support']),
@@ -49,7 +62,9 @@ class PaperGraphTests(unittest.TestCase):
         self.assertEqual(published['items'], rebuilt['items'])
         self.assertEqual(published['edgeWitnesses'], rebuilt['edgeWitnesses'])
         self.assertEqual(len(published['items']), 11)
-        self.assertEqual(sum(len(x['dependencies']) for x in published['items']), 22)
+        self.assertEqual(sum(len(x['dependencies']) for x in published['items']), 18)
+        self.assertEqual(graph['generation']['dependencyCoverage'], 'complete')
+        self.assertEqual(graph['generation']['sourceOnlyItemCount'], 0)
         verify(graph, published)
         visiting, visited = set(), set()
         items = {x['id']: x for x in published['items']}

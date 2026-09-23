@@ -6,7 +6,6 @@ public import ReasLib.Analysis.Calculus.LocalCutoff.GraphJetTransform.RadiusEnve
 public import Mathlib.Analysis.Calculus.ContDiff.Deriv
 public import Mathlib.Analysis.Calculus.MeanValue
 public import Mathlib.Topology.UniformSpace.HeineCantor
-
 public section
 
 noncomputable section
@@ -27,7 +26,7 @@ The source increment in this file is always the increment selected by the invers
 In particular, no comparison with a slope operator at a globally fixed source increment is used.
 -/
 
-/-- Helper for Infrastructure I.16a: the canonical bounded continuous slope selected by the
+/-- Supporting fact: the canonical bounded continuous slope selected by the
 order-one contraction. -/
 noncomputable def metricOrderOneFixedSlope
     [CompleteSpace X]
@@ -38,7 +37,7 @@ noncomputable def metricOrderOneFixedSlope
         (d.lower : ℝ)⁻¹ < 1) : MetricSlopeSection d :=
   Classical.choose (existsUnique_metricOrderOneSlopeOperator_fixedPoint d zeta h_bunching)
 
-/-- Helper for Infrastructure I.16a: the canonical order-one slope is fixed by the slope
+/-- Supporting fact: the canonical order-one slope is fixed by the slope
 operator. -/
 theorem metricOrderOneFixedSlope_fixed
     [CompleteSpace X]
@@ -53,7 +52,7 @@ theorem metricOrderOneFixedSlope_fixed
   exact (Classical.choose_spec
     (existsUnique_metricOrderOneSlopeOperator_fixedPoint d zeta h_bunching)).1
 
-/-- Helper for Infrastructure I.16a: the fixed slope satisfies the explicit inverse-center
+/-- Supporting fact: the fixed slope satisfies the explicit inverse-center
 denominator/numerator equation at every output center. -/
 theorem metricOrderOneFixedSlope_value
     [CompleteSpace X]
@@ -71,7 +70,7 @@ theorem metricOrderOneFixedSlope_value
     (metricOrderOneFixedSlope_fixed d zeta h_bunching)
   simpa only [metricOrderOneSlopeOperator_apply] using hfixed
 
-/-- Helper for Infrastructure I.16a: the source increment corresponding to the output increment
+/-- Supporting fact: the source increment corresponding to the output increment
 `t` at output center `y`. -/
 def metricOrderOneSourceIncrement
     (d : MetricGraphTransformData X)
@@ -79,7 +78,7 @@ def metricOrderOneSourceIncrement
     (y t : ℝ) : ℝ :=
   d.inverseCenter zeta (y + t) - d.inverseCenter zeta y
 
-/-- Helper for Infrastructure I.16a: an inverse-center source increment is at most
+/-- Supporting fact: an inverse-center source increment is at most
 `lower⁻¹` times its output increment. -/
 theorem abs_metricOrderOneSourceIncrement_le
     (d : MetricGraphTransformData X)
@@ -91,7 +90,7 @@ theorem abs_metricOrderOneSourceIncrement_le
   simpa only [metricOrderOneSourceIncrement, Real.dist_eq, NNReal.coe_inv,
     add_sub_cancel_left] using hinverse
 
-/-- Helper for Infrastructure I.16a: a nonzero output increment has a nonzero inverse-center
+/-- Supporting fact: a nonzero output increment has a nonzero inverse-center
 source increment. -/
 theorem metricOrderOneSourceIncrement_ne_zero
     (d : MetricGraphTransformData X)
@@ -118,7 +117,7 @@ theorem metricOrderOneSourceIncrement_ne_zero
     linarith [hsum_eq]
   exact ht ht_zero
 
-/-- Helper for Infrastructure I.16a: adding the transported source increment reaches the inverse
+/-- Supporting fact: adding the transported source increment reaches the inverse
 center of the translated output point. -/
 theorem inverseCenter_add_metricOrderOneSourceIncrement
     (d : MetricGraphTransformData X)
@@ -129,7 +128,7 @@ theorem inverseCenter_add_metricOrderOneSourceIncrement
   rw [metricOrderOneSourceIncrement]
   abel
 
-/-- Helper for Infrastructure I.16a: the transported source endpoint maps exactly to the
+/-- Supporting fact: the transported source endpoint maps exactly to the
 translated output endpoint. -/
 theorem centerMap_add_metricOrderOneSourceIncrement
     (d : MetricGraphTransformData X)
@@ -142,7 +141,7 @@ theorem centerMap_add_metricOrderOneSourceIncrement
   rw [d.inverseCenter_eq zeta]
   exact Function.rightInverse_invFun (d.centerMap_bijective zeta).2 (y + t)
 
-/-- Helper for Infrastructure I.16a: the base inverse center maps back to its output center. -/
+/-- Supporting fact: the base inverse center maps back to its output center. -/
 theorem centerMap_inverseCenter
     (d : MetricGraphTransformData X)
     (zeta : SmallLipschitzGraph X d.radius d.slope)
@@ -151,7 +150,7 @@ theorem centerMap_inverseCenter
   rw [d.inverseCenter_eq zeta]
   exact Function.rightInverse_invFun (d.centerMap_bijective zeta).2 y
 
-/-- Helper for Infrastructure I.16a: a nonzero translated secant recovers the original graph
+/-- Supporting fact: a nonzero translated secant recovers the original graph
 increment after multiplication by its increment. -/
 theorem smul_metricTranslatedSecantValue
     {d : MetricGraphTransformData X}
@@ -160,7 +159,7 @@ theorem smul_metricTranslatedSecantValue
     s • metricTranslatedSecantValue zeta s u = zeta (u + s) - zeta u := by
   simp only [metricTranslatedSecantValue, if_neg hs, smul_smul, mul_inv_cancel₀ hs, one_smul]
 
-/-- Helper for Infrastructure I.16a: the two-point Taylor residual of the smooth remainder along
+/-- Supporting fact: the two-point Taylor residual of the smooth remainder along
 the Lipschitz graph, expressed on the actual graph increment. -/
 def metricOrderOneGraphRemainder
     (d : MetricGraphTransformData X)
@@ -169,7 +168,7 @@ def metricOrderOneGraphRemainder
   d.R (u + s, zeta (u + s)) - d.R (u, zeta u) -
     fderiv ℝ d.R (u, zeta u) (s, zeta (u + s) - zeta u)
 
-/-- Helper for Infrastructure I.16a: the remainder difference is its linearization on the actual
+/-- Supporting fact: the remainder difference is its linearization on the actual
 graph increment plus the named two-point Taylor residual. -/
 theorem metricOrderOneGraphRemainder_spec
     (d : MetricGraphTransformData X)
@@ -181,7 +180,7 @@ theorem metricOrderOneGraphRemainder_spec
   rw [metricOrderOneGraphRemainder]
   abel
 
-/-- Helper for Infrastructure I.16a: a graph increment has product norm no larger than its scalar
+/-- Supporting fact: a graph increment has product norm no larger than its scalar
 increment because the graph-cone slope is at most one. -/
 theorem norm_metricOrderOneGraphIncrement_le
     {d : MetricGraphTransformData X}
@@ -202,7 +201,7 @@ theorem norm_metricOrderOneGraphIncrement_le
   rw [Prod.norm_def, Real.norm_eq_abs]
   exact max_le le_rfl hzeta_one
 
-/-- Helper for Infrastructure I.16a: compact support and `C²` regularity make the derivative of
+/-- Supporting fact: compact support and `C²` regularity make the derivative of
 the smooth remainder uniformly continuous on the whole product space. -/
 theorem uniformContinuous_metricOrderOneRDerivative
     (d : MetricGraphTransformData X) :
@@ -215,7 +214,7 @@ theorem uniformContinuous_metricOrderOneRDerivative
   exact hcontinuous.uniformContinuous_of_tendsto_cocompact
     hsupport.is_zero_at_infty
 
-/-- Helper for Infrastructure I.16a: the two-point remainder of `R` along every admissible
+/-- Supporting fact: the two-point remainder of `R` along every admissible
 Lipschitz graph is uniformly `o(|s|)` in the scalar graph increment. -/
 theorem metricOrderOneGraphRemainder_uniform
     (d : MetricGraphTransformData X)
@@ -280,7 +279,7 @@ theorem metricOrderOneGraphRemainder_uniform
   exact hmean_graph.trans
     (mul_le_mul_of_nonneg_left hpq_norm hkappa.le)
 
-/-- Helper for Infrastructure I.16a: on a nonzero graph increment, the derivative of `R` on the
+/-- Supporting fact: on a nonzero graph increment, the derivative of `R` on the
 actual graph chord is the increment times the derivative on the translated secant direction. -/
 theorem metricOrderOneGraphDerivative_eq_smul
     (d : MetricGraphTransformData X)
@@ -297,7 +296,7 @@ theorem metricOrderOneGraphDerivative_eq_smul
     · exact (smul_metricTranslatedSecantValue zeta s u hs).symm
   rw [hdirection, map_smul]
 
-/-- Helper for Infrastructure I.16a: the center output increment is the source increment times the
+/-- Supporting fact: the center output increment is the source increment times the
 candidate secant denominator, plus the center Taylor residual. -/
 theorem metricOrderOneCenterIncrement_eq
     (d : MetricGraphTransformData X)
@@ -347,7 +346,7 @@ theorem metricOrderOneCenterIncrement_eq
       simp only [Prod.smul_fst, smul_eq_mul]
       ring
 
-/-- Helper for Infrastructure I.16a: fixed-graph invariance transports the stable output increment
+/-- Supporting fact: fixed-graph invariance transports the stable output increment
 to the source secant numerator, up to the stable Taylor residual. -/
 theorem metricOrderOneStableIncrement_eq
     [CompleteSpace X]
@@ -405,7 +404,7 @@ theorem metricOrderOneStableIncrement_eq
       rw [map_smul, metricOrderOneNumerator_eq]
       simp only [Prod.smul_snd, smul_add]
 
-/-- Helper for Infrastructure I.16a: multiplying a slope value by its nonzero denominator recovers
+/-- Supporting fact: multiplying a slope value by its nonzero denominator recovers
 the corresponding numerator. -/
 theorem metricOrderOneDenominator_smul_slopeValue
     (d : MetricGraphTransformData X)
@@ -418,7 +417,7 @@ theorem metricOrderOneDenominator_smul_slopeValue
     mul_inv_cancel₀ (metricOrderOneDenominator_ne_zero d zeta b (d.inverseCenter zeta y)),
     one_smul]
 
-/-- Helper for Infrastructure I.16a: after multiplying by the first candidate denominator, the
+/-- Supporting fact: after multiplying by the first candidate denominator, the
 slope-value difference has only one inverse denominator. -/
 theorem metricOrderOneDenominator_smul_slopeValue_sub_eq
     (d : MetricGraphTransformData X)
@@ -451,7 +450,7 @@ theorem metricOrderOneDenominator_smul_slopeValue_sub_eq
   rw [hscalar, sub_smul, one_smul]
   abel
 
-/-- Helper for Infrastructure I.16a: denominator cancellation improves the normalized slope
+/-- Supporting fact: denominator cancellation improves the normalized slope
 contraction to the raw graph-transform rate before the inverse-center scale is applied. -/
 theorem norm_metricOrderOneDenominator_smul_slopeValue_sub_le
     (d : MetricGraphTransformData X)
@@ -537,7 +536,7 @@ theorem norm_metricOrderOneDenominator_smul_slopeValue_sub_le
 residual identity.  This keeps the source finite-difference calculation independent of any
 already-established differentiability of the fixed graph. -/
 
-/-- Helper for Infrastructure I.16a: the variable-increment graph secant differs from the
+/-- Supporting fact: the variable-increment graph secant differs from the
 order-one slope value by the two Taylor residuals.  The source increment is the inverse-center
 increment selected by `(y,t)`, so no fixed-increment or differentiability hypothesis is hidden in
 this identity. -/
@@ -574,7 +573,7 @@ theorem metricOrderOneVariableIncrement_residual_eq
   rw [smul_add, smul_smul]
   module
 
-/-- Helper for Infrastructure I.16a: the center-coordinate residual scalar can be eliminated from
+/-- Supporting fact: the center-coordinate residual scalar can be eliminated from
 the variable-increment identity.  The resulting expression exposes both Taylor components and is
 the form used for uniform residual estimates. -/
 theorem metricOrderOneVariableIncrement_residual_eq_center
@@ -619,7 +618,7 @@ theorem metricOrderOneVariableIncrement_residual_eq_center
     nlinarith [hcenter']
   rw [hres', hscalar]
 
-/-- Helper for Infrastructure I.16a: a norm-level residual estimate for the variable-increment
+/-- Supporting fact: a norm-level residual estimate for the variable-increment
 secant.  This is intentionally stated before any limit argument, so it can be consumed by either
 the contraction bootstrap or a later `Tendsto` adapter. -/
 theorem norm_metricOrderOneVariableIncrement_residual_le
@@ -667,7 +666,7 @@ theorem norm_metricOrderOneVariableIncrement_residual_le
       rw [norm_smul, norm_smul, norm_neg, Real.norm_eq_abs, abs_inv]
       rw [Real.norm_eq_abs]
 
-/-- Helper for Infrastructure I.16a: the explicit epsilon bridge for a variable-increment
+/-- Supporting fact: the explicit epsilon bridge for a variable-increment
 secant.  The only analytic input is the displayed two-point remainder estimate; all denominator
 and numerator constants come from the closed slope-section certificate. -/
 theorem norm_metricOrderOneVariableIncrement_residual_le_of_remainder
@@ -762,7 +761,7 @@ theorem norm_metricOrderOneVariableIncrement_residual_le_of_remainder
       hconstant_nonneg
   exact hbase'.trans (add_le_add hfirst hsecond)
 
-/-- Helper for Infrastructure I.16a: a majorant tending to zero turns the variable-increment
+/-- Supporting fact: a majorant tending to zero turns the variable-increment
 secant residual into a genuine punctured-neighborhood `Tendsto` statement.  The majorant is an
 explicit input so source-side reindexing or denominator estimates cannot be hidden in this bridge.
 -/

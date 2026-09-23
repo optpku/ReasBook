@@ -3,7 +3,6 @@ module
 public import ReasLib.Analysis.Calculus.LocalInvariantGraph.ExplicitContraction.MetricPicardCertificate
 public import ReasLib.Analysis.Calculus.LocalInvariantGraph.Tangent
 import all ReasLib.Analysis.Calculus.LocalInvariantGraph.ExplicitContraction.MetricPicardCertificate
-
 public section
 
 noncomputable section
@@ -26,7 +25,7 @@ The finite-smooth fixed-point regularity and the zero derivative of the remainde
 certificates; neither is inferred from the metric contraction alone.
 -/
 
-/-- Helper for Infrastructure I.16a: the map represented by a linear center-stable block and a
+/-- Supporting fact: the map represented by a linear center-stable block and a
 metric Picard remainder. -/
 def metricCenterStableMap (d : MetricGraphTransformData X) : ℝ × X → ℝ × X :=
   (LocalCutoff.centerStable d.L : ℝ × X → ℝ × X) + d.R
@@ -37,7 +36,7 @@ theorem metricCenterStableMap_eq (d : MetricGraphTransformData X) :
       fun x ↦ LocalCutoff.centerStable d.L x + d.R x := by
   rfl
 
-/-- Helper for Infrastructure I.16a: the metric center-stable map has the expected coordinate
+/-- Supporting fact: the metric center-stable map has the expected coordinate
 formula on a graph point. -/
 theorem metricCenterStableMap_apply (d : MetricGraphTransformData X) (u : ℝ) (z : X) :
     metricCenterStableMap d (u, z) =
@@ -46,7 +45,7 @@ theorem metricCenterStableMap_apply (d : MetricGraphTransformData X) (u : ℝ) (
   rw [LocalCutoff.centerStable_apply]
   rfl
 
-/-- Helper for Infrastructure I.16a: a smooth metric remainder makes the represented map
+/-- Supporting fact: a smooth metric remainder makes the represented map
 smooth of the same finite order. -/
 theorem metricCenterStableMap_contDiff
     (d : MetricGraphTransformData X) :
@@ -55,7 +54,7 @@ theorem metricCenterStableMap_contDiff
   unfold metricCenterStableMap
   exact hsum
 
-/-- Helper for Infrastructure I.16a: a zero derivative of the metric remainder gives the
+/-- Supporting fact: a zero derivative of the metric remainder gives the
 center-stable derivative of the represented map. -/
 theorem metricCenterStableMap_hasFDerivAt_of_zeroDerivative
     (d : MetricGraphTransformData X)
@@ -79,7 +78,7 @@ theorem metricCenterStableMap_hasFDerivAt_of_zeroDerivative
   unfold metricCenterStableMap
   simpa only [hprod_add, hprod_module, hprod_top, add_zero] using hsum
 
-/-- Helper for Infrastructure I.16a: the represented metric map fixes the origin. -/
+/-- Supporting fact: the represented metric map fixes the origin. -/
 theorem metricCenterStableMap_zero (d : MetricGraphTransformData X) :
     metricCenterStableMap d (0, 0) = (0, 0) := by
   have hR_zero : d.R (0, 0) = 0 := by
@@ -88,7 +87,7 @@ theorem metricCenterStableMap_zero (d : MetricGraphTransformData X) :
   rw [hR_zero]
   simp only [LocalCutoff.centerStable_apply, map_zero, add_zero]
 
-/-- Helper for Infrastructure I.16a: a metric transform fixed graph satisfies the invariant
+/-- Supporting fact: a metric transform fixed graph satisfies the invariant
 equation for the represented center-stable map. -/
 theorem metricFixedGraph_invariant
     [CompleteSpace X]
@@ -102,7 +101,7 @@ theorem metricFixedGraph_invariant
   change ζ (u + (d.R (u, ζ u)).1) = d.L (ζ u) + (d.R (u, ζ u)).2 at hpoint
   simpa only [metricCenterStableMap_apply] using hpoint.symm
 
-/-- Infrastructure I.16a (metric Picard certificate with a finite-smooth fixed graph): an
+/-- Supporting infrastructure (metric Picard certificate with a finite-smooth fixed graph): an
 explicit metric contraction, a zero-derivative remainder certificate, and regularity of its
 fixed point produce a finite-smooth invariant graph tangent to the center axis. -/
 theorem exists_metricInvariantGraph_of_regularFixedPoint
@@ -139,7 +138,7 @@ theorem exists_metricInvariantGraph_of_regularFixedPoint
     hmap_zero hmap_deriv hinvariant hL
   exact ⟨ζ, hζ_smooth, hζ_zero, htangent, hinvariant⟩
 
-/-- Infrastructure I.16a (metric Picard germ transfer): the preceding invariant graph transfers
+/-- Supporting infrastructure (metric Picard germ transfer): the preceding invariant graph transfers
 from the metric model to any original map with the same germ at the fixed point. -/
 theorem invariantGraph_of_metricFixedPoint_germ
     [CompleteSpace X]

@@ -3,7 +3,6 @@ module
 public import ReasLib.Optimization.DFP.TwoPhaseControls.Observables.CenterSmoothness
 import all ReasLib.Optimization.DFP.TwoPhaseControls.Observables.CenterSmoothness
 import Mathlib.Analysis.InnerProductSpace.Calculus
-
 /-!
 # Smooth gradient norms for the two-leg observable map
 
@@ -19,26 +18,26 @@ open scoped EuclideanSpace Matrix Nat ContDiff
 
 namespace DFP.TwoLeg
 
-/-- Helper for Infrastructure I.16a: the initial endpoint gradient path. -/
+/-- Supporting fact: the initial endpoint gradient path. -/
 private def initialGradientPath (x : ℝ × ℝ × ℝ) : EuclideanSpace ℝ (Fin 2) :=
   WithLp.toLp 2 ![(1 : ℝ), x.2.1 * x.1 ^ 2]
 
-/-- Helper for Infrastructure I.16a: the intermediate endpoint gradient path. -/
+/-- Supporting fact: the intermediate endpoint gradient path. -/
 private def intermediateGradientPath (x : ℝ × ℝ × ℝ) : EuclideanSpace ℝ (Fin 2) :=
   WithLp.toLp 2 (DFP.FirstLeg.outputGradient x.1 x.2.1 x.2.2)
 
-/-- Helper for Infrastructure I.16a: the final endpoint gradient path. -/
+/-- Supporting fact: the final endpoint gradient path. -/
 private def finalGradientPath (x : ℝ × ℝ × ℝ) : EuclideanSpace ℝ (Fin 2) :=
   WithLp.toLp 2 (DFP.FirstLeg.frame x.1 x.2.1 x.2.2 *ᵥ
     DFP.SecondLeg.outputGradient x.1 x.2.1 x.2.2)
 
-/-- Helper for Infrastructure I.16a: regularity of the initial gradient path. -/
+/-- Supporting fact: regularity of the initial gradient path. -/
 private theorem initialGradientPath_contDiffAt (k : ℕ∞ω) :
     ContDiffAt ℝ k initialGradientPath (0, 2, 1) := by
   unfold initialGradientPath
   fun_prop
 
-/-- Helper for Infrastructure I.16a: regularity of the intermediate gradient path. -/
+/-- Supporting fact: regularity of the intermediate gradient path. -/
 private theorem intermediateGradientPath_contDiffAt (k : ℕ∞ω) :
     ContDiffAt ℝ k intermediateGradientPath (0, 2, 1) := by
   have hpi : ContDiffAt ℝ k
@@ -50,7 +49,7 @@ private theorem intermediateGradientPath_contDiffAt (k : ℕ∞ω) :
   unfold intermediateGradientPath
   fun_prop
 
-/-- Helper for Infrastructure I.16a: regularity of the final gradient path. -/
+/-- Supporting fact: regularity of the final gradient path. -/
 private theorem finalGradientPath_contDiffAt (k : ℕ∞ω) :
     ContDiffAt ℝ k finalGradientPath (0, 2, 1) := by
   have hF (i j : Fin 2) : ContDiffAt ℝ k
@@ -72,20 +71,20 @@ private theorem finalGradientPath_contDiffAt (k : ℕ∞ω) :
   unfold finalGradientPath
   fun_prop
 
-/-- Helper for Infrastructure I.16a: the initial gradient path is nonzero at the base. -/
+/-- Supporting fact: the initial gradient path is nonzero at the base. -/
 private theorem initialGradientPath_base_ne : initialGradientPath (0, 2, 1) ≠ 0 := by
   intro h
   have hzero := congrArg (fun v : EuclideanSpace ℝ (Fin 2) ↦ v 0) h
   norm_num [initialGradientPath] at hzero
 
-/-- Helper for Infrastructure I.16a: the intermediate gradient path is nonzero at the base. -/
+/-- Supporting fact: the intermediate gradient path is nonzero at the base. -/
 private theorem intermediateGradientPath_base_ne :
     intermediateGradientPath (0, 2, 1) ≠ 0 := by
   intro h
   have hzero := congrArg (fun v : EuclideanSpace ℝ (Fin 2) ↦ v 0) h
   norm_num [intermediateGradientPath, DFP.FirstLeg.outputGradient] at hzero
 
-/-- Helper for Infrastructure I.16a: the final gradient path is nonzero at the base. -/
+/-- Supporting fact: the final gradient path is nonzero at the base. -/
 private theorem finalGradientPath_base_ne : finalGradientPath (0, 2, 1) ≠ 0 := by
   have hspectral : DFP.FirstLeg.spectralFactors 0 2 1 = (2, 1) := by
     simpa only [DFP.FirstLeg.factors] using

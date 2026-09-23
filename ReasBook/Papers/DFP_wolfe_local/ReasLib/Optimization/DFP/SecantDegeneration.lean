@@ -6,7 +6,6 @@ Authors: Zichen Wang
 module
 
 public import ReasLib.Optimization.DFP.PlanarConvergence
-
 /-!
 # Degeneration of planar secant iterations
 
@@ -720,7 +719,7 @@ theorem smallestEigenvalueTendstoZero
       Real.sqrt_zero] using hsqrt
   exact (tendsto_add_atTop_iff_nat 1).mp hlow
 
-/-- lem:planar-degeneration: positive-definite secant search matrices under
+/-- Lemma 11 (`lem:planar-degeneration`): positive-definite secant search matrices under
 weak Wolfe degenerate along every nonconvergent planar strongly convex orbit.
 The free coefficient is positive and bounded by adjacent step products, the
 matrix sequence is bounded, and its smallest eigenvalue tends to zero. -/

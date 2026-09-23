@@ -5,7 +5,6 @@ public import ReasLib.Optimization.DFP.WolfeCounterexample.MatrixIdentityLiminfC
 public import ReasLib.Optimization.DFP.WolfeCounterexample.SemanticProjections
 public import ReasLib.Optimization.DFP.LevelSetGlobalConvergence
 import Mathlib.Tactic
-
 /-!
 # Automatic matrix identity initialization with a positive gradient liminf
 
@@ -21,7 +20,7 @@ open Filter
 open scoped InnerProduct MatrixOrder Topology
 namespace DFP.WolfeCounterexample
 
-/-- Helper for TASK-16: scalar lower and upper Loewner bounds on the identity operator are ordered
+/-- Helper for scalar lower and upper Loewner bounds on the identity operator are ordered
 on every Euclidean space whose coordinate index has at least two elements. -/
 theorem scalar_le_of_identity_loewner_bounds
     {n : ℕ} (hn : 2 ≤ n) {a b : ℝ}
@@ -265,7 +264,7 @@ theorem matrixIdentityLiminfStrongWolfeWithObjective
     result hResultPos hmM hResultLiminf hPosDef hDenominator
   exact ⟨d, hd⟩
 
-/-- Helper for TASK-16: an explicit factorized strong-Wolfe trajectory yields a classical matrix
+/-- Helper for an explicit factorized strong-Wolfe trajectory yields a classical matrix
 identity-initialized certificate with the paper-facing positive gradient liminf. -/
 theorem matrixIdentityLiminfStrongWolfe_of_factorized
     {n : ℕ} (hn : 2 ≤ n) {c₁ c₂ a b q : ℝ}
@@ -289,7 +288,7 @@ theorem matrixIdentityLiminfStrongWolfe_of_factorized
     ha hb hq hc₁_pos hc₁_lt_c₂ hc₂_lt_one lowerMap upperMap gradientMapLower
   exact ⟨d⟩
 
-/-- TASK-16: every paper-range strong-Wolfe counterexample with positive-definite
+/-- every paper-range strong-Wolfe counterexample with positive-definite
 initial inverse Hessian admits a matrix identity-initialized certificate with
 some positive, ordered Hessian bounds and a strictly positive gradient liminf.
 The bounds are generated from the positive square-root factor of the initial

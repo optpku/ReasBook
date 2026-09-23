@@ -15,7 +15,7 @@ open scoped Topology
 
 namespace DFP.Calculus
 
-/-- Helper for Infrastructure I.16a: a vanishing third derivative in two scale
+/-- Supporting fact: a vanishing third derivative in two scale
 directions and one parameter direction makes the derivative of the corresponding
 partial-derivative slice stationary to second scale order. -/
 theorem hasDerivAt_deriv_partialFDeriv_of_thirdJet_eq_zero
@@ -128,7 +128,7 @@ theorem hasDerivAt_deriv_partialFDeriv_of_thirdJet_eq_zero
       ContinuousLinearMap.inr_apply] using hchainApplied
   exact hderivFullSlice.congr_of_eventuallyEq hpartialFull.deriv
 
-/-- Infrastructure I.16a: local vanishing of the pure second scale jet transports
+/-- Supporting infrastructure: local vanishing of the pure second scale jet transports
 to scalar second-scale stationarity of every transverse derivative evaluation. -/
 theorem hasDerivAt_deriv_partialFDeriv_of_eventually_scaleSecondJet_zero
     {Z : Type*} [NormedAddCommGroup Z] [NormedSpace ℝ Z]
@@ -199,7 +199,7 @@ end DFP.Calculus
 
 namespace DFP.SecondLeg
 
-/-- Infrastructure I.16a: a source proof of the pure second scale-jet
+/-- Supporting infrastructure: a source proof of the pure second scale-jet
 cancellation for the low second-leg factor supplies the scalar second-scale
 stationarity required by the transverse cubic estimate. -/
 theorem lowGradientTransverseFDerivFamily_scalar_secondScale_eventually_of_pureSecondScaleJet

@@ -4,7 +4,6 @@ public import ReasLib.Analysis.Calculus.LocalCutoff.CenterStable
 public import Mathlib.Analysis.Calculus.FDeriv.Prod
 public import Mathlib.Analysis.Calculus.FDeriv.Basic
 public import ReasLib.Topology.ContinuousMap.SmallLipschitzGraph
-
 public section
 
 open Filter
@@ -16,7 +15,7 @@ universe u v
 
 namespace LocalInvariantGraph
 
-/-- Helper for Infrastructure I.16a: differentiability at the origin gives an arbitrarily
+/-- Supporting fact: differentiability at the origin gives an arbitrarily
 small normalized linearization error on a neighborhood of the origin. -/
 theorem eventually_norm_fderiv_remainder_le_at_zero
     {E : Type u} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -29,7 +28,7 @@ theorem eventually_norm_fderiv_remainder_le_at_zero
       (hasFDerivAt_iff_isLittleO_nhds_zero (f := f) (f' := A) (x := 0)).mp h
   exact (isLittleO_iff.mp hlittle hε)
 
-/-- Helper for Infrastructure I.16a: the preceding normalized error estimate can be
+/-- Supporting fact: the preceding normalized error estimate can be
 expressed as a positive-radius ball bound. -/
 theorem exists_norm_fderiv_remainder_le_at_zero
     {E : Type u} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -45,7 +44,7 @@ theorem exists_norm_fderiv_remainder_le_at_zero
     simpa only [Metric.mem_ball, dist_zero_right] using hy
   exact hball hmem
 
-/-- Helper for Infrastructure I.16a: a fixed point of an inverse-coordinate graph
+/-- Supporting fact: a fixed point of an inverse-coordinate graph
 transform satisfies the original parametrized invariant equation after the inverse
 is cancelled. -/
 theorem fixedPoint_invariant_of_rightInverse
@@ -67,7 +66,7 @@ theorem fixedPoint_invariant_of_rightInverse
   rw [hvalue, hinverse u] at hpoint
   exact hpoint.symm
 
-/-- Helper for Infrastructure I.16a: an invariant graph for a center-stable germ has
+/-- Supporting fact: an invariant graph for a center-stable germ has
 zero derivative in the stable direction when the stable block is strictly contractive. -/
 theorem tangent_zero_of_centerStable_invariant
     {X : Type u} [NormedAddCommGroup X] [NormedSpace ℝ X]

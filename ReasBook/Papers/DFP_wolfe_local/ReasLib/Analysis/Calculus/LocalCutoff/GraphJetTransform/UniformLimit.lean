@@ -2,7 +2,6 @@ module
 
 public import Mathlib.Analysis.Calculus.UniformLimitsDeriv
 public import Mathlib.Analysis.Calculus.ContDiff.Defs
-
 public section
 
 open Filter
@@ -15,7 +14,7 @@ namespace LocalCutoff.GraphTransform
 variable {E : Type u} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {F : Type v} [NormedAddCommGroup F] [NormedSpace ℝ F]
 
-/-- Infrastructure I.16: a locally uniform limit of differentiable iterates is one
+/-- Supporting infrastructure: a locally uniform limit of differentiable iterates is one
 order smoother when the limiting derivative field already has the lower regularity. -/
 theorem contDiffAt_succ_of_tendstoLocallyUniformlyOn
     {ι : Type*} {l : Filter ι} [NeBot l]
@@ -34,7 +33,7 @@ theorem contDiffAt_succ_of_tendstoLocallyUniformlyOn
   intro y hy
   exact hasFDerivAt_of_tendsto_locally_uniformly_on' hs hderiv hf hvalue hy
 
-/- Helper for Infrastructure I.16: a locally uniform limit remains one order smoother
+/- Supporting fact: a locally uniform limit remains one order smoother
 when each approximant supplies an explicit derivative field. -/
 theorem contDiffAt_succ_of_tendstoLocallyUniformlyOn_hasFDeriv
     {ι : Type*} {l : Filter ι} [NeBot l]

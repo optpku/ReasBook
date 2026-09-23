@@ -3,7 +3,6 @@ module
 public import ReasLib.Analysis.Calculus.LocalInvariantGraph.ExplicitContraction.MetricOrderOneSecant
 import all ReasLib.Analysis.Calculus.LocalInvariantGraph.ExplicitContraction.MetricOrderOneSecant
 public import ReasLib.Analysis.Calculus.LocalInvariantGraph.ExplicitContraction.MetricRawDefectEnvelope
-
 public section
 
 noncomputable section
@@ -26,7 +25,7 @@ Lipschitz loss is paid.  Thus no differentiability of the fixed graph is used in
 derivative.
 -/
 
-/-- Helper for Infrastructure I.16a: the raw first-order defect of the fixed graph relative to
+/-- Supporting fact: the raw first-order defect of the fixed graph relative to
 the canonical slope section. -/
 noncomputable def metricOrderOneRawDefect
     [CompleteSpace X]
@@ -39,7 +38,7 @@ noncomputable def metricOrderOneRawDefect
   zeta (y + t) - zeta y -
     t • (metricOrderOneFixedSlope d zeta h_bunching).1 y
 
-/-- Helper for Infrastructure I.16a: the order-one raw defect vanishes at the zero increment. -/
+/-- Supporting fact: the order-one raw defect vanishes at the zero increment. -/
 theorem metricOrderOneRawDefect_zero
     [CompleteSpace X]
     (d : MetricGraphTransformData X)
@@ -51,7 +50,7 @@ theorem metricOrderOneRawDefect_zero
     metricOrderOneRawDefect d zeta h_bunching y 0 = 0 := by
   simp only [metricOrderOneRawDefect, add_zero, sub_self, zero_smul, sub_zero]
 
-/-- Helper for Infrastructure I.16a: the raw defect splits into the denominator-cancelled slope
+/-- Supporting fact: the raw defect splits into the denominator-cancelled slope
 difference and the two components of the graph Taylor remainder. -/
 theorem metricOrderOneRawDefect_decomposition
     [CompleteSpace X]
@@ -119,7 +118,7 @@ theorem metricOrderOneRawDefect_decomposition
       simp only [smul_sub, smul_smul, add_smul]
       module
 
-/-- Helper for Infrastructure I.16a: at the inverse-center increment, the transported raw defect
+/-- Supporting fact: at the inverse-center increment, the transported raw defect
 is exactly the source increment times the difference between the secant and fixed slope fields. -/
 theorem metricOrderOneRawDefect_source_identity
     [CompleteSpace X]
@@ -154,7 +153,7 @@ theorem metricOrderOneRawDefect_source_identity
     exact smul_metricTranslatedSecantValue zeta sourceIncrement sourceCenter hsourceIncrement
   rw [metricOrderOneRawDefect, ← hsecant, smul_sub]
 
-/-- Helper for Infrastructure I.16a: the Taylor-remainder contribution to the raw defect is at
+/-- Supporting fact: the Taylor-remainder contribution to the raw defect is at
 most twice the product-space remainder norm. -/
 theorem norm_metricOrderOneRemainderCorrection_le
     [CompleteSpace X]
@@ -188,7 +187,7 @@ theorem norm_metricOrderOneRemainderCorrection_le
     _ ≤ ‖remainder‖ + ‖remainder‖ := add_le_add hsecond hsmul
     _ = 2 * ‖remainder‖ := by ring
 
-/-- Helper for Infrastructure I.16a: denominator cancellation yields the raw inverse-center
+/-- Supporting fact: denominator cancellation yields the raw inverse-center
 recurrence with graph-transform rate before estimating the Taylor remainder. -/
 theorem norm_metricOrderOneRawDefect_le
     [CompleteSpace X]
@@ -294,7 +293,7 @@ theorem norm_metricOrderOneRawDefect_le
             ‖metricOrderOneRawDefect d zeta h_bunching sourceCenter sourceIncrement‖ +
           2 * ‖remainder‖ := add_le_add hprincipal hremainder
 
-/-- Helper for Infrastructure I.16a: the raw defect is globally bounded by a linear function of
+/-- Supporting fact: the raw defect is globally bounded by a linear function of
 its scalar increment, uniformly in the base point. -/
 theorem norm_metricOrderOneRawDefect_le_linear
     [CompleteSpace X]
@@ -324,7 +323,7 @@ theorem norm_metricOrderOneRawDefect_le_linear
       exact add_le_add hgraph' (mul_le_mul_of_nonneg_left hslope (abs_nonneg t))
     _ = 2 * (d.slope : ℝ) * |t| := by ring
 
-/-- Helper for Infrastructure I.16a: the order-one raw defect is uniformly bounded on a fixed
+/-- Supporting fact: the order-one raw defect is uniformly bounded on a fixed
 neighborhood of the zero increment. -/
 theorem metricOrderOneRawDefect_locallyUniformlyBounded
     [CompleteSpace X]
@@ -348,7 +347,7 @@ theorem metricOrderOneRawDefect_locallyUniformlyBounded
         exact mul_le_mul_of_nonneg_left ht_abs.le (by positivity)
       _ = 2 * (d.slope : ℝ) := mul_one _
 
-/-- Helper for Infrastructure I.16a: the inverse-center transport has Lipschitz factor
+/-- Supporting fact: the inverse-center transport has Lipschitz factor
 `lower⁻¹` on every scalar increment. -/
 theorem norm_metricOrderOneInverseCenterIncrement_le
     (d : MetricGraphTransformData X)
@@ -365,7 +364,7 @@ theorem norm_metricOrderOneInverseCenterIncrement_le
   simpa only [Real.norm_eq_abs] using
     abs_metricOrderOneSourceIncrement_le d zeta y t
 
-/-- Helper for Infrastructure I.16a: uniform smallness of the graph Taylor remainder turns the
+/-- Supporting fact: uniform smallness of the graph Taylor remainder turns the
 raw identity into the affine recurrence required by the radius-envelope theorem. -/
 theorem metricOrderOneRawDefect_inverseRecurrence
     [CompleteSpace X]
@@ -494,7 +493,7 @@ theorem metricOrderOneRawDefect_inverseRecurrence
           e * ‖t‖ := by
       rw [← hsourceCenter_eq, ← hsourceIncrement_eq]
 
-/-- Helper for Infrastructure I.16a: the raw first-order defect is little-o of its increment at
+/-- Supporting fact: the raw first-order defect is little-o of its increment at
 every base point. -/
 theorem metricOrderOneRawDefect_isLittleO
     [CompleteSpace X]
@@ -520,7 +519,7 @@ theorem metricOrderOneRawDefect_isLittleO
   · exact h_bunching
   · exact metricOrderOneRawDefect_inverseRecurrence d zeta hfixed h_bunching
 
-/-- Helper for Infrastructure I.16a: the canonical fixed slope is the derivative of the fixed
+/-- Supporting fact: the canonical fixed slope is the derivative of the fixed
 Lipschitz graph at every center. -/
 theorem metricFixedGraph_hasDerivAt_orderOne
     [CompleteSpace X]
@@ -539,7 +538,7 @@ theorem metricFixedGraph_hasDerivAt_orderOne
   simpa only [metricOrderOneRawDefect] using
     metricOrderOneRawDefect_isLittleO d zeta hfixed h_bunching y
 
-/-- Helper for Infrastructure I.16a: the derivative of the fixed graph is the canonical
+/-- Supporting fact: the derivative of the fixed graph is the canonical
 continuous slope field selected by the order-one contraction. -/
 theorem metricFixedGraph_deriv_eq_orderOneSlope
     [CompleteSpace X]
@@ -553,7 +552,7 @@ theorem metricFixedGraph_deriv_eq_orderOneSlope
   funext y
   exact (metricFixedGraph_hasDerivAt_orderOne d zeta hfixed h_bunching y).deriv
 
-/-- Infrastructure I.16a: the metric graph-transform fixed graph is continuously differentiable
+/-- Supporting infrastructure: the metric graph-transform fixed graph is continuously differentiable
 under the order-one bunching inequality, without assuming differentiability in the construction
 of its canonical slope. -/
 theorem metricFixedGraph_contDiff_one_of_orderOneBunching

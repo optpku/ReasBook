@@ -2,7 +2,6 @@ module
 
 public import Mathlib.Analysis.Calculus.ContDiff.FTaylorSeries
 public import Mathlib.Analysis.Calculus.ContDiff.Defs
-
 public section
 
 open scoped ContDiff
@@ -15,7 +14,7 @@ variable {𝕜 : Type u} [NontriviallyNormedField 𝕜]
 variable {E : Type uE} [NormedAddCommGroup E] [NormedSpace 𝕜 E]
 variable {F : Type uF} [NormedAddCommGroup F] [NormedSpace 𝕜 F]
 
-/-- Helper for Infrastructure I.16a (finite-smooth invariant graph): replace only the
+/-- Supporting fact: (finite-smooth invariant graph): replace only the
 top formal Taylor term while retaining a predecessor Taylor series. -/
 theorem update_succ_top
     {n : ℕ} {f : E → F}

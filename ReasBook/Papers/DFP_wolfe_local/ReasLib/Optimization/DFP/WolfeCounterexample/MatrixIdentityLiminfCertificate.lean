@@ -5,7 +5,6 @@ public import ReasLib.Optimization.DFP.WolfeCounterexample.MatrixIdentityInitial
 public import ReasLib.Optimization.DFP.Operator.Matrix
 public import Mathlib.Order.LiminfLimsup
 import Mathlib.Tactic
-
 /-!
 # Matrix identity initialization with a positive gradient liminf
 
@@ -32,7 +31,7 @@ open scoped InnerProduct MatrixOrder Topology
 
 namespace DFP.WolfeCounterexample
 
-/-- Helper for TASK-15: identify the canonical matrix sequence with its
+/-- Identify the canonical matrix sequence with its
 explicit `Matrix.toEuclideanCLM.symm` pointwise representation. -/
 theorem canonicalMatrixSequence_eq_explicit
     {n : ℕ}
@@ -43,7 +42,7 @@ theorem canonicalMatrixSequence_eq_explicit
   funext k
   exact canonicalMatrixSequence_apply H k
 
-/-- TASK-16: a classical matrix DFP trajectory satisfying the identity-initialization
+/-- A classical matrix DFP trajectory satisfying the identity-initialization
 corollary with the exact paper-facing positive gradient-liminf conclusion.
 
 The `gradientNormEventuallyPositive` field is retained as a useful quantitative
@@ -69,7 +68,7 @@ structure MatrixIdentityLiminfStrongWolfeCertificate
   gradientNormEventuallyPositive : ∃ δ : ℝ, 0 < δ ∧
     ∀ᶠ k in atTop, δ ≤ ‖DFP.gradients iteration.objective iteration.point k‖
 
-/-- Helper for TASK-16: the matrix certificate exposes its paper-facing positive gradient liminf. -/
+/-- The matrix certificate has a positive gradient-norm liminf. -/
 theorem MatrixIdentityLiminfStrongWolfeCertificate.gradientNorm_liminf_pos
     {n : ℕ} {m M c₁ c₂ : ℝ}
     (c : MatrixIdentityLiminfStrongWolfeCertificate n m M c₁ c₂) :
@@ -77,8 +76,7 @@ theorem MatrixIdentityLiminfStrongWolfeCertificate.gradientNorm_liminf_pos
       (fun k ↦ ‖DFP.gradients c.iteration.objective c.iteration.point k‖) atTop :=
   c.gradientNormLiminfPos
 
-/-- Helper for TASK-16: the matrix certificate exposes the ordered positive Hessian bounds required
-by the identity corollary. -/
+/-- The matrix certificate has ordered positive Hessian bounds. -/
 theorem MatrixIdentityLiminfStrongWolfeCertificate.hessianBounds_pos_le
     {n : ℕ} {m M c₁ c₂ : ℝ}
     (c : MatrixIdentityLiminfStrongWolfeCertificate n m M c₁ c₂) :
@@ -101,84 +99,42 @@ theorem MatrixIdentityLiminfStrongWolfeCertificate.ofOperatorWithObjective
     ∃ d : MatrixIdentityLiminfStrongWolfeCertificate n m M c₁ c₂,
       d.iteration.objective = c.objective := by
   let H : ℕ → Matrix (Fin n) (Fin n) ℝ := canonicalMatrixSequence c.inverseHessian
-  have hPosDef' : ∀ k, (H k).PosDef := by
-    intro k
-    exact hPosDef k
-  have hDenominator' : ∀ k,
-      WithLp.ofLp
-          (DFP.steps c.stepLength (DFP.directions H c.gradient) k) ⬝ᵥ
-        WithLp.ofLp (DFP.gradientChanges c.gradient k) ≠ 0 := by
-    intro k
-    exact hDenominator k
   have hOrbit : DFP.IsOrbit c.objective c.stepLength c.point c.gradient H := by
-    have hOrbitExplicit : DFP.IsOrbit c.objective c.stepLength c.point c.gradient
-      (fun k ↦ (Matrix.toEuclideanCLM : Matrix (Fin n) (Fin n) ℝ ≃⋆ₐ[ℝ]
-        EuclideanSpace ℝ (Fin n) →L[ℝ] EuclideanSpace ℝ (Fin n)).symm
-        (c.inverseHessian k)) :=
-      c.toIdentityInitializedOperatorCertificate.orbit.toMatrix
-    have hSequenceEq : canonicalMatrixSequence c.inverseHessian =
-        (fun k ↦ (Matrix.toEuclideanCLM : Matrix (Fin n) (Fin n) ℝ ≃⋆ₐ[ℝ]
-          EuclideanSpace ℝ (Fin n) →L[ℝ] EuclideanSpace ℝ (Fin n)).symm
-          (c.inverseHessian k)) := by
-      exact canonicalMatrixSequence_eq_explicit c.inverseHessian
-    dsimp only [H]
-    rw [hSequenceEq]
-    exact hOrbitExplicit
+    simpa only [H, canonicalMatrixSequence_eq_explicit] using c.orbit.toMatrix
   let iteration : DFP.InverseIteration (Fin n) :=
-    hOrbit.toInverseIteration hPosDef' hDenominator'
-  have hObjective : iteration.objective = c.objective := by
-    simpa only [iteration, DFP.IsOrbit.toInverseIteration_objective] using rfl
-  have hStepLength : ∀ k, iteration.stepLength k = c.stepLength k := by
-    intro k
-    simpa only [iteration, DFP.IsOrbit.toInverseIteration_stepLength] using rfl
-  have hPoint : ∀ k, iteration.point k = c.point k := by
-    intro k
-    simpa only [iteration, DFP.IsOrbit.toInverseIteration_point] using rfl
-  have hGradientEq :
-      DFP.gradients iteration.objective iteration.point = c.gradient := by
-    have hOrbitGradient : DFP.gradients c.objective c.point = c.gradient :=
-      hOrbit.gradients_eq
-    rw [hObjective]
-    have hPointEq : iteration.point = c.point := by
-      simpa only [iteration, DFP.IsOrbit.toInverseIteration_point_eq] using rfl
-    rw [hPointEq]
-    exact hOrbitGradient
+    hOrbit.toInverseIteration hPosDef hDenominator
+  have hObjective : iteration.objective = c.objective :=
+    hOrbit.toInverseIteration_objective hPosDef hDenominator
+  have hStepLength : iteration.stepLength = c.stepLength :=
+    hOrbit.toInverseIteration_stepLength hPosDef hDenominator
+  have hPoint : iteration.point = c.point :=
+    hOrbit.toInverseIteration_point_eq hPosDef hDenominator
+  have hGradientEq : DFP.gradients iteration.objective iteration.point = c.gradient := by
+    rw [hObjective, hPoint]
+    exact hOrbit.gradients_eq
   have hContDiff : ContDiff ℝ 2 iteration.objective := by
     rw [hObjective]
     exact c.objectiveContDiff
   have hStepPos : ∀ k, 0 < iteration.stepLength k := by
     intro k
-    rw [hStepLength k]
-    exact c.toIdentityInitializedOperatorCertificate.orbit.stepLengthPos k
+    rw [hStepLength]
+    exact c.orbit.stepLengthPos k
   have hHessianBounds : HasHessianBounds m M iteration.objective := by
     rw [hObjective]
     exact c.hessianBounds
   have hStrongWolfe : ∀ k, LineSearch.IsStrongWolfe c₁ c₂ iteration.objective
       (iteration.point k) (iteration.point (k + 1) - iteration.point k) := by
     intro k
-    rw [hObjective, hPoint k, hPoint (k + 1)]
-    have hStepEq :
-        DFP.Operator.steps c.stepLength
-            c.inverseHessian
-            c.gradient k = c.point (k + 1) - c.point k := by
-      have hOperator := c.toIdentityInitializedOperatorCertificate.orbit
-      rw [hOperator.pointSucc k]
-      abel
-    have hStrong := c.strongWolfe k
-    simpa only [hStepEq] using hStrong
+    rw [hObjective, hPoint]
+    exact c.strongWolfe k
   have hInitial : iteration.inverseHessian 0 =
       (1 : Matrix (Fin n) (Fin n) ℝ) := by
-    have hMatrixInitial := canonicalMatrixSequence_zero_eq_one
-      (H := c.inverseHessian) c.initialInverseHessian_eq_one
-    simpa only [iteration, DFP.IsOrbit.toInverseIteration_inverseHessian] using
-      hMatrixInitial
+    rw [hOrbit.toInverseIteration_inverseHessian]
+    exact canonicalMatrixSequence_zero_eq_one c.initialInverseHessian_eq_one
   have hTail : ∃ δ : ℝ, 0 < δ ∧
       ∀ᶠ k in atTop, δ ≤ ‖DFP.gradients iteration.objective iteration.point k‖ := by
-    obtain ⟨δ, hδ, htail⟩ := c.gradientNormEventuallyPositive
-    refine ⟨δ, hδ, ?_⟩
-    filter_upwards [htail] with k hk
     rw [hGradientEq]
-    exact hk
+    exact c.gradientNormEventuallyPositive
   have hLiminf : 0 < liminf
       (fun k ↦ ‖DFP.gradients iteration.objective iteration.point k‖) atTop := by
     rw [hGradientEq]
@@ -200,9 +156,9 @@ theorem MatrixIdentityLiminfStrongWolfeCertificate.ofOperatorWithObjective
   }
   exact ⟨result, hObjective⟩
 
-/-- Helper for TASK-16: assemble the matrix-facing certificate from an identity-initialized
-operator certificate.  The matrix positive-definiteness, secant denominator,
-and gradient-liminf obligations are explicit hypotheses of this bridge. -/
+/-- Helper for cor:identity-initialization: an identity-initialized operator certificate
+with positive-definite matrices, nonzero secant denominators, and a positive gradient
+liminf yields the corresponding matrix certificate. -/
 theorem MatrixIdentityLiminfStrongWolfeCertificate.ofOperator
     {n : ℕ} {m M c₁ c₂ : ℝ}
     (c : IdentityInitializedStrongWolfeOperatorCertificate (Fin n) m M c₁ c₂)
@@ -218,8 +174,8 @@ theorem MatrixIdentityLiminfStrongWolfeCertificate.ofOperator
   obtain ⟨d, _⟩ := ofOperatorWithObjective c hm hmM hGradientNormLiminf hPosDef hDenominator
   exact ⟨d⟩
 
-/-- Helper for TASK-16: a convenience bridge deriving the matrix denominator hypothesis from
-strict positive secant curvature of the operator orbit. -/
+/-- Helper for cor:identity-initialization: positive secant curvature supplies the
+nonzero denominators required by the matrix liminf certificate. -/
 theorem MatrixIdentityLiminfStrongWolfeCertificate.ofOperator_ofSecantCurvature
     {n : ℕ} {m M c₁ c₂ : ℝ}
     (c : IdentityInitializedStrongWolfeOperatorCertificate (Fin n) m M c₁ c₂)
@@ -230,39 +186,13 @@ theorem MatrixIdentityLiminfStrongWolfeCertificate.ofOperator_ofSecantCurvature
       0 < inner ℝ (c.gradient (k + 1) - c.gradient k)
         (c.point (k + 1) - c.point k)) :
     Nonempty (MatrixIdentityLiminfStrongWolfeCertificate n m M c₁ c₂) := by
-  let H : ℕ → Matrix (Fin n) (Fin n) ℝ := canonicalMatrixSequence c.inverseHessian
-  have hOrbit : DFP.IsOrbit c.objective c.stepLength c.point c.gradient H := by
-    have hOrbitExplicit : DFP.IsOrbit c.objective c.stepLength c.point c.gradient
-      (fun k ↦ (Matrix.toEuclideanCLM : Matrix (Fin n) (Fin n) ℝ ≃⋆ₐ[ℝ]
-        EuclideanSpace ℝ (Fin n) →L[ℝ] EuclideanSpace ℝ (Fin n)).symm
-        (c.inverseHessian k)) :=
-      c.toIdentityInitializedOperatorCertificate.orbit.toMatrix
-    have hSequenceEq : canonicalMatrixSequence c.inverseHessian =
-        (fun k ↦ (Matrix.toEuclideanCLM : Matrix (Fin n) (Fin n) ℝ ≃⋆ₐ[ℝ]
-          EuclideanSpace ℝ (Fin n) →L[ℝ] EuclideanSpace ℝ (Fin n)).symm
-          (c.inverseHessian k)) := by
-      exact canonicalMatrixSequence_eq_explicit c.inverseHessian
-    dsimp only [H]
-    rw [hSequenceEq]
-    exact hOrbitExplicit
-  have hDenominator : ∀ k,
-      WithLp.ofLp (DFP.steps c.stepLength (DFP.directions H c.gradient) k) ⬝ᵥ
-        WithLp.ofLp (DFP.gradientChanges c.gradient k) ≠ 0 := by
-    exact hOrbit.secantDenominator_ne_of_secantCurvature_pos hSecant
-  have hDenominator' : ∀ k,
-      WithLp.ofLp
-          (DFP.steps c.stepLength
-            (DFP.directions (canonicalMatrixSequence c.inverseHessian) c.gradient) k) ⬝ᵥ
-        WithLp.ofLp (DFP.gradientChanges c.gradient k) ≠ 0 := by
-    intro k
-    simpa only [H] using hDenominator k
   exact MatrixIdentityLiminfStrongWolfeCertificate.ofOperator c hm hmM
-    hGradientNormLiminf hPosDef hDenominator'
+    hGradientNormLiminf hPosDef
+    (canonicalMatrixSequence_denominator_ne_of_operatorOrbit c.orbit hSecant)
 
-/-- Helper for TASK-16: assemble the matrix-facing liminf certificate from identity initialization
-and strict positive secant curvature.  The existing matrix bridge derives
-positive definiteness and all nonzero DFP denominators; no gradient-norm
-convergence hypothesis is used. -/
+/-- Helper for cor:identity-initialization: identity initialization and positive secant
+curvature yield a matrix certificate with a positive gradient liminf, without requiring
+convergence of the gradient norms. -/
 theorem MatrixIdentityLiminfStrongWolfeCertificate.ofOperator_ofIdentityAndSecantCurvature
     {n : ℕ} {m M c₁ c₂ : ℝ}
     (c : IdentityInitializedStrongWolfeOperatorCertificate (Fin n) m M c₁ c₂)

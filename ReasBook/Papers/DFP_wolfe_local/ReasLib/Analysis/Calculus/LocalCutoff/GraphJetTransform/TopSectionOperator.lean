@@ -2,7 +2,6 @@ module
 
 public import ReasLib.Analysis.Calculus.LocalCutoff.GraphJetTransform.SectionContraction
 public import ReasLib.Analysis.Calculus.LocalCutoff.GraphJetTransform.HolonomicFixedSection
-
 public section
 
 open scoped NNReal Topology
@@ -19,7 +18,7 @@ pointwise contraction and the holonomic predecessor equation.
 
 variable {α : Type u} {β : Type v}
 
-/-- Helper for Infrastructure I.16a: a bounded-section operator certificate records the
+/-- Supporting fact: a bounded-section operator certificate records the
 strict factor and the pointwise distance estimate needed by the sup-metric contraction. -/
 structure BoundedSectionContractionCertificate
     [TopologicalSpace α] [Nonempty α]
@@ -30,7 +29,7 @@ structure BoundedSectionContractionCertificate
   dist_apply_le : ∀ f g x,
     dist (T f x) (T g x) ≤ contractionFactor * dist f g
 
-/-- Helper for Infrastructure I.16a: a pointwise bounded-section certificate yields the
+/-- Supporting fact: a pointwise bounded-section certificate yields the
 canonical `ContractingWith` structure used by Mathlib's fixed-point API. -/
 theorem BoundedSectionContractionCertificate.contractingWith
     [TopologicalSpace α] [Nonempty α]
@@ -41,7 +40,7 @@ theorem BoundedSectionContractionCertificate.contractingWith
   exact BoundedContinuousFunction.contractingWith_of_dist_apply_le_mul
     certificate.contractionFactor_lt_one certificate.dist_apply_le
 
-/-- Infrastructure I.16a: the contraction certificate gives existence and uniqueness of a
+/-- Supporting infrastructure: the contraction certificate gives existence and uniqueness of a
 bounded fixed section, without committing to a source-specific formula for the operator. -/
 theorem BoundedSectionContractionCertificate.existsUnique_fixedSection
     [TopologicalSpace α] [Nonempty α]
@@ -52,7 +51,7 @@ theorem BoundedSectionContractionCertificate.existsUnique_fixedSection
   exact BoundedContinuousFunction.existsUnique_fixedPoint_of_dist_apply_le_mul
     certificate.contractionFactor_lt_one certificate.dist_apply_le
 
-/-- Helper for Infrastructure I.16a: a holonomic top section packages continuity and the
+/-- Supporting fact: a holonomic top section packages continuity and the
 predecessor Taylor coefficient's pointwise derivative equation. -/
 structure HolonomicTopSectionData
     {X : Type u} [NormedAddCommGroup X] [NormedSpace ℝ X]
@@ -63,7 +62,7 @@ structure HolonomicTopSectionData
     (fun y ↦ (ftaylorSeries ℝ ζ y) (r - 1))
     ((value u).curryLeft) u
 
-/-- Infrastructure I.16a: holonomic predecessor data upgrades a graph by one smoothness
+/-- Supporting infrastructure: holonomic predecessor data upgrades a graph by one smoothness
 order and identifies the new section with the corresponding iterated derivative. -/
 theorem HolonomicTopSectionData.contDiff_succ_and_eq_iteratedFDeriv
     {X : Type u} [NormedAddCommGroup X] [NormedSpace ℝ X]

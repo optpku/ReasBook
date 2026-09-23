@@ -2,7 +2,6 @@ module
 
 public import ReasLib.Analysis.Calculus.LocalInvariantGraph.ExplicitContraction.MetricTopSectionCoreAssembly
 import all ReasLib.Analysis.Calculus.LocalInvariantGraph.ExplicitContraction.MetricTopSectionCoreAssembly
-
 public section
 
 noncomputable section
@@ -32,7 +31,7 @@ length-one block makes every inner part size smaller than `r`.  Thus the operato
 before the order-`r` derivative has been constructed.
 -/
 
-/-- Helper for Infrastructure I.16a: an order-`r` multilinear jet evaluated on a continuously
+/-- Supporting fact: an order-`r` multilinear jet evaluated on a continuously
 varying diagonal first jet is continuous. -/
 private theorem iteratedFDeriv_diagonalFirstJet_continuous
     {Z Y : Type*} [NormedAddCommGroup Z] [NormedSpace ℝ Z]
@@ -53,7 +52,7 @@ private theorem iteratedFDeriv_diagonalFirstJet_continuous
     exact hfirst
   exact hjet.eval hvec
 
-/-- Helper for Infrastructure I.16a: after excluding both the atomic and length-one
+/-- Supporting fact: after excluding both the atomic and length-one
 Faà-di-Bruno blocks, every retained evaluation is continuous using only the previous order. -/
 private theorem orderedFinpartition_evaluation_continuous_of_previousOrder
     {Z Y : Type*} [NormedAddCommGroup Z] [NormedSpace ℝ Z]
@@ -85,7 +84,7 @@ private theorem orderedFinpartition_evaluation_continuous_of_previousOrder
     exact hf.continuous_iteratedDeriv (c.partSize j) hpart_order
   exact hjet.eval hvec
 
-/-- Helper for Infrastructure I.16a: the order-`r` stable-coordinate atomic evaluation is
+/-- Supporting fact: the order-`r` stable-coordinate atomic evaluation is
 continuous under the non-circular assumptions `r ≤ d.nu` and `ζ ∈ C^(r-1)`. -/
 theorem metricStableAtomicEvaluation_continuous_of_previousOrder
     (d : MetricGraphTransformData X)
@@ -112,7 +111,7 @@ theorem metricStableAtomicEvaluation_continuous_of_previousOrder
   exact iteratedFDeriv_diagonalFirstJet_continuous
     (fun z : ℝ × X ↦ (d.R z).2) (fun y : ℝ ↦ (y, (ζ : ℝ → X) y)) hg hpair
 
-/-- Helper for Infrastructure I.16a: the order-`r` center-coordinate atomic evaluation is
+/-- Supporting fact: the order-`r` center-coordinate atomic evaluation is
 continuous under the non-circular assumptions `r ≤ d.nu` and `ζ ∈ C^(r-1)`. -/
 theorem metricCenterAtomicEvaluation_continuous_of_previousOrder
     (d : MetricGraphTransformData X)
@@ -139,7 +138,7 @@ theorem metricCenterAtomicEvaluation_continuous_of_previousOrder
   exact iteratedFDeriv_diagonalFirstJet_continuous
     (fun z : ℝ × X ↦ (d.R z).1) (fun y : ℝ ↦ (y, (ζ : ℝ → X) y)) hg hpair
 
-/-- Helper for Infrastructure I.16a: the stable-coordinate doubled-filter residual is
+/-- Supporting fact: the stable-coordinate doubled-filter residual is
 continuous using only the previous-order regularity of the graph. -/
 theorem iteratedDeriv_fiber_remainder_length_one_residual_continuous_of_previousOrder
     (d : MetricGraphTransformData X)
@@ -171,7 +170,7 @@ theorem iteratedDeriv_fiber_remainder_length_one_residual_continuous_of_previous
     (fun z : ℝ × X ↦ (d.R z).2) (fun y : ℝ ↦ (y, (ζ : ℝ → X) y))
     hg hpair c hc.2.1 hc.2.2
 
-/-- Helper for Infrastructure I.16a: the center-coordinate doubled-filter residual is
+/-- Supporting fact: the center-coordinate doubled-filter residual is
 continuous using only the previous-order regularity of the graph. -/
 theorem iteratedDeriv_center_remainder_length_one_residual_continuous_of_previousOrder
     (d : MetricGraphTransformData X)
@@ -203,7 +202,7 @@ theorem iteratedDeriv_center_remainder_length_one_residual_continuous_of_previou
     (fun z : ℝ × X ↦ (d.R z).1) (fun y : ℝ ↦ (y, (ζ : ℝ → X) y))
     hg hpair c hc.2.1 hc.2.2
 
-/-- Helper for Infrastructure I.16a: the graph-composition doubled-filter residual is
+/-- Supporting fact: the graph-composition doubled-filter residual is
 continuous using only the previous-order regularity of the graph. -/
 theorem iteratedDeriv_zeta_comp_centerMap_length_one_residual_continuous_of_previousOrder
     (d : MetricGraphTransformData X)
@@ -225,7 +224,7 @@ theorem iteratedDeriv_zeta_comp_centerMap_length_one_residual_continuous_of_prev
   exact orderedFinpartition_evaluation_continuous_of_previousOrder
     (ζ : ℝ → X) (d.centerMap ζ) hprev hcenter c hc.2.1 hc.2.2
 
-/-- Helper for Infrastructure I.16a: previous-order regularity at every order at least two
+/-- Supporting fact: previous-order regularity at every order at least two
 contains first-order regularity. -/
 private theorem contDiff_one_of_previousOrder
     {f : ℝ → X} {r : ℕ} (hr : 2 ≤ r)
@@ -238,7 +237,7 @@ private theorem contDiff_one_of_previousOrder
     exact_mod_cast hone_previous_nat
   exact hprev.of_le hone_previous
 
-/-- Helper for Infrastructure I.16a: the complete reserved-top coefficient is continuous under
+/-- Supporting fact: the complete reserved-top coefficient is continuous under
 the previous-order regularity needed to form its center-feedback term. -/
 theorem metricReservedTopCoefficient_continuous
     (d : MetricGraphTransformData X)
@@ -276,7 +275,7 @@ theorem metricReservedTopCoefficient_continuous
   intro x
   exact (metricReservedTopCoefficient.eq_1 d ζ r x).symm
 
-/-- Helper for Infrastructure I.16a: the complete lower-order reserved-top forcing is
+/-- Supporting fact: the complete lower-order reserved-top forcing is
 continuous from exactly `ζ ∈ C^(r-1)`; no order-`r` graph derivative is used. -/
 theorem metricReservedTopForcing_continuous_of_previousOrder
     (d : MetricGraphTransformData X)
@@ -324,7 +323,7 @@ theorem metricReservedTopForcing_continuous_of_previousOrder
   intro x
   exact (metricReservedTopForcing.eq_1 d ζ r x).symm
 
-/-- Helper for Infrastructure I.16a: outside the support of `R`, every stable-coordinate
+/-- Supporting fact: outside the support of `R`, every stable-coordinate
 iterated jet of `R` vanishes. -/
 private theorem iteratedFDeriv_stableR_eq_zero_of_notMem_tsupport
     (d : MetricGraphTransformData X) (n : ℕ) {z : ℝ × X}
@@ -341,7 +340,7 @@ private theorem iteratedFDeriv_stableR_eq_zero_of_notMem_tsupport
   exact iteratedFDeriv_eq_zero_of_notMem_tsupport
     (fun w : ℝ × X ↦ (d.R w).2) n (fun hw ↦ hz (hsupport hw))
 
-/-- Helper for Infrastructure I.16a: outside the support of `R`, every center-coordinate
+/-- Supporting fact: outside the support of `R`, every center-coordinate
 iterated jet of `R` vanishes. -/
 private theorem iteratedFDeriv_centerR_eq_zero_of_notMem_tsupport
     (d : MetricGraphTransformData X) (n : ℕ) {z : ℝ × X}
@@ -358,7 +357,7 @@ private theorem iteratedFDeriv_centerR_eq_zero_of_notMem_tsupport
   exact iteratedFDeriv_eq_zero_of_notMem_tsupport
     (fun w : ℝ × X ↦ (d.R w).1) n (fun hw ↦ hz (hsupport hw))
 
-/-- Helper for Infrastructure I.16a: the inverse center map cancels the center map at every
+/-- Supporting fact: the inverse center map cancels the center map at every
 source coordinate. -/
 private theorem inverseCenter_centerMap
     (d : MetricGraphTransformData X)
@@ -367,7 +366,7 @@ private theorem inverseCenter_centerMap
   rw [d.inverseCenter_eq ζ]
   exact Function.leftInverse_invFun (d.centerMap_bijective ζ).1 x
 
-/-- Helper for Infrastructure I.16a: on a fixed graph, the previous-order reserved-top forcing
+/-- Supporting fact: on a fixed graph, the previous-order reserved-top forcing
 has compact support. Its support is controlled by the center projection of `tsupport d.R`
 together with the inverse-center image of `tsupport ζ`. -/
 theorem metricReservedTopForcing_hasCompactSupport
@@ -447,13 +446,13 @@ theorem metricReservedTopForcing_hasCompactSupport
   rw [hstable_atomic, hstable_residual, hcenter_atomic, hcenter_residual, hζ_residual]
   simp only [zero_add, zero_smul, smul_zero, sub_zero]
 
-/-- Helper for Infrastructure I.16a: the reserved-top contraction factor as a nonnegative real
+/-- Supporting fact: the reserved-top contraction factor as a nonnegative real
 number. -/
 def metricReservedTopFactor
     (d : MetricGraphTransformData X) (r : ℕ) : ℝ≥0 :=
   metricGraphTransformRate d.lower d.linearRate d.epsilon d.slope * d.lower⁻¹ ^ r
 
-/-- Helper for Infrastructure I.16a: the real coercion of `metricReservedTopFactor` is the
+/-- Supporting fact: the real coercion of `metricReservedTopFactor` is the
 sharp coefficient appearing in the bunching inequality. -/
 theorem metricReservedTopFactor_coe
     (d : MetricGraphTransformData X) (r : ℕ) :
@@ -462,13 +461,13 @@ theorem metricReservedTopFactor_coe
         (d.lower : ℝ)⁻¹ ^ r := by
   simp only [metricReservedTopFactor, NNReal.coe_mul, NNReal.coe_pow, NNReal.coe_inv]
 
-/-- Helper for Infrastructure I.16a: the reserved-top contraction factor is nonnegative. -/
+/-- Supporting fact: the reserved-top contraction factor is nonnegative. -/
 theorem metricReservedTopFactor_nonneg
     (d : MetricGraphTransformData X) (r : ℕ) :
     (0 : ℝ) ≤ (metricReservedTopFactor d r : ℝ) := by
   exact NNReal.coe_nonneg (metricReservedTopFactor d r)
 
-/-- Helper for Infrastructure I.16a: the complete reserved-top coefficient is bounded by the
+/-- Supporting fact: the complete reserved-top coefficient is bounded by the
 bundled nonnegative contraction factor. -/
 theorem norm_metricReservedTopCoefficient_le_factor
     [CompleteSpace X]
@@ -482,7 +481,7 @@ theorem norm_metricReservedTopCoefficient_le_factor
   rw [metricReservedTopFactor_coe]
   exact norm_metricReservedTopCoefficient_le d ζ hζ_one hfixed r x
 
-/-- Helper for Infrastructure I.16a: the complete reserved-top coefficient bundled as a bounded
+/-- Supporting fact: the complete reserved-top coefficient bundled as a bounded
 continuous operator-valued section. -/
 def metricReservedTopCoefficientSection
     [CompleteSpace X]
@@ -497,7 +496,7 @@ def metricReservedTopCoefficientSection
     (metricReservedTopFactor d r)
     (norm_metricReservedTopCoefficient_le_factor d ζ hfixed hr hprev)
 
-/-- Helper for Infrastructure I.16a: evaluation of the bundled coefficient is the original
+/-- Supporting fact: evaluation of the bundled coefficient is the original
 reserved-top coefficient. -/
 theorem metricReservedTopCoefficientSection_apply
     [CompleteSpace X]
@@ -509,7 +508,7 @@ theorem metricReservedTopCoefficientSection_apply
       metricReservedTopCoefficient d ζ r x := by
   rfl
 
-/-- Helper for Infrastructure I.16a: compact support and continuity give a nonnegative uniform
+/-- Supporting fact: compact support and continuity give a nonnegative uniform
 bound for the reserved-top forcing. -/
 theorem exists_metricReservedTopForcing_norm_bound
     [CompleteSpace X]
@@ -527,7 +526,7 @@ theorem exists_metricReservedTopForcing_norm_bound
     (norm_nonneg (metricReservedTopForcing d ζ r 0)).trans (hC 0)
   exact ⟨C, hC_nonneg, hC⟩
 
-/-- Helper for Infrastructure I.16a: a selected nonnegative uniform norm bound for the
+/-- Supporting fact: a selected nonnegative uniform norm bound for the
 reserved-top forcing. -/
 noncomputable def metricReservedTopForcingBound
     [CompleteSpace X]
@@ -538,7 +537,7 @@ noncomputable def metricReservedTopForcingBound
   Classical.choose
     (exists_metricReservedTopForcing_norm_bound d ζ hfixed hr hrν hprev)
 
-/-- Helper for Infrastructure I.16a: the selected forcing bound is nonnegative. -/
+/-- Supporting fact: the selected forcing bound is nonnegative. -/
 theorem metricReservedTopForcingBound_nonneg
     [CompleteSpace X]
     (d : MetricGraphTransformData X)
@@ -549,7 +548,7 @@ theorem metricReservedTopForcingBound_nonneg
   exact (Classical.choose_spec
     (exists_metricReservedTopForcing_norm_bound d ζ hfixed hr hrν hprev)).1
 
-/-- Helper for Infrastructure I.16a: the selected forcing bound controls every source value. -/
+/-- Supporting fact: the selected forcing bound controls every source value. -/
 theorem norm_metricReservedTopForcing_le_bound
     [CompleteSpace X]
     (d : MetricGraphTransformData X)
@@ -561,7 +560,7 @@ theorem norm_metricReservedTopForcing_le_bound
   exact (Classical.choose_spec
     (exists_metricReservedTopForcing_norm_bound d ζ hfixed hr hrν hprev)).2 x
 
-/-- Helper for Infrastructure I.16a: the lower-order forcing bundled as a bounded continuous
+/-- Supporting fact: the lower-order forcing bundled as a bounded continuous
 section on source coordinates. -/
 def metricReservedTopForcingSection
     [CompleteSpace X]
@@ -576,7 +575,7 @@ def metricReservedTopForcingSection
     (metricReservedTopForcingBound d ζ hfixed hr hrν hprev)
     (norm_metricReservedTopForcing_le_bound d ζ hfixed hr hrν hprev)
 
-/-- Helper for Infrastructure I.16a: evaluation of the bundled forcing is the original
+/-- Supporting fact: evaluation of the bundled forcing is the original
 reserved-top forcing. -/
 theorem metricReservedTopForcingSection_apply
     [CompleteSpace X]
@@ -588,7 +587,7 @@ theorem metricReservedTopForcingSection_apply
       metricReservedTopForcing d ζ r x := by
   rfl
 
-/-- Helper for Infrastructure I.16a: the output-coordinate value of the reserved-top affine
+/-- Supporting fact: the output-coordinate value of the reserved-top affine
 operator. -/
 def metricReservedTopOperatorValue
     (d : MetricGraphTransformData X)
@@ -598,7 +597,7 @@ def metricReservedTopOperatorValue
       (b (d.inverseCenter ζ y)) +
     metricReservedTopForcing d ζ r (d.inverseCenter ζ y)
 
-/-- Helper for Infrastructure I.16a: the output-coordinate affine operator value is continuous. -/
+/-- Supporting fact: the output-coordinate affine operator value is continuous. -/
 theorem metricReservedTopOperatorValue_continuous
     (d : MetricGraphTransformData X)
     (ζ : SmallLipschitzGraph X d.radius d.slope)
@@ -622,7 +621,7 @@ theorem metricReservedTopOperatorValue_continuous
     (metricReservedTopForcing_continuous_of_previousOrder d ζ hr hrν hprev).comp hinverse
   exact hlinear.add hforcing
 
-/-- Helper for Infrastructure I.16a: the affine operator value has a uniform bound obtained from
+/-- Supporting fact: the affine operator value has a uniform bound obtained from
 the sharp coefficient factor and the bundled forcing norm. -/
 theorem norm_metricReservedTopOperatorValue_le
     [CompleteSpace X]
@@ -660,7 +659,7 @@ theorem norm_metricReservedTopOperatorValue_le
   unfold metricReservedTopOperatorValue
   exact (norm_add_le _ _).trans (add_le_add hlinear hforcing)
 
-/-- Helper for Infrastructure I.16a: the uniform bound used to bundle the affine operator is
+/-- Supporting fact: the uniform bound used to bundle the affine operator is
 nonnegative. -/
 theorem metricReservedTopOperatorValue_bound_nonneg
     [CompleteSpace X]
@@ -673,7 +672,7 @@ theorem metricReservedTopOperatorValue_bound_nonneg
       ‖metricReservedTopForcingSection d ζ hfixed hr hrν hprev‖ := by
   positivity
 
-/-- Helper for Infrastructure I.16a: the paper-faithful reserved-top affine operator on bounded
+/-- Supporting fact: the paper-faithful reserved-top affine operator on bounded
 continuous sections, evaluated in output coordinates through `d.inverseCenter ζ`. -/
 def metricReservedTopOperator
     [CompleteSpace X]
@@ -689,7 +688,7 @@ def metricReservedTopOperator
       ‖metricReservedTopForcingSection d ζ hfixed hr hrν hprev‖)
     (norm_metricReservedTopOperatorValue_le d ζ hfixed hr hrν hprev b)
 
-/-- Helper for Infrastructure I.16a: evaluation of the bundled affine operator exposes its
+/-- Supporting fact: evaluation of the bundled affine operator exposes its
 output-coordinate formula. -/
 theorem metricReservedTopOperator_apply
     [CompleteSpace X]
@@ -704,7 +703,7 @@ theorem metricReservedTopOperator_apply
         metricReservedTopForcing d ζ r (d.inverseCenter ζ y) := by
   rfl
 
-/-- Helper for Infrastructure I.16a: at a source center coordinate, the affine operator has the
+/-- Supporting fact: at a source center coordinate, the affine operator has the
 untranslated source formula `C x (b x) + F x`. -/
 theorem metricReservedTopOperator_apply_centerMap
     [CompleteSpace X]
@@ -718,7 +717,7 @@ theorem metricReservedTopOperator_apply_centerMap
         metricReservedTopForcing d ζ r x := by
   rw [metricReservedTopOperator_apply, inverseCenter_centerMap]
 
-/-- Helper for Infrastructure I.16a: the reserved-top affine operator has the sharp pointwise
+/-- Supporting fact: the reserved-top affine operator has the sharp pointwise
 contraction factor `metricGraphTransformRate * lower⁻ʳ`. -/
 theorem metricReservedTopOperator_dist_apply_le
     [CompleteSpace X]
@@ -779,7 +778,7 @@ theorem metricReservedTopOperator_dist_apply_le
     _ ≤ (metricReservedTopFactor d r : ℝ) * dist b c :=
       mul_le_mul_of_nonneg_left heval hfactor_nonneg
 
-/-- Infrastructure I.16a: the order-`r` bunching inequality makes the reserved-top affine
+/-- Supporting infrastructure: the order-`r` bunching inequality makes the reserved-top affine
 operator a `ContractingWith` map. -/
 theorem metricReservedTopOperator_contractingWith
     [CompleteSpace X]
@@ -806,7 +805,7 @@ theorem metricReservedTopOperator_contractingWith
   exact metricReservedTopOperator_dist_apply_le
     d ζ hfixed hr hrν hprev b c y
 
-/-- Helper for Infrastructure I.16a: the canonical reserved-top bounded continuous section is
+/-- Supporting fact: the canonical reserved-top bounded continuous section is
 the fixed point of the inverse-center affine operator. -/
 noncomputable def metricReservedTopFixedSection
     [CompleteSpace X]
@@ -822,7 +821,7 @@ noncomputable def metricReservedTopFixedSection
     (metricReservedTopOperator_contractingWith
       d ζ hfixed hr hrν hprev h_bunching)
 
-/-- Helper for Infrastructure I.16a: the canonical reserved-top section satisfies the affine
+/-- Supporting fact: the canonical reserved-top section satisfies the affine
 fixed-section equation. -/
 theorem metricReservedTopFixedSection_is_fixed
     [CompleteSpace X]
@@ -839,7 +838,7 @@ theorem metricReservedTopFixedSection_is_fixed
   exact (metricReservedTopOperator_contractingWith
     d ζ hfixed hr hrν hprev h_bunching).fixedPoint_isFixedPt
 
-/-- Helper for Infrastructure I.16a: every fixed bounded section of the reserved-top affine
+/-- Supporting fact: every fixed bounded section of the reserved-top affine
 operator is the canonical fixed section. -/
 theorem metricReservedTopFixedSection_unique
     [CompleteSpace X]
@@ -856,7 +855,7 @@ theorem metricReservedTopFixedSection_unique
   exact (metricReservedTopOperator_contractingWith
     d ζ hfixed hr hrν hprev h_bunching).fixedPoint_unique hb
 
-/-- Helper for Infrastructure I.16a: in source coordinates, the canonical fixed section obeys
+/-- Supporting fact: in source coordinates, the canonical fixed section obeys
 exactly the paper's affine reserved-top equation. -/
 theorem metricReservedTopFixedSection_sourceEquation
     [CompleteSpace X]

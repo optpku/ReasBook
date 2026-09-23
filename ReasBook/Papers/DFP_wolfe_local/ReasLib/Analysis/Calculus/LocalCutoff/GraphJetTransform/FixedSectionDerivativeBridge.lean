@@ -4,7 +4,6 @@ public import Mathlib.Analysis.Calculus.Deriv.Slope
 public import Mathlib.Analysis.Calculus.ContDiff.Deriv
 public import Mathlib.Analysis.Asymptotics.Defs
 public import Mathlib.Topology.ContinuousMap.Bounded.Normed
-
 public section
 
 open Filter
@@ -16,7 +15,7 @@ namespace LocalCutoff.GraphTransform
 
 variable {Y : Type u} [NormedAddCommGroup Y] [NormedSpace ℝ Y]
 
-/-- Infrastructure I.16a: convergence of a scaled nonzero secant identifies the
+/-- Supporting infrastructure: convergence of a scaled nonzero secant identifies the
 derivative of a scalar-valued-parameter map at a translated base point. -/
 theorem hasDerivAt_of_tendsto_slope_smul
     (f : ℝ → Y) (x c : ℝ) (s : ℝ → Y) (v : Y)
@@ -31,7 +30,7 @@ theorem hasDerivAt_of_tendsto_slope_smul
     exact (hs.const_smul c).mono_left nhdsWithin_le_nhds
   exact hscaled.congr' hsecant.symm
 
-/-- Infrastructure I.16a: a fixed bounded section can be evaluated at a point
+/-- Supporting infrastructure: a fixed bounded section can be evaluated at a point
 before the scaled-secant derivative bridge is applied. -/
 theorem hasDerivAt_of_tendsto_boundedSection_eval_smul
     {α : Type*} [TopologicalSpace α]
@@ -48,7 +47,7 @@ theorem hasDerivAt_of_tendsto_boundedSection_eval_smul
       hsections
   exact hasDerivAt_of_tendsto_slope_smul f x c (fun t => sections t w) (v w) heval hsecant
 
-/-- Infrastructure I.16a: uniform convergence of bounded scalar-source sections
+/-- Supporting infrastructure: uniform convergence of bounded scalar-source sections
 gives the full predecessor derivative equation when every center has the same
 nonzero-secant representation. -/
 theorem hasDerivAt_of_tendsto_boundedSection_slope_smul
@@ -64,7 +63,7 @@ theorem hasDerivAt_of_tendsto_boundedSection_slope_smul
   exact hasDerivAt_of_tendsto_boundedSection_eval_smul f x c sections x v
     hsections (hsecant x)
 
-/-- Infrastructure I.16a: a fixed-section secant certificate records the
+/-- Supporting infrastructure: a fixed-section secant certificate records the
 uniform section limit and the translated nonzero-secant formula needed for
 holonomicity. -/
 structure FixedSectionSecantCertificate (f : ℝ → Y) where
@@ -76,7 +75,7 @@ structure FixedSectionSecantCertificate (f : ℝ → Y) where
     (fun t : ℝ => t⁻¹ • (f (x + t) - f x)) =ᶠ[nhdsWithin 0 ({0}ᶜ : Set ℝ)]
       (fun t => scale • sections t x)
 
-/-- Infrastructure I.16a: the fixed-section secant certificate supplies the
+/-- Supporting infrastructure: the fixed-section secant certificate supplies the
 pointwise derivative equation for its limiting section. -/
 theorem FixedSectionSecantCertificate.hasDerivAt
     {f : ℝ → Y} (certificate : FixedSectionSecantCertificate f) :
@@ -85,7 +84,7 @@ theorem FixedSectionSecantCertificate.hasDerivAt
     certificate.sections certificate.limitSection certificate.sections_tendsto
     certificate.secant_formula
 
-/-- Helper for Infrastructure I.16a: the fixed-section derivative certificate exposes
+/-- Supporting fact: the fixed-section derivative certificate exposes
 the translated little-o remainder in the form used by Fréchet derivative criteria. -/
 theorem FixedSectionSecantCertificate.isLittleO_shift
     {f : ℝ → Y} (certificate : FixedSectionSecantCertificate f) :
@@ -97,7 +96,7 @@ theorem FixedSectionSecantCertificate.isLittleO_shift
   have hderiv := (certificate.hasDerivAt x).hasFDerivAt
   exact (hasFDerivAt_iff_isLittleO_nhds_zero.mp hderiv)
 
-/-- Helper for Infrastructure I.16a: a uniform translated-remainder estimate gives the
+/-- Supporting fact: a uniform translated-remainder estimate gives the
 corresponding little-o statement at each base point. -/
 theorem isLittleO_shift_of_uniform_remainder
     {f : ℝ → Y} (A : ℝ →L[ℝ] Y)
@@ -114,7 +113,7 @@ theorem isLittleO_shift_of_uniform_remainder
     simpa only [Metric.mem_ball, dist_zero_right] using hh
   exact hεbound x h hh'
 
-/-- Helper for Infrastructure I.16a: a translated first-order little-o remainder determines the
+/-- Supporting fact: a translated first-order little-o remainder determines the
 Fréchet derivative at the translated base point. -/
 theorem hasFDerivAt_of_isLittleO_shift_bridge
     (p : ℝ → Y) (u : ℝ) (A : ℝ →L[ℝ] Y)
@@ -146,7 +145,7 @@ theorem hasFDerivAt_of_isLittleO_shift_bridge
   exact hcomp.congr_of_eventuallyEq (Filter.Eventually.of_forall hcongr)
 
 omit [NormedSpace ℝ Y] in
-/-- Helper for Infrastructure I.16a: a strict scalar contraction absorbs an eventual
+/-- Supporting fact: a strict scalar contraction absorbs an eventual
 norm inequality with a little-o additive error. -/
 theorem isLittleO_of_norm_le_mul_self_add_bridge
     {R e : ℝ → Y} {q : ℝ} (hq : q < 1)
@@ -162,7 +161,7 @@ theorem isLittleO_of_norm_le_mul_self_add_bridge
   nlinarith [norm_nonneg (R h), norm_nonneg h]
 
 omit [NormedSpace ℝ Y] in
-/-- Helper for Infrastructure I.16a: an eventual scalar envelope that is little-o of a comparison
+/-- Supporting fact: an eventual scalar envelope that is little-o of a comparison
 scale also controls a vector-valued remainder in the same little-o sense. -/
 theorem isLittleO_of_norm_le_of_isLittleO_bridge
     {α : Type*} [TopologicalSpace α] {R : α → Y} {a b : α → ℝ}
@@ -175,7 +174,7 @@ theorem isLittleO_of_norm_le_of_isLittleO_bridge
   exact hx.trans ((le_abs_self (a x)).trans hax)
 
 omit [NormedSpace ℝ Y] in
-/-- Helper for Infrastructure I.16a: a norm recurrence with a translated successor
+/-- Supporting fact: a norm recurrence with a translated successor
 and a little-o forcing term transfers little-o control to the current remainder. -/
 theorem isLittleO_of_norm_le_const_mul_add
     {R S e : ℝ → Y} {q : ℝ}
@@ -202,7 +201,7 @@ theorem isLittleO_of_norm_le_const_mul_add
           (mul_le_mul_of_nonneg_right (le_abs_self q) (norm_nonneg (S h))) _
   exact isLittleO_of_norm_le_of_isLittleO_bridge hbound hsum
 
-/-- Helper for Infrastructure I.16a: a fixed-section secant certificate with a bounded continuous
+/-- Supporting fact: a fixed-section secant certificate with a bounded continuous
 limit section upgrades its map to a globally first-order continuously differentiable map. -/
 theorem FixedSectionSecantCertificate.contDiff_one
     {f : ℝ → Y} (certificate : FixedSectionSecantCertificate f) :

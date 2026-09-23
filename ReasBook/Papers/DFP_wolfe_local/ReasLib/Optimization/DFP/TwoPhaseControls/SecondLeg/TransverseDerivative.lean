@@ -17,7 +17,7 @@ while the signed scale is only a parameter.  These lemmas isolate the scalar-cub
 and its local bounded quotient from the concrete `gradientFactors` formula.
 -/
 
-/-- Helper for Lemma 4.15: a cubic factorization of a transverse derivative gives the
+/-- Supporting fact: a cubic factorization of a transverse derivative gives the
 corresponding norm estimate at one parameter value. -/
 theorem transverse_fderiv_norm_le_of_cubic_factorization
     {g : ℝ → (ℝ × ℝ) → ℝ}
@@ -32,7 +32,7 @@ theorem transverse_fderiv_norm_le_of_cubic_factorization
       mul_le_mul_of_nonneg_left hA (norm_nonneg _)
     _ = C * ‖x.1 ^ (3 : ℕ)‖ := by ring
 
-/-- Helper for Lemma 4.15: continuity of the cubic quotient turns an eventual transverse
+/-- Supporting fact: continuity of the cubic quotient turns an eventual transverse
 derivative factorization into one uniform local norm bound. -/
 theorem eventually_transverse_fderiv_norm_le_of_cubic_factorization
     {g : ℝ → (ℝ × ℝ) → ℝ}

@@ -7,7 +7,6 @@ public import ReasLib.Analysis.Calculus.LocalInvariantGraph.ExplicitContraction.
 public import ReasLib.Analysis.Calculus.LocalInvariantGraph.ExplicitContraction.MetricTopSectionHolonomicBridge
 public import ReasLib.Analysis.Calculus.LocalCutoff.GraphJetTransform.HolonomicTopSection
 import all ReasLib.Analysis.Calculus.LocalInvariantGraph.ExplicitContraction.MetricPicardCertificate
-
 public section
 
 noncomputable section
@@ -21,7 +20,7 @@ namespace LocalInvariantGraph
 
 variable {X : Type u} [NormedAddCommGroup X] [NormedSpace ℝ X]
 
-/-- Helper for Infrastructure I.16a: a fixed metric graph has compactly supported stable
+/-- Supporting fact: a fixed metric graph has compactly supported stable
 components. -/
 theorem metricFixedGraph_hasCompactSupport
     [CompleteSpace X]
@@ -102,7 +101,7 @@ theorem metricFixedGraph_hasCompactSupport
     nlinarith [hlinearRate_real, norm_nonneg (ζ u)]
   exact norm_eq_zero.mp hnorm_zero
 
-/-- Helper for Infrastructure I.16a: a holonomic certificate supplies, at every positive
+/-- Supporting fact: a holonomic certificate supplies, at every positive
 order, a continuous top section whose predecessor Taylor coefficient has the required
 derivative.  This is the precise regularity datum missing from a metric fixed-point equation. -/
 structure MetricFixedGraphHolonomicCertificate
@@ -115,7 +114,7 @@ structure MetricFixedGraphHolonomicCertificate
           (fun y ↦ (ftaylorSeries ℝ (ζ : ℝ → X) y) (r - 1))
           ((a u).curryLeft) u
 
-/-- Helper for Infrastructure I.16a: a holonomic top-section certificate upgrades a metric fixed
+/-- Supporting fact: a holonomic top-section certificate upgrades a metric fixed
 graph to the declared finite smoothness order.  The proof uses the scalar successor criterion at
 each order and does not infer holonomicity from metric contraction alone. -/
 theorem metricFixedGraph_contDiff_of_holonomicCertificate
@@ -143,7 +142,7 @@ theorem metricFixedGraph_contDiff_of_holonomicCertificate
           hr_pos hprev a ha hderiv
   exact hall d.nu le_rfl
 
-/-- Infrastructure I.16a (Finite-smooth invariant graph under an explicit stable contraction):
+/-- Supporting infrastructure (Finite-smooth invariant graph under an explicit stable contraction):
 for every finite order satisfying the metric bunching inequalities, the
 fixed graph has the continuous holonomic top sections required by the finite-jet successor
 argument. -/
@@ -254,7 +253,7 @@ theorem metricFixedGraph_holonomicCertificate_of_bunching
   intro r hr hrν
   exact (hregular r hrν).2 hr
 
-/-- Helper for Infrastructure I.16a: a fixed metric graph is finite-smooth when the metric
+/-- Supporting fact: a fixed metric graph is finite-smooth when the metric
 transform satisfies finite-order bunching at every order through its declared smoothness. -/
 theorem metricFixedGraph_contDiff_of_bunching
     [CompleteSpace X] [FiniteDimensional ℝ X]

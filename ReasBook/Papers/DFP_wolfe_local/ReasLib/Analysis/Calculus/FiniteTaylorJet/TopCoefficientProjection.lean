@@ -2,7 +2,6 @@ module
 
 public import ReasLib.Analysis.Calculus.FiniteTaylorJet.Operations
 public import ReasLib.Analysis.Calculus.FiniteTaylorJet.Ext
-
 public section
 
 namespace FiniteTaylorJet
@@ -18,7 +17,7 @@ variable [NormedAddCommGroup G] [NormedSpace 𝕜 G]
 /- The degree-zero composition identity is useful independently of the positive-order
    top-coefficient estimates below. -/
 
-/-- Helper for Infrastructure I.16a: composing finite Taylor jets preserves the constant
+/-- Supporting fact: composing finite Taylor jets preserves the constant
 coefficient of the outer jet. -/
 theorem constantCoeff_comp {m : ℕ} (Q : FiniteTaylorJet 𝕜 F G m)
     (P : FiniteTaylorJet 𝕜 E F m) :
@@ -29,7 +28,7 @@ theorem constantCoeff_comp {m : ℕ} (Q : FiniteTaylorJet 𝕜 F G m)
   rw [toFormalMultilinearSeries_coeff_of_le Q (Nat.zero_le m)] at hzero
   exact hzero
 
-/-- Helper for Infrastructure I.16a: the top coefficient of a finite jet composition is the
+/-- Supporting fact: the top coefficient of a finite jet composition is the
 finite sum of its formal-series composition branches. -/
 theorem comp_topCoeff_branch_sum
     {m : ℕ} (Q : FiniteTaylorJet 𝕜 F G m)
@@ -40,7 +39,7 @@ theorem comp_topCoeff_branch_sum
           P.toFormalMultilinearSeries c := by
   rw [FiniteTaylorJet.coeff_comp, FormalMultilinearSeries.comp]
 
-/-- Helper for Infrastructure I.16a: if every outer coefficient of a finite
+/-- Supporting fact: if every outer coefficient of a finite
     Taylor jet vanishes, every coefficient of its composition vanishes. -/
 theorem comp_coeff_eq_zero_of_outer_coeff_eq_zero
     {m : ℕ} (Q : FiniteTaylorJet 𝕜 F G m)
@@ -62,7 +61,7 @@ theorem comp_coeff_eq_zero_of_outer_coeff_eq_zero
 /- Vanishing only through the requested order is the form needed when a finite
    composition is truncated before its ambient top degree. -/
 
-/-- Helper for Infrastructure I.16a: vanishing outer coefficients through a target order
+/-- Supporting fact: vanishing outer coefficients through a target order
     forces the corresponding composition coefficient to vanish. -/
 theorem comp_coeff_eq_zero_of_outer_coeff_eq_zero_below
     {m : ℕ} (Q : FiniteTaylorJet 𝕜 F G m)
@@ -84,7 +83,7 @@ theorem comp_coeff_eq_zero_of_outer_coeff_eq_zero_below
 /- Vanishing positive inner coefficients is the dual support form of the
    outer-coefficient zero criterion above. -/
 
-/-- Helper for Infrastructure I.16a: if every positive inner coefficient through a retained
+/-- Supporting fact: if every positive inner coefficient through a retained
     order vanishes, the corresponding coefficient of any finite-jet composition vanishes. -/
 theorem comp_coeff_eq_zero_of_inner_coeff_eq_zero
     {m : ℕ} (Q : FiniteTaylorJet 𝕜 F G m)
@@ -114,7 +113,7 @@ theorem comp_coeff_eq_zero_of_inner_coeff_eq_zero
   dsimp [FormalMultilinearSeries.applyComposition]
   rw [hblock_zero, _root_.zero_apply]
 
-/-- Helper for Infrastructure I.16a: the top coefficient branch sum splits into a chosen
+/-- Supporting fact: the top coefficient branch sum splits into a chosen
     composition branch and the finite sum of all remaining branches. -/
 theorem comp_topCoeff_branch_split
     {m : ℕ} (Q : FiniteTaylorJet 𝕜 F G m)
@@ -168,7 +167,7 @@ theorem comp_topCoeff_branch_split
 /- The same branch decomposition is useful at an arbitrary retained coefficient,
    where the selected composition need not be the all-ones branch. -/
 
-/-- Helper for Infrastructure I.16a: a finite-jet composition coefficient splits into a chosen
+/-- Supporting fact: a finite-jet composition coefficient splits into a chosen
     composition branch and the finite sum of all remaining branches. -/
 theorem comp_coeff_branch_split
     {m : ℕ} (Q : FiniteTaylorJet 𝕜 F G m)
@@ -220,7 +219,7 @@ theorem comp_coeff_branch_split
             P.toFormalMultilinearSeries c := by
       rw [hsingle]
 
-/-- Helper for Infrastructure I.16a: a finite-jet composition coefficient is unchanged when
+/-- Supporting fact: a finite-jet composition coefficient is unchanged when
 the outer coefficients and positive inner coefficients agree through that order. -/
 theorem comp_coeff_eq_of_eq_below
     {m : ℕ} (Q R : FiniteTaylorJet 𝕜 F G m)
@@ -254,7 +253,7 @@ theorem comp_coeff_eq_of_eq_below
     hPS ⟨c.blocksFun i, hblockBound.trans_lt n.isLt⟩
       (c.one_le_blocksFun i) hblockBound]
 
-/-- Helper for Infrastructure I.16a: if two inner jets agree below a positive top order,
+/-- Supporting fact: if two inner jets agree below a positive top order,
 the top coefficient of their common outer composition is the outer linear map
 applied to the difference of their top coefficients. -/
 theorem comp_topCoeff_sub_eq_inner
@@ -320,7 +319,7 @@ theorem comp_topCoeff_sub_eq_inner
 /- The same one-block isolation works at every positive retained coefficient,
    not only at the ambient top order. -/
 
-/-- Helper for Infrastructure I.16a: at a positive retained order, agreement of two inner jets
+/-- Supporting fact: at a positive retained order, agreement of two inner jets
     below that order leaves only the one-block composition branch. -/
 theorem comp_coeff_sub_eq_inner
     {m : ℕ} (n : Fin (m + 1)) (hn : 0 < (n : ℕ))
@@ -390,7 +389,7 @@ theorem comp_coeff_sub_eq_inner
 /- The projected-inner form retains a lower-order agreement certificate while
    replacing only the inner top coefficient by a second endpoint. -/
 
-/-- Helper for Infrastructure I.16a: replacing an inner jet by a projected jet
+/-- Supporting fact: replacing an inner jet by a projected jet
     isolates the outer linear top-order term and the remaining projected composition. -/
 theorem comp_topCoeff_sub_eq_inner_through_topProjection
     {m : ℕ} (hm : 0 < m) (Q : FiniteTaylorJet 𝕜 F G m)
@@ -432,7 +431,7 @@ theorem comp_topCoeff_sub_eq_inner_through_topProjection
 
 /- The projected identity is also useful after evaluating all arguments on one direction. -/
 
-/-- Helper for Infrastructure I.16a: evaluating the projected top-coefficient identity on a
+/-- Supporting fact: evaluating the projected top-coefficient identity on a
     repeated direction preserves the outer linear term and the projected residual term. -/
 theorem comp_topCoeff_sub_apply_eq_inner_through_topProjection
     {m : ℕ} (hm : 0 < m) (Q : FiniteTaylorJet 𝕜 F G m)
@@ -457,7 +456,7 @@ theorem comp_topCoeff_sub_apply_eq_inner_through_topProjection
     (fun A : E [×m]→L[𝕜] G => A (fun _ : Fin m ↦ x)) hidentity
   simpa only [add_apply] using hvalue
 
-/-- Helper for Infrastructure I.16a: the projected-inner top-coefficient identity
+/-- Supporting fact: the projected-inner top-coefficient identity
     gives a norm estimate with the outer linear coefficient and projected remainder. -/
 theorem norm_comp_topCoeff_sub_le_inner_through_topProjection
     {m : ℕ} (hm : 0 < m) (Q : FiniteTaylorJet 𝕜 F G m)
@@ -504,7 +503,7 @@ theorem norm_comp_topCoeff_sub_le_inner_through_topProjection
         rw [LinearIsometryEquiv.norm_map]
       exact add_le_add hlinear le_rfl
 
-/-- Helper for Infrastructure I.16a: the inner top-coefficient variation is bounded by
+/-- Supporting fact: the inner top-coefficient variation is bounded by
 the norm of the outer linear coefficient times the inner top-coefficient gap. -/
 theorem norm_comp_topCoeff_sub_le_inner
     {m : ℕ} (hm : 0 < m) (Q : FiniteTaylorJet 𝕜 F G m)
@@ -519,7 +518,7 @@ theorem norm_comp_topCoeff_sub_le_inner
   apply (ContinuousLinearMap.norm_compContinuousMultilinearMap_le _ _).trans_eq
   rw [LinearIsometryEquiv.norm_map]
 
-/-- Helper for Infrastructure I.16a: a top-coefficient secant of two finite
+/-- Supporting fact: a top-coefficient secant of two finite
 compositions splits through the mixed composition obtained by changing the
 inner jet first and the outer jet second. -/
 theorem comp_topCoeff_sub_decompose
@@ -533,7 +532,7 @@ theorem comp_topCoeff_sub_decompose
           (FiniteTaylorJet.comp R S).coeff ⟨m, Nat.lt_succ_self m⟩) := by
   abel
 
-/-- Helper for Infrastructure I.16a: if two outer jets agree below the top order, the top
+/-- Supporting fact: if two outer jets agree below the top order, the top
 coefficient of their common inner composition is exactly the all-ones branch
 of the outer formal-series difference. -/
 theorem comp_topCoeff_sub_eq_outer
@@ -571,7 +570,7 @@ theorem comp_topCoeff_sub_eq_outer
 /- The same outer all-ones projection is available at every positive retained
    coefficient, which is useful when a composition is truncated below its ambient order. -/
 
-/-- Helper for Infrastructure I.16a: at a positive retained order, agreement of two outer jets
+/-- Supporting fact: at a positive retained order, agreement of two outer jets
     below that order leaves only the all-ones composition branch. -/
 theorem comp_coeff_sub_eq_outer
     {m : ℕ} (n : Fin (m + 1))
@@ -610,7 +609,7 @@ theorem comp_coeff_sub_eq_outer
 /- The outer top-coefficient route also needs a stable projection interface:
    the distinguished branch depends only on the top outer coefficient. -/
 
-/-- Helper for Infrastructure I.16a: the all-ones outer branch vanishes when two
+/-- Supporting fact: the all-ones outer branch vanishes when two
 outer finite jets have the same top coefficient. -/
 theorem comp_topCoeff_outer_ones_eq_zero_of_topCoeff_eq
     {m : ℕ} (Q R : FiniteTaylorJet 𝕜 F G m)
@@ -630,7 +629,7 @@ theorem comp_topCoeff_outer_ones_eq_zero_of_topCoeff_eq
       sub_self]
   simp only [hcoeff, zero_apply]
 
-/-- Helper for Infrastructure I.16a: evaluating the all-ones outer branch on a
+/-- Supporting fact: evaluating the all-ones outer branch on a
 constant direction exposes the outer coefficient at the branch length and the
 repeated inner linear coefficient. -/
 theorem comp_topCoeff_outer_ones_apply
@@ -648,7 +647,7 @@ theorem comp_topCoeff_outer_ones_apply
 
 /- The same evaluation identity is independent of the ambient truncation order. -/
 
-/-- Helper for Infrastructure I.16a: evaluating an all-ones outer branch at an arbitrary
+/-- Supporting fact: evaluating an all-ones outer branch at an arbitrary
 retained coefficient exposes the outer coefficient at that branch length and the repeated
 inner linear coefficient. -/
 theorem comp_coeff_outer_ones_apply
@@ -668,7 +667,7 @@ theorem comp_coeff_outer_ones_apply
 
 /- The coefficient-level form removes the formal-series wrappers from the same branch. -/
 
-/-- Helper for Infrastructure I.16a: an arbitrary all-ones branch evaluated on a repeated input
+/-- Supporting fact: an arbitrary all-ones branch evaluated on a repeated input
 is exactly the outer coefficient gap applied to repeated inner linear coefficients. -/
 theorem comp_coeff_outer_ones_apply_eq_coeff
     {m : ℕ} (n : Fin (m + 1)) (hn : 0 < (n : ℕ))
@@ -694,7 +693,7 @@ theorem comp_coeff_outer_ones_apply_eq_coeff
 
 /- The corresponding arbitrary-order branch estimate keeps the retained degree explicit. -/
 
-/-- Helper for Infrastructure I.16a: the all-ones blocks at an arbitrary retained degree select
+/-- Supporting fact: the all-ones blocks at an arbitrary retained degree select
 the inner linear coefficient, so their norms multiply to the retained-degree power. -/
 theorem norm_formal_onesProduct_general
     {m : ℕ} (n : Fin (m + 1)) (hn : 0 < (n : ℕ))
@@ -718,7 +717,7 @@ theorem norm_formal_onesProduct_general
     _ = ‖P.coeff ⟨1, Nat.succ_lt_succ (lt_of_lt_of_le hn hn_le)⟩‖ ^ (n : ℕ) := by
       simp only [Finset.prod_const, Finset.card_fin, Composition.ones_length]
 
-/-- Helper for Infrastructure I.16a: the norm of an arbitrary retained all-ones branch is bounded
+/-- Supporting fact: the norm of an arbitrary retained all-ones branch is bounded
 by the outer coefficient gap times the corresponding power of the inner linear coefficient. -/
 theorem norm_comp_coeff_outer_ones_le
     {m : ℕ} (n : Fin (m + 1)) (hn : 0 < (n : ℕ))
@@ -759,7 +758,7 @@ theorem norm_comp_coeff_outer_ones_le
 
 /- Product-valued inner jets can be threaded through both projections at any retained order. -/
 
-/-- Helper for Infrastructure I.16a: a lower-equal product-valued inner variation passes through
+/-- Supporting fact: a lower-equal product-valued inner variation passes through
 an outer jet and a scalar reindexing jet at an arbitrary positive retained coefficient. -/
 theorem comp_prod_comp_coeff_sub_eq_inner_of_lower
     {X Y : Type*}
@@ -824,7 +823,7 @@ theorem comp_prod_comp_coeff_sub_eq_inner_of_lower
   simpa only [smul_eq_mul, mul_one, Finset.prod_const, Finset.card_fin,
     continuousMultilinearCurryFin1_apply] using hscale
 
-/-- Helper for Infrastructure I.16a: the arbitrary-order product-composition projection has a
+/-- Supporting fact: the arbitrary-order product-composition projection has a
 repeated-input norm bound separating the scalar reindexing factor, the outer linear coefficient,
 and the retained inner coefficient gap. -/
 theorem norm_comp_prod_comp_coeff_sub_apply_le_inner_of_lower
@@ -876,7 +875,7 @@ theorem norm_comp_prod_comp_coeff_sub_apply_le_inner_of_lower
           ‖hdiff‖ := by
       ring
 
-/-- Helper for Infrastructure I.16a: replacing an outer jet through an arbitrary retained
+/-- Supporting fact: replacing an outer jet through an arbitrary retained
 coefficient isolates its all-ones branch from the residual with the projected outer jet. -/
 theorem comp_coeff_sub_eq_outer_through_topProjection
     {m : ℕ} (n : Fin (m + 1))
@@ -935,7 +934,7 @@ theorem comp_coeff_sub_eq_outer_through_topProjection
           (FiniteTaylorJet.comp R P).coeff n) := by
       rw [houter, hbranch]
 
-/-- Helper for Infrastructure I.16a: the arbitrary-order outer projection decomposition has a norm
+/-- Supporting fact: the arbitrary-order outer projection decomposition has a norm
 bound given by the all-ones coefficient gap and the projected composition residual. -/
 theorem norm_comp_coeff_sub_le_outer_through_topProjection
     {m : ℕ} (n : Fin (m + 1)) (hn : 0 < (n : ℕ))
@@ -968,7 +967,7 @@ theorem norm_comp_coeff_sub_le_outer_through_topProjection
           (FiniteTaylorJet.comp R P).coeff n‖ := by
       exact add_le_add (norm_comp_coeff_outer_ones_le n hn Q R P) le_rfl
 
-/-- Helper for Infrastructure I.16a: evaluating the arbitrary-order outer projection estimate on a
+/-- Supporting fact: evaluating the arbitrary-order outer projection estimate on a
 repeated input contributes exactly the retained-degree power of the input norm. -/
 theorem norm_comp_coeff_sub_apply_le_outer_through_topProjection
     {m : ℕ} (n : Fin (m + 1)) (hn : 0 < (n : ℕ))
@@ -1015,7 +1014,7 @@ theorem norm_comp_coeff_sub_apply_le_outer_through_topProjection
 /- A scalar reindexing jet can be placed outside an outer variation whose
    lower coefficients already agree. -/
 
-/-- Helper for Infrastructure I.16a: positivity of a retained coefficient implies positivity
+/-- Supporting fact: positivity of a retained coefficient implies positivity
 of the ambient finite-jet order. -/
 theorem ambientOrder_pos_of_index_pos
     {m : ℕ} {n : Fin (m + 1)} (hn : 0 < (n : ℕ)) : 0 < m := by
@@ -1023,7 +1022,7 @@ theorem ambientOrder_pos_of_index_pos
 
 /- A scalar reindexing jet can be evaluated after the inner all-ones branch. -/
 
-/-- Helper for Infrastructure I.16a: a nested scalar composition evaluates the outer
+/-- Supporting fact: a nested scalar composition evaluates the outer
 coefficient gap on the inner linear coefficient after the scalar reindexing linear coefficient. -/
 theorem comp_comp_coeff_sub_apply_eq_outer_of_lower
     {m : ℕ} (n : Fin (m + 1)) (hn : 0 < (n : ℕ))
@@ -1101,7 +1100,7 @@ theorem comp_comp_coeff_sub_apply_eq_outer_of_lower
                   (fun _ : Fin 1 ↦ x))) := by
       rfl
 
-/-- Helper for Infrastructure I.16a: a nested scalar composition transports a lower-equal
+/-- Supporting fact: a nested scalar composition transports a lower-equal
 outer top-coefficient bound to repeated inputs with explicit inner and reindexing factors. -/
 theorem norm_comp_comp_coeff_sub_apply_le_outer_of_lower
     {m : ℕ} (n : Fin (m + 1)) (hn : 0 < (n : ℕ))
@@ -1138,7 +1137,7 @@ theorem norm_comp_comp_coeff_sub_apply_le_outer_of_lower
   rw [houter, comp_coeff_outer_ones_apply_eq_coeff n hn]
   simpa [sub_self, add_zero, mul_assoc] using hinner_bound
 
-/-- Helper for Infrastructure I.16a: simultaneous inner and outer coefficient changes split into
+/-- Supporting fact: simultaneous inner and outer coefficient changes split into
 the inner one-block term, the projected inner residual, the outer all-ones branch, and the
 projected outer residual at any positive retained order. -/
 theorem comp_coeff_sub_decompose_through_projections
@@ -1203,7 +1202,7 @@ theorem comp_coeff_sub_decompose_through_projections
           (FiniteTaylorJet.comp R S).coeff n) := by
       abel
 
-/-- Helper for Infrastructure I.16a: the simultaneous arbitrary-order projection decomposition has
+/-- Supporting fact: the simultaneous arbitrary-order projection decomposition has
 a four-term norm estimate, with the two distinguished branches isolated explicitly. -/
 theorem norm_comp_coeff_sub_le_decompose_through_projections
     {m : ℕ} (n : Fin (m + 1)) (hn : 0 < (n : ℕ))
@@ -1325,7 +1324,7 @@ theorem norm_comp_coeff_sub_le_decompose_through_projections
 /- The four-term operator estimate is often consumed on a repeated direction,
    as in an all-ones composition branch. -/
 
-/-- Helper for Infrastructure I.16a: evaluating the simultaneous projection estimate on a
+/-- Supporting fact: evaluating the simultaneous projection estimate on a
 repeated direction multiplies the four coefficient bounds by the corresponding direction power. -/
 theorem norm_comp_coeff_sub_apply_le_decompose_through_projections
     {m : ℕ} (n : Fin (m + 1)) (hn : 0 < (n : ℕ))
@@ -1386,7 +1385,7 @@ theorem norm_comp_coeff_sub_apply_le_decompose_through_projections
 /- A common inner linear coefficient cancels the distinguished branch at every positive
    retained coefficient, not only at the ambient top degree. -/
 
-/-- Helper for Infrastructure I.16a: when two inner jets have the same linear coefficient, an
+/-- Supporting fact: when two inner jets have the same linear coefficient, an
 arbitrary positive composition coefficient difference is exactly the sum of its non-all-ones
 branches. -/
 theorem comp_coeff_sub_eq_nonOnes_of_inner_linear_eq
@@ -1465,7 +1464,7 @@ theorem comp_coeff_sub_eq_nonOnes_of_inner_linear_eq
       · simp [hones']
       · simp only [if_neg hones']
 
-/-- Helper for Infrastructure I.16a: evaluating the arbitrary positive non-all-ones
+/-- Supporting fact: evaluating the arbitrary positive non-all-ones
 composition difference on a repeated input commutes with the finite branch sum. -/
 theorem comp_coeff_sub_eq_nonOnes_of_inner_linear_eq_apply
     {m : ℕ} (n : Fin (m + 1)) (hn : 0 < (n : ℕ))
@@ -1511,7 +1510,7 @@ theorem comp_coeff_sub_eq_nonOnes_of_inner_linear_eq_apply
       · simp [hones']
       · simp only [if_neg hones', sub_apply]
 
-/-- Helper for Infrastructure I.16a: branchwise bounds on arbitrary retained non-all-ones
+/-- Supporting fact: branchwise bounds on arbitrary retained non-all-ones
 composition terms give a direct norm bound for the coefficient difference. -/
 theorem norm_comp_coeff_sub_eq_nonOnes_of_inner_linear_eq_apply_le
     {m : ℕ} (n : Fin (m + 1)) (hn : 0 < (n : ℕ))
@@ -1554,7 +1553,7 @@ theorem norm_comp_coeff_sub_eq_nonOnes_of_inner_linear_eq_apply_le
       · simp only [if_neg hones']
         exact hbranch c hones'
 
-/-- Helper for Infrastructure I.16a: replacing only the top outer coefficient
+/-- Supporting fact: replacing only the top outer coefficient
 isolates the all-ones branch from the remaining equal-top composition residual. -/
 theorem comp_topCoeff_sub_eq_outer_through_topProjection
     {m : ℕ}
@@ -1614,7 +1613,7 @@ theorem comp_topCoeff_sub_eq_outer_through_topProjection
 
 /- The two projection routes combine into a single four-endpoint normal form. -/
 
-/-- Helper for Infrastructure I.16a: a two-sided top-coefficient secant splits into
+/-- Supporting fact: a two-sided top-coefficient secant splits into
     the inner linear term, the projected inner residual, the outer all-ones term,
     and the projected outer residual. -/
 theorem comp_topCoeff_sub_decompose_through_projections
@@ -1674,7 +1673,7 @@ theorem comp_topCoeff_sub_decompose_through_projections
           (FiniteTaylorJet.comp R S).coeff ⟨m, Nat.lt_succ_self m⟩) := by
       abel
 
-/-- Helper for Infrastructure I.16a: the four projected top-coefficient branches
+/-- Supporting fact: the four projected top-coefficient branches
     have a norm estimate in which the inner and outer one-block terms are
     controlled by their respective coefficient gaps. -/
 theorem norm_comp_topCoeff_sub_le_decompose_through_projections
@@ -1806,7 +1805,7 @@ theorem norm_comp_topCoeff_sub_le_decompose_through_projections
           (FiniteTaylorJet.comp R S).coeff ⟨m, Nat.lt_succ_self m⟩‖ := by
       ring
 
-/-- Helper for Infrastructure I.16a: the all-ones composition selects the top finite-jet
+/-- Supporting fact: the all-ones composition selects the top finite-jet
 coefficient of a formal-series difference after taking norms. -/
 theorem norm_formalSub_onesLength
     {m : ℕ} (Q R : FiniteTaylorJet 𝕜 E F m) :
@@ -1820,7 +1819,7 @@ theorem norm_formalSub_onesLength
   rw [FiniteTaylorJet.toFormalMultilinearSeries_coeff_of_le Q le_rfl,
     FiniteTaylorJet.toFormalMultilinearSeries_coeff_of_le R le_rfl]
 
-/-- Helper for Infrastructure I.16a: the norms of the inner factors selected by an
+/-- Supporting fact: the norms of the inner factors selected by an
 all-ones composition multiply to the power of the inner linear coefficient. -/
 theorem norm_formal_onesProduct
     {m : ℕ} (hm : 0 < m) (P : FiniteTaylorJet 𝕜 E F m) :
@@ -1845,7 +1844,7 @@ theorem norm_formal_onesProduct
    distinguished branch on a repeated input.  The following pointwise form
    keeps that evaluation and its input scale visible. -/
 
-/-- Helper for Infrastructure I.16a: evaluating the all-ones composition branch on a repeated
+/-- Supporting fact: evaluating the all-ones composition branch on a repeated
 input is bounded by the outer top-coefficient gap and the scaled inner linear coefficient. -/
 theorem norm_comp_topCoeff_outer_ones_apply_le
     {m : ℕ} (hm : 0 < m)
@@ -1901,7 +1900,7 @@ theorem norm_comp_topCoeff_outer_ones_apply_le
         (‖P.coeff ⟨1, Nat.succ_lt_succ hm⟩‖ * ‖x‖) ^ m := by
       rw [houter]
 
-/-- Helper for Infrastructure I.16a: the outer projected top-coefficient identity
+/-- Supporting fact: the outer projected top-coefficient identity
     admits a norm bound by the outer top gap and the projected residual. -/
 theorem norm_comp_topCoeff_sub_le_outer_through_topProjection
     {m : ℕ} (hm : 0 < m)
@@ -1945,7 +1944,7 @@ theorem norm_comp_topCoeff_sub_le_outer_through_topProjection
 /- The operator-norm projection estimate is often consumed on the repeated
    input supplied by an all-ones composition branch. -/
 
-/-- Helper for Infrastructure I.16a: the projected inner top-coefficient estimate remains valid
+/-- Supporting fact: the projected inner top-coefficient estimate remains valid
     after evaluation on a repeated input, with the expected power of its norm. -/
 theorem norm_comp_topCoeff_sub_apply_le_inner_through_topProjection
     {m : ℕ} (hm : 0 < m) (Q : FiniteTaylorJet 𝕜 F G m)
@@ -1996,7 +1995,7 @@ theorem norm_comp_topCoeff_sub_apply_le_inner_through_topProjection
 
 /- The same evaluation bridge applies to the outer projection route. -/
 
-/-- Helper for Infrastructure I.16a: the projected outer top-coefficient estimate remains valid
+/-- Supporting fact: the projected outer top-coefficient estimate remains valid
     after evaluation on a repeated input, with the expected power of its norm. -/
 theorem norm_comp_topCoeff_sub_apply_le_outer_through_topProjection
     {m : ℕ} (hm : 0 < m)
@@ -2047,7 +2046,7 @@ theorem norm_comp_topCoeff_sub_apply_le_outer_through_topProjection
           ‖x‖ ^ m := by
       simp
 
-/-- Helper for Infrastructure I.16a: with a fixed inner jet, the top-coefficient variation
+/-- Supporting fact: with a fixed inner jet, the top-coefficient variation
 is bounded by the outer top-coefficient gap times the `m`-th power of the
 inner linear coefficient norm. -/
 theorem norm_comp_topCoeff_sub_le_outer
@@ -2076,14 +2075,14 @@ theorem norm_comp_topCoeff_sub_le_outer
 /- A top-coefficient replacement is the canonical way to choose the projected
    inner jet used by the mixed composition identities above. -/
 
-/-- Helper for Infrastructure I.16a: replace one finite jet's top coefficient
+/-- Supporting fact: replace one finite jet's top coefficient
     while retaining all lower coefficients. -/
 noncomputable def replaceTopCoeff
     {m : ℕ} (P : FiniteTaylorJet 𝕜 E F m)
     (a : E [×m]→L[𝕜] F) : FiniteTaylorJet 𝕜 E F m :=
   { coeff := Function.update P.coeff ⟨m, Nat.lt_succ_self m⟩ a }
 
-/-- Helper for Infrastructure I.16a: the replacement jet agrees with the source
+/-- Supporting fact: the replacement jet agrees with the source
     jet at every degree strictly below the top order. -/
 theorem replaceTopCoeff_coeff_of_lt
     {m : ℕ} (P : FiniteTaylorJet 𝕜 E F m)
@@ -2095,7 +2094,7 @@ theorem replaceTopCoeff_coeff_of_lt
     exact (Nat.ne_of_lt hn) (congrArg Fin.val htop)
   rw [Function.update_of_ne hne]
 
-/-- Helper for Infrastructure I.16a: the replacement jet has exactly the
+/-- Supporting fact: the replacement jet has exactly the
     requested coefficient at its top order. -/
 theorem replaceTopCoeff_coeff_top
     {m : ℕ} (P : FiniteTaylorJet 𝕜 E F m)
@@ -2104,7 +2103,7 @@ theorem replaceTopCoeff_coeff_top
   dsimp only [replaceTopCoeff]
   rw [Function.update_self]
 
-/-- Helper for Infrastructure I.16a: a jet with the prescribed lower
+/-- Supporting fact: a jet with the prescribed lower
     coefficients and top coefficient is the corresponding top replacement. -/
 theorem eq_replaceTopCoeff_of_coeff_eq
     {m : ℕ} (P Q : FiniteTaylorJet 𝕜 E F m)
@@ -2119,7 +2118,7 @@ theorem eq_replaceTopCoeff_of_coeff_eq
   · exact (hbelow i.castSucc i.isLt).trans
       (replaceTopCoeff_coeff_of_lt P a i.castSucc i.isLt).symm
 
-/-- Helper for Infrastructure I.16a: the top-coefficient secant identity can
+/-- Supporting fact: the top-coefficient secant identity can
     use the canonical jet obtained by replacing the source top coefficient. -/
 theorem comp_topCoeff_sub_eq_inner_through_replacedTopCoeff
     {m : ℕ} (hm : 0 < m) (Q : FiniteTaylorJet 𝕜 F G m)
@@ -2141,7 +2140,7 @@ theorem comp_topCoeff_sub_eq_inner_through_replacedTopCoeff
     exact (replaceTopCoeff_coeff_of_lt P _ k hk).symm
   · exact replaceTopCoeff_coeff_top P _
 
-/-- Helper for Infrastructure I.16a: the canonical inner top-coefficient replacement gives
+/-- Supporting fact: the canonical inner top-coefficient replacement gives
     the projected secant estimate after evaluation on a repeated input. -/
 theorem norm_comp_topCoeff_sub_apply_le_inner_through_replacedTopCoeff
     {m : ℕ} (hm : 0 < m) (Q : FiniteTaylorJet 𝕜 F G m)
@@ -2165,7 +2164,7 @@ theorem norm_comp_topCoeff_sub_apply_le_inner_through_replacedTopCoeff
     exact (replaceTopCoeff_coeff_of_lt P _ k hk).symm
   · exact replaceTopCoeff_coeff_top P _
 
-/-- Helper for Infrastructure I.16a: the outer top-coefficient secant identity
+/-- Supporting fact: the outer top-coefficient secant identity
     uses the canonical jet obtained by replacing the outer source top coefficient. -/
 theorem comp_topCoeff_sub_eq_outer_through_replacedTopCoeff
     {m : ℕ} (Q R : FiniteTaylorJet 𝕜 F G m)
@@ -2185,7 +2184,7 @@ theorem comp_topCoeff_sub_eq_outer_through_replacedTopCoeff
     exact replaceTopCoeff_coeff_of_lt Q _ k hk
   · exact replaceTopCoeff_coeff_top Q _
 
-/-- Helper for Infrastructure I.16a: the canonical outer replacement gives the
+/-- Supporting fact: the canonical outer replacement gives the
     outer one-block norm bound together with its projected composition residual. -/
 theorem norm_comp_topCoeff_sub_le_outer_through_replacedTopCoeff
     {m : ℕ} (hm : 0 < m) (Q R : FiniteTaylorJet 𝕜 F G m)
@@ -2206,7 +2205,7 @@ theorem norm_comp_topCoeff_sub_le_outer_through_replacedTopCoeff
     exact replaceTopCoeff_coeff_of_lt Q _ k hk
   · exact replaceTopCoeff_coeff_top Q _
 
-/-- Helper for Infrastructure I.16a: the canonical outer top-coefficient replacement gives
+/-- Supporting fact: the canonical outer top-coefficient replacement gives
     the outer secant estimate after evaluation on a repeated input. -/
 theorem norm_comp_topCoeff_sub_apply_le_outer_through_replacedTopCoeff
     {m : ℕ} (hm : 0 < m) (Q R : FiniteTaylorJet 𝕜 F G m)
@@ -2237,7 +2236,7 @@ theorem norm_comp_topCoeff_sub_apply_le_outer_through_replacedTopCoeff
 /- The same calculation is useful before the fiber top coefficient is normalized to
    zero, so expose the lower-coefficient version separately. -/
 
-/-- Helper for Infrastructure I.16a: a lower-equal fiber-jet variation passes
+/-- Supporting fact: a lower-equal fiber-jet variation passes
    through a product-valued inner jet and a scalar reindexing jet at the repeated-one
    top coefficient. -/
 theorem comp_prod_comp_topCoeff_sub_eq_inner_of_lower
@@ -2306,7 +2305,7 @@ theorem comp_prod_comp_topCoeff_sub_eq_inner_of_lower
   simpa only [smul_eq_mul, mul_one, Finset.prod_const, Finset.card_fin,
     continuousMultilinearCurryFin1_apply] using hscale
 
-/-- Helper for Infrastructure I.16a: a one-variable curry of a multilinear map
+/-- Supporting fact: a one-variable curry of a multilinear map
     is bounded on a pair with zero first component by the map norm times the
     second-component norm. -/
 theorem norm_continuousMultilinearCurryFin1_apply_zero_pair_le
@@ -2324,7 +2323,7 @@ theorem norm_continuousMultilinearCurryFin1_apply_zero_pair_le
       rw [LinearIsometryEquiv.norm_map]
       simp only [Prod.norm_mk, norm_zero, max_eq_right (norm_nonneg _)]
 
-/-- Helper for Infrastructure I.16a: the lower-equal product-composition
+/-- Supporting fact: the lower-equal product-composition
     identity has a repeated-input norm bound separating the reindexing factor,
     the inner linear coefficient, and the fiber top-coefficient gap. -/
 theorem norm_comp_prod_comp_topCoeff_sub_apply_le_inner_of_lower
@@ -2381,7 +2380,7 @@ theorem norm_comp_prod_comp_topCoeff_sub_apply_le_inner_of_lower
               R.coeff ⟨m, Nat.lt_succ_self m⟩) (fun _ : Fin m ↦ 1)‖ := by
       ring
 
-/-- Helper for Infrastructure I.16a: a product inner jet with a zero-top projection
+/-- Supporting fact: a product inner jet with a zero-top projection
 isolates the fiber top coefficient through two nested finite-jet compositions. -/
 theorem comp_prod_comp_topCoeff_sub_eq_inner_of_zeroTop
     {X Y : Type*}
@@ -2457,7 +2456,7 @@ theorem comp_prod_comp_topCoeff_sub_eq_inner_of_zeroTop
 /- The zero-top identity also has a direct operator-norm estimate, which is the
    form used when the projected residual is inserted into a compact bound. -/
 
-/-- Helper for Infrastructure I.16a: the zero-top projected nested composition is bounded
+/-- Supporting fact: the zero-top projected nested composition is bounded
     by the repeated scalar coefficient, the outer linear coefficient, and the fiber top gap. -/
 theorem norm_comp_prod_comp_topCoeff_sub_apply_le_inner_of_zeroTop
     {X Y : Type*}
@@ -2521,7 +2520,7 @@ theorem norm_comp_prod_comp_topCoeff_sub_apply_le_inner_of_zeroTop
 /- A zeroed outer top coefficient removes exactly the distinguished all-ones
    branch from a finite-jet top coefficient. -/
 
-/-- Helper for Infrastructure I.16a: replacing an outer jet's top coefficient by zero
+/-- Supporting fact: replacing an outer jet's top coefficient by zero
 isolates the non-all-ones branches of its top composition coefficient. -/
 theorem comp_topCoeff_nonOnes_eq_zeroTopReplacement
     {m : ℕ} (Q : FiniteTaylorJet 𝕜 F G m)
@@ -2569,7 +2568,7 @@ theorem comp_topCoeff_nonOnes_eq_zeroTopReplacement
 /- A common inner linear coefficient makes the distinguished all-ones branch
    cancel in a top-coefficient difference. -/
 
-/-- Helper for Infrastructure I.16a: when two inner jets have the same linear
+/-- Supporting fact: when two inner jets have the same linear
     coefficient, their top-composition difference is exactly the sum of the
     non-all-ones branch differences. -/
 theorem comp_topCoeff_sub_eq_nonOnes_of_inner_linear_eq
@@ -2612,7 +2611,7 @@ theorem comp_topCoeff_sub_eq_nonOnes_of_inner_linear_eq
 /- The pointwise form is the one used by endpoint estimates, where the top
    coefficient is evaluated on a repeated direction. -/
 
-/-- Helper for Infrastructure I.16a: evaluating the all-ones-cancelled top
+/-- Supporting fact: evaluating the all-ones-cancelled top
     coefficient difference on a repeated input commutes with the non-ones sum. -/
 theorem comp_topCoeff_sub_eq_nonOnes_of_inner_linear_eq_apply
     {m : ℕ} (hm : 0 < m)
@@ -2657,7 +2656,7 @@ theorem comp_topCoeff_sub_eq_nonOnes_of_inner_linear_eq_apply
 
 /- The norm form packages the pointwise cancellation with independent branchwise bounds. -/
 
-/-- Helper for Infrastructure I.16a: a branchwise norm bound for the repeated-input
+/-- Supporting fact: a branchwise norm bound for the repeated-input
     top-coefficient difference after the all-ones branch has been cancelled. -/
 theorem norm_comp_topCoeff_sub_eq_nonOnes_of_inner_linear_eq_apply_le
     {m : ℕ} (hm : 0 < m)

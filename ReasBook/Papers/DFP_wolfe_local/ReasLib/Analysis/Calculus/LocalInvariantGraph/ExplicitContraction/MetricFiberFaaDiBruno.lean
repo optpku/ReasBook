@@ -4,7 +4,6 @@ public import ReasLib.Analysis.Calculus.LocalInvariantGraph.ExplicitContraction.
 public import ReasLib.Analysis.Calculus.LocalInvariantGraph.ExplicitContraction.MetricTopSectionCore
 public import ReasLib.Analysis.Calculus.LocalInvariantGraph.ExplicitContraction.MetricTopSectionHolonomicBridge
 public import Mathlib.Analysis.Calculus.IteratedDeriv.FaaDiBruno
-
 public section
 noncomputable section
 open scoped NNReal Topology
@@ -113,7 +112,7 @@ private theorem orderedFinpartition_length_eq_iff_atomic
       Fin.forall_fin_one] using hemb
   · intro h; subst h; simp [OrderedFinpartition.atomic]
 
-/-- Helper for Infrastructure I.16a: the order-`m` derivative of the metric fiber remainder
+/-- Supporting fact: the order-`m` derivative of the metric fiber remainder
 splits into its atomic branch and the non-atomic Faà-di-Bruno sum under exactly `C^m`
 regularity. In particular, constructing this split does not presuppose `C^(m+1)` regularity
 of the graph. -/
@@ -221,7 +220,7 @@ theorem iteratedDeriv_fiber_remainder_atomic_at_origin
                 (fun y : ℝ ↦ (y, (ζ : ℝ → X) y)) 0) := by
   exact iteratedDeriv_fiber_remainder_atomic_split d ζ m hmν1 hprev1 0
 
-/-- Infrastructure I.16a: the first derivative of the fiber remainder along a graph splits into
+/-- Supporting infrastructure: the first derivative of the fiber remainder along a graph splits into
 the center-slot contribution and the fiber derivative applied to the graph derivative. -/
 theorem deriv_fiber_remainder_eq_first_slot_add_fiber
     (d : MetricGraphTransformData X)
@@ -276,7 +275,7 @@ theorem deriv_fiber_remainder_eq_first_slot_add_fiber
   rw [hderiv]
   exact hsplit
 
-/-- Helper for Infrastructure I.16a: at the origin, the center-slot term vanishes under the
+/-- Supporting fact: at the origin, the center-slot term vanishes under the
 center-stable derivative certificate, leaving the pure fiber derivative contribution. -/
 theorem deriv_fiber_remainder_at_origin_eq_fiber
     (d : MetricGraphTransformData X)

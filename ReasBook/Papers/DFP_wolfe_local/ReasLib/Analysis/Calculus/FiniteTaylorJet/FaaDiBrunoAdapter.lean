@@ -3,7 +3,6 @@ module
 public import ReasLib.Analysis.Calculus.FiniteTaylorJet.Operations
 public import ReasLib.Analysis.Calculus.FiniteTaylorJet.Ext
 public import Mathlib.Analysis.Calculus.ContDiff.FaaDiBruno
-
 public section
 
 namespace FiniteTaylorJet
@@ -15,7 +14,7 @@ variable [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable [NormedAddCommGroup F] [NormedSpace ℝ F]
 variable [NormedAddCommGroup G] [NormedSpace ℝ G]
 
-/-- Helper for Infrastructure I.16 (finite-order graph-jet contraction): the iterated derivative
+/-- Supporting fact: (finite-order graph-jet contraction): the iterated derivative
 of a composite is the Faa di Bruno Taylor composition of the two derivative series. -/
 theorem iteratedFDeriv_comp_eq_taylorComp
     {m n : ℕ} {f : E → F} {g : F → G} {x : E}
@@ -27,7 +26,7 @@ theorem iteratedFDeriv_comp_eq_taylorComp
     exact_mod_cast hn
   exact iteratedFDeriv_comp hg hf hnm
 
-/-- Helper for Infrastructure I.16 (finite-order graph-jet contraction): a derivative-constructed
+/-- Supporting fact: (finite-order graph-jet contraction): a derivative-constructed
 jet coefficient of a composite is the factorial-normalized Faa di Bruno coefficient. -/
 theorem ofFunction_coeff_comp_eq_taylorComp
     {m n : ℕ} {f : E → F} {g : F → G} {x : E}
@@ -40,7 +39,7 @@ theorem ofFunction_coeff_comp_eq_taylorComp
   exact congrArg (fun T ↦ ((n.factorial : ℝ)⁻¹) • T)
     (iteratedFDeriv_comp_eq_taylorComp hf hg hn)
 
-/-- Helper for Infrastructure I.16 (finite-order graph-jet contraction): the normalized
+/-- Supporting fact: (finite-order graph-jet contraction): the normalized
 Faa di Bruno series truncated at order `m`. -/
 noncomputable def normalizedTaylorCompJet
     (m : ℕ) (f : E → F) (g : F → G) (x : E) : FiniteTaylorJet ℝ E G m :=
@@ -48,7 +47,7 @@ noncomputable def normalizedTaylorCompJet
       ((n : ℕ).factorial : ℝ)⁻¹ •
         (ftaylorSeries ℝ g (f x)).taylorComp (ftaylorSeries ℝ f x) (n : ℕ) }
 
-/-- Helper for Infrastructure I.16 (finite-order graph-jet contraction): under finite
+/-- Supporting fact: (finite-order graph-jet contraction): under finite
 smoothness, the derivative-constructed composite jet is the normalized Faa di Bruno jet. -/
 theorem ofFunction_comp_eq_normalizedTaylorCompJet
     {m : ℕ} {f : E → F} {g : F → G} {x : E}
@@ -58,7 +57,7 @@ theorem ofFunction_comp_eq_normalizedTaylorCompJet
   intro n
   exact ofFunction_coeff_comp_eq_taylorComp hf hg (Nat.lt_succ_iff.mp n.isLt)
 
-/-- Helper for Infrastructure I.16 (finite-order graph-jet contraction): a secant of
+/-- Supporting fact: (finite-order graph-jet contraction): a secant of
 derivative-constructed composite coefficients is the factorial-normalized secant of the
 corresponding Faa di Bruno Taylor compositions. -/
 theorem ofFunction_composite_coeff_sub_eq_taylorComp_sub
@@ -76,7 +75,7 @@ theorem ofFunction_composite_coeff_sub_eq_taylorComp_sub
   rw [ofFunction_coeff_comp_eq_taylorComp hf₁ hg₁ hn,
     ofFunction_coeff_comp_eq_taylorComp hf₂ hg₂ hn, smul_sub]
 
-/-- Helper for Infrastructure I.16 (finite-order graph-jet contraction): a composite secant
+/-- Supporting fact: (finite-order graph-jet contraction): a composite secant
 coefficient splits into an inner-map variation followed by an outer-map variation at the
 Faa di Bruno Taylor-series level. -/
 theorem ofFunction_composite_coeff_sub_decompose

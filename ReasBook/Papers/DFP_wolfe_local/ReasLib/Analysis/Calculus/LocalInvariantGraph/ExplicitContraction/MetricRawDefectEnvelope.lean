@@ -2,7 +2,6 @@ module
 
 public import ReasLib.Analysis.Calculus.LocalCutoff.GraphJetTransform.RadiusEnvelope
 public import ReasLib.Analysis.Calculus.LocalCutoff.GraphJetTransform.ProofSupport.RawDefectDerivativeBridge
-
 public section
 
 noncomputable section
@@ -16,18 +15,18 @@ namespace LocalCutoff.GraphTransform
 
 variable {Y : Type u} [NormedAddCommGroup Y]
 
-/-- Helper for Infrastructure I.16a: the range of norms of a two-variable raw defect over all
+/-- Supporting fact: the range of norms of a two-variable raw defect over all
 base points and all increments of norm at most the prescribed radius. -/
 private def rawDefectRadiusRange (raw : ℝ → ℝ → Y) (x : ℝ) : Set ℝ :=
   {z | ∃ u h : ℝ, ‖h‖ ≤ x ∧ z = ‖raw u h‖}
 
-/-- Helper for Infrastructure I.16a: the local supremum envelope of a raw defect, capped by its
+/-- Supporting fact: the local supremum envelope of a raw defect, capped by its
 uniform bound outside the radius on which that bound is certified. -/
 private def localRawDefectEnvelope
     (raw : ℝ → ℝ → Y) (cutoff bound x : ℝ) : ℝ :=
   if x < cutoff then sSup (rawDefectRadiusRange raw x) else bound
 
-/-- Helper for Infrastructure I.16a: a raw defect vanishing at zero gives a nonempty radius
+/-- Supporting fact: a raw defect vanishing at zero gives a nonempty radius
 range at every nonnegative radius. -/
 private theorem rawDefectRadiusRange_nonempty
     {raw : ℝ → ℝ → Y}
@@ -38,7 +37,7 @@ private theorem rawDefectRadiusRange_nonempty
   · simpa only [norm_zero] using hx
   · rw [hzero, norm_zero]
 
-/-- Helper for Infrastructure I.16a: a uniform raw-defect bound on a radius bounds the
+/-- Supporting fact: a uniform raw-defect bound on a radius bounds the
 corresponding set of defect norms from above. -/
 private theorem rawDefectRadiusRange_bddAbove
     {raw : ℝ → ℝ → Y} {cutoff bound x : ℝ}
@@ -50,14 +49,14 @@ private theorem rawDefectRadiusRange_bddAbove
   obtain ⟨u, h, hh, rfl⟩ := hz
   exact hbound u h (hh.trans_lt hx)
 
-/-- Helper for Infrastructure I.16a: below its cutoff, the capped local envelope is the
+/-- Supporting fact: below its cutoff, the capped local envelope is the
 supremum of the raw-defect radius range. -/
 private theorem localRawDefectEnvelope_eq_sSup
     (raw : ℝ → ℝ → Y) {cutoff bound x : ℝ} (hx : x < cutoff) :
     localRawDefectEnvelope raw cutoff bound x = sSup (rawDefectRadiusRange raw x) := by
   rw [localRawDefectEnvelope, if_pos hx]
 
-/-- Helper for Infrastructure I.16a: the capped local raw-defect envelope is nonnegative at
+/-- Supporting fact: the capped local raw-defect envelope is nonnegative at
 every nonnegative radius. -/
 private theorem localRawDefectEnvelope_nonneg
     {raw : ℝ → ℝ → Y} {cutoff bound x : ℝ}
@@ -76,7 +75,7 @@ private theorem localRawDefectEnvelope_nonneg
   · rw [localRawDefectEnvelope, if_neg hx_cutoff]
     exact hbound_nonneg
 
-/-- Helper for Infrastructure I.16a: on its certified radius, the capped local raw-defect
+/-- Supporting fact: on its certified radius, the capped local raw-defect
 envelope is bounded by the selected uniform bound. -/
 private theorem localRawDefectEnvelope_le_bound
     {raw : ℝ → ℝ → Y} {cutoff bound x : ℝ}
@@ -89,7 +88,7 @@ private theorem localRawDefectEnvelope_le_bound
   obtain ⟨u, h, hh, rfl⟩ := hz
   exact hbound u h (hh.trans_lt hx)
 
-/-- Helper for Infrastructure I.16a: the capped local raw-defect envelope is monotone on
+/-- Supporting fact: the capped local raw-defect envelope is monotone on
 nonnegative radii. -/
 private theorem localRawDefectEnvelope_mono
     {raw : ℝ → ℝ → Y} {cutoff bound : ℝ}
@@ -115,7 +114,7 @@ private theorem localRawDefectEnvelope_mono
     · exact localRawDefectEnvelope_le_bound hzero hx_nonneg hx hbound
     · rw [localRawDefectEnvelope, if_neg hx]
 
-/-- Helper for Infrastructure I.16a: every sufficiently local raw-defect norm is bounded by
+/-- Supporting fact: every sufficiently local raw-defect norm is bounded by
 the capped envelope at the norm of its increment. -/
 private theorem norm_rawDefect_le_localEnvelope
     {raw : ℝ → ℝ → Y} {cutoff bound : ℝ}
@@ -126,7 +125,7 @@ private theorem norm_rawDefect_le_localEnvelope
   apply le_csSup (rawDefectRadiusRange_bddAbove hh hbound)
   exact ⟨u, h, le_rfl, rfl⟩
 
-/-- Helper for Infrastructure I.16a: an inverse-coordinate raw recurrence lifts to the capped
+/-- Supporting fact: an inverse-coordinate raw recurrence lifts to the capped
 supremum envelope recurrence on a sufficiently small radius. -/
 private theorem localRawDefectEnvelope_recurrence
     {raw : ℝ → ℝ → Y} {inverse : ℝ → ℝ}
@@ -191,7 +190,7 @@ private theorem localRawDefectEnvelope_recurrence
           (mul_le_mul_of_nonneg_left htransport_bound hp)
           (mul_le_mul_of_nonneg_left hh he.le)
 
-/-- Infrastructure I.16a: a locally uniformly bounded raw defect satisfying a uniformly
+/-- Supporting infrastructure: a locally uniformly bounded raw defect satisfying a uniformly
 small inverse-coordinate affine recurrence is little-o of its scalar increment at every base
 point, provided both the recurrence factor and its transported factor are strict contractions. -/
 theorem rawDefect_isLittleO_of_inverseRecurrence

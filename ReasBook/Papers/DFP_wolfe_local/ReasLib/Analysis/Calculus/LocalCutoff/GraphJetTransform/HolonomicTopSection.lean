@@ -2,7 +2,6 @@ module
 
 public import ReasLib.Analysis.Calculus.LocalCutoff.GraphJetTransform
 public import ReasLib.Analysis.Calculus.FiniteTaylorJet.UpdateTop
-
 public section
 
 namespace LocalCutoff.GraphTransform
@@ -11,7 +10,7 @@ universe u
 
 variable {X : Type u} [NormedAddCommGroup X] [NormedSpace ℝ X]
 
-/-- Helper for Infrastructure I.16 (Finite-order graph-jet contraction): a continuous
+/-- Supporting fact: (Finite-order graph-jet contraction): a continuous
 top Taylor section with the predecessor derivative equation upgrades a graph from
 `C^(r - 1)` to `C^r`. -/
 theorem contDiff_succ_of_holonomic_topSection

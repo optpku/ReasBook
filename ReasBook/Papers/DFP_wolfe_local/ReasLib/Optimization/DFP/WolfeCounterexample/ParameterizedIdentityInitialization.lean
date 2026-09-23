@@ -6,7 +6,6 @@ public import ReasLib.Optimization.DFP.StrongWolfeCounterexample
 public import ReasLib.Optimization.LineSearch.Wolfe.CoordinateChange
 public import ReasLib.Optimization.LineSearch.Wolfe.Gradient
 import Mathlib.Tactic
-
 /-!
 # Parameterized identity initialization
 
@@ -32,7 +31,7 @@ open scoped Topology InnerProduct
 
 namespace LineSearch.IsStrongWolfe
 
-/-- Helper for TASK-10: Strong-Wolfe endpoint certificates pull back through an
+/-- Helper for Strong-Wolfe endpoint certificates pull back through an
 arbitrary continuous linear equivalence when the transformed gradients are
 used, not only through an isometry. -/
 theorem comp_continuousLinearEquiv
@@ -85,7 +84,7 @@ end LineSearch.IsStrongWolfe
 
 namespace DFP.WolfeCounterexample
 
-/-- TASK-10: An identity-initialized operator certificate retaining the
+/-- An identity-initialized operator certificate retaining the
 strong-Wolfe field of the underlying trajectory.  The inherited Hessian bounds
 are the explicitly transported `(m * a, M * b)` bounds. -/
 structure IdentityInitializedStrongWolfeOperatorCertificate
@@ -94,7 +93,7 @@ structure IdentityInitializedStrongWolfeOperatorCertificate
   strongWolfe : ∀ k, LineSearch.IsStrongWolfe c₁ c₂ objective
     (point k) (point (k + 1) - point k)
 
-/-- Helper for TASK-10: the transformed strong-Wolfe step is expressed using
+/-- Helper for the transformed strong-Wolfe step is expressed using
 the operator orbit's canonical search step. -/
 private theorem strongWolfe_operatorStep_of_factorized
     {ι : Type u} [Fintype ι] [DecidableEq ι]
@@ -133,7 +132,7 @@ private theorem strongWolfe_operatorStep_of_factorized
   rw [hf', hx' k]
   simpa only [Function.comp_apply, L.apply_symm_apply, hStep k, hOldStep] using hOld
 
-/-- TASK-10: A strong-Wolfe counterexample with an explicitly factorized
+/-- A strong-Wolfe counterexample with an explicitly factorized
 initial inverse Hessian can be affinely normalized to identity initialization.
 The parameters `a`, `b`, and `q` are explicit lower/upper Loewner bounds for
 the Hessian pullback and gradient pushforward, respectively. -/
@@ -315,7 +314,7 @@ chosen by `existsStrongWolfeCounterexample_of_dimension_ge_two`.  The generic
 theorem above accepts that witness explicitly, so no choice-dependent factor
 is hidden in this module. -/
 
-/-- TASK-10: A dimension-indexed strong certificate in the paper's Wolfe range
+/-- A dimension-indexed strong certificate in the paper's Wolfe range
 can be normalized once its concrete witness and factorization are supplied.
 The witness is an explicit argument so that the factor equation refers to the
 same trajectory used by the conclusion. -/

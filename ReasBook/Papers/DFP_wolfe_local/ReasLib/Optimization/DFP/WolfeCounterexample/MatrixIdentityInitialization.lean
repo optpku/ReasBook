@@ -4,7 +4,6 @@ public import ReasLib.Optimization.DFP.WolfeCounterexample.ParameterizedIdentity
 public import ReasLib.Optimization.DFP.Operator.Matrix
 public import Mathlib.Order.LiminfLimsup
 import Mathlib.Tactic
-
 /-!
 # Matrix-facing identity initialization
 
@@ -30,7 +29,7 @@ namespace DFP.WolfeCounterexample
 
 /- The canonical matrix representation of an operator sequence. -/
 
-/-- Helper for TASK-13: represent an operator sequence in the canonical
+/-- Represent an operator sequence in the canonical
 orthonormal Euclidean basis. -/
 noncomputable def canonicalMatrixSequence
     {n : ℕ} (H : ℕ → EuclideanSpace ℝ (Fin n) →L[ℝ] EuclideanSpace ℝ (Fin n)) :
@@ -39,7 +38,7 @@ noncomputable def canonicalMatrixSequence
     (Matrix.toEuclideanCLM : Matrix (Fin n) (Fin n) ℝ ≃⋆ₐ[ℝ]
       EuclideanSpace ℝ (Fin n) →L[ℝ] EuclideanSpace ℝ (Fin n)).symm (H k)
 
-/-- Helper for TASK-13: evaluation of the canonical matrix representation at
+/-- Evaluation of the canonical matrix representation at
 an iteration index. -/
 theorem canonicalMatrixSequence_apply
     {n : ℕ}
@@ -50,26 +49,16 @@ theorem canonicalMatrixSequence_apply
         EuclideanSpace ℝ (Fin n) →L[ℝ] EuclideanSpace ℝ (Fin n)).symm (H k) := by
   rfl
 
-/-- Helper for TASK-13: identity of an operator is identity of its canonical
+/-- An operator initialized at the identity has identity as its initial canonical
 matrix representation. -/
 theorem canonicalMatrixSequence_zero_eq_one
     {n : ℕ}
     {H : ℕ → EuclideanSpace ℝ (Fin n) →L[ℝ] EuclideanSpace ℝ (Fin n)}
     (hH : H 0 = 1) :
     canonicalMatrixSequence H 0 = (1 : Matrix (Fin n) (Fin n) ℝ) := by
-  apply EquivLike.injective
-    (Matrix.toEuclideanCLM : Matrix (Fin n) (Fin n) ℝ ≃⋆ₐ[ℝ]
-      EuclideanSpace ℝ (Fin n) →L[ℝ] EuclideanSpace ℝ (Fin n))
-  change (Matrix.toEuclideanCLM : Matrix (Fin n) (Fin n) ℝ ≃⋆ₐ[ℝ]
-      EuclideanSpace ℝ (Fin n) →L[ℝ] EuclideanSpace ℝ (Fin n))
-      ((Matrix.toEuclideanCLM : Matrix (Fin n) (Fin n) ℝ ≃⋆ₐ[ℝ]
-        EuclideanSpace ℝ (Fin n) →L[ℝ] EuclideanSpace ℝ (Fin n)).symm (H 0)) =
-    (Matrix.toEuclideanCLM : Matrix (Fin n) (Fin n) ℝ ≃⋆ₐ[ℝ]
-      EuclideanSpace ℝ (Fin n) →L[ℝ] EuclideanSpace ℝ (Fin n)) 1
-  rw [StarAlgEquiv.apply_symm_apply, hH]
-  simp only [map_one]
+  rw [canonicalMatrixSequence_apply, hH, map_one]
 
-/-- TASK-13: a classical matrix DFP counterexample with identity initialization and an
+/-- A classical matrix DFP counterexample with identity initialization and an
 explicit positive lower tail for its gradient norm. -/
 structure MatrixIdentityStrongWolfeCertificate
     (n : ℕ) (m M c₁ c₂ : ℝ)
@@ -79,29 +68,16 @@ structure MatrixIdentityStrongWolfeCertificate
   gradientNormEventuallyPositive : ∃ δ : ℝ, 0 < δ ∧
     ∀ᶠ k in atTop, δ ≤ ‖DFP.gradients iteration.objective iteration.point k‖
 
-/-- Helper for TASK-13: the eventual positive gradient tail of a matrix certificate implies the
-corresponding strict positivity of its filter liminf. -/
+/-- The positive gradient-norm limit of a matrix certificate is also its filter liminf. -/
 theorem MatrixIdentityStrongWolfeCertificate.gradientNormLiminf_pos
     {n : ℕ} {m M c₁ c₂ : ℝ}
     (c : MatrixIdentityStrongWolfeCertificate n m M c₁ c₂) :
     0 < liminf
       (fun k ↦ ‖DFP.gradients c.iteration.objective c.iteration.point k‖) atTop := by
-  obtain ⟨δ, hδ, htail⟩ := c.gradientNormEventuallyPositive
-  have hTendsto : Tendsto
-      (fun k ↦ ‖DFP.gradients c.iteration.objective c.iteration.point k‖)
-      atTop (𝓝 c.gradientLimit) := c.gradientNormTendsto
-  have hbounded : atTop.IsBoundedUnder (· ≤ ·)
-      (fun k ↦ ‖DFP.gradients c.iteration.objective c.iteration.point k‖) :=
-    hTendsto.isBoundedUnder_le
-  have hcobounded : atTop.IsCoboundedUnder (· ≥ ·)
-      (fun k ↦ ‖DFP.gradients c.iteration.objective c.iteration.point k‖) :=
-    hbounded.isCoboundedUnder_ge
-  have hδlim : δ ≤ liminf
-      (fun k ↦ ‖DFP.gradients c.iteration.objective c.iteration.point k‖) atTop :=
-    le_liminf_of_le hcobounded htail
-  exact lt_of_lt_of_le hδ hδlim
+  rw [c.gradientNormTendsto.liminf_eq]
+  exact c.gradientLimitPos
 
-/-- Helper for TASK-13: convert strict positivity of a self-adjoint operator into positive
+/-- Strict positivity of a self-adjoint operator implies positive
 definiteness of its canonical real matrix. -/
 theorem canonicalMatrix_posDef_of_operatorStrictPositive
     {n : ℕ} {A : EuclideanSpace ℝ (Fin n) →L[ℝ] EuclideanSpace ℝ (Fin n)}
@@ -138,7 +114,7 @@ theorem canonicalMatrix_posDef_of_operatorStrictPositive
     exact hApos z hz
   simpa only [Matrix.inner_toEuclideanCLM, star_trivial] using hpositive
 
-/-- Helper for TASK-13: the identity-initialized operator orbit has positive-definite canonical
+/-- An identity-initialized operator orbit has positive-definite canonical
 matrices at every step when its secant curvature is strictly positive. -/
 theorem canonicalMatrixSequence_posDef_of_identityOrbit
     {n : ℕ} {m M c₁ c₂ : ℝ}
@@ -148,12 +124,8 @@ theorem canonicalMatrixSequence_posDef_of_identityOrbit
         (c.point (k + 1) - c.point k)) :
     ∀ k, (canonicalMatrixSequence c.inverseHessian k).PosDef := by
   let H : ℕ → Matrix (Fin n) (Fin n) ℝ := canonicalMatrixSequence c.inverseHessian
-  have hOrbit : DFP.IsOrbit c.objective c.stepLength c.point c.gradient H := by
-    change DFP.IsOrbit c.objective c.stepLength c.point c.gradient
-      (fun k ↦ (Matrix.toEuclideanCLM : Matrix (Fin n) (Fin n) ℝ ≃⋆ₐ[ℝ]
-        EuclideanSpace ℝ (Fin n) →L[ℝ] EuclideanSpace ℝ (Fin n)).symm
-        (c.inverseHessian k))
-    exact c.toIdentityInitializedOperatorCertificate.orbit.toMatrix
+  have hOrbit : DFP.IsOrbit c.objective c.stepLength c.point c.gradient H :=
+    c.orbit.toMatrix
   have hCurvature (k : ℕ) :
       0 <
         WithLp.ofLp (DFP.steps c.stepLength (DFP.directions H c.gradient) k) ⬝ᵥ
@@ -188,7 +160,7 @@ theorem canonicalMatrixSequence_posDef_of_identityOrbit
       rw [hRec]
       exact Matrix.PosDef.inverseDFPUpdate ih (hCurvature k)
 
-/-- Helper for TASK-13: an arbitrary invertible coordinate factor sends the identity operator to a
+/-- Helper for an arbitrary invertible coordinate factor sends the identity operator to a
 strictly positive canonical matrix. -/
 theorem canonicalMatrix_posDef_of_pushforward_one
     {n : ℕ} (L : EuclideanSpace ℝ (Fin n) ≃L[ℝ] EuclideanSpace ℝ (Fin n)) :
@@ -213,7 +185,7 @@ theorem canonicalMatrix_posDef_of_pushforward_one
     rw [← L.toContinuousLinearMap.adjoint_inner_left]
     exact real_inner_self_pos.mpr hAdjoint
 
-/-- Helper for TASK-13: a strictly positive secant pairing along an operator orbit supplies the
+/-- A strictly positive secant pairing along an operator orbit supplies the
 nonzero denominator for its canonical matrix orbit. -/
 theorem canonicalMatrixSequence_denominator_ne_of_operatorOrbit
     {n : ℕ} {f : EuclideanSpace ℝ (Fin n) → ℝ} {α : ℕ → ℝ}
@@ -226,23 +198,11 @@ theorem canonicalMatrixSequence_denominator_ne_of_operatorOrbit
       WithLp.ofLp
           (DFP.steps α (DFP.directions (canonicalMatrixSequence H) g) k) ⬝ᵥ
         WithLp.ofLp (DFP.gradientChanges g k) ≠ 0 := by
-  let Hmat : ℕ → Matrix (Fin n) (Fin n) ℝ := canonicalMatrixSequence H
-  have hMatrixOrbit : DFP.IsOrbit f α x g Hmat := by
-    change DFP.IsOrbit f α x g
-      (fun k ↦ (Matrix.toEuclideanCLM : Matrix (Fin n) (Fin n) ℝ ≃⋆ₐ[ℝ]
-        EuclideanSpace ℝ (Fin n) →L[ℝ] EuclideanSpace ℝ (Fin n)).symm
-        (H k))
-    exact hOrbit.toMatrix
-  have hDenominator : ∀ k,
-      WithLp.ofLp (DFP.steps α (DFP.directions Hmat g) k) ⬝ᵥ
-        WithLp.ofLp (DFP.gradientChanges g k) ≠ 0 :=
-    hMatrixOrbit.secantDenominator_ne_of_secantCurvature_pos hSecant
-  intro k
-  simpa only [Hmat] using hDenominator k
+  have hMatrixOrbit : DFP.IsOrbit f α x g (canonicalMatrixSequence H) := hOrbit.toMatrix
+  exact hMatrixOrbit.secantDenominator_ne_of_secantCurvature_pos hSecant
 
-/-- Helper for TASK-13: assemble a matrix-facing identity certificate from an operator certificate
-when the canonical matrix sequence has the required positive definiteness and
-nonzero DFP secant denominators. -/
+/-- Helper for cor:identity-initialization: an operator certificate with positive-definite
+canonical matrices and nonzero secant denominators yields a matrix identity certificate. -/
 theorem MatrixIdentityStrongWolfeCertificate.ofOperator
     {n : ℕ} {m M c₁ c₂ : ℝ}
     (c : IdentityInitializedStrongWolfeOperatorCertificate (Fin n) m M c₁ c₂)
@@ -256,80 +216,49 @@ theorem MatrixIdentityStrongWolfeCertificate.ofOperator
         WithLp.ofLp (DFP.gradientChanges c.gradient k) ≠ 0) :
     Nonempty (MatrixIdentityStrongWolfeCertificate n m M c₁ c₂) := by
   let H : ℕ → Matrix (Fin n) (Fin n) ℝ := canonicalMatrixSequence c.inverseHessian
-  have hOrbit : DFP.IsOrbit c.objective c.stepLength c.point c.gradient H := by
-    change DFP.IsOrbit c.objective c.stepLength c.point c.gradient
-      (fun k ↦ (Matrix.toEuclideanCLM : Matrix (Fin n) (Fin n) ℝ ≃⋆ₐ[ℝ]
-        EuclideanSpace ℝ (Fin n) →L[ℝ] EuclideanSpace ℝ (Fin n)).symm
-        (c.inverseHessian k))
-    exact c.toIdentityInitializedOperatorCertificate.orbit.toMatrix
-  let orbit : DFP.IsOrbit c.objective c.stepLength c.point c.gradient H := hOrbit
+  have hOrbit : DFP.IsOrbit c.objective c.stepLength c.point c.gradient H :=
+    c.orbit.toMatrix
   let iteration : DFP.InverseIteration (Fin n) :=
-    orbit.toInverseIteration hPosDef hDenominator
-  have hObjective : iteration.objective = c.objective := by
-    simpa only [iteration, DFP.IsOrbit.toInverseIteration_objective] using rfl
-  have hStepLength : ∀ k, iteration.stepLength k = c.stepLength k := by
-    intro k
-    simpa only [iteration, DFP.IsOrbit.toInverseIteration_stepLength] using rfl
-  have hPoint : ∀ k, iteration.point k = c.point k := by
-    intro k
-    simpa only [iteration, DFP.IsOrbit.toInverseIteration_point] using rfl
+    hOrbit.toInverseIteration hPosDef hDenominator
+  have hObjective : iteration.objective = c.objective :=
+    hOrbit.toInverseIteration_objective hPosDef hDenominator
+  have hStepLength : iteration.stepLength = c.stepLength :=
+    hOrbit.toInverseIteration_stepLength hPosDef hDenominator
+  have hPoint : iteration.point = c.point :=
+    hOrbit.toInverseIteration_point_eq hPosDef hDenominator
+  have hGradientEq : DFP.gradients iteration.objective iteration.point = c.gradient := by
+    rw [hObjective, hPoint]
+    exact hOrbit.gradients_eq
   have hContDiff : ContDiff ℝ 2 iteration.objective := by
     rw [hObjective]
     exact c.objectiveContDiff
   have hStepPos : ∀ k, 0 < iteration.stepLength k := by
     intro k
-    rw [hStepLength k]
-    exact c.toIdentityInitializedOperatorCertificate.orbit.stepLengthPos k
+    rw [hStepLength]
+    exact c.orbit.stepLengthPos k
   have hWeakWolfe : ∀ k, LineSearch.IsWeakWolfe c₁ c₂ iteration.objective
       (iteration.point k) (iteration.point (k + 1) - iteration.point k) := by
     intro k
-    rw [hObjective, hPoint k, hPoint (k + 1)]
+    rw [hObjective, hPoint]
     exact c.weakWolfeLegacy k
   have hStrongWolfe : ∀ k, LineSearch.IsStrongWolfe c₁ c₂ iteration.objective
       (iteration.point k) (iteration.point (k + 1) - iteration.point k) := by
     intro k
-    rw [hObjective, hPoint k, hPoint (k + 1)]
+    rw [hObjective, hPoint]
     exact c.strongWolfe k
   have hGradientNormTendsto' : Tendsto
       (fun k ↦ ‖DFP.gradients iteration.objective iteration.point k‖)
       atTop (𝓝 c.gradientLimit) := by
-    have hGradientEq : DFP.gradients c.objective c.point = c.gradient :=
-      orbit.gradients_eq
-    have hObjectiveEq : iteration.objective = c.objective := hObjective
-    have hPointEq : iteration.point = c.point := by
-      simpa only [iteration, DFP.IsOrbit.toInverseIteration_point_eq] using rfl
-    have hGradientCanonical :
-        DFP.gradients iteration.objective iteration.point = c.gradient := by
-      rw [hObjectiveEq, hPointEq]
-      exact hGradientEq
-    have hNormEq :
-        (fun k ↦ ‖DFP.gradients iteration.objective iteration.point k‖) =
-          (fun k ↦ ‖c.gradient k‖) := by
-      funext k
-      rw [hGradientCanonical]
-    rw [hNormEq]
+    rw [hGradientEq]
     exact hGradientNormTendsto
   have hInitial : iteration.inverseHessian 0 =
       (1 : Matrix (Fin n) (Fin n) ℝ) := by
-    have hMatrixInitial := canonicalMatrixSequence_zero_eq_one
-      (H := c.inverseHessian) c.initialInverseHessian_eq_one
-    simpa only [iteration, DFP.IsOrbit.toInverseIteration_inverseHessian] using hMatrixInitial
+    rw [hOrbit.toInverseIteration_inverseHessian]
+    exact canonicalMatrixSequence_zero_eq_one c.initialInverseHessian_eq_one
   have hTail : ∃ δ : ℝ, 0 < δ ∧
       ∀ᶠ k in atTop, δ ≤ ‖DFP.gradients iteration.objective iteration.point k‖ := by
-    obtain ⟨δ, hδ, htail⟩ := c.gradientNormEventuallyPositive
-    refine ⟨δ, hδ, ?_⟩
-    have hGradientEq : DFP.gradients c.objective c.point = c.gradient :=
-      orbit.gradients_eq
-    have hObjectiveEq : iteration.objective = c.objective := hObjective
-    have hPointEq : iteration.point = c.point := by
-      simpa only [iteration, DFP.IsOrbit.toInverseIteration_point_eq] using rfl
-    have hGradientCanonical :
-        DFP.gradients iteration.objective iteration.point = c.gradient := by
-      rw [hObjectiveEq, hPointEq]
-      exact hGradientEq
-    filter_upwards [htail] with k hk
-    rw [hGradientCanonical]
-    exact hk
+    rw [hGradientEq]
+    exact c.gradientNormEventuallyPositive
   have hHessianBounds : HasHessianBounds m M iteration.objective := by
     rw [hObjective]
     exact c.hessianBounds
@@ -343,31 +272,17 @@ theorem MatrixIdentityStrongWolfeCertificate.ofOperator
     gradientLimitPos := c.gradientLimitPos
     gradientNormTendsto := hGradientNormTendsto'
   }
-  have hStrongLegacy : ∀ k, LineSearch.IsStrongWolfe c₁ c₂ weak.iteration.objective
-      (weak.iteration.point k)
-      (weak.iteration.point (k + 1) - weak.iteration.point k) := by
-    intro k
-    simpa only [weak] using hStrongWolfe k
   let strong : DFP.StrongWolfeCounterexample (Fin n) m M c₁ c₂ :=
     { toWolfeCounterexample := weak
-      strongWolfe := hStrongLegacy }
-  have hInitialStrong : strong.iteration.inverseHessian 0 =
-      (1 : Matrix (Fin n) (Fin n) ℝ) := by
-    dsimp only [strong]
-    exact hInitial
-  have hTailStrong : ∃ δ : ℝ, 0 < δ ∧
-      ∀ᶠ k in atTop, δ ≤ ‖DFP.gradients strong.iteration.objective strong.iteration.point k‖ := by
-    dsimp only [strong]
-    exact hTail
+      strongWolfe := hStrongWolfe }
   exact ⟨{
     toStrongWolfeCounterexample := strong
-    initialInverseHessian_eq_one := hInitialStrong
-    gradientNormEventuallyPositive := hTailStrong
+    initialInverseHessian_eq_one := hInitial
+    gradientNormEventuallyPositive := hTail
   }⟩
 
-/-- Helper for TASK-13: assemble a matrix-facing identity certificate from positive secant
-curvature; the curvature lemma supplies the denominator side condition needed
-by `InverseIteration`. -/
+/-- Helper for cor:identity-initialization: positive secant curvature supplies the
+nonzero denominators required by the matrix identity certificate. -/
 theorem MatrixIdentityStrongWolfeCertificate.ofOperator_ofSecantCurvature
     {n : ℕ} {m M c₁ c₂ : ℝ}
     (c : IdentityInitializedStrongWolfeOperatorCertificate (Fin n) m M c₁ c₂)
@@ -378,31 +293,11 @@ theorem MatrixIdentityStrongWolfeCertificate.ofOperator_ofSecantCurvature
       0 < inner ℝ (c.gradient (k + 1) - c.gradient k)
         (c.point (k + 1) - c.point k)) :
     Nonempty (MatrixIdentityStrongWolfeCertificate n m M c₁ c₂) := by
-  let H : ℕ → Matrix (Fin n) (Fin n) ℝ := canonicalMatrixSequence c.inverseHessian
-  have hOrbit : DFP.IsOrbit c.objective c.stepLength c.point c.gradient H := by
-    change DFP.IsOrbit c.objective c.stepLength c.point c.gradient
-      (fun k ↦ (Matrix.toEuclideanCLM : Matrix (Fin n) (Fin n) ℝ ≃⋆ₐ[ℝ]
-        EuclideanSpace ℝ (Fin n) →L[ℝ] EuclideanSpace ℝ (Fin n)).symm
-        (c.inverseHessian k))
-    exact c.toIdentityInitializedOperatorCertificate.orbit.toMatrix
-  let orbit : DFP.IsOrbit c.objective c.stepLength c.point c.gradient H := hOrbit
-  have hDenominator : ∀ k,
-      WithLp.ofLp (DFP.steps c.stepLength (DFP.directions H c.gradient) k) ⬝ᵥ
-        WithLp.ofLp (DFP.gradientChanges c.gradient k) ≠ 0 :=
-    orbit.secantDenominator_ne_of_secantCurvature_pos hSecant
-  have hDenominator' : ∀ k,
-      WithLp.ofLp
-          (DFP.steps c.stepLength
-            (DFP.directions (canonicalMatrixSequence c.inverseHessian) c.gradient) k) ⬝ᵥ
-        WithLp.ofLp (DFP.gradientChanges c.gradient k) ≠ 0 := by
-    intro k
-    simpa only [H] using hDenominator k
   exact MatrixIdentityStrongWolfeCertificate.ofOperator c hGradientNormTendsto hPosDef
-    hDenominator'
+    (canonicalMatrixSequence_denominator_ne_of_operatorOrbit c.orbit hSecant)
 
-/-- Helper for TASK-13: assemble the matrix-facing certificate using only the operator orbit's
-strict secant curvature.  The preceding identity-orbit lemmas derive both the
-matrix positive-definiteness and the DFP denominator conditions. -/
+/-- Helper for cor:identity-initialization: identity initialization and positive secant
+curvature give positive-definite matrices and a matrix identity certificate. -/
 theorem MatrixIdentityStrongWolfeCertificate.ofOperator_ofIdentityAndSecantCurvature
     {n : ℕ} {m M c₁ c₂ : ℝ}
     (c : IdentityInitializedStrongWolfeOperatorCertificate (Fin n) m M c₁ c₂)

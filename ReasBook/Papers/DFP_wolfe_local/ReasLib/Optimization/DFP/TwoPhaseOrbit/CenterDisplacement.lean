@@ -5,7 +5,6 @@ public import ReasLib.Optimization.DFP.TwoPhaseOrbit.FrameAngle
 public import ReasLib.Optimization.DFP.TwoPhaseControls.SlowCurve.OrbitBounds
 public import ReasLib.Optimization.DFP.TwoPhaseControls.CenterJet
 public import ReasLib.Analysis.Asymptotics.UniformRemainder.BigOToExplicit
-
 public section
 
 open Filter
@@ -503,7 +502,8 @@ theorem slowCurveHalfCenterDisplacementBound (p h : ℝ → ℝ)
       (orbit.state j).amplitude * (Chalf * xj.1 ^ 3) := hScaledBound
     _ = Chalf * (orbit.state j).amplitude * xj.1 ^ 3 := by ring
 
-/-- Along every sufficiently small invariant slow-curve orbit, one physical cycle
+/-- Lemma 7 (`lem:two-step-expansions`), full-cycle center component.
+Along every sufficiently small invariant slow-curve orbit, one physical cycle
 changes the center by `-(116 / 5) * G * ε ^ 6` times the physical low vector,
 up to a vector remainder bounded by a constant multiple of `G * ε ^ 7`. -/
 theorem slowCurveFullCenterDrift (p h : ℝ → ℝ)

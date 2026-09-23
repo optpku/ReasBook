@@ -1,7 +1,6 @@
 module
 
 public import ReasLib.Analysis.Calculus.LocalInvariantGraph.ExplicitContraction.MetricFiberFaaDiBruno
-
 /-!
 ## Length-1 partition extraction from the fiber Faà-di-Bruno remainder
 
@@ -30,7 +29,7 @@ universe u
 namespace LocalInvariantGraph
 variable {X : Type u} [NormedAddCommGroup X] [NormedSpace ℝ X]
 
-/-- Helper for Infrastructure I.16a: local copy of `iteratedDeriv_clm_comp_left` (reproduced to avoid importing the heavier secant
+/-- Supporting fact: local copy of `iteratedDeriv_clm_comp_left` (reproduced to avoid importing the heavier secant
 kernel leaf): the `m`-th iterated derivative of `L ∘ f` is `L` applied to the `m`-th derivative of
 `f`, whenever `f` is `Cᵐ` at `u`. -/
 private theorem iteratedDeriv_clm_comp_left'
@@ -45,14 +44,14 @@ private theorem iteratedDeriv_clm_comp_left'
   rw [ContinuousLinearMap.compContinuousMultilinearMap_coe]
   rfl
 
-/-- Helper for Infrastructure I.16a: a family indexed by `Fin 1` is pairwise disjoint on
+/-- Supporting fact: a family indexed by `Fin 1` is pairwise disjoint on
 distinct indices, since there are no distinct indices. -/
 theorem finOne_pairwiseDisjoint
     {A : Type*} (s : Fin 1 → Set A) : PairwiseDisjoint Set.univ s := by
   intro i _ j _ hij
   exact (hij (Subsingleton.elim i j)).elim
 
-/-- Helper for Infrastructure I.16a: the identity embedding of `Fin m` covers every point,
+/-- Supporting fact: the identity embedding of `Fin m` covers every point,
 viewed as the sole part of a one-block ordered finpartition. -/
 theorem singleBlock_id_cover (m : ℕ) :
     ∀ x : Fin m, ∃ i : Fin 1, x ∈ range (id : Fin m → Fin m) := by
@@ -60,7 +59,7 @@ theorem singleBlock_id_cover (m : ℕ) :
   refine ⟨0, x, ?_⟩
   rfl
 
-/-- Helper for Infrastructure I.16a: the single-block ordered finpartition of `Fin m` (for `0 < m`): one part of size `m`, embedded
+/-- Supporting fact: the single-block ordered finpartition of `Fin m` (for `0 < m`): one part of size `m`, embedded
 by the identity.  This is the unique ordered finpartition of `m` with `length = 1`. -/
 @[expose] def singleBlock (m : ℕ) (hm : 0 < m) : OrderedFinpartition m where
   length := 1
@@ -72,14 +71,14 @@ by the identity.  This is the unique ordered finpartition of `m` with `length = 
   disjoint := finOne_pairwiseDisjoint _
   cover := singleBlock_id_cover m
 
-/-- Helper for Infrastructure I.16a: `singleBlock m hm` has length one. -/
+/-- Supporting fact: `singleBlock m hm` has length one. -/
 @[simp] theorem singleBlock_length (m : ℕ) (hm : 0 < m) : (singleBlock m hm).length = 1 := rfl
 
-/-- Helper for Infrastructure I.16a: the unique part of `singleBlock m hm` has size `m`. -/
+/-- Supporting fact: the unique part of `singleBlock m hm` has size `m`. -/
 @[simp] theorem singleBlock_partSize (m : ℕ) (hm : 0 < m) (j : Fin 1) :
     (singleBlock m hm).partSize j = m := rfl
 
-/-- Helper for Infrastructure I.16a: among ordered finpartitions of `m`, the only one whose
+/-- Supporting fact: among ordered finpartitions of `m`, the only one whose
 length equals `m` is the atomic partition (each part is a singleton). -/
 private theorem orderedFinpartition_length_eq_iff_atomic
     {m : ℕ} (c : OrderedFinpartition m) :
@@ -124,7 +123,7 @@ private theorem orderedFinpartition_length_eq_iff_atomic
     subst h
     simp [OrderedFinpartition.atomic]
 
-/-- Helper for Infrastructure I.16a: among ordered finpartitions of `m` (with `0 < m`), the only one whose `length` equals `1` is
+/-- Supporting fact: among ordered finpartitions of `m` (with `0 < m`), the only one whose `length` equals `1` is
 `singleBlock`.  Mirrors `orderedFinpartition_length_eq_iff_atomic`. -/
 theorem orderedFinpartition_length_eq_one_iff_singleBlock
     {m : ℕ} (hm : 0 < m) (c : OrderedFinpartition m) :
@@ -165,7 +164,7 @@ theorem orderedFinpartition_length_eq_one_iff_singleBlock
     subst h
     rfl
 
-/-- Helper for Infrastructure I.16a: for `m ≥ 2`, the order-`m` iterated derivative of the pair map `pair y = (y, ζ y)` at `u` is
+/-- Supporting fact: for `m ≥ 2`, the order-`m` iterated derivative of the pair map `pair y = (y, ζ y)` at `u` is
 `(0, iteratedDeriv m ζ u)`: the first (`id`) component's `m`-th derivative vanishes for `m ≥ 2`. -/
 theorem iteratedDeriv_pair_eq_of_two_le
     (d : MetricGraphTransformData X)
@@ -205,7 +204,7 @@ theorem iteratedDeriv_pair_eq_of_two_le
   · simpa using hfst
   · simpa using hsnd
 
-/-- Helper for Infrastructure I.16a: the Faà-di-Bruno summand attached to the single-block
+/-- Supporting fact: the Faà-di-Bruno summand attached to the single-block
 finpartition `singleBlock m hm0` collapses to the fiber cocycle term
 `derivFiber d ζ u (iteratedDeriv m ζ u)`, for `m ≥ 2`.  The order-one outer jet of
 `snd ∘ R` is evaluated on `iteratedDeriv m pair u = (0, iteratedDeriv m ζ u)`, so its
@@ -245,7 +244,7 @@ theorem singleBlock_summand_eq_derivFiber
   rw [derivFiber_apply]
   simp only [ContinuousLinearMap.comp_apply, ContinuousLinearMap.coe_snd']
 
-/-- Helper for Infrastructure I.16a: the reserved-top-order split of the fiber remainder under
+/-- Supporting fact: the reserved-top-order split of the fiber remainder under
 exactly `C^m` regularity.  For `m ≥ 2`, the order-`m` iterated derivative of
 `u ↦ (d.R (u, ζ u)).2` is the sum of the atomic branch, the fiber cocycle applied to
 `iteratedDeriv m ζ`, and the residual over ordered finpartitions of length neither `1` nor `m`.
@@ -294,7 +293,7 @@ theorem iteratedDeriv_fiber_remainder_length_one_split_of_contDiff
       exact hlen1 rfl
   rw [hset]
 
-/-- Helper for Infrastructure I.16a: the stronger reserved-top-order split of the fiber remainder (`m ≥ 2`).  The order-`m` iterated
+/-- Supporting fact: the stronger reserved-top-order split of the fiber remainder (`m ≥ 2`).  The order-`m` iterated
 derivative of the fiber remainder `g u = (R (u, ζ u)).2` splits into
 
   `iteratedDeriv m g u = ATOMIC(m)  +  derivFiber d ζ u (iteratedDeriv m ζ u)  +  RESIDUAL(u)`,
@@ -325,7 +324,7 @@ theorem iteratedDeriv_fiber_remainder_length_one_split
   have hprev : ContDiff ℝ m (ζ : ℝ → X) := hprev1.of_le hm_cast
   exact iteratedDeriv_fiber_remainder_length_one_split_of_contDiff d ζ hm hmν hprev u
 
-/-- Helper for Infrastructure I.16a: the order-`m` derivative of the center-coordinate
+/-- Supporting fact: the order-`m` derivative of the center-coordinate
 remainder splits into its atomic branch and the non-atomic Faà-di-Bruno sum under exactly
 `C^m` regularity. -/
 theorem iteratedDeriv_center_remainder_atomic_split_of_contDiff
@@ -384,7 +383,7 @@ theorem iteratedDeriv_center_remainder_atomic_split_of_contDiff
   simp only [Finset.mem_erase, Finset.mem_filter, Finset.mem_univ, and_true, true_and,
     ne_eq, orderedFinpartition_length_eq_iff_atomic]
 
-/-- Helper for Infrastructure I.16a: for `m ≥ 2`, the center-coordinate Faà-di-Bruno
+/-- Supporting fact: for `m ≥ 2`, the center-coordinate Faà-di-Bruno
 summand of the single-block ordered finpartition is `derivCenterFiber d ζ u` applied to
 `iteratedDeriv m ζ u`. -/
 theorem singleBlock_center_summand_eq_derivCenterFiber
@@ -416,7 +415,7 @@ theorem singleBlock_center_summand_eq_derivCenterFiber
   rw [derivCenterFiber_apply]
   simp only [ContinuousLinearMap.comp_apply, ContinuousLinearMap.coe_fst']
 
-/-- Helper for Infrastructure I.16a: under exactly `C^m` regularity and `m ≥ 2`, the
+/-- Supporting fact: under exactly `C^m` regularity and `m ≥ 2`, the
 order-`m` derivative of the center-coordinate remainder is the sum of its atomic branch,
 the center fiber cocycle on `iteratedDeriv m ζ`, and a residual involving only ordered
 finpartitions of length neither `1` nor `m`. -/
@@ -465,7 +464,7 @@ theorem iteratedDeriv_center_remainder_length_one_split_of_contDiff
       exact hlen1 rfl
   rw [hset]
 
-/-- Helper for Infrastructure I.16a: the stronger `C^(m+1)` center-coordinate
+/-- Supporting fact: the stronger `C^(m+1)` center-coordinate
 reserved-top-order split is a compatibility wrapper around
 `iteratedDeriv_center_remainder_length_one_split_of_contDiff`. -/
 theorem iteratedDeriv_center_remainder_length_one_split
@@ -490,7 +489,7 @@ theorem iteratedDeriv_center_remainder_length_one_split
   have hprev : ContDiff ℝ m (ζ : ℝ → X) := hprev1.of_le hm_cast
   exact iteratedDeriv_center_remainder_length_one_split_of_contDiff d ζ hm hmν hprev u
 
-/-- Helper for Infrastructure I.16a: in a non-singleton ordered finpartition, every part has
+/-- Supporting fact: in a non-singleton ordered finpartition, every part has
 size strictly below the size of the partitioned finite set. -/
 theorem orderedFinpartition_partSize_lt_of_length_ne_one
     {m : ℕ} (c : OrderedFinpartition m) (hlen : c.length ≠ 1) (j : Fin c.length) :
@@ -520,7 +519,7 @@ theorem orderedFinpartition_partSize_lt_of_length_ne_one
   have hk_pos : 0 < c.partSize k := c.partSize_pos k
   omega
 
-/-- Helper for Infrastructure I.16a: a retained doubled-filter Faà-di-Bruno summand is
+/-- Supporting fact: a retained doubled-filter Faà-di-Bruno summand is
 `C¹` when the outer map and the inner curve are `C^m`.  The excluded atomic branch leaves one
 derivative on the outer jet, while exclusion of the single-block branch leaves one derivative
 on every inner jet. -/
@@ -573,7 +572,7 @@ private theorem orderedFinpartition_summand_contDiff_one
     exact heval.contDiff
   simpa only [Function.comp_def] using hevaluation.comp (hjet.prodMk hvec)
 
-/-- Helper for Infrastructure I.16a: under exactly `C^m` regularity and `m ≥ 2`, the
+/-- Supporting fact: under exactly `C^m` regularity and `m ≥ 2`, the
 doubled-filter residual in the center-coordinate reserved-top-order split is `C¹`. -/
 theorem iteratedDeriv_center_remainder_length_one_residual_contDiff
     (d : MetricGraphTransformData X)
@@ -600,7 +599,7 @@ theorem iteratedDeriv_center_remainder_length_one_residual_contDiff
     hm hg hpair c hc.2.1 hc.2.2
 
 
-/-- Helper for Infrastructure I.16a: the doubled-filter residual in the center-coordinate
+/-- Supporting fact: the doubled-filter residual in the center-coordinate
 reserved-top-order split is continuous.  Every retained ordered finpartition has length below
 `m`, so its outer jet and all inner pair-map jets vary continuously under `ContDiff ℝ m ζ`. -/
 theorem iteratedDeriv_center_remainder_length_one_residual_continuous
@@ -644,7 +643,7 @@ theorem iteratedDeriv_center_remainder_length_one_residual_continuous
     exact hpair.continuous_iteratedDeriv (c.partSize j) hpart_with_top
   exact hjet.eval hvec
 
-/-- Helper for Infrastructure I.16a: under exactly `C^m` regularity and `m ≥ 2`, the
+/-- Supporting fact: under exactly `C^m` regularity and `m ≥ 2`, the
 doubled-filter residual in the stable-coordinate reserved-top-order split is `C¹`. -/
 theorem iteratedDeriv_fiber_remainder_length_one_residual_contDiff
     (d : MetricGraphTransformData X)
@@ -670,7 +669,7 @@ theorem iteratedDeriv_fiber_remainder_length_one_residual_contDiff
     (fun z : ℝ × X ↦ (d.R z).2) (fun y ↦ (y, (ζ : ℝ → X) y))
     hm hg hpair c hc.2.1 hc.2.2
 
-/-- Helper for Infrastructure I.16a: the residual sum of `iteratedDeriv_fiber_remainder_length_one_split` (over ordered
+/-- Supporting fact: the residual sum of `iteratedDeriv_fiber_remainder_length_one_split` (over ordered
 finpartitions of length neither `1` nor `m`) is a continuous function of `u`.  Every such
 finpartition has `length < m` (as in `iteratedDeriv_fiber_remainder_remainder_continuous`),
 so the identical continuity argument applies to the doubled filter. -/

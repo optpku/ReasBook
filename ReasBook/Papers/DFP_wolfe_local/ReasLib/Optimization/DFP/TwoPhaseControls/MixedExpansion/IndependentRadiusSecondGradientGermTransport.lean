@@ -20,7 +20,7 @@ coordinate.  It accepts the raw-to-normal-form equality as a certificate and
 therefore does not unfold the physical observable map.
 -/
 
-/-- Helper for Appendix Lemma A.6: an uncurried eventual equality specializes to
+/-- Supporting fact: an uncurried eventual equality specializes to
     an eventual equality on every fixed-parameter radius path. -/
 theorem scalarFamily_eventuallyEq_of_uncurry_radius
     {K : Set (ℝ × ℝ × ℝ)}
@@ -42,7 +42,7 @@ theorem scalarFamily_eventuallyEq_of_uncurry_radius
   change f θ r = g θ r at hr
   exact hr
 
-/-- Helper for Appendix Lemma A.6: the normalized second-gradient low coordinate
+/-- Supporting fact: the normalized second-gradient low coordinate
     carries its exact three-term coefficient germ on an arbitrary parameter set. -/
 theorem independentRadiusSecondGradientLow_truncatedGerm_generic
     {K : Set (ℝ × ℝ × ℝ)} :
@@ -75,7 +75,7 @@ theorem independentRadiusSecondGradientLow_truncatedGerm_generic
     exact independentRadiusSecondGradientLow_quadraticGerm θ
   exact independentRadiusTruncatedGerm_of_quadraticGerms hregular hgerm
 
-/-- Appendix Lemma A.6: any scalar family with a certified uncurried equality to
+/-- Supporting Lemma: any scalar family with a certified uncurried equality to
     the normalized second-gradient low coordinate inherits its exact amplitude
     coefficient germ. -/
 theorem truncatedGerm_of_uncurryEq_secondGradientLow

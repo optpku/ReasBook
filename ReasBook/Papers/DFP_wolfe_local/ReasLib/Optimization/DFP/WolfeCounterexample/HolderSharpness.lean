@@ -8,7 +8,6 @@ module
 public import ReasLib.Optimization.DFP.WolfeCounterexample.Holder
 public import ReasLib.Optimization.DFP.TwoPhaseOrbit.StepDescent.StepNorm
 public import ReasLib.Optimization.DFP.TwoPhaseControls.SlowCurve.ScaleAsymptotics
-
 /-!
 # Sharpness of the one-half Hölder Hessian exponent
 
@@ -400,7 +399,8 @@ theorem OrthogonalSum.embed_eq_inl {ι κ : Type*} [Fintype ι] [Fintype κ]
     exact (OrthogonalSum.embed_apply_inr z i).trans
       (EuclideanSpace.OrthogonalSum.inl_apply_inr z i).symm
 
-/-- thm:main and eq:counterexample-nonlipschitz: in every dimension at least
+/-- Theorem 1 (`thm:main`), with the regularity refinement in
+`eq:counterexample-nonlipschitz`: in every dimension at least
 two, the same strong-Wolfe counterexample has a globally one-half Hölder
 Hessian and admits no larger exponent even on its initial sublevel. -/
 theorem existsStrongWolfeCounterexampleHolderSharp_of_dimension_ge_two

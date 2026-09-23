@@ -9,7 +9,6 @@ public import ReasLib.Optimization.DFP.WolfeCounterexample.ParameterizedPlanar
 public import ReasLib.Optimization.DFP.PlanarConvergence
 public import ReasLib.Analysis.Calculus.Gradient.HessianHolder
 public import ReasLib.Optimization.DFP.WolfeCounterexample.AutomaticMatrixIdentityLiminf
-
 /-!
 # Strong-Wolfe counterexamples with a Hölder Hessian
 
@@ -102,7 +101,7 @@ theorem existsStrongWolfeCounterexampleHolder_of_dimension_ge_two
   exact existsHessianHolderPullback d.objectiveContDiff Q.toContinuousLinearEquiv
     ⟨C, hC, hDHolder⟩
 
-/-- cor:identity-initialization: identity-initialized classical DFP fails to
+/-- Corollary 2 (`cor:identity-initialization`): identity-initialized classical DFP fails to
 converge in every dimension at least two even with a global one-half Hölder
 Hessian and positive ordered uniform Hessian bounds. -/
 theorem existsMatrixIdentityLiminfStrongWolfeHolder

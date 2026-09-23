@@ -6,14 +6,13 @@ public import Mathlib.Tactic.FieldSimp
 public import Mathlib.Tactic.Linarith
 public import Mathlib.Tactic.Positivity
 public import Mathlib.Tactic.Ring
-
 public section
 
 open Finset
 
 namespace LocalCutoff.GraphTransform
 
-/-- Helper for Infrastructure I.16a: iterating a normalized affine radius
+/-- Supporting fact: iterating a normalized affine radius
 recurrence accumulates a finite geometric forcing budget. -/
 private theorem normalizedRadiusRecurrence_iterate
     {G : ℝ → ℝ} {q c e δ x : ℝ}
@@ -44,7 +43,7 @@ private theorem normalizedRadiusRecurrence_iterate
           rw [sum_range_succ, pow_succ, ← hcarg]
           ring
 
-/-- Helper for Infrastructure I.16a: an expanding geometric orbit starting
+/-- Supporting fact: an expanding geometric orbit starting
 below `δ / c` has a first point in the annulus from `δ / c` to `δ`. -/
 private theorem exists_geometric_orbit_mem_annulus
     {c δ x : ℝ} (hc : 1 < c) (hδ : 0 < δ) (hx : 0 < x)
@@ -80,7 +79,7 @@ private theorem exists_geometric_orbit_mem_annulus
     _ < c * (δ / c) := mul_lt_mul_of_pos_left hk_lt (zero_lt_one.trans hc)
     _ = δ := by field_simp
 
-/-- Infrastructure I.16a: a monotone radius envelope with a locally bounded affine
+/-- Supporting infrastructure: a monotone radius envelope with a locally bounded affine
 recurrence is sublinear at zero when the weighted transport factor is below
 one. -/
 theorem radiusEnvelope_sublinear_of_recurrence

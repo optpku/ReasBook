@@ -22,10 +22,10 @@ namespace FiniteTaylorJet
 variable {Theta : Type u} {F : Type v}
 variable [NormedAddCommGroup F] [NormedSpace ℝ F]
 
-/-- Infrastructure I.16 (Finite-smooth invariant graph under an explicit stable contraction):
+/-- Supporting infrastructure (Finite-smooth invariant graph under an explicit stable contraction):
 a uniform order-three scalar jet whose coefficients of degrees zero, one, and two vanish
 is uniformly bounded by a constant times `‖h ^ 3‖`.  The same estimate supplies the
-cubic transverse-factor bound required by Lemma 4.15. -/
+cubic transverse-factor bound required by Supporting Lemma. -/
 theorem IsUniformOn.exists_cubic_bound_of_coeff_zero
     {f : Theta → ℝ → F} {J : Theta → FiniteTaylorJet ℝ ℝ F 3}
     {K : Set Theta}
@@ -83,7 +83,7 @@ theorem IsUniformOn.exists_cubic_bound_of_coeff_zero
     _ = (B + 1) * ‖h ^ (3 : ℕ)‖ := by
       ring
 
-/-- Helper for Infrastructure I.16 (Finite-smooth invariant graph under an explicit stable
+/-- Supporting fact: (Finite-smooth invariant graph under an explicit stable
 contraction): a uniform cubic estimate on a parameter neighborhood becomes an eventual
 estimate on the product neighborhood of `(0, theta0)`. -/
 theorem IsUniformOn.eventually_cubic_bound_of_coeff_zero

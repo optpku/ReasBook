@@ -2,7 +2,6 @@ module
 
 public import ReasLib.Optimization.DFP.TwoPhaseControls.SecondLeg
 import all ReasLib.Optimization.DFP.TwoPhaseControls.SecondLeg
-
 /-!
 # Analyticity of the second-leg output coordinates
 
@@ -19,49 +18,49 @@ open scoped Matrix Topology Nat ContDiff
 
 namespace DFP.SecondLeg
 
-/-- Helper for Infrastructure I.16a: the first spectral factors at the analytic base point. -/
+/-- Supporting fact: the first spectral factors at the analytic base point. -/
 private lemma firstSpectralFactors_base_analyticity :
     DFP.FirstLeg.spectralFactors 0 2 1 = (2, 1) := by
   simpa only [DFP.FirstLeg.factors] using
     congrArg Prod.fst DFP.FirstLeg.factorsBase
 
-/-- Helper for Infrastructure I.16a: the first gradient factors at the analytic base point. -/
+/-- Supporting fact: the first gradient factors at the analytic base point. -/
 private lemma firstGradientFactors_base_analyticity :
     DFP.FirstLeg.gradientFactors 0 2 1 = (1, 1) := by
   simpa only [DFP.FirstLeg.factors] using
     congrArg (fun y ↦ y.2.1) DFP.FirstLeg.factorsBase
 
-/-- Helper for Infrastructure I.16a: analyticity of the first spectral factor map. -/
+/-- Supporting fact: analyticity of the first spectral factor map. -/
 private lemma firstSpectralFactors_analyticAt : AnalyticAt ℝ
     (fun x : ℝ × ℝ × ℝ ↦ DFP.FirstLeg.spectralFactors x.1 x.2.1 x.2.2)
     (0, 2, 1) :=
   analyticAt_fst.comp DFP.FirstLeg.factorsAnalytic
 
-/-- Helper for Infrastructure I.16a: analyticity of the first gradient factor map. -/
+/-- Supporting fact: analyticity of the first gradient factor map. -/
 private lemma firstGradientFactors_analyticAt : AnalyticAt ℝ
     (fun x : ℝ × ℝ × ℝ ↦ DFP.FirstLeg.gradientFactors x.1 x.2.1 x.2.2)
     (0, 2, 1) :=
   (analyticAt_fst.comp analyticAt_snd).comp DFP.FirstLeg.factorsAnalytic
 
-/-- Helper for Infrastructure I.16a: analyticity of the first low spectral coordinate. -/
+/-- Supporting fact: analyticity of the first low spectral coordinate. -/
 private lemma firstLowSpectralFactor_analyticAt : AnalyticAt ℝ
     (fun x : ℝ × ℝ × ℝ ↦ (DFP.FirstLeg.spectralFactors x.1 x.2.1 x.2.2).1)
     (0, 2, 1) :=
   analyticAt_fst.comp firstSpectralFactors_analyticAt
 
-/-- Helper for Infrastructure I.16a: analyticity of the first high spectral coordinate. -/
+/-- Supporting fact: analyticity of the first high spectral coordinate. -/
 private lemma firstHighSpectralFactor_analyticAt : AnalyticAt ℝ
     (fun x : ℝ × ℝ × ℝ ↦ (DFP.FirstLeg.spectralFactors x.1 x.2.1 x.2.2).2)
     (0, 2, 1) :=
   analyticAt_snd.comp firstSpectralFactors_analyticAt
 
-/-- Helper for Infrastructure I.16a: analyticity of the first low gradient coordinate. -/
+/-- Supporting fact: analyticity of the first low gradient coordinate. -/
 private lemma firstLowGradientFactor_analyticAt : AnalyticAt ℝ
     (fun x : ℝ × ℝ × ℝ ↦ (DFP.FirstLeg.gradientFactors x.1 x.2.1 x.2.2).1)
     (0, 2, 1) :=
   analyticAt_fst.comp firstGradientFactors_analyticAt
 
-/-- Helper for Infrastructure I.16a: analyticity of the first high gradient coordinate. -/
+/-- Supporting fact: analyticity of the first high gradient coordinate. -/
 private lemma firstHighGradientFactor_analyticAt : AnalyticAt ℝ
     (fun x : ℝ × ℝ × ℝ ↦ (DFP.FirstLeg.gradientFactors x.1 x.2.1 x.2.2).2)
     (0, 2, 1) :=
@@ -115,20 +114,20 @@ theorem outputGradientEntry_analyticAt (i : Fin 2) : AnalyticAt ℝ
     fun_prop (disch := norm_num [firstSpectralFactors_base_analyticity,
       firstGradientFactors_base_analyticity]) [Prod.fst, Prod.snd]
 
-/-- Helper for Infrastructure I.16a: the three metric entries used in analytic frame assembly. -/
+/-- Supporting fact: the three metric entries used in analytic frame assembly. -/
 private def metricEntriesForAnalyticity (x : ℝ × ℝ × ℝ) : ℝ × ℝ × ℝ :=
   (outputMetric x.1 x.2.1 x.2.2 0 0,
     outputMetric x.1 x.2.1 x.2.2 0 1,
     outputMetric x.1 x.2.1 x.2.2 1 1)
 
-/-- Helper for Infrastructure I.16a: analyticity of the assembled metric entries. -/
+/-- Supporting fact: analyticity of the assembled metric entries. -/
 private lemma metricEntriesForAnalyticity_analyticAt :
     AnalyticAt ℝ metricEntriesForAnalyticity (0, 2, 1) := by
   exact (outputMetricEntry_analyticAt 0 0).prod
     ((outputMetricEntry_analyticAt 0 1).prod
       (outputMetricEntry_analyticAt 1 1))
 
-/-- Helper for Infrastructure I.16a: the assembled metric entries at the analytic base. -/
+/-- Supporting fact: the assembled metric entries at the analytic base. -/
 private lemma metricEntriesForAnalyticity_base :
     metricEntriesForAnalyticity (0, 2, 1) = ((0, 0, 1) : ℝ × ℝ × ℝ) := by
   norm_num [metricEntriesForAnalyticity, outputMetric,

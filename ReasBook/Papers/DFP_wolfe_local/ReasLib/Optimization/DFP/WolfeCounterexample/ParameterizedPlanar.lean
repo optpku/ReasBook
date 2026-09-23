@@ -1,10 +1,10 @@
 module
 
-public import DFPWolfe.A_uniformly_convex_counterexample_to_global_convergence_of_DFP_under_weak_Wolfe_.Theorem_2_3_Uniformly_convex_weak_Wolfe_DFP_counterexample_in_dimension_two
-public import DFPWolfe.A_uniformly_convex_counterexample_to_global_convergence_of_DFP_under_weak_Wolfe_.Lemma_5_1_Isolation_radii_and_pairwise_disjoint_interpolation_balls
-public import DFPWolfe.A_uniformly_convex_counterexample_to_global_convergence_of_DFP_under_weak_Wolfe_.Proposition_5_12a_Global_Hessian_bounds
-public import DFPWolfe.A_uniformly_convex_counterexample_to_global_convergence_of_DFP_under_weak_Wolfe_.Proposition_5_14_The_realized_endpoint_sequence_is_the_exact_classical_DFP_orbit
-public import DFPWolfe.A_uniformly_convex_counterexample_to_global_convergence_of_DFP_under_weak_Wolfe_.Lemma_6_7a_Master_choice_of_one_initial_scale_satisfying_all_smallness_requireme
+public import ReasLib.Analysis.Calculus.Gradient.Hessian.EuclideanPlane
+public import ReasLib.Optimization.DFP.TwoPhaseOrbit.Interpolation.IsolationBalls
+public import ReasLib.Optimization.DFP.TwoPhaseOrbit.Interpolation.ObjectiveBounds
+public import ReasLib.Optimization.DFP.TwoPhaseOrbit.RealizedObjective.ExactOrbit
+public import ReasLib.Optimization.DFP.WolfeCounterexample.CommonScale
 public import ReasLib.Optimization.DFP.TwoPhaseOrbit.AmplitudeLimit
 public import ReasLib.Optimization.DFP.TwoPhaseOrbit.CenterConvergence
 public import ReasLib.Optimization.DFP.TwoPhaseOrbit.EndpointGradientLimit
@@ -13,7 +13,6 @@ public import ReasLib.Optimization.DFP.TwoPhaseControls.SlowCurve
 public import ReasLib.Optimization.DFP.TwoPhaseOrbit.ParameterizedWolfe
 public import ReasLib.Optimization.DFP.StrongWolfeCounterexample
 import Mathlib.Tactic.Abel
-
 public section
 
 noncomputable section
@@ -23,7 +22,7 @@ open scoped Matrix Topology
 
 namespace DFP
 
-/-- Helper for TASK-08: the planar strong-Wolfe certificate with fixed
+/-- Helper for the planar strong-Wolfe certificate with fixed
 quadratic bounds and symbolic line-search coefficients. -/
 abbrev PlanarStrongWolfeCounterexample (c₁ c₂ : ℝ) :=
   DFP.StrongWolfeCounterexample (Fin 2) (1 / 2) (3 / 2) c₁ c₂
@@ -315,7 +314,7 @@ theorem existsPlanarStrongWolfeCounterexampleWithProperty
     DFP.IsOrbit.toInverseIteration_objective, DFP.IsOrbit.toInverseIteration_point_eq,
     f, x] using hProperty
 
-/-- TASK-08: Parameterized planar strong-Wolfe assembly. The invariant
+/-- Parameterized planar strong-Wolfe assembly. The invariant
 slow-curve construction supplies a planar certificate for every admissible
 pair of symbolic Wolfe coefficients. -/
 theorem existsPlanarStrongWolfeCounterexample

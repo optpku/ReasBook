@@ -22,7 +22,7 @@ derivative of the bundled `fderiv` family.  The adapters below convert either fo
 canonical `iteratedFDeriv ℝ 2` statement.
 -/
 
-/-- Helper for Lemma 4.15: zero second scale derivatives after evaluating a
+/-- Supporting fact: zero second scale derivatives after evaluating a
 continuous-linear-map-valued family imply a zero bundled second scale jet. -/
 theorem iteratedFDeriv_two_eq_zero_of_fderiv_apply_second
     {Y : Type*} [NormedAddCommGroup Y] [NormedSpace ℝ Y]
@@ -79,7 +79,7 @@ theorem iteratedFDeriv_two_eq_zero_of_fderiv_apply_second
   rw [hunitValue']
   simp
 
-/-- Helper for Lemma 4.15: vanishing second derivatives of every scalar evaluation
+/-- Supporting fact: vanishing second derivatives of every scalar evaluation
 force the bundled second scale jet to vanish. -/
 theorem iteratedFDeriv_two_eq_zero_of_scalar_second
     {Y : Type*} [NormedAddCommGroup Y] [NormedSpace ℝ Y]
@@ -126,7 +126,7 @@ theorem iteratedFDeriv_two_eq_zero_of_scalar_second
 /-! The concrete certificate contains only the source identity.  Joint analyticity already
 supplies the regularity required by the generic adapter. -/
 
-/-- Helper for Lemma 4.15: source-side scalar second-scale stationarity for every
+/-- Supporting fact: source-side scalar second-scale stationarity for every
 nearby transverse parameter and every transverse direction. -/
 structure LowGradientTransverseSecondScaleCertificate : Prop where
   scalar_second :
@@ -135,7 +135,7 @@ structure LowGradientTransverseSecondScaleCertificate : Prop where
         (fun ε : ℝ ↦ deriv
           (fun t : ℝ ↦ (lowGradientTransverseFDerivFamily z t) w) ε) 0 0
 
-/-- Helper for Lemma 4.15: the source-side scalar certificate exposes exactly the
+/-- Supporting fact: the source-side scalar certificate exposes exactly the
 eventual second iterated scale jet consumed by the cubic estimate. -/
 theorem LowGradientTransverseSecondScaleCertificate.eventually_secondScaleJet
     (certificate : LowGradientTransverseSecondScaleCertificate) :

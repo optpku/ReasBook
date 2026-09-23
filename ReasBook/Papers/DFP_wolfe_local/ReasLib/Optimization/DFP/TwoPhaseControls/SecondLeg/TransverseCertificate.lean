@@ -25,7 +25,7 @@ the expanded rational formula.  This keeps the source-specific algebra at the bo
 API and makes the derivative factorization reusable by the I.16a proof.
 -/
 
-/-- Helper for Infrastructure I.16a: a neighborhood certificate bundles the frame identities,
+/-- Supporting fact: a neighborhood certificate bundles the frame identities,
 the cubic numerator and denominator derivative certificates, nonvanishing, and a uniform bound
 for the resulting quotient coefficient. -/
 structure LowGradientTransverseNeighborhoodCertificate
@@ -51,7 +51,7 @@ structure LowGradientTransverseNeighborhoodCertificate
         (lowGradientTransverseDenominator x) (A x) (B x)‖ ≤ C
   positive_bound : 0 < C
 
-/-- Infrastructure I.16a: a neighborhood certificate yields the eventual cubic factorization of
+/-- Supporting infrastructure: a neighborhood certificate yields the eventual cubic factorization of
 the transverse derivative of the low second-leg gradient factor. -/
 theorem lowGradientTransverseFDeriv_eq_of_neighborhoodCertificate
     {x₀ : ℝ × ℝ × ℝ}
@@ -70,7 +70,7 @@ theorem lowGradientTransverseFDeriv_eq_of_neighborhoodCertificate
   exact lowGradientTransverseFDeriv_of_frame_certificates
     hframe hnum hden hden_ne
 
-/-- Infrastructure I.16a: a neighborhood certificate yields the uniform eventual norm bound
+/-- Supporting infrastructure: a neighborhood certificate yields the uniform eventual norm bound
 needed by the second-leg transverse estimate. -/
 theorem lowGradientFactorTransverseFDeriv_norm_bound_of_neighborhoodCertificate
     {x₀ : ℝ × ℝ × ℝ}

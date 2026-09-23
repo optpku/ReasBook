@@ -4,7 +4,6 @@ public import ReasLib.Analysis.Calculus.LocalCutoff.GraphJetTransform.SectionCon
 public import ReasLib.Analysis.Calculus.LocalCutoff.GraphJetTransform.TopSectionOperator
 public import ReasLib.Analysis.Calculus.LocalCutoff.GraphJetTransform.HolonomicFixedSection
 public import ReasLib.Analysis.Calculus.LocalCutoff.GraphJetRealization
-
 public section
 
 open scoped NNReal Topology
@@ -22,7 +21,7 @@ the derivative equation is kept as an explicit holonomicity input for the
 finite-smooth bootstrap.
 -/
 
-/-- Infrastructure I.16a: quantitative data for a bounded operator on order-`r`
+/-- Supporting infrastructure: quantitative data for a bounded operator on order-`r`
 top sections. -/
 structure BoundedTopSectionOperatorData (r : ℕ) where
   operator :
@@ -33,7 +32,7 @@ structure BoundedTopSectionOperatorData (r : ℕ) where
   dist_apply_le : ∀ f g u,
     dist (operator f u) (operator g u) ≤ contractionFactor * dist f g
 
-/-- Helper for Infrastructure I.16a: a generic bounded-section contraction certificate
+/-- Supporting fact: a generic bounded-section contraction certificate
 specialized to order-`r` multilinear sections supplies the canonical top-section data. -/
 noncomputable def BoundedTopSectionOperatorData.ofContractionCertificate
     {r : ℕ}
@@ -46,7 +45,7 @@ noncomputable def BoundedTopSectionOperatorData.ofContractionCertificate
     contractionFactor_lt_one := certificate.contractionFactor_lt_one
     dist_apply_le := certificate.dist_apply_le }
 
-/-- Infrastructure I.16a: the canonical fixed top section supplied by the
+/-- Supporting infrastructure: the canonical fixed top section supplied by the
 strict contraction estimate. -/
 noncomputable def canonicalFixedTopSection (data : BoundedTopSectionOperatorData (X := X) r) :
     BoundedContinuousFunction ℝ ((ℝ [×r]→L[ℝ] X)) :=
@@ -54,7 +53,7 @@ noncomputable def canonicalFixedTopSection (data : BoundedTopSectionOperatorData
     (BoundedContinuousFunction.contractingWith_of_dist_apply_le_mul
       data.contractionFactor_lt_one data.dist_apply_le)
 
-/-- Infrastructure I.16a: the canonical top section is fixed by its section
+/-- Supporting infrastructure: the canonical top section is fixed by its section
 operator. -/
 theorem canonicalFixedTopSection_is_fixed
     (data : BoundedTopSectionOperatorData (X := X) r) :
@@ -62,7 +61,7 @@ theorem canonicalFixedTopSection_is_fixed
   exact (BoundedContinuousFunction.contractingWith_of_dist_apply_le_mul
     data.contractionFactor_lt_one data.dist_apply_le).fixedPoint_isFixedPt
 
-/-- Infrastructure I.16a: a bounded fixed top section is unique under the
+/-- Supporting infrastructure: a bounded fixed top section is unique under the
 pointwise contraction estimate. -/
 theorem fixedTopSection_eq_canonical
     (data : BoundedTopSectionOperatorData (X := X) r)
@@ -72,7 +71,7 @@ theorem fixedTopSection_eq_canonical
   exact (BoundedContinuousFunction.contractingWith_of_dist_apply_le_mul
     data.contractionFactor_lt_one data.dist_apply_le).fixedPoint_unique ha
 
-/-- Infrastructure I.16a: a fixed top section together with its predecessor
+/-- Supporting infrastructure: a fixed top section together with its predecessor
 derivative equation is the holonomic interface consumed by the successor
 regularity theorem. -/
 structure HolonomicFixedTopSectionCertificate
@@ -84,7 +83,7 @@ structure HolonomicFixedTopSectionCertificate
     (fun y ↦ (ftaylorSeries ℝ ζ y) (r - 1))
     ((fixedSection u).curryLeft) u
 
-/-- Infrastructure I.16a: a predecessor derivative equation for the canonical contracted
+/-- Supporting infrastructure: a predecessor derivative equation for the canonical contracted
 section packages directly into a holonomic fixed top-section certificate. -/
 noncomputable def canonicalHolonomicFixedTopSectionCertificate
     {r : ℕ} {ζ : ℝ → X}
@@ -98,7 +97,7 @@ noncomputable def canonicalHolonomicFixedTopSectionCertificate
     fixedSection_is_fixed := canonicalFixedTopSection_is_fixed data
     fixedSection_derivative := hderiv }
 
-/-- Infrastructure I.16a: a generic contraction certificate and the predecessor derivative
+/-- Supporting infrastructure: a generic contraction certificate and the predecessor derivative
 equation directly produce the canonical holonomic fixed top-section certificate. -/
 noncomputable def canonicalHolonomicFixedTopSectionCertificate_of_contraction
     {r : ℕ} {ζ : ℝ → X}
@@ -113,7 +112,7 @@ noncomputable def canonicalHolonomicFixedTopSectionCertificate_of_contraction
   canonicalHolonomicFixedTopSectionCertificate
     (BoundedTopSectionOperatorData.ofContractionCertificate certificate) hderiv
 
-/-- Infrastructure I.16a: the holonomic fixed top section is the next
+/-- Supporting infrastructure: the holonomic fixed top section is the next
 iterated derivative of the underlying graph. -/
 theorem HolonomicFixedTopSectionCertificate.fixedSection_eq_iteratedFDeriv
     {r : ℕ} {ζ : ℝ → X}
@@ -125,7 +124,7 @@ theorem HolonomicFixedTopSectionCertificate.fixedSection_eq_iteratedFDeriv
       certificate.fixedSection_derivative
   exact hresult.2
 
-/-- Infrastructure I.16a: the certificate simultaneously supplies the
+/-- Supporting infrastructure: the certificate simultaneously supplies the
 successor smoothness and the iterated-derivative transport for its fixed section. -/
 theorem HolonomicFixedTopSectionCertificate.contDiff_succ_and_fixedSection_eq_iteratedFDeriv
     {r : ℕ} {ζ : ℝ → X}

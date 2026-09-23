@@ -4,7 +4,6 @@ public import ReasLib.Analysis.Calculus.LocalInvariantGraph.ExplicitContraction.
 import all ReasLib.Analysis.Calculus.LocalInvariantGraph.ExplicitContraction.MetricReservedTopOperator
 public import ReasLib.Analysis.Calculus.LocalInvariantGraph.ExplicitContraction.MetricRawDefectEnvelope
 public import ReasLib.Analysis.Calculus.LocalCutoff.GraphJetTransform.ProofSupport.AffineCocycle
-
 public section
 
 noncomputable section
@@ -18,7 +17,7 @@ namespace LocalInvariantGraph
 
 variable {X : Type u} [NormedAddCommGroup X] [NormedSpace ℝ X]
 
-/-- Helper for Infrastructure I.16a: finite natural orders are unchanged by the
+/-- Supporting fact: finite natural orders are unchanged by the
 successor-then-predecessor operation in the `WithTop ℕ∞` regularity index. -/
 theorem withTopNatCast_add_sub_one (m : ℕ) :
     (m : WithTop ℕ∞) + 1 - 1 = (m : WithTop ℕ∞) := by
@@ -37,7 +36,7 @@ theorem withTopNatCast_add_sub_one (m : ℕ) :
     _ = (m : WithTop ℕ∞) := by
       exact congrArg (fun n : ℕ∞ => (n : WithTop ℕ∞)) hENat
 
-/-- Helper for Infrastructure I.16a: the reserved-top coefficient at every order at least two is
+/-- Supporting fact: the reserved-top coefficient at every order at least two is
 `C¹` once the graph is `C^m`. -/
 theorem metricReservedTopCoefficient_contDiff_one_of_previousOrder
     (d : MetricGraphTransformData X)
@@ -143,7 +142,7 @@ theorem metricReservedTopCoefficient_contDiff_one_of_previousOrder
   unfold metricReservedTopCoefficient
   exact hscale.smul hbracket
 
-/-- Helper for Infrastructure I.16a: on a fixed graph, the reserved-top coefficient differs
+/-- Supporting fact: on a fixed graph, the reserved-top coefficient differs
 from its exterior constant value `d.L` only on a compact set. -/
 theorem metricReservedTopCoefficient_sub_linear_hasCompactSupport
     [CompleteSpace X]
@@ -238,7 +237,7 @@ theorem metricReservedTopCoefficient_sub_linear_hasCompactSupport
     ContinuousLinearMap.zero_apply, inv_one, one_pow, one_smul, zero_smul,
     smul_zero, add_zero, sub_zero, sub_self]
 
-/-- Helper for Infrastructure I.16a: the derivative of the reserved-top coefficient has compact
+/-- Supporting fact: the derivative of the reserved-top coefficient has compact
 support because subtracting its exterior constant value does not change its derivative. -/
 theorem metricReservedTopCoefficient_deriv_hasCompactSupport
     [CompleteSpace X]
@@ -253,7 +252,7 @@ theorem metricReservedTopCoefficient_deriv_hasCompactSupport
       d ζ hfixed hm hprev).deriv
   simpa only [deriv_sub_const_fun] using hsupport
 
-/-- Helper for Infrastructure I.16a: the derivative of the reserved-top coefficient is uniformly
+/-- Supporting fact: the derivative of the reserved-top coefficient is uniformly
 continuous on the whole source line. -/
 theorem uniformContinuous_metricReservedTopCoefficient_deriv
     [CompleteSpace X]
@@ -277,7 +276,7 @@ theorem uniformContinuous_metricReservedTopCoefficient_deriv
   exact hcontinuous.uniformContinuous_of_tendsto_cocompact
     hsupport.is_zero_at_infty
 
-/-- Helper for Infrastructure I.16a: on a fixed graph, the derivative of the lower-order
+/-- Supporting fact: on a fixed graph, the derivative of the lower-order
 reserved-top forcing has compact support. -/
 theorem metricReservedTopForcing_deriv_hasCompactSupport
     [CompleteSpace X]
@@ -288,7 +287,7 @@ theorem metricReservedTopForcing_deriv_hasCompactSupport
     HasCompactSupport (deriv (metricReservedTopForcing d ζ r)) := by
   exact (metricReservedTopForcing_hasCompactSupport d ζ hfixed r).deriv
 
-/-- Helper for Infrastructure I.16a: at every nontrivial predecessor order, the derivative of
+/-- Supporting fact: at every nontrivial predecessor order, the derivative of
 the lower-order reserved-top forcing is uniformly continuous on the whole source line. -/
 theorem uniformContinuous_metricReservedTopForcing_deriv
     [CompleteSpace X]
@@ -310,7 +309,7 @@ theorem uniformContinuous_metricReservedTopForcing_deriv
   exact hcontinuous.uniformContinuous_of_tendsto_cocompact
     hsupport.is_zero_at_infty
 
-/-- Helper for Infrastructure I.16a: multiplying the predecessor coefficient by the inverse
+/-- Supporting fact: multiplying the predecessor coefficient by the inverse
 center derivative gives exactly the successor reserved-top coefficient. -/
 theorem inverseCenterDerivative_smul_metricReservedTopCoefficient
     (d : MetricGraphTransformData X)
@@ -321,7 +320,7 @@ theorem inverseCenterDerivative_smul_metricReservedTopCoefficient
       metricReservedTopCoefficient d ζ (m + 1) x := by
   simp only [metricReservedTopCoefficient, pow_succ, smul_smul, mul_comm]
 
-/-- Helper for Infrastructure I.16a: the inhomogeneous term obtained by differentiating the
+/-- Supporting fact: the inhomogeneous term obtained by differentiating the
 order-`m` affine source equation and dividing by the center derivative. -/
 def metricReservedTopDerivativeForcing
     (d : MetricGraphTransformData X)
@@ -332,7 +331,7 @@ def metricReservedTopDerivativeForcing
         (iteratedDeriv m (ζ : ℝ → X) x) +
       deriv (metricReservedTopForcing d ζ m) x)
 
-/-- Helper for Infrastructure I.16a: the differentiated lower-order affine forcing is continuous
+/-- Supporting fact: the differentiated lower-order affine forcing is continuous
 when the graph has the full predecessor regularity. -/
 theorem metricReservedTopDerivativeForcing_continuous
     [CompleteSpace X]
@@ -372,7 +371,7 @@ theorem metricReservedTopDerivativeForcing_continuous
   unfold metricReservedTopDerivativeForcing
   exact hscale.smul (hcoefficient_term.add hforcing_deriv)
 
-/-- Helper for Infrastructure I.16a: the differentiated affine forcing has compact support on a
+/-- Supporting fact: the differentiated affine forcing has compact support on a
 fixed graph. -/
 theorem metricReservedTopDerivativeForcing_hasCompactSupport
     [CompleteSpace X]
@@ -407,7 +406,7 @@ theorem metricReservedTopDerivativeForcing_hasCompactSupport
   unfold metricReservedTopDerivativeForcing
   exact hsum.smul_left
 
-/-- Helper for Infrastructure I.16a: compact support and continuity give a nonnegative uniform
+/-- Supporting fact: compact support and continuity give a nonnegative uniform
 bound for the differentiated affine forcing. -/
 theorem exists_metricReservedTopDerivativeForcing_norm_bound
     [CompleteSpace X]
@@ -428,7 +427,7 @@ theorem exists_metricReservedTopDerivativeForcing_norm_bound
       (hC 0)
   exact ⟨C, hC_nonneg, hC⟩
 
-/-- Helper for Infrastructure I.16a: a selected nonnegative uniform bound for the differentiated
+/-- Supporting fact: a selected nonnegative uniform bound for the differentiated
 affine forcing. -/
 noncomputable def metricReservedTopDerivativeForcingBound
     [CompleteSpace X]
@@ -441,7 +440,7 @@ noncomputable def metricReservedTopDerivativeForcingBound
     (exists_metricReservedTopDerivativeForcing_norm_bound
       d ζ hfixed hm hmν hprev)
 
-/-- Helper for Infrastructure I.16a: the selected derivative-forcing bound is nonnegative. -/
+/-- Supporting fact: the selected derivative-forcing bound is nonnegative. -/
 theorem metricReservedTopDerivativeForcingBound_nonneg
     [CompleteSpace X]
     (d : MetricGraphTransformData X)
@@ -455,7 +454,7 @@ theorem metricReservedTopDerivativeForcingBound_nonneg
     (exists_metricReservedTopDerivativeForcing_norm_bound
       d ζ hfixed hm hmν hprev)).1
 
-/-- Helper for Infrastructure I.16a: the selected derivative-forcing bound controls every source
+/-- Supporting fact: the selected derivative-forcing bound controls every source
 value. -/
 theorem norm_metricReservedTopDerivativeForcing_le_bound
     [CompleteSpace X]
@@ -471,7 +470,7 @@ theorem norm_metricReservedTopDerivativeForcing_le_bound
     (exists_metricReservedTopDerivativeForcing_norm_bound
       d ζ hfixed hm hmν hprev)).2 x
 
-/-- Helper for Infrastructure I.16a: the differentiated affine forcing bundled as a bounded
+/-- Supporting fact: the differentiated affine forcing bundled as a bounded
 continuous source-coordinate section. -/
 def metricReservedTopDerivativeForcingSection
     [CompleteSpace X]
@@ -490,7 +489,7 @@ def metricReservedTopDerivativeForcingSection
     (norm_metricReservedTopDerivativeForcing_le_bound
       d ζ hfixed hm hmν hprev)
 
-/-- Helper for Infrastructure I.16a: evaluating the bundled differentiated forcing recovers its
+/-- Supporting fact: evaluating the bundled differentiated forcing recovers its
 source-coordinate formula. -/
 theorem metricReservedTopDerivativeForcingSection_apply
     [CompleteSpace X]
@@ -504,7 +503,7 @@ theorem metricReservedTopDerivativeForcingSection_apply
       metricReservedTopDerivativeForcing d ζ m x := by
   rfl
 
-/-- Helper for Infrastructure I.16a: the inverse center map cancels the center map in source
+/-- Supporting fact: the inverse center map cancels the center map in source
 coordinates. -/
 theorem metricInverseCenter_centerMap
     (d : MetricGraphTransformData X)
@@ -514,7 +513,7 @@ theorem metricInverseCenter_centerMap
   rw [d.inverseCenter_eq ζ]
   exact Function.leftInverse_invFun (d.centerMap_bijective ζ).1 x
 
-/-- Helper for Infrastructure I.16a: the output-coordinate value of the differentiated
+/-- Supporting fact: the output-coordinate value of the differentiated
 predecessor affine operator. -/
 def metricReservedTopDerivativeOperatorValue
     (d : MetricGraphTransformData X)
@@ -524,7 +523,7 @@ def metricReservedTopDerivativeOperatorValue
       (b (d.inverseCenter ζ y)) +
     metricReservedTopDerivativeForcing d ζ m (d.inverseCenter ζ y)
 
-/-- Helper for Infrastructure I.16a: the differentiated predecessor affine operator has a
+/-- Supporting fact: the differentiated predecessor affine operator has a
 continuous output-coordinate value. -/
 theorem metricReservedTopDerivativeOperatorValue_continuous
     [CompleteSpace X]
@@ -563,7 +562,7 @@ theorem metricReservedTopDerivativeOperatorValue_continuous
       d ζ hfixed hm hmν hprev).comp hinverse
   exact hlinear.add hforcing
 
-/-- Helper for Infrastructure I.16a: the differentiated affine operator value is bounded by the
+/-- Supporting fact: the differentiated affine operator value is bounded by the
 successor contraction factor and the bundled differentiated forcing. -/
 theorem norm_metricReservedTopDerivativeOperatorValue_le
     [CompleteSpace X]
@@ -617,7 +616,7 @@ theorem norm_metricReservedTopDerivativeOperatorValue_le
   unfold metricReservedTopDerivativeOperatorValue
   exact (norm_add_le _ _).trans (add_le_add hlinear hforcing)
 
-/-- Helper for Infrastructure I.16a: the uniform bound used to bundle the differentiated affine
+/-- Supporting fact: the uniform bound used to bundle the differentiated affine
 operator is nonnegative. -/
 theorem metricReservedTopDerivativeOperatorValue_bound_nonneg
     [CompleteSpace X]
@@ -632,7 +631,7 @@ theorem metricReservedTopDerivativeOperatorValue_bound_nonneg
         d ζ hfixed hm hmν hprev‖ := by
   positivity
 
-/-- Helper for Infrastructure I.16a: the differentiated predecessor affine operator on bounded
+/-- Supporting fact: the differentiated predecessor affine operator on bounded
 continuous sections, evaluated in output coordinates through `d.inverseCenter ζ`. -/
 def metricReservedTopDerivativeOperator
     [CompleteSpace X]
@@ -653,7 +652,7 @@ def metricReservedTopDerivativeOperator
     (norm_metricReservedTopDerivativeOperatorValue_le
       d ζ hfixed hm hmν hprev b)
 
-/-- Helper for Infrastructure I.16a: evaluation of the bundled differentiated affine operator
+/-- Supporting fact: evaluation of the bundled differentiated affine operator
 exposes its output-coordinate formula. -/
 theorem metricReservedTopDerivativeOperator_apply
     [CompleteSpace X]
@@ -671,7 +670,7 @@ theorem metricReservedTopDerivativeOperator_apply
           (d.inverseCenter ζ y) := by
   rfl
 
-/-- Helper for Infrastructure I.16a: in source coordinates, the differentiated affine operator
+/-- Supporting fact: in source coordinates, the differentiated affine operator
 has its untranslated coefficient-plus-forcing formula. -/
 theorem metricReservedTopDerivativeOperator_apply_centerMap
     [CompleteSpace X]
@@ -688,7 +687,7 @@ theorem metricReservedTopDerivativeOperator_apply_centerMap
   rw [metricReservedTopDerivativeOperator_apply,
     metricInverseCenter_centerMap]
 
-/-- Helper for Infrastructure I.16a: the differentiated affine operator has the successor
+/-- Supporting fact: the differentiated affine operator has the successor
 reserved-top contraction factor pointwise. -/
 theorem metricReservedTopDerivativeOperator_dist_apply_le
     [CompleteSpace X]
@@ -745,7 +744,7 @@ theorem metricReservedTopDerivativeOperator_dist_apply_le
       rw [← dist_eq_norm]
       exact mul_le_mul_of_nonneg_left heval hfactor_nonneg
 
-/-- Helper for Infrastructure I.16a: successor bunching makes the differentiated predecessor
+/-- Supporting fact: successor bunching makes the differentiated predecessor
 affine operator a contraction. -/
 theorem metricReservedTopDerivativeOperator_contractingWith
     [CompleteSpace X]
@@ -775,7 +774,7 @@ theorem metricReservedTopDerivativeOperator_contractingWith
   exact metricReservedTopDerivativeOperator_dist_apply_le
     d ζ hfixed hm hmν hprev b c y
 
-/-- Helper for Infrastructure I.16a: the canonical differentiated predecessor section is the
+/-- Supporting fact: the canonical differentiated predecessor section is the
 fixed point of its inverse-center affine operator. -/
 noncomputable def metricReservedTopDerivativeFixedSection
     [CompleteSpace X]
@@ -794,7 +793,7 @@ noncomputable def metricReservedTopDerivativeFixedSection
     (metricReservedTopDerivativeOperator_contractingWith
       d ζ hfixed hm hmν hprev h_bunching)
 
-/-- Helper for Infrastructure I.16a: the canonical differentiated predecessor section satisfies
+/-- Supporting fact: the canonical differentiated predecessor section satisfies
 its affine fixed-point equation. -/
 theorem metricReservedTopDerivativeFixedSection_is_fixed
     [CompleteSpace X]
@@ -814,7 +813,7 @@ theorem metricReservedTopDerivativeFixedSection_is_fixed
   exact (metricReservedTopDerivativeOperator_contractingWith
     d ζ hfixed hm hmν hprev h_bunching).fixedPoint_isFixedPt
 
-/-- Helper for Infrastructure I.16a: every bounded fixed section of the differentiated affine
+/-- Supporting fact: every bounded fixed section of the differentiated affine
 operator is its canonical fixed section. -/
 theorem metricReservedTopDerivativeFixedSection_unique
     [CompleteSpace X]
@@ -834,7 +833,7 @@ theorem metricReservedTopDerivativeFixedSection_unique
   exact (metricReservedTopDerivativeOperator_contractingWith
     d ζ hfixed hm hmν hprev h_bunching).fixedPoint_unique hb
 
-/-- Helper for Infrastructure I.16a: in source coordinates, the canonical differentiated section
+/-- Supporting fact: in source coordinates, the canonical differentiated section
 obeys the differentiated predecessor affine equation. -/
 theorem metricReservedTopDerivativeFixedSection_sourceEquation
     [CompleteSpace X]
@@ -862,7 +861,7 @@ theorem metricReservedTopDerivativeFixedSection_sourceEquation
   rw [metricReservedTopDerivativeOperator_apply_centerMap] at hpoint
   exact hpoint.symm
 
-/-- Helper for Infrastructure I.16a: the canonical differentiated predecessor section satisfies
+/-- Supporting fact: the canonical differentiated predecessor section satisfies
 the pointwise derivative equation obtained from the order-`m` affine source equation. -/
 theorem metricReservedTopDerivativeFixedSection_derivativeEquation
     [CompleteSpace X]
@@ -919,7 +918,7 @@ theorem metricReservedTopDerivativeFixedSection_derivativeEquation
     abel
   exact hscaled.trans hreorder
 
-/-- Helper for Infrastructure I.16a: the raw first-order defect of the predecessor iterated
+/-- Supporting fact: the raw first-order defect of the predecessor iterated
 derivative relative to a proposed derivative section. -/
 def metricReservedTopRawDefect
     (ζ : ℝ → X) (m : ℕ) (sectionFn : ℝ → X)
@@ -927,13 +926,13 @@ def metricReservedTopRawDefect
   iteratedDeriv m ζ (y + t) - iteratedDeriv m ζ y -
     t • sectionFn y
 
-/-- Helper for Infrastructure I.16a: every predecessor raw defect vanishes at zero increment. -/
+/-- Supporting fact: every predecessor raw defect vanishes at zero increment. -/
 theorem metricReservedTopRawDefect_zero
     (ζ : ℝ → X) (m : ℕ) (sectionFn : ℝ → X) (y : ℝ) :
     metricReservedTopRawDefect ζ m sectionFn y 0 = 0 := by
   simp only [metricReservedTopRawDefect, add_zero, sub_self, zero_smul, sub_zero]
 
-/-- Helper for Infrastructure I.16a: the remainder block in the affine-cocycle decomposition of
+/-- Supporting fact: the remainder block in the affine-cocycle decomposition of
 the higher-order raw defect. -/
 def metricReservedTopAffineRemainder
     (d : MetricGraphTransformData X)
@@ -954,7 +953,7 @@ def metricReservedTopAffineRemainder
   (deriv (d.centerMap ζ) u * delta - s) •
     sectionFn (d.centerMap ζ u)
 
-/-- Helper for Infrastructure I.16a: separate bounds on the four Taylor components control the
+/-- Supporting fact: separate bounds on the four Taylor components control the
 whole reserved-top affine remainder. -/
 theorem norm_metricReservedTopAffineRemainder_le_four_mul
     (d : MetricGraphTransformData X)
@@ -1013,7 +1012,7 @@ theorem norm_metricReservedTopAffineRemainder_le_four_mul
     _ ≤ 4 * q := by
       linarith
 
-/-- Helper for Infrastructure I.16a: the center map cancels the inverse center map in output
+/-- Supporting fact: the center map cancels the inverse center map in output
 coordinates. -/
 theorem metricCenterMap_inverseCenter
     (d : MetricGraphTransformData X)
@@ -1023,7 +1022,7 @@ theorem metricCenterMap_inverseCenter
   rw [d.inverseCenter_eq ζ]
   exact Function.rightInverse_invFun (d.centerMap_bijective ζ).2 y
 
-/-- Helper for Infrastructure I.16a: any section satisfying the differentiated affine equation
+/-- Supporting fact: any section satisfying the differentiated affine equation
 gives the exact affine-cocycle decomposition of the predecessor raw defect. -/
 theorem metricReservedTopRawDefect_decomposition_of_sourceEquation
     (d : MetricGraphTransformData X)
@@ -1084,7 +1083,7 @@ theorem metricReservedTopRawDefect_decomposition_of_sourceEquation
     (deriv (d.centerMap ζ) u) delta s
     (hderivative u)
 
-/-- Helper for Infrastructure I.16a: the canonical differentiated fixed section gives the exact
+/-- Supporting fact: the canonical differentiated fixed section gives the exact
 raw-defect decomposition for every predecessor order at least two. -/
 theorem metricReservedTopDerivativeFixedSection_rawDefect_decomposition
     [CompleteSpace X]
@@ -1133,7 +1132,7 @@ theorem metricReservedTopDerivativeFixedSection_rawDefect_decomposition
   exact metricReservedTopRawDefect_decomposition_of_sourceEquation
     d ζ m sectionFn hsource hderivative u s
 
-/-- Helper for Infrastructure I.16a: a bound on the named affine remainder yields the raw-defect
+/-- Supporting fact: a bound on the named affine remainder yields the raw-defect
 recurrence with the predecessor reserved-top contraction factor. -/
 theorem norm_metricReservedTopDerivativeFixedSection_rawDefect_le
     [CompleteSpace X]
@@ -1216,7 +1215,7 @@ theorem norm_metricReservedTopDerivativeFixedSection_rawDefect_le
         (mul_le_mul_of_nonneg_right hcoefficient (norm_nonneg _))
         le_rfl
 
-/-- Helper for Infrastructure I.16a: a differentiable function with uniformly continuous
+/-- Supporting fact: a differentiable function with uniformly continuous
 derivative has a first-order Taylor remainder uniformly controlled over all translation centers. -/
 theorem uniformFirstOrderRemainder_of_uniformContinuous_deriv
     {Y : Type v} [NormedAddCommGroup Y] [NormedSpace ℝ Y]
@@ -1289,7 +1288,7 @@ theorem uniformFirstOrderRemainder_of_uniformContinuous_deriv
   rw [hpq_norm] at hmean
   exact hmean
 
-/-- Helper for Infrastructure I.16a: every iterated derivative of a compactly supported scalar
+/-- Supporting fact: every iterated derivative of a compactly supported scalar
 curve remains compactly supported. -/
 theorem iteratedDeriv_hasCompactSupport
     {f : ℝ → X} (hf : HasCompactSupport f) (m : ℕ) :
@@ -1301,7 +1300,7 @@ theorem iteratedDeriv_hasCompactSupport
       rw [iteratedDeriv_succ]
       exact ih.deriv
 
-/-- Helper for Infrastructure I.16a: the predecessor iterated derivative on a fixed graph has a
+/-- Supporting fact: the predecessor iterated derivative on a fixed graph has a
 global norm bound. -/
 theorem exists_metricIteratedDeriv_norm_bound
     [CompleteSpace X]
@@ -1326,7 +1325,7 @@ theorem exists_metricIteratedDeriv_norm_bound
       (hC 0)
   exact ⟨C, hC_nonneg, hC⟩
 
-/-- Helper for Infrastructure I.16a: the reserved-top coefficient itself is uniformly continuous
+/-- Supporting fact: the reserved-top coefficient itself is uniformly continuous
 because its difference from the exterior constant coefficient has compact support. -/
 theorem uniformContinuous_metricReservedTopCoefficient
     [CompleteSpace X]
@@ -1355,7 +1354,7 @@ theorem uniformContinuous_metricReservedTopCoefficient
     (uniformContinuous_const : UniformContinuous (fun _ : ℝ ↦ d.L))
   simpa only [sub_add_cancel] using hsum
 
-/-- Helper for Infrastructure I.16a: sufficiently short source increments change the reserved-top
+/-- Supporting fact: sufficiently short source increments change the reserved-top
 coefficient by an arbitrarily small operator norm, uniformly in the source point. -/
 theorem metricReservedTopCoefficient_increment_uniform
     [CompleteSpace X]
@@ -1379,7 +1378,7 @@ theorem metricReservedTopCoefficient_increment_uniform
   have htarget := hcontrol hsource
   simpa only [dist_eq_norm] using htarget.le
 
-/-- Helper for Infrastructure I.16a: the reserved-top coefficient has a globally uniform
+/-- Supporting fact: the reserved-top coefficient has a globally uniform
 first-order Taylor remainder. -/
 theorem metricReservedTopCoefficient_taylor_uniform
     [CompleteSpace X]
@@ -1403,7 +1402,7 @@ theorem metricReservedTopCoefficient_taylor_uniform
     (uniformContinuous_metricReservedTopCoefficient_deriv
       d ζ hfixed hm hprev) hkappa
 
-/-- Helper for Infrastructure I.16a: the lower-order reserved-top forcing has a globally uniform
+/-- Supporting fact: the lower-order reserved-top forcing has a globally uniform
 first-order Taylor remainder. -/
 theorem metricReservedTopForcing_taylor_uniform
     [CompleteSpace X]
@@ -1425,7 +1424,7 @@ theorem metricReservedTopForcing_taylor_uniform
     (uniformContinuous_metricReservedTopForcing_deriv
       d ζ hfixed hm hmν hprev) hkappa
 
-/-- Helper for Infrastructure I.16a: the center derivative differs from one only on a compact
+/-- Supporting fact: the center derivative differs from one only on a compact
 set controlled by the base projection of `tsupport d.R`. -/
 theorem centerMapDeriv_sub_one_hasCompactSupport
     (d : MetricGraphTransformData X)
@@ -1471,7 +1470,7 @@ theorem centerMapDeriv_sub_one_hasCompactSupport
     ((hcenter_local.hasDerivAt_iff).mpr (hasDerivAt_id x)).deriv
   exact sub_eq_zero.mpr hcenter_deriv
 
-/-- Helper for Infrastructure I.16a: the center-map derivative is uniformly continuous on the
+/-- Supporting fact: the center-map derivative is uniformly continuous on the
 whole source line. -/
 theorem uniformContinuous_centerMap_deriv
     (d : MetricGraphTransformData X)
@@ -1496,7 +1495,7 @@ theorem uniformContinuous_centerMap_deriv
       UniformContinuous (fun _ : ℝ ↦ (1 : ℝ)))
   simpa only [sub_add_cancel] using hsum
 
-/-- Helper for Infrastructure I.16a: the center map has a globally uniform first-order Taylor
+/-- Supporting fact: the center map has a globally uniform first-order Taylor
 remainder. -/
 theorem centerMap_taylor_uniform
     (d : MetricGraphTransformData X)
@@ -1518,7 +1517,7 @@ theorem centerMap_taylor_uniform
       hkappa
   simpa only [Real.norm_eq_abs, smul_eq_mul] using hremainder
 
-/-- Helper for Infrastructure I.16a: inverse-center transport contracts scalar increments by at
+/-- Supporting fact: inverse-center transport contracts scalar increments by at
 most `lower⁻¹`. -/
 theorem abs_metricInverseCenterIncrement_le
     (d : MetricGraphTransformData X)
@@ -1533,7 +1532,7 @@ theorem abs_metricInverseCenterIncrement_le
   simpa only [dist_eq_norm, Real.norm_eq_abs, add_sub_cancel_left,
     NNReal.coe_inv] using hbound
 
-/-- Helper for Infrastructure I.16a: the inverse-center increment transports the perturbed
+/-- Supporting fact: the inverse-center increment transports the perturbed
 output coordinate exactly back to the corresponding source coordinate. -/
 theorem metricCenterMap_add_inverseCenterIncrement
     (d : MetricGraphTransformData X)
@@ -1549,7 +1548,7 @@ theorem metricCenterMap_add_inverseCenterIncrement
   rw [hsum]
   exact metricCenterMap_inverseCenter d ζ (d.centerMap ζ u + s)
 
-/-- Helper for Infrastructure I.16a: the affine remainder in the differentiated reserved-top
+/-- Supporting fact: the affine remainder in the differentiated reserved-top
 cocycle is uniformly little compared with the output increment. -/
 theorem metricReservedTopAffineRemainder_uniform
     [CompleteSpace X]
@@ -1828,7 +1827,7 @@ theorem metricReservedTopAffineRemainder_uniform
     _ = eta * |s| := by
       rw [← mul_assoc, hkappa_M]
 
-/-- Helper for Infrastructure I.16a: the predecessor raw defect relative to the canonical
+/-- Supporting fact: the predecessor raw defect relative to the canonical
 differentiated section is uniformly bounded on a fixed neighborhood of zero increment. -/
 theorem metricReservedTopDerivativeFixedSection_rawDefect_locallyUniformlyBounded
     [CompleteSpace X]
@@ -1886,7 +1885,7 @@ theorem metricReservedTopDerivativeFixedSection_rawDefect_locallyUniformlyBounde
         add_le_add (add_le_add (hW (y + t)) (hW y)) hscaled
       _ = 2 * W + ‖sectionFn‖ := by ring
 
-/-- Helper for Infrastructure I.16a: uniform affine-remainder smallness gives the inverse-center
+/-- Supporting fact: uniform affine-remainder smallness gives the inverse-center
 raw-defect recurrence at predecessor order `m`. -/
 theorem metricReservedTopDerivativeFixedSection_rawDefect_inverseRecurrence
     [CompleteSpace X]
@@ -1931,7 +1930,7 @@ theorem metricReservedTopDerivativeFixedSection_rawDefect_inverseRecurrence
       d ζ hfixed hm hmν hprev h_bunching u t eta hsmall
   simpa only [hcenter, u, Real.norm_eq_abs] using hrecurrence
 
-/-- Helper for Infrastructure I.16a: the predecessor raw defect relative to the differentiated
+/-- Supporting fact: the predecessor raw defect relative to the differentiated
 reserved-top fixed section is little-o of its increment at every source point. -/
 theorem metricReservedTopDerivativeFixedSection_rawDefect_isLittleO
     [CompleteSpace X]
@@ -2016,7 +2015,7 @@ theorem metricReservedTopDerivativeFixedSection_rawDefect_isLittleO
   · exact metricReservedTopDerivativeFixedSection_rawDefect_inverseRecurrence
       d ζ hfixed hm hmν hprev h_bunching
 
-/-- Helper for Infrastructure I.16a: the canonical differentiated reserved-top fixed section is
+/-- Supporting fact: the canonical differentiated reserved-top fixed section is
 the pointwise derivative of the predecessor iterated derivative. -/
 theorem metricIteratedDeriv_hasDerivAt_higherOrder
     [CompleteSpace X]
@@ -2041,7 +2040,7 @@ theorem metricIteratedDeriv_hasDerivAt_higherOrder
     metricReservedTopDerivativeFixedSection_rawDefect_isLittleO
       d ζ hfixed hm hmν hprev h_bunching y
 
-/-- Infrastructure I.16a: at every predecessor order `m ≥ 2`, successor bunching produces a
+/-- Supporting infrastructure: at every predecessor order `m ≥ 2`, successor bunching produces a
 continuous derivative section for `iteratedDeriv m` of the metric fixed graph. -/
 theorem metricFixedGraph_higherOrderDerivativeSection
     [CompleteSpace X]

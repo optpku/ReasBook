@@ -4,7 +4,6 @@ public import ReasLib.Analysis.Calculus.LocalInvariantGraph.MetricCutoff
 public import Mathlib.Analysis.Calculus.InverseFunctionTheorem.ApproximatesLinearOn
 public import Mathlib.Topology.MetricSpace.Antilipschitz
 public import ReasLib.Topology.ContinuousMap.SmallLipschitzGraph.FixedPoint
-
 public section
 
 noncomputable section
@@ -27,13 +26,13 @@ to be smooth for every element of the Lipschitz graph cone.  Finite smoothness o
 fixed graph remains a separate regularity problem.
 -/
 
-/-- Helper for Infrastructure I.16a: the contraction rate of the metric graph transform when
+/-- Supporting fact: the contraction rate of the metric graph transform when
 the whole nonlinear remainder has Lipschitz constant `epsilon`. -/
 def metricGraphTransformRate
     (lower linearRate epsilon slope : ℝ≥0) : ℝ≥0 :=
   linearRate + epsilon + (linearRate * slope + epsilon) * lower⁻¹ * epsilon
 
-/-- Helper for Infrastructure I.16a: coercing `metricGraphTransformRate` to `ℝ` gives its
+/-- Supporting fact: coercing `metricGraphTransformRate` to `ℝ` gives its
 three-term scalar expansion. -/
 theorem metricGraphTransformRate_coe
     (lower linearRate epsilon slope : ℝ≥0) :
@@ -44,7 +43,7 @@ theorem metricGraphTransformRate_coe
   simp only [metricGraphTransformRate, NNReal.coe_add, NNReal.coe_mul,
     NNReal.coe_inv]
 
-/-- Helper for Infrastructure I.16a: the linear-plus-fiber coefficient `linearRate + epsilon` is
+/-- Supporting fact: the linear-plus-fiber coefficient `linearRate + epsilon` is
 bounded by the full metric transform rate.  This is `le_self_add` on the opaque rate (the trailing
 `(linearRate * slope + epsilon) * lower⁻¹ * epsilon` summand is nonnegative), exposed here as a named
 lemma so downstream leaves can bridge the combined operator norm `‖L + derivFiber‖ ≤ linearRate +
@@ -64,7 +63,7 @@ theorem linearRate_add_epsilon_le_metricGraphTransformRate_real
   have h := linearRate_add_epsilon_le_metricGraphTransformRate lower linearRate epsilon slope
   exact_mod_cast h
 
-/-- Helper for Infrastructure I.16a: quantitative data for the metric graph transform of a
+/-- Supporting fact: quantitative data for the metric graph transform of a
 globally smooth, compactly supported, small Lipschitz remainder. -/
 structure MetricGraphTransformData (X : Type u) [NormedAddCommGroup X]
     [NormedSpace ℝ X] where
@@ -102,7 +101,7 @@ structure MetricGraphTransformData (X : Type u) [NormedAddCommGroup X]
 
 namespace MetricGraphTransformData
 
-/-- Helper for Infrastructure I.16a: Bernoulli's lower bound for powers of a number in
+/-- Supporting fact: Bernoulli's lower bound for powers of a number in
 the unit interval. -/
 theorem one_sub_mul_pow_lower_bound {x : ℝ} (hx0 : 0 ≤ x) (hx1 : x ≤ 1) (n : ℕ) :
     1 - (n : ℝ) * x ≤ (1 - x) ^ n := by
@@ -293,18 +292,18 @@ theorem exists_metricTransformParameters
   · exact hsum_le
   · exact hrate_lt
 
-/-- Helper for Infrastructure I.16a: the small remainder rate is strictly below one whenever
+/-- Supporting fact: the small remainder rate is strictly below one whenever
 it leaves a positive center lower bound. -/
 theorem epsilon_lt_one (d : MetricGraphTransformData X) : d.epsilon < 1 := by
   rw [← d.hlower_add]
   exact lt_add_of_pos_left d.epsilon d.hlower_pos
 
-/-- Helper for Infrastructure I.16a: the center coordinate along a small graph. -/
+/-- Supporting fact: the center coordinate along a small graph. -/
 def centerMap (d : MetricGraphTransformData X)
     (zeta : SmallLipschitzGraph X d.radius d.slope) : ℝ → ℝ :=
   fun u ↦ u + (d.R (u, zeta u)).1
 
-/-- Helper for Infrastructure I.16a: the inverse center coordinate used by the metric graph
+/-- Supporting fact: the inverse center coordinate used by the metric graph
 transform. -/
 def inverseCenter (d : MetricGraphTransformData X)
     (zeta : SmallLipschitzGraph X d.radius d.slope) : ℝ → ℝ :=
@@ -322,32 +321,32 @@ theorem inverseCenter_eq (d : MetricGraphTransformData X)
     d.inverseCenter zeta = Function.invFun (d.centerMap zeta) := by
   rfl
 
-/-- Helper for Infrastructure I.16a: the center coordinate fixes zero. -/
+/-- Supporting fact: the center coordinate fixes zero. -/
 theorem centerMap_zero (d : MetricGraphTransformData X)
     (zeta : SmallLipschitzGraph X d.radius d.slope) : d.centerMap zeta 0 = 0 := by
   rw [centerMap, SmallLipschitzGraph.zero_apply]
   simpa only [Prod.mk_zero_zero, d.hR_zero, Prod.fst_zero, add_zero]
 
-/-- Helper for Infrastructure I.16a: every metric center coordinate is globally bijective. -/
+/-- Supporting fact: every metric center coordinate is globally bijective. -/
 theorem centerMap_bijective (d : MetricGraphTransformData X)
     (zeta : SmallLipschitzGraph X d.radius d.slope) :
     Function.Bijective (d.centerMap zeta) := by
   exact d.h_center_bijective zeta
 
-/-- Helper for Infrastructure I.16a: the inverse center coordinate fixes zero. -/
+/-- Supporting fact: the inverse center coordinate fixes zero. -/
 theorem inverseCenter_zero (d : MetricGraphTransformData X)
     (zeta : SmallLipschitzGraph X d.radius d.slope) : d.inverseCenter zeta 0 = 0 := by
   have hleft := Function.leftInverse_invFun (d.centerMap_bijective zeta).1 0
   simpa only [inverseCenter, d.centerMap_zero zeta] using hleft
 
-/-- Helper for Infrastructure I.16a: inverse center coordinates obey the reciprocal lower
+/-- Supporting fact: inverse center coordinates obey the reciprocal lower
 Lipschitz bound. -/
 theorem inverseCenter_lipschitzWith (d : MetricGraphTransformData X)
     (zeta : SmallLipschitzGraph X d.radius d.slope) :
     LipschitzWith d.lower⁻¹ (d.inverseCenter zeta) := by
   exact d.h_inverse_lipschitz zeta
 
-/-- Helper for Infrastructure I.16a: inverse centers of two graphs satisfy the uniform
+/-- Supporting fact: inverse centers of two graphs satisfy the uniform
 cross-graph estimate required for contraction. -/
 theorem inverseCenter_dist_le (d : MetricGraphTransformData X)
     (zeta eta : SmallLipschitzGraph X d.radius d.slope) (ubar : ℝ) :
@@ -355,7 +354,7 @@ theorem inverseCenter_dist_le (d : MetricGraphTransformData X)
       (d.lower⁻¹ : ℝ) * (d.epsilon : ℝ) * dist zeta eta := by
   exact d.h_inverse_dist zeta eta ubar
 
-/-- Helper for Infrastructure I.16a: the pointwise stable output before it is bundled as a
+/-- Supporting fact: the pointwise stable output before it is bundled as a
 small Lipschitz graph. -/
 def rawTransform (d : MetricGraphTransformData X)
     (zeta : SmallLipschitzGraph X d.radius d.slope) : ℝ → X :=
@@ -371,13 +370,13 @@ theorem rawTransform_eq (d : MetricGraphTransformData X)
         (d.R (d.inverseCenter zeta ubar, zeta (d.inverseCenter zeta ubar))).2 := by
   rfl
 
-/-- Helper for Infrastructure I.16a: the raw metric graph transform fixes zero. -/
+/-- Supporting fact: the raw metric graph transform fixes zero. -/
 theorem rawTransform_zero (d : MetricGraphTransformData X)
     (zeta : SmallLipschitzGraph X d.radius d.slope) : d.rawTransform zeta 0 = 0 := by
   rw [rawTransform, d.inverseCenter_zero zeta, SmallLipschitzGraph.zero_apply]
   simpa only [map_zero, Prod.mk_zero_zero, d.hR_zero, Prod.snd_zero, add_zero]
 
-/-- Helper for Infrastructure I.16a: the raw metric graph transform is continuous. -/
+/-- Supporting fact: the raw metric graph transform is continuous. -/
 theorem rawTransform_continuous (d : MetricGraphTransformData X)
     (zeta : SmallLipschitzGraph X d.radius d.slope) :
     Continuous (d.rawTransform zeta) := by
@@ -396,7 +395,7 @@ theorem rawTransform_continuous (d : MetricGraphTransformData X)
     continuous_snd.comp (d.hR_lipschitz.continuous.comp hgraph)
   exact hlinear.add hremainder
 
-/-- Helper for Infrastructure I.16a: every raw transform value stays inside the prescribed
+/-- Supporting fact: every raw transform value stays inside the prescribed
 uniform graph radius. -/
 theorem norm_rawTransform_le (d : MetricGraphTransformData X)
     (zeta : SmallLipschitzGraph X d.radius d.slope) (ubar : ℝ) :
@@ -422,7 +421,7 @@ theorem norm_rawTransform_le (d : MetricGraphTransformData X)
       add_le_add hlinear (d.hstable_bound (u, zeta u))
     _ ≤ (d.radius : ℝ) := hradius_real
 
-/-- Helper for Infrastructure I.16a: the raw metric graph transform has the sharp Lipschitz
+/-- Supporting fact: the raw metric graph transform has the sharp Lipschitz
 constant obtained from the stable linear rate, graph slope, remainder size, and inverse-center
 bound. -/
 theorem rawTransform_lipschitzWith_sharp (d : MetricGraphTransformData X)
@@ -502,28 +501,28 @@ theorem rawTransform_lipschitzWith_sharp (d : MetricGraphTransformData X)
     _ = (((d.linearRate : ℝ) * (d.slope : ℝ) + (d.epsilon : ℝ)) *
         (d.lower⁻¹ : ℝ)) * |ubar - vbar| := by ring
 
-/-- Helper for Infrastructure I.16a: the sharp raw-transform estimate and the cone inequality
+/-- Supporting fact: the sharp raw-transform estimate and the cone inequality
 show that the metric graph transform preserves the prescribed Lipschitz cone. -/
 theorem rawTransform_lipschitzWith (d : MetricGraphTransformData X)
     (zeta : SmallLipschitzGraph X d.radius d.slope) :
     LipschitzWith d.slope (d.rawTransform zeta) := by
   exact (d.rawTransform_lipschitzWith_sharp zeta).weaken d.hslope
 
-/-- Helper for Infrastructure I.16a: bundle the raw transform as a bounded continuous
+/-- Supporting fact: bundle the raw transform as a bounded continuous
 function. -/
 def boundedTransform (d : MetricGraphTransformData X)
     (zeta : SmallLipschitzGraph X d.radius d.slope) : BoundedContinuousFunction ℝ X :=
   BoundedContinuousFunction.ofNormedAddCommGroup (d.rawTransform zeta)
     (d.rawTransform_continuous zeta) d.radius (d.norm_rawTransform_le zeta)
 
-/-- Helper for Infrastructure I.16a: the bounded transform evaluates by the raw metric
+/-- Supporting fact: the bounded transform evaluates by the raw metric
 formula. -/
 theorem boundedTransform_apply (d : MetricGraphTransformData X)
     (zeta : SmallLipschitzGraph X d.radius d.slope) (ubar : ℝ) :
     d.boundedTransform zeta ubar = d.rawTransform zeta ubar := by
   rfl
 
-/-- Helper for Infrastructure I.16a: the bounded transform obeys the prescribed uniform
+/-- Supporting fact: the bounded transform obeys the prescribed uniform
 radius. -/
 theorem norm_boundedTransform_le (d : MetricGraphTransformData X)
     (zeta : SmallLipschitzGraph X d.radius d.slope) :
@@ -531,7 +530,7 @@ theorem norm_boundedTransform_le (d : MetricGraphTransformData X)
   exact BoundedContinuousFunction.norm_ofNormedAddCommGroup_le
     (d.rawTransform_continuous zeta) d.radius.coe_nonneg (d.norm_rawTransform_le zeta)
 
-/-- Helper for Infrastructure I.16a: the metric graph transform is a self-map of the cone of
+/-- Supporting fact: the metric graph transform is a self-map of the cone of
 small Lipschitz graphs. -/
 def transform (d : MetricGraphTransformData X) :
     SmallLipschitzGraph X d.radius d.slope → SmallLipschitzGraph X d.radius d.slope :=
@@ -539,7 +538,7 @@ def transform (d : MetricGraphTransformData X) :
     (d.rawTransform_zero zeta) (d.norm_boundedTransform_le zeta)
     (d.rawTransform_lipschitzWith zeta)
 
-/-- Helper for Infrastructure I.16a: the bundled metric transform evaluates by its raw
+/-- Supporting fact: the bundled metric transform evaluates by its raw
 inverse-center formula. -/
 theorem transform_apply (d : MetricGraphTransformData X)
     (zeta : SmallLipschitzGraph X d.radius d.slope) (ubar : ℝ) :
@@ -547,7 +546,7 @@ theorem transform_apply (d : MetricGraphTransformData X)
   rw [transform, SmallLipschitzGraph.coe_of]
   exact d.boundedTransform_apply zeta ubar
 
-/-- Helper for Infrastructure I.16a: two raw metric transforms satisfy the explicit
+/-- Supporting fact: two raw metric transforms satisfy the explicit
 graph-distance estimate encoded by `metricGraphTransformRate`. -/
 theorem rawTransform_dist_apply_le (d : MetricGraphTransformData X)
     (zeta eta : SmallLipschitzGraph X d.radius d.slope) (ubar : ℝ) :
@@ -660,7 +659,7 @@ theorem rawTransform_dist_apply_le (d : MetricGraphTransformData X)
       rw [hrate_real]
       ring
 
-/-- Helper for Infrastructure I.16a: the bundled metric graph transform is a strict
+/-- Supporting fact: the bundled metric graph transform is a strict
 contraction in the uniform graph metric. -/
 theorem transform_contracting (d : MetricGraphTransformData X) :
     ContractingWith (metricGraphTransformRate d.lower d.linearRate d.epsilon d.slope)
@@ -670,7 +669,7 @@ theorem transform_contracting (d : MetricGraphTransformData X) :
   rw [d.transform_apply, d.transform_apply]
   exact d.rawTransform_dist_apply_le zeta eta ubar
 
-/-- Infrastructure I.16a: a complete metric graph-transform certificate produces a canonical
+/-- Supporting infrastructure: a complete metric graph-transform certificate produces a canonical
 fixed graph.  This theorem is intentionally metric, and finite `C^ν` regularity is supplied by the
 separate finite-smooth bootstrap. -/
 theorem exists_metricFixedGraph [CompleteSpace X]
@@ -681,7 +680,7 @@ theorem exists_metricFixedGraph [CompleteSpace X]
   refine ⟨ContractingWith.fixedPoint d.transform hcontract, ?_⟩
   exact hcontract.fixedPoint_isFixedPt
 
-/-- Helper for Infrastructure I.16a: every fixed graph inherits the sharp raw-transform
+/-- Supporting fact: every fixed graph inherits the sharp raw-transform
 Lipschitz constant. -/
 theorem fixedGraph_lipschitzWith_sharp [CompleteSpace X]
     (d : MetricGraphTransformData X)
@@ -694,7 +693,7 @@ theorem fixedGraph_lipschitzWith_sharp [CompleteSpace X]
   rw [← hfixed, d.transform_apply, d.transform_apply]
   exact (d.rawTransform_lipschitzWith_sharp zeta).dist_le_mul u v
 
-/-- Helper for Infrastructure I.16a: the derivative of a metric fixed graph is bounded by
+/-- Supporting fact: the derivative of a metric fixed graph is bounded by
 the sharp Lipschitz constant at every center coordinate. -/
 theorem norm_deriv_fixedGraph_le_sharp [CompleteSpace X]
     (d : MetricGraphTransformData X)
@@ -706,7 +705,7 @@ theorem norm_deriv_fixedGraph_le_sharp [CompleteSpace X]
   simpa only [NNReal.coe_mul, NNReal.coe_add, NNReal.coe_inv] using
     norm_deriv_le_of_lipschitz (d.fixedGraph_lipschitzWith_sharp zeta hfixed)
 
-/-- Infrastructure I.16a: the metric fixed graph satisfies the forward invariance equation
+/-- Supporting infrastructure: the metric fixed graph satisfies the forward invariance equation
 in the original center parameter, before any smoothness or tangent argument is applied. -/
 theorem fixedGraph_equation [CompleteSpace X]
     (d : MetricGraphTransformData X)

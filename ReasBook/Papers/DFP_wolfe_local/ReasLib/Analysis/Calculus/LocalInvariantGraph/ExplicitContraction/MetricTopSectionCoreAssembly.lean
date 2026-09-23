@@ -13,7 +13,6 @@ public import ReasLib.Analysis.Calculus.LocalInvariantGraph.ExplicitContraction.
 public import ReasLib.Analysis.Calculus.LocalInvariantGraph.ExplicitContraction.MetricTopSectionHolonomicBridge
 public import ReasLib.Analysis.Calculus.LocalInvariantGraph.ExplicitContraction.MetricTopSectionHolonomicAssembly
 public import ReasLib.Analysis.Calculus.LocalInvariantGraph.ExplicitContraction.MetricTopSectionDerivativeBridge
-
 public section
 
 noncomputable section
@@ -224,7 +223,7 @@ Consequently the actual coefficient of the reserved top derivative is not merely
 application lemma isolate this construction, while the norm theorem records that the trailing
 summand in `metricGraphTransformRate` pays for the feedback exactly. -/
 
-/-- Helper for Infrastructure I.16a: the complete reserved-top-order coefficient, including the
+/-- Supporting fact: the complete reserved-top-order coefficient, including the
 rank-one feedback from the center component of the fiber derivative. -/
 def metricReservedTopCoefficient
     (d : MetricGraphTransformData X)
@@ -234,7 +233,7 @@ def metricReservedTopCoefficient
       (derivCenterFiber d ζ u).smulRight
         (deriv (ζ : ℝ → X) (d.centerMap ζ u)))
 
-/-- Helper for Infrastructure I.16a: application of `metricReservedTopCoefficient` exposes the
+/-- Supporting fact: application of `metricReservedTopCoefficient` exposes the
 fiber cocycle and the complete center-feedback term. -/
 theorem metricReservedTopCoefficient_apply
     (d : MetricGraphTransformData X)
@@ -246,7 +245,7 @@ theorem metricReservedTopCoefficient_apply
             deriv (ζ : ℝ → X) (d.centerMap ζ u)) := by
   rfl
 
-/-- Helper for Infrastructure I.16a: the lower-order forcing in the affine reserved-top
+/-- Supporting fact: the lower-order forcing in the affine reserved-top
 derivative equation.  The two `R`-component sums and the nonlinear graph-composition sum omit
 both the reserved length-`r` block and the isolated length-one block. -/
 def metricReservedTopForcing
@@ -279,7 +278,7 @@ def metricReservedTopForcing
           iteratedFDeriv ℝ c.length (ζ : ℝ → X) (d.centerMap ζ u)
             (fun j ↦ iteratedDeriv (c.partSize j) (d.centerMap ζ) u))
 
-/-- Helper for Infrastructure I.16a: if `g` is `C^(r + 1)` and `f` is `C^r` for
+/-- Supporting fact: if `g` is `C^(r + 1)` and `f` is `C^r` for
 `r ≥ 2`, then evaluating `iteratedFDeriv ℝ r g` on the diagonal first jet of `f` is `C¹`. -/
 private theorem iteratedFDeriv_diagonalFirstJet_contDiff_one
     {Z Y : Type*} [NormedAddCommGroup Z] [NormedSpace ℝ Z]
@@ -323,7 +322,7 @@ private theorem iteratedFDeriv_diagonalFirstJet_contDiff_one
     exact heval.contDiff
   simpa only [Function.comp_def] using hevaluation.comp (hjet.prodMk hvec)
 
-/-- Helper for Infrastructure I.16a: the stable-coordinate order-`r` atomic evaluation in
+/-- Supporting fact: the stable-coordinate order-`r` atomic evaluation in
 `metricReservedTopForcing` is `C¹` when `r ≥ 2`, `r + 1 ≤ d.nu`, and `ζ` is `C^r`. -/
 theorem metricStableAtomicEvaluation_contDiff_one
     (d : MetricGraphTransformData X)
@@ -346,7 +345,7 @@ theorem metricStableAtomicEvaluation_contDiff_one
     (fun z : ℝ × X ↦ (d.R z).2) (fun y : ℝ ↦ (y, (ζ : ℝ → X) y))
     hr hg hpair
 
-/-- Helper for Infrastructure I.16a: the center-coordinate order-`r` atomic evaluation in
+/-- Supporting fact: the center-coordinate order-`r` atomic evaluation in
 `metricReservedTopForcing` is `C¹` when `r ≥ 2`, `r + 1 ≤ d.nu`, and `ζ` is `C^r`. -/
 theorem metricCenterAtomicEvaluation_contDiff_one
     (d : MetricGraphTransformData X)
@@ -369,7 +368,7 @@ theorem metricCenterAtomicEvaluation_contDiff_one
     (fun z : ℝ × X ↦ (d.R z).1) (fun y : ℝ ↦ (y, (ζ : ℝ → X) y))
     hr hg hpair
 
-/-- Infrastructure I.16a: if `r ≥ 2`, `r + 1 ≤ d.nu`, and `ζ` is `C^r`, then the
+/-- Supporting infrastructure: if `r ≥ 2`, `r + 1 ≤ d.nu`, and `ζ` is `C^r`, then the
 complete lower-order affine forcing `metricReservedTopForcing d ζ r` is `C¹`. -/
 theorem metricReservedTopForcing_contDiff_one
     (d : MetricGraphTransformData X)
@@ -434,7 +433,7 @@ theorem metricReservedTopForcing_contDiff_one
   unfold metricReservedTopForcing
   exact hscale.smul hbracket
 
-/-- Helper for Infrastructure I.16a: for orders at least two, the differentiated fixed-graph
+/-- Supporting fact: for orders at least two, the differentiated fixed-graph
 equation is affine in the reserved top derivative.  Its linear part is the complete fiber
 coefficient with negative center feedback, while `metricReservedTopForcing` contains only
 lower-order graph jets. -/
@@ -595,7 +594,7 @@ theorem iteratedDeriv_fixedGraph_reservedTop_affine_split
   simp only [smul_add, smul_sub, add_smul]
   abel
 
-/-- Helper for Infrastructure I.16a: on a fixed graph, the complete reserved-top-order
+/-- Supporting fact: on a fixed graph, the complete reserved-top-order
 coefficient is bounded by the full metric transform rate; its trailing rate term absorbs the
 center feedback using the sharp fixed-graph Lipschitz constant. -/
 theorem metricReservedTopCoefficient_apply_norm_le [CompleteSpace X]
@@ -697,7 +696,7 @@ theorem metricReservedTopCoefficient_apply_norm_le [CompleteSpace X]
       exact mul_le_mul hpow_abs_le hcoefficient (norm_nonneg _) hlower_inv_pow_nonneg
     _ = ((metricGraphTransformRate d.lower d.linearRate d.epsilon d.slope : ℝ) *
         (d.lower : ℝ)⁻¹ ^ m) * ‖w‖ := by ring
-/-- Helper for Infrastructure I.16a: the operator norm of the complete reserved-top-order
+/-- Supporting fact: the operator norm of the complete reserved-top-order
 coefficient is bounded by the contraction coefficient supplied by the metric transform rate. -/
 theorem norm_metricReservedTopCoefficient_le [CompleteSpace X]
     (d : MetricGraphTransformData X)
