@@ -14,8 +14,12 @@ kept on the `v4.32.0` version branch.
 [Verso reading pages](https://optpku.github.io/ReasBook/sites/dfp_wolfe_local/pages/) ·
 [Theorem dependency map](https://optpku.github.io/ReasBook/theorem-maps/papers/dfp_wolfe_local/)
 
-The API documentation covers the 381 modules imported by the public paper
-entry point. The Verso guide presents the main results and eight source-backed
+The API documentation covers the complete module closure imported by the public
+paper entry point; see the version-branch README for current source statistics.
+The Verso guide presents the main results and eight source-backed
 reading sections, including planar convergence, sharp Hölder regularity, and
-general secant degeneration. The dependency map distinguishes compiled edges
-from source-only inventory entries.
+general secant degeneration. The dependency map offers paper-numbered and Lean
+declaration views. Each numbered result displays the original paper statement
+above its corresponding Lean declarations and proofs, with links to their
+source locations. Documentation releases update these resources together after
+source changes are merged.
