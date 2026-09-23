@@ -20,7 +20,7 @@ turns that first-order identity along the positive zero-scale slice into the
 mixed second-order identities used by the transverse finite-jet argument.
 -/
 
-/-- Helper for Infrastructure I.16a and Lemma 4.15: the low second-leg gradient
+/-- Supporting fact: and Supporting Lemma: the low second-leg gradient
 factor is stationary in the signed scale at every positive transverse point. -/
 theorem lowGradientFactor_scale_hasDerivAt (p h : ℝ)
     (hp : 0 < p) (hh : 0 < h) :
@@ -38,7 +38,7 @@ theorem lowGradientFactor_scale_hasDerivAt (p h : ℝ)
     norm_num
   simpa only [lowGradientFactor, factors] using hlow
 
-/-- Helper for Infrastructure I.16a and Lemma 4.15: every mixed Hessian of the
+/-- Supporting fact: and Supporting Lemma: every mixed Hessian of the
 low second-leg gradient factor with one signed-scale direction and one
 transverse direction vanishes at the canceled base point. -/
 theorem lowGradientFactor_scale_transverse_cross_eq_zero
@@ -50,14 +50,14 @@ theorem lowGradientFactor_scale_transverse_cross_eq_zero
   intro p h hp hh
   exact lowGradientFactor_scale_hasDerivAt p h hp hh
 
-/-- Helper for Infrastructure I.16a and Lemma 4.15: the signed-scale/shape
+/-- Supporting fact: and Supporting Lemma: the signed-scale/shape
 mixed Hessian of the low second-leg gradient factor vanishes at the base. -/
 theorem lowGradientFactor_scale_shape_cross_eq_zero :
     iteratedFDeriv ℝ 2 lowGradientFactor (0, 2, 1)
       ![((1, 0, 0) : ℝ × ℝ × ℝ), (0, 1, 0)] = 0 := by
   exact lowGradientFactor_scale_transverse_cross_eq_zero (0, 1, 0) rfl
 
-/-- Helper for Infrastructure I.16a and Lemma 4.15: the signed-scale/high
+/-- Supporting fact: and Supporting Lemma: the signed-scale/high
 mixed Hessian of the low second-leg gradient factor vanishes at the base. -/
 theorem lowGradientFactor_scale_high_cross_eq_zero :
     iteratedFDeriv ℝ 2 lowGradientFactor (0, 2, 1)

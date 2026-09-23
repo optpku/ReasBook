@@ -14,7 +14,7 @@ namespace ContDiffAt
 
 variable {F : Type u} [NormedAddCommGroup F] [NormedSpace ℝ F]
 
-/-- Helper for Infrastructure I.16 (finite-order graph-jet contraction): vanishing zeroth,
+/-- Supporting fact: (finite-order graph-jet contraction): vanishing zeroth,
 first, and second scalar derivatives force a cubic asymptotic bound for a `C^3` map. -/
 theorem isBigO_of_threefold_vanishing
     {f : ℝ → F} {x : ℝ}

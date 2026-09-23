@@ -107,22 +107,13 @@ theorem slowCurveEndpointClusterSet_eq_limitCircle (p h : ℝ → ℝ)
     have hscaleZero3 : Tendsto
         (fun j : ℕ ↦ ((DFP.TwoPhaseOrbit.ofSlowCurve p h ε₀).state j).ε ^ 3)
         atTop (𝓝 0) := by
-      convert hscaleZero.pow 3 using 1 <;> norm_num [orbit]
+      simpa only [orbit, zero_pow (Nat.succ_ne_zero 2)] using hscaleZero.pow 3
     have herr0 : Tendsto
         (fun j : ℕ ↦ ‖orbit.endpoint (2 * j + σ.val) - Clim‖ -
           (orbit.state j).amplitude) atTop (𝓝 0) :=
       herr.trans_tendsto hscaleZero3
-    have hGlimTendsto' : Tendsto (fun j : ℕ ↦ (orbit.state j).amplitude)
-        atTop (𝓝 Glim) := by
-      simpa only [orbit] using hGlimTendsto
-    have hamp := hGlimTendsto'.sub (tendsto_const_nhds : Tendsto
-      (fun _ : ℕ ↦ Glim) atTop (𝓝 Glim))
-    have hsum := (tendsto_const_nhds : Tendsto
-      (fun _ : ℕ ↦ Glim) atTop (𝓝 Glim)).add (herr0.add hamp)
-    convert hsum using 1
-    · funext j
-      ring
-    · ring
+    have hsum := herr0.add hGlimTendsto
+    simpa only [orbit, sub_add_cancel, zero_add] using hsum
   have hradial : Tendsto
       (fun k : ℕ ↦ ‖orbit.endpoint k - Clim‖) atTop (𝓝 Glim) := by
     rw [Metric.tendsto_nhds]
@@ -137,54 +128,17 @@ theorem slowCurveEndpointClusterSet_eq_limitCircle (p h : ℝ → ℝ)
       simpa using he j hj
     · have hj : No ≤ j := by omega
       simpa using ho j hj
-  ext x <;> constructor
+  ext x
+  constructor
   · intro hx
     obtain ⟨ψ, hψ, hxlim⟩ := hx.tendsto_subseq
-    have hψtop := hψ.tendsto_atTop
-    let φ : ℕ → ℝ := orbit.endpointPolarAngleLift Clim
-    let e : EuclideanSpace ℝ (Fin 2) := EuclideanSpace.basisFun (Fin 2) ℝ 0
-    let r : ℕ → ℝ := fun k ↦ ‖orbit.endpoint k - Clim‖
-    have hradial0 : Tendsto r atTop (𝓝 Glim) := by simpa only [r] using hradial
-    have hrep (k : ℕ) : orbit.endpoint k - Clim =
-        r k • EuclideanPlane.rotation (φ k) e := by
-      have hs := orbit.endpointPolarAngle_spec Clim k
-        (by simpa only [orbit] using hNonzero ε₀ hεNonzero Clim hClim k)
-      simpa only [φ, r, e, orbit.endpointPolarAngleLift_coe] using hs
-    have hq : Tendsto (fun k ↦ orbit.endpoint k -
-        (Clim + Glim • EuclideanPlane.rotation (φ k) e)) atTop (𝓝 0) := by
-      have hrotBound : ∀ k, ‖EuclideanPlane.rotation (φ k) e‖ = 1 := by
-        intro k
-        simpa [e] using (EuclideanPlane.rotation (φ k)).norm_map
-          (EuclideanSpace.basisFun (Fin 2) ℝ 0)
-      have hradialSub : Tendsto (fun k ↦ r k - Glim) atTop (𝓝 0) := by
-        simpa using hradial0.sub (tendsto_const_nhds :
-          Tendsto (fun _ : ℕ ↦ Glim) atTop (𝓝 Glim))
-      apply Metric.tendsto_nhds.2
-      intro δ hδ
-      have hsmall := (Metric.tendsto_nhds.1 hradialSub) δ hδ
-      filter_upwards [hsmall] with k hk
-      rw [sub_add_eq_sub_sub, hrep k]
-      rw [← sub_smul]
-      simpa only [dist_zero_right, norm_smul, hrotBound k, mul_one] using hk
-    let q : ℕ → EuclideanSpace ℝ (Fin 2) := fun k ↦ orbit.endpoint k -
-      (Clim + Glim • EuclideanPlane.rotation (φ k) e)
-    have hqsub := (show Tendsto q atTop (𝓝 0) by simpa only [q] using hq).comp hψtop
-    have hxendpoint : Tendsto (orbit.endpoint ∘ ψ) atTop (𝓝 x) := hxlim
-    have hsub : Tendsto (fun n ↦ orbit.endpoint (ψ n) - q (ψ n)) atTop (𝓝 x) := by
-      have hqsub' : Tendsto (fun n ↦ q (ψ n)) atTop (nhds 0) := by
-        simpa only [Function.comp_def] using hqsub
-      have hxendpoint' : Tendsto (fun n ↦ orbit.endpoint (ψ n)) atTop (nhds x) := by
-        simpa only [Function.comp_def] using hxendpoint
-      simpa only [sub_zero] using hxendpoint'.sub hqsub'
-    have hz : Tendsto (fun n ↦ Clim + Glim • EuclideanPlane.rotation
-        (φ (ψ n)) e) atTop (𝓝 x) := by
-      convert hsub using 1 <;> simp only [q, sub_sub_cancel]
-    exact (isClosed_limitCircle Clim Glim hGlim).mem_of_tendsto hz
-      (Eventually.of_forall (fun n ↦ by
-        rw [mem_limitCircle]
-        refine ⟨EuclideanPlane.rotation (φ (ψ n)) e, ?_, rfl⟩
-        simpa [e] using (EuclideanPlane.rotation (φ (ψ n))).norm_map
-          (EuclideanSpace.basisFun (Fin 2) ℝ 0)))
+    have hnorm : Tendsto (fun j ↦ ‖orbit.endpoint (ψ j) - Clim‖)
+        atTop (𝓝 ‖x - Clim‖) := by
+      exact (hxlim.sub_const Clim).norm
+    have hnormLimit : ‖x - Clim‖ = Glim :=
+      tendsto_nhds_unique hnorm (hradial.comp hψ.tendsto_atTop)
+    rw [limitCircle_eq_sphere Clim Glim hGlim, Metric.mem_sphere, dist_eq_norm]
+    exact hnormLimit
   · intro hx
     let φ : ℕ → ℝ := orbit.endpointPolarAngleLift Clim
     let e : EuclideanSpace ℝ (Fin 2) := EuclideanSpace.basisFun (Fin 2) ℝ 0
@@ -220,9 +174,6 @@ theorem slowCurveEndpointClusterSet_eq_limitCircle (p h : ℝ → ℝ)
       · simpa [φ, v, orbit] using (hGapOrbit.2 j 0).1
       · have hidx : (2 * j + 1) / 2 = j := by omega
         simpa [φ, v, orbit, hidx] using (hGapOrbit.2 j 1).1
-    have hdrop : ∀ n, cθ * v n ≤ φ n - φ (n + 1) := by
-      intro n
-      exact hdrop_lower n
     have hdrop_zero : Tendsto
         (fun n ↦ φ n - φ (n + 1)) atTop (𝓝 0) := by
       have hupper : ∀ n, φ n - φ (n + 1) ≤ Cθ * v n := by
@@ -232,13 +183,13 @@ theorem slowCurveEndpointClusterSet_eq_limitCircle (p h : ℝ → ℝ)
         · have hidx : (2 * j + 1) / 2 = j := by omega
           simpa [φ, v, orbit, hidx] using (hGapOrbit.2 j 1).2
       have hvzero : Tendsto v atTop (𝓝 0) := by
-        convert hflatScaleZero.pow 2 using 1 <;> norm_num [v]
+        simpa only [v, zero_pow (Nat.succ_ne_zero 1)] using hflatScaleZero.pow 2
       have hupperZero : Tendsto (fun n ↦ Cθ * v n) atTop (𝓝 0) := by
         simpa using (tendsto_const_nhds.mul hvzero)
       exact squeeze_zero (fun n ↦ hdrop_nonneg n) hupper hupperZero
     have hbot : Tendsto φ atTop atBot := by
       exact tendsto_atBot_of_eventually_le_decrement_of_not_summable
-        hcθ hv_nonneg (Eventually.of_forall hdrop) hv_notSummable
+        hcθ hv_nonneg (Eventually.of_forall hdrop_lower) hv_notSummable
     obtain ⟨unit, hunit, hθ⟩ := mem_limitCircle.mp hx
     let θ' : ℝ :=
       (EuclideanPlane.orientation.oangle e unit).toReal

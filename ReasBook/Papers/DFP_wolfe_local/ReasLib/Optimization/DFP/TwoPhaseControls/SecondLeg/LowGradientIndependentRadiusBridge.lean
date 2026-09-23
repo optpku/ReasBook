@@ -15,7 +15,7 @@ open DFP.TwoLeg.Mixed
 open Filter
 open scoped Topology
 
-/-- Helper for Infrastructure I.16a: a transport of the first spectral and gradient factors
+/-- Supporting fact: a transport of the first spectral and gradient factors
 identifies the removable low factor with the independent-radius second gradient factor. -/
 theorem lowGradientFactor_eq_independentRadiusSecondGradient_of_factorTransport
     (ε p h : ℝ)
@@ -38,7 +38,7 @@ theorem lowGradientFactor_eq_independentRadiusSecondGradient_of_factorTransport
     rw [DFP.TwoLeg.Mixed.independentRadiusSecondGradient.eq_1]
   rw [hdef, ← hSpectral, ← hGradient]
 
-/-- Helper for Infrastructure I.16a: eventual first-factor transport transfers an independent-
+/-- Supporting fact: eventual first-factor transport transfers an independent-
 radius quadratic germ to the removable low-gradient path. -/
 theorem lowGradientFactor_quadraticGerm_of_eventualFactorTransport
     (p h a₀ a₁ a₂ : ℝ)

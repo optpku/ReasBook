@@ -14,12 +14,12 @@ open scoped Topology
 
 namespace DFP.TwoLeg.Mixed
 
-/-- Helper for Appendix Lemma A.6: the quadratic polynomial with constant, linear,
+/-- Supporting fact: the quadratic polynomial with constant, linear,
 and quadratic coefficients `a₀`, `a₁`, and `a₂`. -/
 def quadraticModel (a₀ a₁ a₂ : ℝ) : ℝ → ℝ :=
   fun r ↦ a₀ + a₁ * r + a₂ * r ^ 2
 
-/-- Helper for Appendix Lemma A.6: a scalar path has a continuous quadratic germ
+/-- Supporting fact: a scalar path has a continuous quadratic germ
 when it agrees with `quadraticModel a₀ a₁ a₂` modulo the third power. -/
 structure HasQuadraticGerm (f : ℝ → ℝ) (a₀ a₁ a₂ : ℝ) : Prop where
   continuousAt : ContinuousAt f 0
@@ -27,20 +27,20 @@ structure HasQuadraticGerm (f : ℝ → ℝ) (a₀ a₁ a₂ : ℝ) : Prop where
 
 namespace HasQuadraticGerm
 
-/-- Helper for Appendix Lemma A.6: every quadratic model is continuous at the origin. -/
+/-- Supporting fact: every quadratic model is continuous at the origin. -/
 theorem quadraticModel_continuousAt (a₀ a₁ a₂ : ℝ) :
     ContinuousAt (quadraticModel a₀ a₁ a₂) 0 := by
   unfold quadraticModel
   fun_prop
 
-/-- Helper for Appendix Lemma A.6: a quadratic model carries its own quadratic germ. -/
+/-- Supporting fact: a quadratic model carries its own quadratic germ. -/
 theorem model (a₀ a₁ a₂ : ℝ) :
     HasQuadraticGerm (quadraticModel a₀ a₁ a₂) a₀ a₁ a₂ := by
   constructor
   · exact quadraticModel_continuousAt a₀ a₁ a₂
   · exact EqModPow.refl 3 (quadraticModel a₀ a₁ a₂)
 
-/-- Helper for Appendix Lemma A.6: a `C³` path with a quadratic germ has the
+/-- Supporting fact: a `C³` path with a quadratic germ has the
     corresponding second iterated derivative at the origin. -/
 theorem iteratedDeriv_two_eq_of_contDiffAt
     {f : ℝ → ℝ} {a₀ a₁ a₂ : ℝ}
@@ -99,7 +99,7 @@ theorem iteratedDeriv_two_eq_of_contDiffAt
     _ = deriv (fun r ↦ a₁ + 2 * a₂ * r) 0 := by rw [hmodelDeriv]
     _ = 2 * a₂ := hlinear'.deriv
 
-/-- Helper for Appendix Lemma A.6: a pointwise equal representative carries the same
+/-- Supporting fact: a pointwise equal representative carries the same
 quadratic germ. -/
 theorem congrFunction {f g : ℝ → ℝ} {a₀ a₁ a₂ : ℝ}
     (hf : HasQuadraticGerm f a₀ a₁ a₂) (hfg : ∀ r, g r = f r) :
@@ -110,7 +110,7 @@ theorem congrFunction {f g : ℝ → ℝ} {a₀ a₁ a₂ : ℝ}
   rw [hfun]
   exact hf
 
-/-- Helper for Appendix Lemma A.6: equal coefficient triples describe the same
+/-- Supporting fact: equal coefficient triples describe the same
 quadratic germ. -/
 theorem congrCoefficients {f : ℝ → ℝ} {a₀ a₁ a₂ b₀ b₁ b₂ : ℝ}
     (hf : HasQuadraticGerm f a₀ a₁ a₂)
@@ -121,7 +121,7 @@ theorem congrCoefficients {f : ℝ → ℝ} {a₀ a₁ a₂ b₀ b₁ b₂ : ℝ
   subst b₂
   exact hf
 
-/-- Helper for Appendix Lemma A.6: quadratic germs are closed under negation. -/
+/-- Supporting fact: quadratic germs are closed under negation. -/
 theorem neg {f : ℝ → ℝ} {a₀ a₁ a₂ : ℝ}
     (hf : HasQuadraticGerm f a₀ a₁ a₂) :
     HasQuadraticGerm (fun r ↦ -f r) (-a₀) (-a₁) (-a₂) := by
@@ -135,7 +135,7 @@ theorem neg {f : ℝ → ℝ} {a₀ a₁ a₂ : ℝ}
       simp only [quadraticModel]
       ring
 
-/-- Helper for Appendix Lemma A.6: quadratic germs are closed under addition. -/
+/-- Supporting fact: quadratic germs are closed under addition. -/
 theorem add {f g : ℝ → ℝ} {a₀ a₁ a₂ b₀ b₁ b₂ : ℝ}
     (hf : HasQuadraticGerm f a₀ a₁ a₂)
     (hg : HasQuadraticGerm g b₀ b₁ b₂) :
@@ -151,7 +151,7 @@ theorem add {f g : ℝ → ℝ} {a₀ a₁ a₂ b₀ b₁ b₂ : ℝ}
       simp only [quadraticModel]
       ring
 
-/-- Helper for Appendix Lemma A.6: quadratic germs are closed under subtraction. -/
+/-- Supporting fact: quadratic germs are closed under subtraction. -/
 theorem sub {f g : ℝ → ℝ} {a₀ a₁ a₂ b₀ b₁ b₂ : ℝ}
     (hf : HasQuadraticGerm f a₀ a₁ a₂)
     (hg : HasQuadraticGerm g b₀ b₁ b₂) :
@@ -167,7 +167,7 @@ theorem sub {f g : ℝ → ℝ} {a₀ a₁ a₂ b₀ b₁ b₂ : ℝ}
       simp only [quadraticModel]
       ring
 
-/-- Helper for Appendix Lemma A.6: multiplication convolves quadratic germ
+/-- Supporting fact: multiplication convolves quadratic germ
 coefficients and discards terms of order at least three. -/
 theorem mul {f g : ℝ → ℝ} {a₀ a₁ a₂ b₀ b₁ b₂ : ℝ}
     (hf : HasQuadraticGerm f a₀ a₁ a₂)
@@ -191,7 +191,7 @@ theorem mul {f g : ℝ → ℝ} {a₀ a₁ a₂ b₀ b₁ b₂ : ℝ}
         ring
     exact hraw.trans htruncate
 
-/-- Helper for Appendix Lemma A.6: multiplication by a constant scales every
+/-- Supporting fact: multiplication by a constant scales every
 quadratic germ coefficient. -/
 theorem constMul (c : ℝ) {f : ℝ → ℝ} {a₀ a₁ a₂ : ℝ}
     (hf : HasQuadraticGerm f a₀ a₁ a₂) :
@@ -210,7 +210,7 @@ theorem constMul (c : ℝ) {f : ℝ → ℝ} {a₀ a₁ a₂ : ℝ}
   simp only [quadraticModel]
   ring
 
-/-- Helper for Appendix Lemma A.6: the reciprocal of a nonvanishing quadratic germ
+/-- Supporting fact: the reciprocal of a nonvanishing quadratic germ
 has the standard reciprocal coefficients. -/
 theorem inv {f : ℝ → ℝ} {a₀ a₁ a₂ : ℝ}
     (hf : HasQuadraticGerm f a₀ a₁ a₂) (ha₀ : a₀ ≠ 0) :
@@ -245,7 +245,7 @@ theorem inv {f : ℝ → ℝ} {a₀ a₁ a₂ : ℝ}
   · exact hf.continuousAt.inv₀ hf0
   · exact EqModPow.inv_of_mul_eq_one hproductOne hf.continuousAt hf0
 
-/-- Helper for Appendix Lemma A.6: division by a nonvanishing quadratic germ is
+/-- Supporting fact: division by a nonvanishing quadratic germ is
 multiplication by its reciprocal germ. -/
 theorem div {f g : ℝ → ℝ} {a₀ a₁ a₂ b₀ b₁ b₂ : ℝ}
     (hf : HasQuadraticGerm f a₀ a₁ a₂)
@@ -261,7 +261,7 @@ theorem div {f g : ℝ → ℝ} {a₀ a₁ a₂ b₀ b₁ b₂ : ℝ}
   intro r
   rw [div_eq_mul_inv]
 
-/-- Helper for Appendix Lemma A.6: the positive square root of a germ based at one
+/-- Supporting fact: the positive square root of a germ based at one
 has coefficients obtained by solving the square equation through order two. -/
 theorem sqrtOne {f : ℝ → ℝ} {a₁ a₂ : ℝ}
     (hf : HasQuadraticGerm f 1 a₁ a₂) :
@@ -303,7 +303,7 @@ end HasQuadraticGerm
 /- The canonical base values in the mixed normal form are
    `(sLow,sHigh,gLow,gHigh) = (2,1,1,2)`. -/
 
-/-- Helper for Appendix Lemma A.6: canonical spectral and gradient component germs
+/-- Supporting fact: canonical spectral and gradient component germs
     determine the recovered radius factor through quadratic order. -/
 theorem recoveryRadiusQuadraticGerm_of_componentGerms
     {sLow sHigh gLow gHigh : ℝ → ℝ}
@@ -340,7 +340,7 @@ theorem recoveryRadiusQuadraticGerm_of_componentGerms
     ring_nf
   exact hquotient.congrCoefficients hconstant hlinear hquadratic
 
-/-- Helper for Appendix Lemma A.6: multiplying the recovered radius factor by the
+/-- Supporting fact: multiplying the recovered radius factor by the
     independent radius shifts the same quadratic germ by one order. -/
 theorem recoveryRadiusPathQuadraticGerm_of_componentGerms
     {sLow sHigh gLow gHigh : ℝ → ℝ}
@@ -371,7 +371,7 @@ theorem recoveryRadiusPathQuadraticGerm_of_componentGerms
     ring
   exact hproduct.congrCoefficients hconstant hlinear hquadratic
 
-/-- Appendix Lemma A.6 companion: the five first-leg residual coordinates along the
+/-- Supporting Lemma companion: the five first-leg residual coordinates along the
 independent-radius path have their explicit quadratic germs. -/
 theorem independentFirstResidualQuadraticGerms (b P J : ℝ) :
     HasQuadraticGerm

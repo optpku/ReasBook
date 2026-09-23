@@ -5,7 +5,6 @@ public import ReasLib.Optimization.DFP.WolfeCounterexample
 public import ReasLib.Analysis.InnerProductSpace.FiniteDimensionalOperatorLowerBound
 public import ReasLib.Optimization.LineSearch.Wolfe.CoordinateChange
 public import ReasLib.Optimization.LineSearch.Wolfe.WeakLegacy
-
 public section
 
 noncomputable section
@@ -21,7 +20,7 @@ counterexample.  The certificate is intentionally operator-valued: converting th
 pulled-back operators to matrices is a separate representation step.
 -/
 
-/-- Infrastructure I.16a: A weak-Wolfe operator orbit with identity initialization.
+/-- Supporting infrastructure: A weak-Wolfe operator orbit with identity initialization.
 
 The Hessian bounds and the positive gradient tail are explicit fields, so a
 non-isometric coordinate change cannot silently be treated as an isometry. -/
@@ -50,7 +49,7 @@ structure IdentityInitializedOperatorCertificate (ι : Type u) [Fintype ι]
   gradientNormEventuallyPositive : ∃ δ : ℝ, 0 < δ ∧
     ∀ᶠ k in atTop, δ ≤ ‖gradient k‖
 
-/-- Infrastructure I.16a: The matrix orbit of a certified inverse iteration has
+/-- Supporting infrastructure: The matrix orbit of a certified inverse iteration has
 an operator orbit whose initial factor can be normalized by a continuous linear
 equivalence. -/
 theorem factorInitialInverseHessian_and_pullback
@@ -77,7 +76,7 @@ theorem factorInitialInverseHessian_and_pullback
   have hOperator := hMatrix.toOperator
   simpa using hOperator.pullback_of_initialFactor L factor
 
-/-- Infrastructure I.16a: Pulling back a fixed weak-Wolfe certificate through a
+/-- Supporting infrastructure: Pulling back a fixed weak-Wolfe certificate through a
 factorized initial inverse Hessian yields an identity-initialized operator
 certificate.  The parameters `a` and `b` are the explicit lower and upper
 Loewner distortion constants for the Hessian bounds. -/
@@ -218,7 +217,7 @@ theorem identityInitialized_of_factorized
   }
   exact ⟨result⟩
 
-/-- Infrastructure I.16a: Fixed-constant weak-Wolfe specialization of
+/-- Supporting infrastructure: Fixed-constant weak-Wolfe specialization of
 `identityInitialized_of_factorized`.  The output bounds remain the explicitly
 transported `(a / 2, 3 * b / 2)` bounds rather than the original constants. -/
 theorem identityInitialized_fixedWeakWolfe_of_factorized

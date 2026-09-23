@@ -19,7 +19,7 @@ jet on a neighbourhood; the adapter differentiates that vanishing identity
 without exposing the construction of the underlying second jet.
 -/
 
-/-- Helper for Lemma 4.15: a locally zero evaluation of a `C³` second jet has
+/-- Supporting fact: a locally zero evaluation of a `C³` second jet has
 zero derivative in every parameter direction, hence zero third mixed jet. -/
 theorem iteratedFDeriv_three_eq_zero_of_eventually_secondJet_zero
     {E Z : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -79,7 +79,7 @@ theorem iteratedFDeriv_three_eq_zero_of_eventually_secondJet_zero
   rw [hthird']
   exact hthird
 
-/-- Helper for Lemma 4.15: the same vanishing conclusion holds after translating
+/-- Supporting fact: the same vanishing conclusion holds after translating
    the parameter slice by a fixed base point. -/
 theorem iteratedFDeriv_three_eq_zero_of_eventually_affine_secondJet_zero
     {E Z : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -153,7 +153,7 @@ theorem iteratedFDeriv_three_eq_zero_of_eventually_affine_secondJet_zero
   rw [hthird']
   exact hthird
 
-/-- Helper for Lemma 4.15: a locally zero affine second jet has zero third mixed jet for an
+/-- Supporting fact: a locally zero affine second jet has zero third mixed jet for an
 arbitrary normed target, so vector-valued observables use the same parameter-side interface. -/
 theorem iteratedFDeriv_three_eq_zero_of_eventually_affine_secondJet_zero_target
     {E F Z : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -229,7 +229,7 @@ theorem iteratedFDeriv_three_eq_zero_of_eventually_affine_secondJet_zero_target
   rw [hthird']
   exact hthird
 
-/-- Helper for Lemma 4.15: the affine bridge extends to any `C¹` parameter path whose derivative
+/-- Supporting fact: the affine bridge extends to any `C¹` parameter path whose derivative
 is the prescribed linear map, which isolates nonlinear reparameterizations from the jet proof. -/
 theorem iteratedFDeriv_three_eq_zero_of_eventually_secondJet_zero_along_path
     {E F Z : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -295,7 +295,7 @@ theorem iteratedFDeriv_three_eq_zero_of_eventually_secondJet_zero_along_path
   exact hthird
 
 /--
-Helper for Infrastructure I.16a: vanishing of every fixed-direction second jet
+Supporting fact: vanishing of every fixed-direction second jet
    along a parameter path gives the corresponding vanishing third mixed jet for all
    parameter and fibre directions.
 -/
@@ -317,7 +317,7 @@ theorem iteratedFDeriv_three_eq_zero_of_eventually_secondJet_zero_all_directions
     u v hf hφ hφderiv (hzero u v) w
 
 /--
-Helper for Infrastructure I.16a: if the parameter derivative is onto, the
+Supporting fact: if the parameter derivative is onto, the
    preceding pathwise statement removes the restriction on the first third-jet
    direction.
 -/
@@ -341,7 +341,7 @@ theorem iteratedFDeriv_three_eq_zero_of_eventually_secondJet_zero_surjective
   rw [← hw]
   exact hvanish
 
-/-- Helper for Infrastructure I.16a: under a surjective parameter derivative, the
+/-- Supporting fact: under a surjective parameter derivative, the
    entire third iterated derivative vanishes when its second-jet slices vanish
    locally along the parameter path.
 -/
@@ -374,7 +374,7 @@ theorem iteratedFDeriv_three_eq_zero_of_eventually_secondJet_zero_surjective_map
   rw [← hw]
   exact hvanish
 
-/-- Helper for Infrastructure I.16a and Lemma 4.15: the second iterated
+/-- Supporting fact: and Supporting Lemma: the second iterated
 derivative of a scalar affine scale slice agrees with the full Fréchet second
 derivative on the corresponding scale directions. -/
 theorem iteratedFDeriv_two_affineScaleSlice_eq_full

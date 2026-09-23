@@ -19,7 +19,7 @@ This file keeps that identification as an explicit certificate and delegates the
 calculation to the reusable `IndependentRadiusSecondOrderJet` infrastructure.
 -/
 
-/-- Helper for Lemma 4.15: a pointwise chart factorization transfers component quadratic germs
+/-- Supporting fact: a pointwise chart factorization transfers component quadratic germs
 to the signed-scale path of the low second-leg gradient factor. -/
 theorem lowGradientFactor_scale_quadraticGerm_of_chartFactorization
     (p h : ℝ)
@@ -42,7 +42,7 @@ theorem lowGradientFactor_scale_quadraticGerm_of_chartFactorization
   intro r
   exact (hpath r).symm
 
-/-- Helper for Lemma 4.15: when the chart has no linear or quadratic correction in its gradient
+/-- Supporting fact: when the chart has no linear or quadratic correction in its gradient
 coordinate, the low factor has the constant quadratic germ required by the cubic estimate. -/
 theorem lowGradientFactor_scale_quadraticGerm_of_flat_chart
     (p h : ℝ)
@@ -64,7 +64,7 @@ theorem lowGradientFactor_scale_quadraticGerm_of_flat_chart
     norm_num
   exact hflat.congrCoefficients rfl rfl hzero
 
-/-- Helper for Lemma 4.15: a regular low-factor chart converts the quadratic germ into the
+/-- Supporting fact: a regular low-factor chart converts the quadratic germ into the
 second iterated scale derivative used by Taylor-jet estimates. -/
 theorem lowGradientFactor_scale_iteratedDeriv_two_eq_of_chartFactorization
     (p h : ℝ)
@@ -87,7 +87,7 @@ theorem lowGradientFactor_scale_iteratedDeriv_two_eq_of_chartFactorization
     p h hradius hmetricA hmetricC hmetricD hgradientQ hgradientU hpath
   exact HasQuadraticGerm.iteratedDeriv_two_eq_of_contDiffAt hgerm hregular
 
-/-- Helper for Lemma 4.15: the flat chart certificate forces the second scale derivative of the
+/-- Supporting fact: the flat chart certificate forces the second scale derivative of the
 low factor to vanish. -/
 theorem lowGradientFactor_scale_iteratedDeriv_two_eq_zero_of_flat_chart
     (p h : ℝ)

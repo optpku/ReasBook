@@ -82,7 +82,7 @@ theorem independentRadiusRecoveryFactors_analyticAt_of_secondFactors
   rw [hEq]
   exact hGeneric
 
-/-- Appendix Lemma A.5: the independent-radius normal form is finite-smooth after
+/-- Supporting Lemma: the independent-radius normal form is finite-smooth after
 the second-factor analytic declarations have been established. -/
 theorem independentRadiusNormalForm_contDiffAt_of_secondFactors
     (m : ℕ) (θ : ℝ × ℝ × ℝ) :

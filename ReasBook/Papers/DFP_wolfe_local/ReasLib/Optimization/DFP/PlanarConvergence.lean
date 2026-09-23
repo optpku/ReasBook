@@ -4352,7 +4352,7 @@ theorem holder_of_disjoint_finsum_hessian
         change ‖Hk u - Hl v‖ ≤ _
         calc
           ‖Hk u - Hl v‖ ≤ ‖Hk u - 0‖ + ‖0 - Hl v‖ := by
-            convert norm_add_le (Hk u - 0) (0 - Hl v) using 1 <;> abel
+            simpa only [sub_zero, zero_sub, norm_neg] using norm_sub_le (Hk u) (Hl v)
           _ = ‖Hk u - Hk v‖ + ‖Hl u - Hl v‖ := by
             dsimp [Hk, Hl]
             rw [hkuZero, hkvZero]

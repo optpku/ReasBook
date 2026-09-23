@@ -90,7 +90,7 @@ theorem input_apply (b P J r : ℝ) :
 theorem map_zero (b : ℝ) : map b (0, 2, 1) = (0, 2, 1) := by
   simp [map]
 
-/-- Helper for Appendix Lemma A.5: the oriented frame reconstructed from the
+/-- Supporting fact: the oriented frame reconstructed from the
 first leg output agrees with the canonical first-leg frame when its low
 coordinate is positive. -/
 private lemma orientedFirstFrame_eq (x : ℝ × ℝ × ℝ)
@@ -121,7 +121,7 @@ private lemma orientedFirstFrame_eq (x : ℝ × ℝ × ℝ)
     rw [hinner]
     exact hcoord
 
-/-- Helper for Appendix Lemma A.5: the oriented frame reconstructed from the
+/-- Supporting fact: the oriented frame reconstructed from the
 second leg output agrees with the canonical second-leg frame when its low
 coordinate is positive. -/
 private lemma orientedSecondFrame_eq (x : ℝ × ℝ × ℝ)
@@ -152,7 +152,7 @@ private lemma orientedSecondFrame_eq (x : ℝ × ℝ × ℝ)
     rw [hinner]
     exact hcoord
 
-/-- Helper for Appendix Lemma A.5: the first mixed control matrix is positive
+/-- Supporting fact: the first mixed control matrix is positive
 definite throughout the small signed-scale neighborhood. -/
 private lemma firstControl_pos (ε : ℝ) (hε : |ε| < (1 / 4 : ℝ)) :
     (TwoPhaseControls.first ε).matrix.PosDef := by
@@ -180,7 +180,7 @@ private lemma firstControl_pos (ε : ℝ) (hε : |ε| < (1 / 4 : ℝ)) :
     nlinarith [sq_nonneg (x 0 + x 1), sq_nonneg (x 0 - x 1)]
   exact Matrix.PosDef.of_dotProduct_mulVec_pos hHermitian hquadratic
 
-/-- Helper for Appendix Lemma A.5: the second mixed control matrix is positive
+/-- Supporting fact: the second mixed control matrix is positive
 definite throughout the small signed-scale neighborhood. -/
 private lemma secondControl_pos (ε : ℝ) (hε : |ε| < (1 / 4 : ℝ)) :
     (TwoPhaseControls.second ε).matrix.PosDef := by

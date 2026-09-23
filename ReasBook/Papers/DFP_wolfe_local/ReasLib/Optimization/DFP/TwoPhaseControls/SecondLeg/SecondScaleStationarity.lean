@@ -30,7 +30,7 @@ factor substitution is not unfolded here: the eigenframe normalization is a larg
 whose stable interface is the eventual equality below. -/
 
 
-/-- Helper for Infrastructure I.16a and Lemma 4.15: a factor-transport certificate records the
+/-- Supporting fact: and Supporting Lemma: a factor-transport certificate records the
 eventual independent-radius representative and the regularity needed to read its quadratic jet. -/
 structure LowGradientIndependentRadiusScaleCertificate (p h : ℝ) : Prop where
   spectral_transport : ∀ᶠ ε : ℝ in 𝓝 (0 : ℝ),
@@ -46,7 +46,7 @@ structure LowGradientIndependentRadiusScaleCertificate (p h : ℝ) : Prop where
   regularity : ContDiffAt ℝ 3
     (fun ε : ℝ ↦ lowGradientFactor (ε, p, h)) 0
 
-/-- Helper for Infrastructure I.16a and Lemma 4.15: the certificate forces the pure second
+/-- Supporting fact: and Supporting Lemma: the certificate forces the pure second
 signed-scale jet of the low second-leg factor to vanish. -/
 theorem LowGradientIndependentRadiusScaleCertificate.pureSecondScaleJet
     {p h : ℝ}
@@ -67,7 +67,7 @@ theorem LowGradientIndependentRadiusScaleCertificate.pureSecondScaleJet
   apply ContinuousMultilinearMap.ext_ring
   simpa only [iteratedDeriv_eq_iteratedFDeriv, zero_apply] using hsecondZero
 
-/-- Helper for Infrastructure I.16a and Lemma 4.15: an eventual family of factor-transport
+/-- Supporting fact: and Supporting Lemma: an eventual family of factor-transport
 certificates yields the scalar stationarity input for the transverse cubic estimate. -/
 theorem
     lowGradientTransverseFDerivFamily_scalar_secondScale_eventually_of_independentRadiusCertificate
@@ -87,7 +87,7 @@ theorem
   exact lowGradientTransverseFDerivFamily_scalar_secondScale_eventually_of_pureSecondScaleJet
     hscale
 
-/-- Infrastructure I.16a (Lemma 4.15, Claim 2 crux): via the FirstLeg component germ tower, the
+/-- Supporting infrastructure (Supporting Lemma, Claim 2 crux): via the FirstLeg component germ tower, the
 pure second signed-scale iterated derivative of the low second-leg gradient factor vanishes
 throughout a neighborhood of the positive transverse base point `(2, 1)`. -/
 theorem lowGradientFactor_scale_iteratedFDeriv_two_eventually_eq_zero :
@@ -120,7 +120,7 @@ theorem lowGradientFactor_scale_iteratedFDeriv_two_eventually_eq_zero :
     lowGradientFactor_scale_iteratedDeriv_two_eq_zero z.1 z.2 hz2 hzne hregular
   exact DFP.Calculus.iteratedFDeriv_two_eq_zero_of_iteratedDeriv_two_eq_zero hsecond
 
-/-- A0 (Lemma 4.15, Claim 2 crux): the pure second signed-scale derivative of the low second-leg
+/-- A0 (Supporting Lemma, Claim 2 crux): the pure second signed-scale derivative of the low second-leg
 gradient factor vanishes throughout a neighborhood of the positive transverse base point. -/
 theorem lowGradientFactor_scale_secondDeriv_eventually_eq_zero :
     ∀ᶠ z : ℝ × ℝ in nhds ((2, 1) : ℝ × ℝ),
@@ -146,7 +146,7 @@ theorem lowGradientFactor_scale_secondDeriv_eventually_eq_zero :
     lowGradientFactor_contDiffAt_scale_of_analytic hzf
   exact lowGradientFactor_scale_iteratedDeriv_two_eq_zero z.1 z.2 hz2 hzne hregular
 
-/-- A3 (Lemma 4.15, Claim 2 crux): the scalar second-scale stationarity of the transverse
+/-- A3 (Supporting Lemma, Claim 2 crux): the scalar second-scale stationarity of the transverse
 Fréchet-derivative family, i.e. the `scalar_second` field of the transverse second-scale
 certificate. -/
 theorem lowGradientTransverseFDerivFamily_scalar_secondScale_eventually :
@@ -158,9 +158,9 @@ theorem lowGradientTransverseFDerivFamily_scalar_secondScale_eventually :
     lowGradientFactor_scale_iteratedFDeriv_two_eventually_eq_zero
 
 /-!
-# Second scale stationarity of the low second-leg gradient factor (Lemma 4.15 crux)
+# Second scale stationarity of the low second-leg gradient factor (Supporting Lemma crux)
 
-This leaf module supplies the analytic crux `𝒢₂ = 1 + O(ε³)` for Claim 2 of Lemma 4.15: the
+This leaf module supplies the analytic crux `𝒢₂ = 1 + O(ε³)` for Claim 2 of Supporting Lemma: the
 second scale derivative of the low second-leg gradient factor vanishes throughout a neighborhood
 of the positive transverse base point, and the corresponding scalar second-scale stationarity of
 the transverse Fréchet-derivative family.  It is intentionally kept out of `SecondLeg.lean` so the

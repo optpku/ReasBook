@@ -15,7 +15,6 @@ public import ReasLib.Analysis.Calculus.LocalCutoff.GraphJetTransform.ProofSuppo
 public import ReasLib.Analysis.Calculus.LocalCutoff.GraphJetTransform.ProofSupport.AffineFiniteJet
 public import Mathlib.Analysis.Calculus.ContDiff.FTaylorSeries
 public import Mathlib.Analysis.Normed.Group.Bounded
-
 public section
 
 open scoped NNReal
@@ -929,7 +928,7 @@ theorem existsUnique_fixedPoint_topSectionOperator {r : ℕ} (hr : 0 < r)
     topUpdatedGraphJet_topCoeff_dist_le_of_coeffDistance hr J a b T q
       (hcontract a b) u
 
-/-- Helper for Infrastructure I.16 (Finite-order graph-jet contraction): when
+/-- Supporting fact: (Finite-order graph-jet contraction): when
 two inner jets agree below a positive top order, only the one-block term of
 their composed top coefficients can differ. -/
 private theorem finiteTaylorJet_comp_topCoeff_sub_eq_inner
@@ -996,7 +995,7 @@ private theorem finiteTaylorJet_comp_topCoeff_sub_eq_inner
   · intro hsingle
     exact (hsingle (Finset.mem_univ _)).elim
 
-/-- Helper for Infrastructure I.16 (Finite-order graph-jet contraction): the
+/-- Supporting fact: (Finite-order graph-jet contraction): the
 top coefficient variation through a fixed outer jet is controlled by its
 linear coefficient. -/
 private theorem finiteTaylorJet_norm_comp_topCoeff_sub_le_inner
@@ -1016,7 +1015,7 @@ private theorem finiteTaylorJet_norm_comp_topCoeff_sub_le_inner
   apply (ContinuousLinearMap.norm_compContinuousMultilinearMap_le _ _).trans_eq
   rw [LinearIsometryEquiv.norm_map]
 
-/-- Helper for Infrastructure I.16 (Finite-order graph-jet contraction): when
+/-- Supporting fact: (Finite-order graph-jet contraction): when
 two outer jets agree below a positive top order, only the all-one-block term
 of their composed top coefficients can differ. -/
 private theorem finiteTaylorJet_comp_topCoeff_sub_eq_outer
@@ -1167,7 +1166,7 @@ private theorem finiteTaylorJet_comp_topCoeff_sub_decompose
   -- resulting additive expression at the multilinear-map level.
   abel
 
-/-- Helper for Infrastructure I.16 (Finite-order graph-jet contraction): inserting
+/-- Supporting fact: (Finite-order graph-jet contraction): inserting
     an inner jet with the lower coefficients of `P` and the top coefficient of
     `R` separates the one-block predecessor term from the remaining composition
     residual. -/
@@ -1283,7 +1282,7 @@ private theorem finiteTaylorJet_comp_topCoeff_branch_split
             P.toFormalMultilinearSeries c := by
       rw [hsingle]
 
-/-- Helper for Infrastructure I.16 (Finite-order graph-jet contraction): the
+/-- Supporting fact: (Finite-order graph-jet contraction): the
 outer coefficient selected by the all-one composition is the top finite-jet
 coefficient. -/
 private theorem finiteTaylorJet_norm_formalSub_onesLength
@@ -1301,7 +1300,7 @@ private theorem finiteTaylorJet_norm_formalSub_onesLength
   rw [FiniteTaylorJet.toFormalMultilinearSeries_coeff_of_le Q le_rfl,
     FiniteTaylorJet.toFormalMultilinearSeries_coeff_of_le R le_rfl]
 
-/-- Helper for Infrastructure I.16 (Finite-order graph-jet contraction): the
+/-- Supporting fact: (Finite-order graph-jet contraction): the
 inner factors selected by the all-one composition multiply to the `m`-th
 power of the linear finite-jet coefficient norm. -/
 private theorem finiteTaylorJet_norm_formal_onesProduct
@@ -1326,7 +1325,7 @@ private theorem finiteTaylorJet_norm_formal_onesProduct
     _ = ‖P.coeff ⟨1, Nat.succ_lt_succ hm⟩‖ ^ m := by
       simp only [Finset.prod_const, Finset.card_fin, Composition.ones_length]
 
-/-- Helper for Infrastructure I.16 (Finite-order graph-jet contraction): the
+/-- Supporting fact: (Finite-order graph-jet contraction): the
 top coefficient variation through a fixed inner jet is controlled by the top
 outer variation and the `m`-th power of the inner linear coefficient. -/
 private theorem finiteTaylorJet_norm_comp_topCoeff_sub_le_outer
@@ -1357,7 +1356,7 @@ private theorem finiteTaylorJet_norm_comp_topCoeff_sub_le_outer
       rw [finiteTaylorJet_norm_formalSub_onesLength,
         finiteTaylorJet_norm_formal_onesProduct hm]
 
-/-- Helper for Infrastructure I.16 (Finite-order graph-jet contraction): a
+/-- Supporting fact: (Finite-order graph-jet contraction): a
 coefficient of a finite-jet composition is unchanged when the needed outer
 coefficients and positive inner coefficients agree through that order. -/
 private theorem finiteTaylorJet_comp_coeff_eq_of_eq_below
@@ -1397,7 +1396,7 @@ private theorem finiteTaylorJet_comp_coeff_eq_of_eq_below
     hPS ⟨c.blocksFun i, hblockBound.trans_lt n.isLt⟩
       (c.one_le_blocksFun i) hblockBound]
 
-/-- Helper for Infrastructure I.16 (Finite-order graph-jet contraction): at a
+/-- Supporting fact: (Finite-order graph-jet contraction): at a
 fixed center coordinate, the stable output of the cutoff map is Lipschitz in
 the fiber with constant `linearRate + stableFiber`. -/
 private theorem stableOutput_lipschitzWith (u : ℝ) (χ : ℝ × X → ℝ) (ρ : ℝ)
@@ -1847,7 +1846,7 @@ theorem topCoeff_contraction (r ν : ℕ) (χ : ℝ × X → ℝ) (ρ : ℝ)
           (rate lower linearRate stableCenter stableFiber centerFiber slope *
             lower⁻¹ ^ r).coe_nonneg
 
-/-- Helper for Infrastructure I.16 (Finite-order graph-jet contraction): the differentiated
+/-- Supporting fact: (Finite-order graph-jet contraction): the differentiated
 construction has coefficientwise lower-order congruence through its jet stages. -/
 private theorem differentiatedJet_coeff_congr_of_lower
     {m : ℕ} (χ : ℝ × X → ℝ) (ρ : ℝ) (L : X →L[ℝ] X)
@@ -1923,7 +1922,7 @@ private theorem differentiatedJet_coeff_congr_of_lower
 
 end JetTransform
 
-/-- A Taylor-update adapter for Infrastructure I.16 (Finite-order graph-jet
+/-- A Taylor-update adapter for Supporting infrastructure (Finite-order graph-jet
 contraction) replaces only the top coefficient of a successor witness. -/
 private theorem updateTaylorSeriesSuccTop
     {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -2024,7 +2023,7 @@ private theorem hasFDerivAt_of_isLittleO_shift
       congr 1
       ring)
 
-/-- Helper for Infrastructure I.16: a strict contraction absorbs a lower-order
+/-- Supporting fact: a strict contraction absorbs a lower-order
 remainder in a norm inequality. -/
 private theorem isLittleO_of_norm_le_mul_self_add
     {Y : Type*} [NormedAddCommGroup Y] [NormedSpace ℝ Y]
@@ -2043,7 +2042,7 @@ private theorem isLittleO_of_norm_le_mul_self_add
     nlinarith
   nlinarith [norm_nonneg (R h), norm_nonneg h]
 
-/-- Helper for Infrastructure I.16 (Finite-order graph-jet contraction): an
+/-- Supporting fact: (Finite-order graph-jet contraction): an
 eventual scalar contraction inequality transfers convergence of its additive
 error to the nonnegative residual. -/
 private theorem tendsto_zero_of_le_mul_self_add
@@ -2062,7 +2061,7 @@ private theorem tendsto_zero_of_le_mul_self_add
   apply squeeze_zero' (Filter.Eventually.of_forall hR) hupper
   simpa only [zero_div] using he.div_const (1 - q)
 
-/-- Helper for Infrastructure I.16 (Finite-order graph-jet contraction): a
+/-- Supporting fact: (Finite-order graph-jet contraction): a
 little-o estimate against the constant unit scale is convergence to zero. -/
 private theorem tendsto_zero_of_isLittleO_const_one
     {Y : Type*} [NormedAddCommGroup Y] [NormedSpace ℝ Y]
@@ -2080,7 +2079,7 @@ private theorem tendsto_zero_of_isLittleO_const_one
       _ < ε := by simp only [norm_one]; linarith
   simpa only [dist_zero_right] using hnorm
 
-/-- Helper for Infrastructure I.16: a differentiable map with uniformly
+/-- Supporting fact: a differentiable map with uniformly
 continuous Fréchet derivative has a first-order Taylor remainder controlled
 uniformly over all base points. -/
 private theorem uniformFirstOrderRemainder_of_uniformContinuous_fderiv
@@ -2132,7 +2131,7 @@ private theorem uniformFirstOrderRemainder_of_uniformContinuous_fderiv
     abel
   simpa only [hg_algebra, hA_difference, hpq, q, p, A] using hmean
 
-/-- Helper for Infrastructure I.16: a derivative-built finite-jet coefficient
+/-- Supporting fact: a derivative-built finite-jet coefficient
 is `C¹` whenever the source map has one more derivative than that coefficient. -/
 private theorem contDiffOne_ofFunction_coeff_of_succ_le
     {E : Type v} {Y : Type w}
@@ -2161,7 +2160,7 @@ private theorem contDiffOne_ofFunction_coeff_of_succ_le
     contDiff_const
   exact hconstant.smul hderivative
 
-/-- Helper for Infrastructure I.16: coefficientwise `C¹` scalar-source jets
+/-- Supporting fact: coefficientwise `C¹` scalar-source jets
 remain coefficientwise `C¹` after taking their product. -/
 private theorem contDiffOne_prod_coeff
     {E : Type v} {Y : Type w}
@@ -2183,7 +2182,7 @@ private theorem contDiffOne_prod_coeff
     (fun _ : Fin (n : ℕ) ↦ ℝ) E Y).contDiff.comp
       ((hP n).prodMk (hQ n))
 
-/-- Helper for Infrastructure I.16: coefficientwise `C¹` scalar-source jets
+/-- Supporting fact: coefficientwise `C¹` scalar-source jets
 remain coefficientwise `C¹` after composition when the intermediate and
 target spaces lie in independent universes. -/
 private theorem contDiffOne_comp_coeff_universes
@@ -2289,7 +2288,7 @@ private theorem boundedContinuousFunction_dist_le_of_pointwise
 
 /-- Coefficients of scalar-source finite compositions vary continuously in the
     base parameter, with independent universes for the scalar and stable targets.
-    This is used by the Infrastructure I.16 graph-jet contraction estimate. -/
+    This is used by the Supporting infrastructure graph-jet contraction estimate. -/
 private theorem continuousScalarCompositionCoeff
     {G : Type u} [NormedAddCommGroup G] [NormedSpace ℝ G]
     {m : ℕ} (P : ℝ → FiniteTaylorJet ℝ ℝ ℝ m)
@@ -2340,7 +2339,7 @@ private theorem continuousScalarCompositionCoeff
     (hinner i).eval continuous_const
   exact houter.eval (continuous_pi hinner_apply)
 
-/-- Helper for Infrastructure I.16 (Finite-order graph-jet contraction): finite
+/-- Supporting fact: (Finite-order graph-jet contraction): finite
     branch estimates can be assembled before taking a supremum over the base
     parameter. -/
 private theorem finiteComposition_nonOnes_uniformBound
@@ -2478,7 +2477,7 @@ private theorem finiteFamilyNonOnesUniformVanishingOn
           dsimp only [share]
           field_simp
 
-/-- Helper for Infrastructure I.16: a finite family of branch terms that are
+/-- Supporting fact: a finite family of branch terms that are
     individually little-o remains little-o after removing one distinguished
     branch. -/
 private theorem finiteComposition_nonOnes_uniformLittleO
@@ -2500,7 +2499,7 @@ private theorem finiteComposition_nonOnes_uniformLittleO
     (s := (Finset.univ : Finset α)) (fun c _ ↦ hA c)
   simpa [A] using hsum
 
-/-- Helper for Infrastructure I.16 (Finite-order graph-jet contraction): the
+/-- Supporting fact: (Finite-order graph-jet contraction): the
     inverse-reindexed increment is carried exactly by a bijective center map. -/
 private theorem inverseCenter_reindexedIncrement_spec
     {f : ℝ → ℝ} (hf : Function.Bijective f) (u t : ℝ) (ht : t ≠ 0) :
@@ -2528,7 +2527,7 @@ private theorem inverseCenter_reindexedIncrement_spec
         _ = f u := by rw [hinv]
     exact ht (by linarith [hsum])
 
-/-- Helper for Infrastructure I.16 (Finite-order graph-jet contraction): an
+/-- Supporting fact: (Finite-order graph-jet contraction): an
     output-coordinate increment pulls back to the corresponding source
     increment under a bijective center map. -/
 private theorem outputReindexedSecant_spec
@@ -2548,7 +2547,7 @@ private theorem outputReindexedSecant_spec
     ring
   · rw [hsum, hleft_uh, hleft_u]
 
-/-- Helper for Infrastructure I.16 (Finite-order graph-jet contraction): a
+/-- Supporting fact: (Finite-order graph-jet contraction): a
     nonzero source increment remains nonzero after applying an injective center
     map. -/
 private theorem outputReindexedIncrement_ne
@@ -2560,7 +2559,7 @@ private theorem outputReindexedIncrement_ne
   have hsource : u + h = u := hf.1 hforward
   exact hh (by linarith [hsource])
 
-/-- Helper for Infrastructure I.16: the all-ones composition is the outer
+/-- Supporting fact: the all-ones composition is the outer
    coefficient at its length applied to repeated first inner coefficients. -/
 private theorem finiteTaylorJet_comp_topCoeff_outer_ones_apply
     {E : Type u} {F : Type v} {G : Type w}
@@ -2589,7 +2588,7 @@ private theorem composition_order_one_eq_ones (c : Composition 1) :
   have hpos : 0 < c.length := c.length_pos_of_pos (by norm_num)
   exact Nat.le_antisymm c.length_le (by omega)
 
-/-- Helper for Infrastructure I.16: the finite jet obtained by setting only
+/-- Supporting fact: the finite jet obtained by setting only
 the top coefficient to zero. -/
 private noncomputable def truncateTopCoeff
     {E : Type u} {F : Type v}
@@ -2598,7 +2597,7 @@ private noncomputable def truncateTopCoeff
     {m : ℕ} (Q : FiniteTaylorJet ℝ E F m) : FiniteTaylorJet ℝ E F m :=
   FiniteTaylorJet.replaceTopCoeff Q 0
 
-/-- Helper for Infrastructure I.16: top truncation identifies finite jets whose
+/-- Supporting fact: top truncation identifies finite jets whose
 coefficients agree below the top order. -/
 private theorem truncateTopCoeff_eq_of_coeff_eq_below
     {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -2621,7 +2620,7 @@ private theorem truncateTopCoeff_eq_of_coeff_eq_below
     rw [FiniteTaylorJet.replaceTopCoeff_coeff_top,
       FiniteTaylorJet.replaceTopCoeff_coeff_top]
 
-/-- Helper for Infrastructure I.16: the full predecessor jet transported
+/-- Supporting fact: the full predecessor jet transported
 through a stable map and a scalar inverse parametrization. -/
 private noncomputable def nestedEndpointJet
     {X Y : Type*}
@@ -2638,7 +2637,7 @@ private noncomputable def nestedEndpointJet
         (FiniteTaylorJet.ofFunction ℝ m graph (inverse y))))
     (FiniteTaylorJet.ofFunction ℝ m inverse y)
 
-/-- Helper for Infrastructure I.16: the zero-top predecessor jet transported
+/-- Supporting fact: the zero-top predecessor jet transported
 through a stable map and a scalar inverse parametrization. -/
 private noncomputable def truncatedNestedEndpointJet
     {X Y : Type*}
@@ -2656,7 +2655,7 @@ private noncomputable def truncatedNestedEndpointJet
           (FiniteTaylorJet.ofFunction ℝ m graph (inverse y)))))
     (FiniteTaylorJet.ofFunction ℝ m inverse y)
 
-/-- Helper for Infrastructure I.16: every coefficient of the zero-top nested
+/-- Supporting fact: every coefficient of the zero-top nested
 endpoint is `C¹` when the inverse and stable map have one derivative beyond
 the predecessor order. -/
 private theorem contDiffOne_truncatedNestedEndpointJet_coeff
@@ -2743,7 +2742,7 @@ private theorem contDiffOne_truncatedNestedEndpointJet_coeff
   simpa only [truncatedNestedEndpointJet, scalarJet, flatGraphJet, graphJet,
     stableOuterJet, stableEndpointJet, inverseJet] using hfinal
 
-/-- Helper for Infrastructure I.16: the predecessor cocycle's principal
+/-- Supporting fact: the predecessor cocycle's principal
 operator is the stable fiber derivative scaled by the repeated first inverse
 coefficient. -/
 private noncomputable def nestedPrincipalOperator
@@ -2757,7 +2756,7 @@ private noncomputable def nestedPrincipalOperator
     (fderiv ℝ stable (inverse y, graph (inverse y))).comp
       (ContinuousLinearMap.inr ℝ ℝ X)
 
-/-- Helper for Infrastructure I.16: the predecessor principal operator is
+/-- Supporting fact: the predecessor principal operator is
 `C¹` when the inverse and stable map are `C²` and the graph is `C¹`. -/
 private theorem contDiffOne_nestedPrincipalOperator
     {X Y : Type*}
@@ -2815,7 +2814,7 @@ private theorem contDiffOne_nestedPrincipalOperator
   rw [hoperator_eq]
   exact (hfirst.pow m).smul hfiber
 
-/-- Helper for Infrastructure I.16: composing a product jet twice is affine in
+/-- Supporting fact: composing a product jet twice is affine in
 the top coefficient of its fiber component, with the center component fixed. -/
 private theorem finiteTaylorJet_comp_prod_truncateTop_topCoeff_affine
     {X Y : Type*}
@@ -2849,7 +2848,7 @@ private theorem finiteTaylorJet_comp_prod_truncateTop_topCoeff_affine
     FiniteTaylorJet.comp_prod_comp_topCoeff_sub_eq_inner_of_zeroTop
       hm Q C P (FiniteTaylorJet.replaceTopCoeff P 0) I hlower htop
 
-/-- Helper for Infrastructure I.16: removing the predecessor top coefficient
+/-- Supporting fact: removing the predecessor top coefficient
 from a nested endpoint leaves exactly the principal operator applied to that
 coefficient at the repeated-one vector. -/
 private theorem nestedEndpointJet_topCoeff_sub_truncated_apply
@@ -2897,7 +2896,7 @@ private theorem nestedEndpointJet_topCoeff_sub_truncated_apply
     ContinuousLinearMap.comp_apply, ContinuousLinearMap.inr_apply,
     houterFirstCoefficient, ContinuousLinearMap.smul_apply] using hsplit
 
-/-- Helper for Infrastructure I.16: the lower-order forcing is the
+/-- Supporting fact: the lower-order forcing is the
 factorial-normalized repeated-one value of the zero-top nested endpoint. -/
 private noncomputable def nestedEndpointForcing
     {X Y : Type*}
@@ -2909,7 +2908,7 @@ private noncomputable def nestedEndpointForcing
     ((truncatedNestedEndpointJet m inverse graph stable y).coeff
       ⟨m, Nat.lt_succ_self m⟩ (fun _ : Fin m ↦ (1 : ℝ)))
 
-/-- Helper for Infrastructure I.16: the zero-top nested-endpoint forcing is
+/-- Supporting fact: the zero-top nested-endpoint forcing is
 `C¹` under the predecessor-order regularity budget. -/
 private theorem contDiffOne_nestedEndpointForcing
     {X Y : Type*}
@@ -2936,7 +2935,7 @@ private theorem contDiffOne_nestedEndpointForcing
     ContinuousMultilinearMap.apply_apply] using
       (ContDiff.const_smul (m.factorial : ℝ) hevaluated)
 
-/-- Helper for Infrastructure I.16: the principal predecessor operator in
+/-- Supporting fact: the principal predecessor operator in
 source coordinates is obtained by composing its output-coordinate value with
 the forward center map. -/
 private noncomputable def sourceNestedPrincipalOperator
@@ -2947,7 +2946,7 @@ private noncomputable def sourceNestedPrincipalOperator
     (graph : ℝ → X) (stable : ℝ × X → Y) (x : ℝ) : X →L[ℝ] Y :=
   nestedPrincipalOperator m hm inverse graph stable (forward x)
 
-/-- Helper for Infrastructure I.16: the zero-top predecessor forcing in source
+/-- Supporting fact: the zero-top predecessor forcing in source
 coordinates is obtained by composing with the forward center map. -/
 private noncomputable def sourceNestedEndpointForcing
     {X Y : Type*}
@@ -2957,7 +2956,7 @@ private noncomputable def sourceNestedEndpointForcing
     (stable : ℝ × X → Y) (x : ℝ) : Y :=
   nestedEndpointForcing m inverse graph stable (forward x)
 
-/-- Helper for Infrastructure I.16: the source-coordinate principal operator
+/-- Supporting fact: the source-coordinate principal operator
 and forcing are `C¹` whenever the forward center map is `C¹`. -/
 private theorem contDiffOne_sourceNestedAffineData
     {X Y : Type*}
@@ -2978,7 +2977,7 @@ private theorem contDiffOne_sourceNestedAffineData
   · exact (contDiffOne_nestedEndpointForcing hm inverse graph stable
       hinverse hgraph hstable).comp hforward
 
-/-- Helper for Infrastructure I.16: an exact transported endpoint identity
+/-- Supporting fact: an exact transported endpoint identity
 turns the predecessor derivative value into its principal affine term plus the
 factorial-normalized zero-top forcing. -/
 private theorem iteratedDeriv_eq_nestedPrincipal_add_truncatedEndpoint
@@ -3014,7 +3013,7 @@ private theorem iteratedDeriv_eq_nestedPrincipal_add_truncatedEndpoint
     mul_inv_cancel₀ hfactorial_ne, one_smul] at hscaled
   simpa only [nestedEndpointForcing] using sub_eq_iff_eq_add.mp hscaled
 
-/-- Helper for Infrastructure I.16: inverse cancellation transports the exact
+/-- Supporting fact: inverse cancellation transports the exact
 output-coordinate predecessor value equation into source coordinates. -/
 private theorem iteratedDeriv_sourceNestedAffineEquation
     {X : Type*} [NormedAddCommGroup X] [NormedSpace ℝ X]
@@ -3034,7 +3033,7 @@ private theorem iteratedDeriv_sourceNestedAffineEquation
   simpa only [sourceNestedPrincipalOperator, sourceNestedEndpointForcing,
     hinverse_forward] using hvalue
 
-/-- Helper for Infrastructure I.16: a fixed graph equation identifies the
+/-- Supporting fact: a fixed graph equation identifies the
 twice-composed output-coordinate endpoint jet with the graph jet itself. -/
 private theorem nestedEndpointJet_eq_of_fixedEquation
     {X : Type*} [NormedAddCommGroup X] [NormedSpace ℝ X]
@@ -3080,7 +3079,7 @@ private theorem nestedEndpointJet_eq_of_fixedEquation
     exact (hfixed x).symm
   rw [nestedEndpointJet, hparamJet, hstableComp, houterComp, hfunction]
 
-/-- Helper for Infrastructure I.16: compact support is preserved by every
+/-- Supporting fact: compact support is preserved by every
 scalar iterated derivative. -/
 private theorem iteratedDeriv_hasCompactSupport
     {X : Type*} [NormedAddCommGroup X] [NormedSpace ℝ X]
@@ -3093,7 +3092,7 @@ private theorem iteratedDeriv_hasCompactSupport
       rw [iteratedDeriv_succ]
       exact ih.deriv
 
-/-- Helper for Infrastructure I.16: a continuous compactly supported normed
+/-- Supporting fact: a continuous compactly supported normed
 space-valued function has a nonnegative uniform norm bound. -/
 private theorem exists_nnreal_norm_bound_of_continuous_compactSupport
     {E X : Type*} [TopologicalSpace E] [NormedAddCommGroup X]
@@ -3109,7 +3108,7 @@ private theorem exists_nnreal_norm_bound_of_continuous_compactSupport
   rw [Real.coe_toNNReal Cnonneg hCnonneg]
   exact (hC x).trans (le_max_left _ _)
 
-/-- Helper for Infrastructure I.16: the value update in the output-coordinate
+/-- Supporting fact: the value update in the output-coordinate
 affine Picard operator. -/
 private def affinePicardValue
     {X : Type*} [NormedAddCommGroup X] [NormedSpace ℝ X]
@@ -3118,7 +3117,7 @@ private def affinePicardValue
     (y : ℝ) : X :=
   coefficient y (valueSection (inverse y)) + forcing y
 
-/-- Helper for Infrastructure I.16: the weighted derivative update associated
+/-- Supporting fact: the weighted derivative update associated
 to the output-coordinate affine Picard operator. -/
 private noncomputable def weightedAffinePicardDerivativeValue
     {X : Type*} [NormedAddCommGroup X] [NormedSpace ℝ X]
@@ -3130,7 +3129,7 @@ private noncomputable def weightedAffinePicardDerivativeValue
     deriv inverse y • coefficient y (weightedDerivative (inverse y)) +
     weight • deriv forcing y
 
-/-- Helper for Infrastructure I.16: rescaling the weighted derivative update
+/-- Supporting fact: rescaling the weighted derivative update
 recovers the ordinary chain-rule derivative of the affine Picard value. -/
 private theorem weightedAffinePicardDerivativeValue_rescale
     {X : Type*} [NormedAddCommGroup X] [NormedSpace ℝ X]
@@ -3149,7 +3148,7 @@ private theorem weightedAffinePicardDerivativeValue_rescale
     inv_mul_cancel₀ hweight, one_smul, map_smul]
   rw [mul_comm weight⁻¹ (deriv inverse y)]
 
-/-- Helper for Infrastructure I.16: two affine Picard value updates differ
+/-- Supporting fact: two affine Picard value updates differ
 only through their input sections. -/
 private theorem affinePicardValue_sub
     {X : Type*} [NormedAddCommGroup X] [NormedSpace ℝ X]
@@ -3163,7 +3162,7 @@ private theorem affinePicardValue_sub
   simp only [affinePicardValue, map_sub]
   abel
 
-/-- Helper for Infrastructure I.16: the difference of two weighted derivative
+/-- Supporting fact: the difference of two weighted derivative
 updates contains one value error and one weighted-derivative error. -/
 private theorem weightedAffinePicardDerivativeValue_sub
     {X : Type*} [NormedAddCommGroup X] [NormedSpace ℝ X]
@@ -3183,7 +3182,7 @@ private theorem weightedAffinePicardDerivativeValue_sub
   simp only [weightedAffinePicardDerivativeValue, map_sub, smul_sub]
   abel
 
-/-- Helper for Infrastructure I.16: a bounded solution of a fiberwise affine
+/-- Supporting fact: a bounded solution of a fiberwise affine
 fixed-point equation is `C¹` when the value and inverse-center derivative
 contractions are both strict. -/
 private theorem contDiffOne_of_affinePicard_fixedPoint
@@ -3685,7 +3684,7 @@ private theorem contDiffOne_of_affinePicard_fixedPoint
     rw [hderiv_eq]
     exact derivativeLimit.continuous
 
-/-- Helper for Infrastructure I.16: stable output coefficients below the top
+/-- Supporting fact: stable output coefficients below the top
 order are invariant under a top input update. -/
 private theorem stableJet_coeff_eq_of_topUpdate_below
     {X : Type u} [NormedAddCommGroup X] [NormedSpace ℝ X]
@@ -3763,7 +3762,7 @@ private theorem stableJet_coeff_eq_of_topUpdate_below
   · intro j hj_pos hj_le
     exact himageCoeff j hj_le
 
-/-- Helper for Infrastructure I.16: the top coefficient of a composition with
+/-- Supporting fact: the top coefficient of a composition with
 a top-truncated outer jet is the sum of its non-all-ones branches. -/
 private theorem finiteTaylorJet_comp_topCoeff_nonOnes_eq_truncatedOuter
     {E : Type u} {F : Type v} {G : Type w}
@@ -3780,7 +3779,7 @@ private theorem finiteTaylorJet_comp_topCoeff_nonOnes_eq_truncatedOuter
   simpa only [truncateTopCoeff] using
     FiniteTaylorJet.comp_topCoeff_nonOnes_eq_zeroTopReplacement Q P
 
-/-- Helper for Infrastructure I.16: the differentiated top coefficient of a
+/-- Supporting fact: the differentiated top coefficient of a
 top-updated graph jet is the all-ones branch plus the filtered non-ones sum. -/
 private theorem differentiatedJet_topCoeff_branch_split
     {X : Type u} [NormedAddCommGroup X] [NormedSpace ℝ X]
@@ -3818,7 +3817,7 @@ private theorem differentiatedJet_topCoeff_branch_split
         (LocalCutoff.CenterProjection.inverse χ ρ L N
           (JetTransform.topUpdatedGraphJet r hr J b).graph) v))
 
-/-- Helper for Infrastructure I.16 (Finite-order graph-jet contraction): a finite
+/-- Supporting fact: (Finite-order graph-jet contraction): a finite
 orbit iteration for an eventual affine recurrence on positive radii.
 The explicit orbit hypothesis keeps the statement valid whether the scale `c`
 shrinks or expands the radius. -/
@@ -3855,7 +3854,7 @@ private theorem scaledRecurrence_iterate_of_eventually
           ring_nf
 
 /-- A finite weighted orbit estimate for the transported increment recurrence in
-Infrastructure I.16. -/
+Supporting infrastructure. -/
 private theorem weightedRecurrence_iterate
     {α : Type*} {F E : α → ℝ} {p : ℝ} (hp : 0 ≤ p) (n : ℕ) (t : α)
     (step : α → α) (hstep : ∀ s, F s ≤ p * F (step s) + E s) :
@@ -3878,7 +3877,7 @@ private theorem weightedRecurrence_iterate
           rw [Finset.sum_range_succ, Function.iterate_succ_apply', pow_succ]
           ring_nf
 
-/-- Helper for Infrastructure I.16 (Finite-order graph-jet contraction): a
+/-- Supporting fact: (Finite-order graph-jet contraction): a
     bounded scalar recurrence with a uniform forcing term has the corresponding
     supremum bound. -/
 private theorem norm_le_of_bounded_recurrence
@@ -3943,7 +3942,7 @@ private theorem weighted_radius_recurrence_iterate
         _ = e * x * ∑ j ∈ Finset.range n, (p * c) ^ j := by
           rw [Finset.mul_sum]
 
-/-- Helper for Infrastructure I.16 (Finite-order graph-jet contraction): an
+/-- Supporting fact: (Finite-order graph-jet contraction): an
 expanding geometric orbit starting below `δ / c` has a first point in the
 annulus from `δ / c` to `δ`. -/
 private theorem geometricOrbit_reaches_annulus
@@ -3982,7 +3981,7 @@ private theorem geometricOrbit_reaches_annulus
       mul_lt_mul_of_pos_left hk_lt (zero_lt_one.trans hc)
     _ = δ := by field_simp
 
-/-- Helper for Infrastructure I.16 (Finite-order graph-jet contraction): a
+/-- Supporting fact: (Finite-order graph-jet contraction): a
 monotone radius envelope with a locally bounded affine recurrence is sublinear
 at zero when the recurrence factor times the transport factor is below one. -/
 private theorem radiusEnvelope_sublinear_of_localRecurrence
@@ -4201,7 +4200,7 @@ private theorem finiteTaylorJet_comp_prod_comp_topCoeff_sub_eq_linear_of_lower
 
 namespace JetTransform
 
-/-- Helper for Infrastructure I.16: the top coefficient of a stable jet
+/-- Supporting fact: the top coefficient of a stable jet
 composition is determined by the corresponding center-stable output derivative
 and the top coefficient of the input graph jet. -/
 private theorem stableJet_comp_topCoeff_sub_apply_eq_directStableOutput
@@ -4469,7 +4468,7 @@ private theorem hasDerivAt_of_factorial_section_secant
     f u (r.factorial : ℝ) (fun t : ℝ => (sections t u) oneTop)
     ((limitSection u) oneTop) heval_top (hsecant u)
 
-/-- Helper for Infrastructure I.16a: a sublinear radius envelope forces a
+/-- Supporting fact: a sublinear radius envelope forces a
     bounded section to converge whenever its nonzero distance is controlled by
     the normalized envelope. -/
 private theorem tendsto_boundedSection_of_radiusEnvelope
@@ -4592,7 +4591,7 @@ private theorem finiteTaylorJet_ofFunction_coeff_zero_of_notMem_tsupport
       (tsupport_iteratedFDeriv_subset (𝕜 := ℝ) (f := f) (n : ℕ) hmem)
   rw [hderiv_zero, smul_zero]
 
-/-- Helper for Infrastructure I.16: composing a top-truncated finite jet with
+/-- Supporting fact: composing a top-truncated finite jet with
 the identity has zero top coefficient. -/
 private theorem topCoeff_truncateTopCoeff_comp_identity_zero
     {X : Type*} [NormedAddCommGroup X] [NormedSpace ℝ X]
@@ -4757,7 +4756,7 @@ private theorem defectEnvelope_recurrence_of_rawRecurrence
           (mul_le_mul_of_nonneg_left hΔEnvelope hp_nonneg)
           (mul_le_mul_of_nonneg_left hs hη_nonneg)
 
-/-- Helper for Infrastructure I.16: a filtered endpoint residual gives the exact
+/-- Supporting fact: a filtered endpoint residual gives the exact
 projected affine identity in output coordinates.  The principal operator is
 evaluated at `u`, while its recursive defect is evaluated at the inverse source
 `inverse u` with increment `inverse (u + s) - inverse u`; the filtered endpoint
@@ -4801,7 +4800,7 @@ private theorem normalized_sub_factorial_smul
     field_simp [ht, hfactorial]
   simp only [smul_smul, hscalar, one_smul]
 
-/-- Helper for Infrastructure I.16: a bounded continuous scalar-source map has canonical
+/-- Supporting fact: a bounded continuous scalar-source map has canonical
 factorial-normalized multilinear secant sections.  Away from the zero increment their
 all-ones evaluation is exactly the normalized secant, while at zero the prescribed limit
 section is used. -/
@@ -4908,7 +4907,7 @@ private theorem exists_factorialNormalizedSecantSections
 
 set_option maxHeartbeats 1000000 in
 -- The successor proof assembles both high-order and order-one certificates.
-/-- Infrastructure I.16 (Finite-order graph-jet contraction): finite-order bunching
+/-- Supporting infrastructure (Finite-order graph-jet contraction): finite-order bunching
 upgrades a `C^(r - 1)` fixed graph of the cutoff graph transform to a `C^r` graph. -/
 theorem contDiff_succ_of_fixedPoint (r ν : ℕ) (χ : ℝ × X → ℝ) (ρ : ℝ)
     (L : X →L[ℝ] X) (N : ℝ × X → ℝ × X)
@@ -6638,7 +6637,7 @@ theorem contDiff_succ_of_fixedPoint (r ν : ℕ) (χ : ℝ × X → ℝ) (ρ : �
             rw [hu_zero, hus_zero]
             simp only [sub_self, zero_apply, smul_zero, norm_zero]
             exact mul_nonneg hη.le (norm_nonneg s)
-        -- Infrastructure I.16 exact frontier: after top truncation removes all
+        -- After top truncation removes all
         -- non-ones branches, the remaining all-ones branch must identify the
         -- predecessor defect at source `inverseCenter u` and transported
         -- increment `inverseCenter (u + s) - inverseCenter u`.

@@ -16,7 +16,7 @@ The chart calculation itself lives in `IndependentRadiusSecondOrderJet`; the can
 component certificates are intentionally kept as a separate proof obligation.
 -/
 
-/-- Helper for Appendix Lemma A.6: component quadratic germs and a pointwise chart
+/-- Supporting fact: component quadratic germs and a pointwise chart
 factorization determine the normalized second-gradient low germ. -/
 theorem independentRadiusSecondGradientLow_quadraticGerm_of_componentCertificate
     (θ : ℝ × ℝ × ℝ)
@@ -37,7 +37,7 @@ theorem independentRadiusSecondGradientLow_quadraticGerm_of_componentCertificate
   exact independentRadiusSecondGradientLow_quadraticGerm_of_chartFactorization θ
     hradius hmetricA hmetricC hmetricD hgradientQ hgradientU hpath
 
-/-- Helper for Appendix Lemma A.6: the canonical second-leg component coefficients
+/-- Supporting fact: the canonical second-leg component coefficients
 specialize the chart certificate to the displayed low-gradient coefficient. -/
 theorem independentRadiusSecondGradientLow_quadraticGerm_of_explicitComponentCertificates
     (θ : ℝ × ℝ × ℝ)
@@ -75,7 +75,7 @@ theorem independentRadiusSecondGradientLow_quadraticGerm_of_explicitComponentCer
     ring
   exact hcertificate.congrCoefficients hconstant hlinear hquadratic
 
-/-- Helper for Appendix Lemma A.6: the first normalized spectral and gradient
+/-- Supporting fact: the first normalized spectral and gradient
 factors have explicit quadratic germs along the independent-radius path. -/
 theorem independentRadiusFirstFactorQuadraticGerms (θ : ℝ × ℝ × ℝ) :
     HasQuadraticGerm
@@ -388,7 +388,7 @@ theorem independentRadiusFirstFactorQuadraticGerms (θ : ℝ × ℝ × ℝ) :
 separate from the raw-step identification so that the latter can be supplied
 by the mixed-expansion owner without changing this chart calculation. -/
 
-/-- Helper for Appendix Lemma A.6: the explicit component germs for the second
+/-- Supporting fact: the explicit component germs for the second
 normalized residual and gradient paths are obtained by composing the rational
 normal form with the first-leg factor germs. -/
 theorem independentRadiusSecondComponentQuadraticGerms
@@ -720,7 +720,7 @@ theorem independentRadiusSecondComponentQuadraticGerms
     · dsimp [b, P, J]
   exact ⟨hAout', hCout', hDout', hqout', huout'⟩
 
-/-- Appendix Lemma A.6: the normalized second-gradient low coordinate has the
+/-- Supporting Lemma: the normalized second-gradient low coordinate has the
 displayed quadratic germ along the independent-radius path. -/
 theorem independentRadiusSecondGradientLow_quadraticGerm
     (θ : ℝ × ℝ × ℝ) :

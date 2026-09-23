@@ -23,14 +23,14 @@ bridge needed by the cubic transverse estimate: ε³ certificates for the
 numerator and denominator derivatives give an ε³ certificate for the quotient.
 -/
 
-/-- Helper for Lemma 4.15: the quotient derivative coefficient associated with scalar numerator
+/-- Supporting fact: the quotient derivative coefficient associated with scalar numerator
 and denominator values and their transverse derivative certificates. -/
 def transverseQuotientDerivative
     (numerator denominator : ℝ) (A B : (ℝ × ℝ) →L[ℝ] ℝ) :
     (ℝ × ℝ) →L[ℝ] ℝ :=
   denominator⁻¹ • A - (numerator / denominator ^ 2) • B
 
-/-- Helper for Lemma 4.15: ε³ derivative certificates for a scalar quotient combine into an
+/-- Supporting fact: ε³ derivative certificates for a scalar quotient combine into an
 ε³ derivative certificate for the quotient itself. -/
 theorem hasFDerivAt_quotient_of_cubic_certificates
     {f q : (ℝ × ℝ) → ℝ} {z : ℝ × ℝ}
@@ -57,7 +57,7 @@ theorem hasFDerivAt_quotient_of_cubic_certificates
   rw [hfunction, hmap]
   exact hquotient
 
-/-- Helper for Lemma 4.15: the fderivative form of the cubic quotient certificate. -/
+/-- Supporting fact: the fderivative form of the cubic quotient certificate. -/
 theorem fderiv_quotient_of_cubic_certificates
     {f q : (ℝ × ℝ) → ℝ} {z : ℝ × ℝ}
     {ε : ℝ} {A B : (ℝ × ℝ) →L[ℝ] ℝ}
@@ -68,7 +68,7 @@ theorem fderiv_quotient_of_cubic_certificates
       ε ^ (3 : ℕ) • transverseQuotientDerivative (f z) (q z) A B := by
   exact (hasFDerivAt_quotient_of_cubic_certificates hnum hden hq).fderiv
 
-/-- Helper for Lemma 4.15: a frame certificate exposes the three coordinate identities needed
+/-- Supporting fact: a frame certificate exposes the three coordinate identities needed
 to identify the low gradient factor with its transverse numerator quotient. -/
 structure LowGradientTransverseFrameCertificate
     (x : ℝ × ℝ × ℝ) : Prop where
@@ -89,7 +89,7 @@ structure LowGradientTransverseFrameCertificate
       -outputMetric x.1 x.2.1 x.2.2 0 1 /
         lowGradientTransverseDenominator x
 
-/-- Helper for Lemma 4.15: pointwise frame certificates assemble into a transverse quotient
+/-- Supporting fact: pointwise frame certificates assemble into a transverse quotient
 identity for the low second-leg gradient factor. -/
 theorem lowGradientTransverseSlice_eq_quotient_of_frame
     (x : ℝ × ℝ × ℝ)
@@ -104,7 +104,7 @@ theorem lowGradientTransverseSlice_eq_quotient_of_frame
     (x.1, z.1, z.2) (hframe z).coordinate (hframe z).frame_zero
       (hframe z).frame_one
 
-/-- Lemma 4.15 adapter: frame-coordinate quotient data and ε³ derivative certificates produce
+/-- Supporting Lemma adapter: frame-coordinate quotient data and ε³ derivative certificates produce
 the concrete transverse `fderiv` factorization for the low gradient factor. -/
 theorem lowGradientTransverseFDeriv_of_frame_certificates
     {x : ℝ × ℝ × ℝ}
@@ -128,7 +128,7 @@ theorem lowGradientTransverseFDeriv_of_frame_certificates
   rw [lowGradientTransverseSlice_eq_quotient_of_frame x hframe]
   exact hquotient
 
-/-- Helper for Lemma 4.15: a norm bound on the quotient coefficient turns the concrete ε³
+/-- Supporting fact: a norm bound on the quotient coefficient turns the concrete ε³
 factorization into the pointwise transverse derivative estimate consumed by the generic bridge. -/
 theorem lowGradientTransverseFDeriv_norm_le_of_frame_certificates
     {x : ℝ × ℝ × ℝ}

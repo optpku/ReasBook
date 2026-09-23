@@ -4,7 +4,6 @@ public import ReasLib.Analysis.Calculus.LocalInvariantGraph.ExplicitContraction.
 import all ReasLib.Analysis.Calculus.LocalInvariantGraph.ExplicitContraction.MetricFiberDerivative
 public import Mathlib.Analysis.Calculus.ContDiff.FTaylorSeries
 public import Mathlib.Analysis.Calculus.FDeriv.Prod
-
 public section
 
 noncomputable section
@@ -86,7 +85,7 @@ theorem fiber_atomic_isolate_one
   rw [hdecomp, map_add]
   exact (ContinuousLinearMap.snd ℝ ℝ X).map_add _ _
 
-/-- Helper for Infrastructure I.16a: at the base point, the center-stable derivative
+/-- Supporting fact: at the base point, the center-stable derivative
 annihilates the stable-coordinate contribution to the order-one fiber atom. -/
 theorem fiber_atomic_isolate_one_at_origin
     (d : MetricGraphTransformData X)

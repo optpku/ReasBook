@@ -12,7 +12,7 @@ open scoped Topology
 
 namespace DFP.TwoLeg.Mixed
 
-/-- Helper for Appendix Lemma A.6: a quadratic germ transports across an eventual
+/-- Supporting fact: a quadratic germ transports across an eventual
 equality when the destination representative is continuous at the base point. -/
 theorem HasQuadraticGerm.congr_of_eventuallyEq
     {f g : ℝ → ℝ} {a₀ a₁ a₂ : ℝ}
@@ -27,7 +27,7 @@ theorem HasQuadraticGerm.congr_of_eventuallyEq
     filter_upwards [hfg] with r hr
     rw [hr]
 
-/-- Helper for Appendix Lemma A.6: subtracting the quadratic model turns a
+/-- Supporting fact: subtracting the quadratic model turns a
 quadratic germ into an explicit third-order remainder germ. -/
 theorem HasQuadraticGerm.to_quadraticRemainder
     {f : ℝ → ℝ} {a₀ a₁ a₂ : ℝ}
@@ -43,7 +43,7 @@ theorem HasQuadraticGerm.to_quadraticRemainder
     simp only [quadraticModel]
     ring
 
-/-- Helper for Appendix Lemma A.6: the physical amplitude inherits the quadratic
+/-- Supporting fact: the physical amplitude inherits the quadratic
 germ computed from four spectral/gradient component germs. -/
 theorem physicalAmplitudeQuadraticGerm_of_componentTransport
     {amplitude sLow sHigh gLow gHigh : ℝ → ℝ}
@@ -63,7 +63,7 @@ theorem physicalAmplitudeQuadraticGerm_of_componentTransport
     hsLow hsHigh hgLow hgHigh
   exact hfactor.congr_of_eventuallyEq hphysical.symm hamplitude
 
-/-- Helper for Appendix Lemma A.6: the component transport directly supplies the
+/-- Supporting fact: the component transport directly supplies the
 explicit third-order amplitude remainder consumed by physical-drift estimates. -/
 theorem physicalAmplitudeRemainder_of_componentTransport
     {amplitude sLow sHigh gLow gHigh : ℝ → ℝ}

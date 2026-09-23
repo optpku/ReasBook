@@ -23,7 +23,7 @@ coefficients.  It is deliberately independent of the mixed-map evaluator.
 /- The derivative identities for the quadratic model are kept as named interface facts,
    so downstream germ proofs do not unfold the model in their main argument. -/
 
-/-- Helper for Appendix Lemma A.6: the derivative of a quadratic model at the origin is
+/-- Supporting fact: the derivative of a quadratic model at the origin is
     its linear coefficient. -/
 theorem quadraticModel_deriv_at_zero (a₀ a₁ a₂ : ℝ) :
     deriv (quadraticModel a₀ a₁ a₂) 0 = a₁ := by
@@ -45,7 +45,7 @@ theorem quadraticModel_deriv_at_zero (a₀ a₁ a₂ : ℝ) :
   rw [hfunction] at hsum'
   exact hsum'.deriv
 
-/-- Helper for Appendix Lemma A.6: the second iterated derivative of a quadratic model
+/-- Supporting fact: the second iterated derivative of a quadratic model
     at the origin is twice its quadratic coefficient. -/
 theorem quadraticModel_iteratedDeriv_two_at_zero (a₀ a₁ a₂ : ℝ) :
     iteratedDeriv 2 (quadraticModel a₀ a₁ a₂) 0 = 2 * a₂ := by
@@ -82,7 +82,7 @@ theorem quadraticModel_iteratedDeriv_two_at_zero (a₀ a₁ a₂ : ℝ) :
     _ = deriv (fun r ↦ a₁ + 2 * a₂ * r) 0 := by rw [hmodelDeriv]
     _ = 2 * a₂ := hlinear.deriv
 
-/-- Appendix Lemma A.6 companion: a `C³` scalar path with prescribed value, first
+/-- Supporting Lemma companion: a `C³` scalar path with prescribed value, first
     derivative, and second iterated derivative has the corresponding quadratic germ. -/
 theorem HasQuadraticGerm.of_contDiffAt_iteratedDeriv_two
     {f : ℝ → ℝ} {a₀ a₁ a₂ : ℝ}
@@ -150,7 +150,7 @@ theorem HasQuadraticGerm.of_contDiffAt_iteratedDeriv_two
     exact EqModPow.of_isBigO hbound'
   exact ⟨hregular.continuousAt, hEq⟩
 
-/-- Helper for Appendix Lemma A.6: under `C³` regularity, a quadratic germ exposes
+/-- Supporting fact: under `C³` regularity, a quadratic germ exposes
     its value, first derivative, and second iterated derivative at the base point. -/
 theorem HasQuadraticGerm.iteratedDeriv_coefficients_of_contDiffAt
     {f : ℝ → ℝ} {a₀ a₁ a₂ : ℝ}

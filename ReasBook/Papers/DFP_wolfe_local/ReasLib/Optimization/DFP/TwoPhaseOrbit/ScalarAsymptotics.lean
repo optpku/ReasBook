@@ -7,7 +7,6 @@ public import ReasLib.Optimization.DFP.TwoPhaseOrbit.CenterTail
 public import ReasLib.Optimization.DFP.TwoPhaseOrbit.CenterConvergence
 public import ReasLib.Optimization.DFP.TwoPhaseOrbit.FrameAngleDivergence
 public import ReasLib.Optimization.DFP.TwoPhaseOrbit.EndpointClusterSet
-
 public section
 
 open Filter
@@ -15,7 +14,8 @@ open scoped Asymptotics Topology
 
 namespace DFP.TwoPhaseOrbit
 
-/-- A sufficiently small invariant slow-curve orbit has the canonical scale,
+/-- Lemma 8 (`lem:scalar-asymptotics`). A sufficiently small invariant slow-curve
+orbit has the canonical scale,
 amplitude, center, winding, and endpoint cluster-set asymptotics. -/
 theorem slowCurveScalarAsymptotics (p h : ℝ → ℝ)
     (h_invariant :

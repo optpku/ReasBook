@@ -11,7 +11,6 @@ public import ReasLib.Analysis.Calculus.LocalInvariantGraph.ExplicitContraction.
 public import ReasLib.Analysis.Calculus.LocalCutoff.GraphJetTransform.HolonomicTopSection
 public import Mathlib.Analysis.Normed.Module.Multilinear.Curry
 public import Mathlib.Analysis.Normed.Operator.Bilinear
-
 public section
 
 noncomputable section
@@ -110,7 +109,7 @@ theorem topSectionWitness_at_of_core
   obtain ⟨v, hv, hderiv⟩ := hcore (r - 1) hr_lt hprev
   exact topSectionWitness_of_core (ζ : ℝ → X) hr v hv hderiv
 
-/-- Helper for Infrastructure I.16a: an orderwise family of fixed-graph jet contexts supplies
+/-- Supporting fact: an orderwise family of fixed-graph jet contexts supplies
 the continuous derivative-value sections required by the metric top-section core. -/
 theorem metricTopSectionCore_of_fixedGraphJetContexts
     [CompleteSpace X]

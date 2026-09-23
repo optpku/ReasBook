@@ -3,7 +3,6 @@ module
 public import Mathlib.Topology.MetricSpace.Contracting
 public import Mathlib.Analysis.Normed.Group.Bounded
 public import Mathlib.Analysis.Normed.Field.Basic
-
 public section
 
 open Filter
@@ -13,7 +12,7 @@ universe u v w
 
 namespace LocalCutoff.GraphTransform.UniformRemainder
 
-/-- Infrastructure I.16a: a residual decomposition with independent uniform bounds
+/-- Supporting infrastructure: a residual decomposition with independent uniform bounds
 on its principal and remainder terms. -/
 structure ResidualNormCertificate (α : Type u) (Y : Type v)
     [NormedAddCommGroup Y] where
@@ -26,7 +25,7 @@ structure ResidualNormCertificate (α : Type u) (Y : Type v)
   principal_norm_le : ∀ x, ‖principal x‖ ≤ principalBound
   remainder_norm_le : ∀ x, ‖remainder x‖ ≤ remainderBound
 
-/-- Infrastructure I.16a: the residual norm is bounded by the sum of the two
+/-- Supporting infrastructure: the residual norm is bounded by the sum of the two
 certificate bounds. -/
 theorem ResidualNormCertificate.residual_norm_le
     {α : Type u} {Y : Type v} [NormedAddCommGroup Y]
@@ -37,7 +36,7 @@ theorem ResidualNormCertificate.residual_norm_le
   exact (norm_add_le _ _).trans
     (add_le_add (certificate.principal_norm_le x) (certificate.remainder_norm_le x))
 
-/-- Infrastructure I.16a: a finite family of branchwise bounds gives a bound
+/-- Supporting infrastructure: a finite family of branchwise bounds gives a bound
 for the non-distinguished branch sum at one parameter. -/
 theorem finiteNonDistinguishedSum_norm_le
     {α : Type u} {Y : Type v} [Fintype α] [DecidableEq α]
@@ -58,7 +57,7 @@ theorem finiteNonDistinguishedSum_norm_le
       · simp [hcd]
       · simpa [hcd] using hbranch c hcd
 
-/-- Infrastructure I.16a: finite branchwise compact-uniform bounds admit one
+/-- Supporting infrastructure: finite branchwise compact-uniform bounds admit one
 common radius and a uniform bound for the non-distinguished branch sum. -/
 theorem finiteNonDistinguishedSum_uniformBoundOn
     {α : Type u} {Θ : Type v} {Y : Type w}

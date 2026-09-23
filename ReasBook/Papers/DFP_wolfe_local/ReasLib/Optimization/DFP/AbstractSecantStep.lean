@@ -1,7 +1,6 @@
 module
 
 public import ReasLib.Optimization.DFP.InverseUpdate
-
 public section
 
 noncomputable section
@@ -105,7 +104,8 @@ theorem nextGradient_def {n : Type u} [Fintype n] (z : AbstractSecantStep n) :
   -- The next gradient is defined by adding the secant change.
   rfl
 
-/-- Writing `v = H *ᵥ g`, `δ = g ⬝ᵥ v`, `w = A *ᵥ v`, and `β = v ⬝ᵥ w`,
+/-- Proposition 4 (`prop:one-step`), gradient formula.
+Writing `v = H *ᵥ g`, `δ = g ⬝ᵥ v`, `w = A *ᵥ v`, and `β = v ⬝ᵥ w`,
 the next gradient is `g - (τ * δ / β) • w`. -/
 theorem nextGradient_formula {n : Type u} [Fintype n] (z : AbstractSecantStep n) :
     let v := z.preconditionedGradient

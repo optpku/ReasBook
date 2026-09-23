@@ -7,7 +7,6 @@ public import ReasLib.Analysis.Calculus.LocalInvariantGraph.ExplicitContraction.
 public import ReasLib.Analysis.Calculus.LocalInvariantGraph.MetricInverse
 public import ReasLib.LinearAlgebra.SpectralRadius.ContractingNorm
 public import Mathlib.Analysis.Normed.Lp.WithLp
-
 public section
 
 open Filter
@@ -67,7 +66,7 @@ private theorem renormedNormCore {X : Type u} [NormedAddCommGroup X]
   center-stable linear part.  These two small interface lemmas expose its zero jet without
   unfolding any cutoff or graph-transform construction. -/
 
-/-- Helper for Infrastructure I.16a: subtracting the center-stable linearization from a map
+/-- Supporting fact: subtracting the center-stable linearization from a map
     fixing the origin gives a remainder that vanishes at the origin. -/
 theorem centerStable_remainder_zero {X : Type u} [NormedAddCommGroup X]
     [NormedSpace ℝ X] (F : ℝ × X → ℝ × X) (L : X →L[ℝ] X)
@@ -80,7 +79,7 @@ theorem centerStable_remainder_zero {X : Type u} [NormedAddCommGroup X]
   simp only [LocalCutoff.centerStable_apply, map_zero, sub_self]
   exact (Prod.mk_zero_zero : ((0, 0) : ℝ × X) = 0).symm
 
-/-- Helper for Infrastructure I.16a: the nonlinear remainder has zero derivative when the
+/-- Supporting fact: the nonlinear remainder has zero derivative when the
     derivative of the original map is the center-stable linearization. -/
 theorem centerStable_remainder_hasFDerivAt_zero {X : Type u}
     [NormedAddCommGroup X] [NormedSpace ℝ X]
@@ -107,7 +106,7 @@ theorem centerStable_remainder_hasFDerivAt_zero {X : Type u}
 /- The local smoothness of the original map passes directly to its nonlinear
   remainder after subtracting the fixed linear center-stable block. -/
 
-/-- Helper for Infrastructure I.16a: the nonlinear remainder inherits the
+/-- Supporting fact: the nonlinear remainder inherits the
     finite smoothness of the original map at the fixed point. -/
 theorem centerStable_remainder_contDiffAt {X : Type u}
     [NormedAddCommGroup X] [NormedSpace ℝ X] (ν : ℕ)
@@ -129,7 +128,7 @@ theorem centerStable_remainder_split {X : Type u} [NormedAddCommGroup X]
   funext x
   abel
 
-/-- Helper for Infrastructure I.16a: finite smoothness at the origin supplies a
+/-- Supporting fact: finite smoothness at the origin supplies a
     neighborhood on which the nonlinear remainder is `ContDiffOn`. -/
 theorem exists_remainder_contDiffOn_nhds {X : Type u}
     [NormedAddCommGroup X] [NormedSpace ℝ X] (ν : ℕ)
@@ -143,7 +142,7 @@ theorem exists_remainder_contDiffOn_nhds {X : Type u}
   refine ⟨U, hU, ?_⟩
   exact hF_on.sub (LocalCutoff.centerStable L).contDiff.contDiffOn
 
-/-- Helper for Infrastructure I.16a: a smooth zero-jet germ admits a compactly supported
+/-- Supporting fact: a smooth zero-jet germ admits a compactly supported
     smooth representative with any prescribed positive Lipschitz bound and the same zero
     derivative. -/
 theorem cutoffRemainderWithZeroDerivative {X : Type u}
@@ -166,7 +165,7 @@ theorem cutoffRemainderWithZeroDerivative {X : Type u}
     hN_deriv.congr_of_eventuallyEq hR_germ
   exact ⟨R, hR_smooth, hR_support, hR_zero, hR_lipschitz, hR_deriv, hR_germ⟩
 
-/-- Helper for Infrastructure I.16a: a continuous compactly supported product-valued map
+/-- Supporting fact: a continuous compactly supported product-valued map
     has a uniform nonnegative bound on its stable coordinate. -/
 theorem exists_stableCoordinateBound {X : Type u} [NormedAddCommGroup X]
     [NormedSpace ℝ X] (R : ℝ × X → ℝ × X) (hR_cont : Continuous R)
@@ -198,7 +197,7 @@ theorem centerStable_remainder_germ {X : Type u} [NormedAddCommGroup X]
   abel
 
 /-- A remainder germ remains a map germ after composition with a graph tending to the fixed point
-    (Infrastructure I.16a). -/
+    (Supporting infrastructure). -/
 theorem centerStable_remainder_germ_comp_graph {X : Type u} [NormedAddCommGroup X]
     [NormedSpace ℝ X] (F : ℝ × X → ℝ × X) (L : X →L[ℝ] X)
     (R : ℝ × X → ℝ × X) (ζ : ℝ → X)
@@ -217,7 +216,7 @@ theorem centerStable_remainder_germ_comp_graph {X : Type u} [NormedAddCommGroup 
 /- The metric certificate constructor below keeps the large structure literal and all inverse
   estimates behind one owner-facing adapter. -/
 
-/-- Helper for Infrastructure I.16a (Finite-smooth invariant graph under an explicit stable contraction):
+/-- Supporting fact: (Finite-smooth invariant graph under an explicit stable contraction):
     assemble a metric graph-transform certificate from its quantitative hypotheses. -/
 def metricGraphTransformData_of_cutoff
     {X : Type u} [NormedAddCommGroup X] [NormedSpace ℝ X]
@@ -488,7 +487,8 @@ theorem existsOfEquivalentContractingSeminorm {X : Type u} [NormedAddCommGroup X
     simpa [Fp, Function.comp_apply, hP_apply, hP_symm_apply, he_apply,
       he_symm_apply] using htransport
 
-/-- A finite-dimensional center-stable map whose stable derivative has complex spectral
+/-- Lemma 5 (`lem:graph-transform`). A finite-dimensional center-stable map whose
+stable derivative has complex spectral
 radius below one admits a finite-smooth local forward-invariant graph tangent to the center
 axis. -/
 theorem existsOfComplexSpectralRadiusLtOne {X : Type u} [NormedAddCommGroup X]

@@ -8,7 +8,6 @@ public import ReasLib.Optimization.DFP.TwoPhaseControls.StateMap.Linearization
 public import ReasLib.Optimization.DFP.TwoPhaseControls.TransverseJet
 public import Mathlib.Analysis.Calculus.IteratedDeriv.FaaDiBruno
 import all ReasLib.Optimization.DFP.TwoPhaseControls.StateMap
-
 public section
 
 open Filter
@@ -935,7 +934,8 @@ private theorem slowCurveInvariantGraph_coefficientEquations
       · linarith
       · linarith
 
-/-- The canonical two-leg state map has a locally forward-invariant `C^7` graph
+/-- Lemma 6 (`lem:center-manifold`). The canonical two-leg state map has a locally
+forward-invariant `C^7` graph
 through `(0, 2, 1)`, tangent to the signed-scale axis, with the displayed
 transverse jets and signed-scale recurrence. -/
 theorem exists_localForwardInvariantSlowCurve :

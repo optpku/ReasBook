@@ -2,7 +2,6 @@ module
 
 public import ReasLib.Analysis.Calculus.LocalInvariantGraph.ExplicitContraction.MetricFiberDerivative
 public import ReasLib.Analysis.Calculus.LocalCutoff.GraphJetTransform.SectionContraction
-
 public section
 
 noncomputable section
@@ -27,53 +26,53 @@ No differentiability of the fixed Lipschitz graph is assumed.  The derivative of
 remainder is evaluated on a candidate direction `(1, b u)` instead.
 -/
 
-/-- Helper for Infrastructure I.16a: bounded continuous candidate slope fields whose uniform
+/-- Supporting fact: bounded continuous candidate slope fields whose uniform
 norm is at most the graph-cone slope. -/
 abbrev MetricSlopeSection (d : MetricGraphTransformData X) :=
   {b : BoundedContinuousFunction ℝ X // ‖b‖ ≤ (d.slope : ℝ)}
 
-/-- Helper for Infrastructure I.16a: the uniform slope constraint cuts out a closed subset of
+/-- Supporting fact: the uniform slope constraint cuts out a closed subset of
 the bounded continuous section space. -/
 theorem isClosed_metricSlopeSection (d : MetricGraphTransformData X) :
     IsClosed {b : BoundedContinuousFunction ℝ X | ‖b‖ ≤ (d.slope : ℝ)} := by
   exact isClosed_le continuous_norm continuous_const
 
-/-- Helper for Infrastructure I.16a: the zero bounded section satisfies every nonnegative
+/-- Supporting fact: the zero bounded section satisfies every nonnegative
 slope bound. -/
 theorem zero_mem_metricSlopeSection (d : MetricGraphTransformData X) :
     ‖(0 : BoundedContinuousFunction ℝ X)‖ ≤ (d.slope : ℝ) := by
   simpa only [norm_zero] using d.slope.coe_nonneg
 
-/-- Helper for Infrastructure I.16a: the canonical zero candidate slope field. -/
+/-- Supporting fact: the canonical zero candidate slope field. -/
 def zeroMetricSlopeSection (d : MetricGraphTransformData X) : MetricSlopeSection d :=
   ⟨0, zero_mem_metricSlopeSection d⟩
 
-/-- Helper for Infrastructure I.16a: every metric slope-section ball is inhabited by zero. -/
+/-- Supporting fact: every metric slope-section ball is inhabited by zero. -/
 instance instNonemptyMetricSlopeSection (d : MetricGraphTransformData X) :
     Nonempty (MetricSlopeSection d) :=
   ⟨zeroMetricSlopeSection d⟩
 
-/-- Helper for Infrastructure I.16a: the closed slope-section ball is complete whenever the
+/-- Supporting fact: the closed slope-section ball is complete whenever the
 stable target space is complete. -/
 instance instCompleteSpaceMetricSlopeSection [CompleteSpace X]
     (d : MetricGraphTransformData X) : CompleteSpace (MetricSlopeSection d) := by
   exact (isClosed_metricSlopeSection d).isComplete.completeSpace_coe
 
-/-- Helper for Infrastructure I.16a: a slope section obeys its prescribed norm bound at every
+/-- Supporting fact: a slope section obeys its prescribed norm bound at every
 center parameter. -/
 theorem MetricSlopeSection.norm_apply_le
     {d : MetricGraphTransformData X} (b : MetricSlopeSection d) (u : ℝ) :
     ‖b.1 u‖ ≤ (d.slope : ℝ) := by
   exact (BoundedContinuousFunction.norm_coe_le_norm b.1 u).trans b.2
 
-/-- Helper for Infrastructure I.16a: the translated secant value of a Lipschitz graph, with
+/-- Supporting fact: the translated secant value of a Lipschitz graph, with
 the zero increment assigned the zero vector. -/
 def metricTranslatedSecantValue
     {d : MetricGraphTransformData X}
     (zeta : SmallLipschitzGraph X d.radius d.slope) (t x : ℝ) : X :=
   if t = 0 then 0 else t⁻¹ • (zeta (x + t) - zeta x)
 
-/-- Helper for Infrastructure I.16a: for each fixed increment, the translated secant varies
+/-- Supporting fact: for each fixed increment, the translated secant varies
 continuously with its base point. -/
 theorem continuous_metricTranslatedSecantValue
     {d : MetricGraphTransformData X}
@@ -100,7 +99,7 @@ theorem continuous_metricTranslatedSecantValue
     exact hscale.smul
       ((zeta.1.continuous.comp hshift).sub zeta.1.continuous)
 
-/-- Helper for Infrastructure I.16a: every translated secant of a graph in the Lipschitz cone
+/-- Supporting fact: every translated secant of a graph in the Lipschitz cone
 has pointwise norm at most the cone slope. -/
 theorem norm_metricTranslatedSecantValue_le
     {d : MetricGraphTransformData X}
@@ -122,7 +121,7 @@ theorem norm_metricTranslatedSecantValue_le
       _ = (d.slope : ℝ) := by
         field_simp
 
-/-- Helper for Infrastructure I.16a: the translated secant bundled as a bounded continuous
+/-- Supporting fact: the translated secant bundled as a bounded continuous
 section with the sharp uniform slope bound. -/
 def metricTranslatedSecantBoundedSection
     {d : MetricGraphTransformData X}
@@ -134,7 +133,7 @@ def metricTranslatedSecantBoundedSection
     d.slope
     (norm_metricTranslatedSecantValue_le zeta t)
 
-/-- Helper for Infrastructure I.16a: evaluation of the bundled translated secant is the
+/-- Supporting fact: evaluation of the bundled translated secant is the
 pointwise translated secant value. -/
 theorem metricTranslatedSecantBoundedSection_apply
     {d : MetricGraphTransformData X}
@@ -143,7 +142,7 @@ theorem metricTranslatedSecantBoundedSection_apply
       metricTranslatedSecantValue zeta t x := by
   rfl
 
-/-- Helper for Infrastructure I.16a: the bundled translated secant has uniform norm at most
+/-- Supporting fact: the bundled translated secant has uniform norm at most
 the graph-cone slope. -/
 theorem norm_metricTranslatedSecantBoundedSection_le
     {d : MetricGraphTransformData X}
@@ -153,7 +152,7 @@ theorem norm_metricTranslatedSecantBoundedSection_le
     (continuous_metricTranslatedSecantValue zeta t) d.slope.coe_nonneg
     (norm_metricTranslatedSecantValue_le zeta t)
 
-/-- Helper for Infrastructure I.16a: every translated secant is a member of the closed
+/-- Supporting fact: every translated secant is a member of the closed
 slope-section ball, including the zero-increment section. -/
 def metricTranslatedSecantSection
     {d : MetricGraphTransformData X}
@@ -161,7 +160,7 @@ def metricTranslatedSecantSection
   ⟨metricTranslatedSecantBoundedSection zeta t,
     norm_metricTranslatedSecantBoundedSection_le zeta t⟩
 
-/-- Helper for Infrastructure I.16a: the derivative of the smooth remainder, restricted to
+/-- Supporting fact: the derivative of the smooth remainder, restricted to
 the fixed graph, is continuous as a continuous-linear-map-valued function. -/
 theorem continuous_metricOrderOneRDerivative
     (d : MetricGraphTransformData X)
@@ -174,21 +173,21 @@ theorem continuous_metricOrderOneRDerivative
     continuous_id.prodMk zeta.1.continuous
   exact hR_fderiv.comp hgraph
 
-/-- Helper for Infrastructure I.16a: the center-coordinate first-slot derivative of the
+/-- Supporting fact: the center-coordinate first-slot derivative of the
 remainder along the graph. -/
 def metricOrderOneCenterSource
     (d : MetricGraphTransformData X)
     (zeta : SmallLipschitzGraph X d.radius d.slope) (u : ℝ) : ℝ :=
   ((fderiv ℝ d.R (u, (zeta : ℝ → X) u)) (1, 0)).1
 
-/-- Helper for Infrastructure I.16a: the stable-coordinate first-slot derivative of the
+/-- Supporting fact: the stable-coordinate first-slot derivative of the
 remainder along the graph. -/
 def metricOrderOneStableSource
     (d : MetricGraphTransformData X)
     (zeta : SmallLipschitzGraph X d.radius d.slope) (u : ℝ) : X :=
   ((fderiv ℝ d.R (u, (zeta : ℝ → X) u)) (1, 0)).2
 
-/-- Helper for Infrastructure I.16a: the center first-slot derivative varies continuously
+/-- Supporting fact: the center first-slot derivative varies continuously
 along a Lipschitz graph. -/
 theorem continuous_metricOrderOneCenterSource
     (d : MetricGraphTransformData X)
@@ -198,7 +197,7 @@ theorem continuous_metricOrderOneCenterSource
     (continuous_const : Continuous (fun _ : ℝ => ((1 : ℝ), (0 : X))))
   exact continuous_fst.comp happ
 
-/-- Helper for Infrastructure I.16a: the stable first-slot derivative varies continuously
+/-- Supporting fact: the stable first-slot derivative varies continuously
 along a Lipschitz graph. -/
 theorem continuous_metricOrderOneStableSource
     (d : MetricGraphTransformData X)
@@ -208,7 +207,7 @@ theorem continuous_metricOrderOneStableSource
     (continuous_const : Continuous (fun _ : ℝ => ((1 : ℝ), (0 : X))))
   exact continuous_snd.comp happ
 
-/-- Helper for Infrastructure I.16a: the scalar derivative of the center change in a
+/-- Supporting fact: the scalar derivative of the center change in a
 candidate graph direction. -/
 def metricOrderOneDenominator
     (d : MetricGraphTransformData X)
@@ -216,7 +215,7 @@ def metricOrderOneDenominator
     (b : MetricSlopeSection d) (u : ℝ) : ℝ :=
   1 + metricOrderOneCenterSource d zeta u + derivCenterFiber d zeta u (b.1 u)
 
-/-- Helper for Infrastructure I.16a: the derivative of the stable output in a candidate
+/-- Supporting fact: the derivative of the stable output in a candidate
 graph direction. -/
 def metricOrderOneNumerator
     (d : MetricGraphTransformData X)
@@ -224,7 +223,7 @@ def metricOrderOneNumerator
     (b : MetricSlopeSection d) (u : ℝ) : X :=
   d.L (b.1 u) + metricOrderOneStableSource d zeta u + derivFiber d zeta u (b.1 u)
 
-/-- Helper for Infrastructure I.16a: the split denominator equals the full derivative of the
+/-- Supporting fact: the split denominator equals the full derivative of the
 center component on the candidate direction `(1, b u)`. -/
 theorem metricOrderOneDenominator_eq
     (d : MetricGraphTransformData X)
@@ -241,7 +240,7 @@ theorem metricOrderOneDenominator_eq
   rw [Prod.fst_add]
   rw [add_assoc]
 
-/-- Helper for Infrastructure I.16a: the split numerator equals the linear stable term plus
+/-- Supporting fact: the split numerator equals the linear stable term plus
 the full remainder derivative on the candidate direction `(1, b u)`. -/
 theorem metricOrderOneNumerator_eq
     (d : MetricGraphTransformData X)
@@ -259,7 +258,7 @@ theorem metricOrderOneNumerator_eq
   rw [Prod.snd_add]
   rw [add_assoc]
 
-/-- Helper for Infrastructure I.16a: every candidate direction `(1, b u)` has product norm at
+/-- Supporting fact: every candidate direction `(1, b u)` has product norm at
 most one because the cone slope is at most one. -/
 theorem norm_metricOrderOneDirection_le_one
     (d : MetricGraphTransformData X)
@@ -273,7 +272,7 @@ theorem norm_metricOrderOneDirection_le_one
   rw [Prod.norm_def]
   exact max_le hone (hb_slope.trans hslope_one)
 
-/-- Helper for Infrastructure I.16a: the derivative of the Lipschitz remainder has the
+/-- Supporting fact: the derivative of the Lipschitz remainder has the
 corresponding operator bound on every direction. -/
 theorem norm_metricOrderOneRDerivative_apply_le
     (d : MetricGraphTransformData X) (p : ℝ × X) (w : ℝ × X) :
@@ -286,7 +285,7 @@ theorem norm_metricOrderOneRDerivative_apply_le
     _ ≤ (d.epsilon : ℝ) * ‖w‖ :=
       mul_le_mul_of_nonneg_right hfderiv (norm_nonneg _)
 
-/-- Helper for Infrastructure I.16a: the remainder derivative on a candidate slope direction
+/-- Supporting fact: the remainder derivative on a candidate slope direction
 has norm at most `epsilon`. -/
 theorem norm_metricOrderOneRDirection_le
     (d : MetricGraphTransformData X)
@@ -303,7 +302,7 @@ theorem norm_metricOrderOneRDirection_le
         d.epsilon.coe_nonneg
     _ = (d.epsilon : ℝ) := mul_one _
 
-/-- Helper for Infrastructure I.16a: the order-one scalar denominator is bounded away from
+/-- Supporting fact: the order-one scalar denominator is bounded away from
 zero by the certified center lower bound. -/
 theorem metricOrderOneDenominator_lower
     (d : MetricGraphTransformData X)
@@ -330,7 +329,7 @@ theorem metricOrderOneDenominator_lower
   rw [abs_of_nonneg hden_nonneg]
   exact hden_lower
 
-/-- Helper for Infrastructure I.16a: the order-one scalar denominator never vanishes on the
+/-- Supporting fact: the order-one scalar denominator never vanishes on the
 closed slope ball. -/
 theorem metricOrderOneDenominator_ne_zero
     (d : MetricGraphTransformData X)
@@ -343,7 +342,7 @@ theorem metricOrderOneDenominator_ne_zero
     hlower_pos.trans_le (metricOrderOneDenominator_lower d zeta b u)
   exact abs_pos.mp habs_pos
 
-/-- Helper for Infrastructure I.16a: the stable numerator stays within the sharp graph-cone
+/-- Supporting fact: the stable numerator stays within the sharp graph-cone
 bound `linearRate * slope + epsilon`. -/
 theorem norm_metricOrderOneNumerator_le
     (d : MetricGraphTransformData X)
@@ -366,7 +365,7 @@ theorem norm_metricOrderOneNumerator_le
   rw [metricOrderOneNumerator_eq]
   exact (norm_add_le _ _).trans (add_le_add hlinear hremainder)
 
-/-- Helper for Infrastructure I.16a: the denominator varies continuously with the source
+/-- Supporting fact: the denominator varies continuously with the source
 center for every bounded continuous candidate slope field. -/
 theorem continuous_metricOrderOneDenominator
     (d : MetricGraphTransformData X)
@@ -376,7 +375,7 @@ theorem continuous_metricOrderOneDenominator
   have hfiber := (continuous_derivCenterFiber d zeta).clm_apply b.1.continuous
   exact (continuous_const.add (continuous_metricOrderOneCenterSource d zeta)).add hfiber
 
-/-- Helper for Infrastructure I.16a: the numerator varies continuously with the source
+/-- Supporting fact: the numerator varies continuously with the source
 center for every bounded continuous candidate slope field. -/
 theorem continuous_metricOrderOneNumerator
     (d : MetricGraphTransformData X)
@@ -388,7 +387,7 @@ theorem continuous_metricOrderOneNumerator
   have hfiber := (continuous_derivFiber d zeta).clm_apply b.1.continuous
   exact (hlinear.add (continuous_metricOrderOneStableSource d zeta)).add hfiber
 
-/-- Helper for Infrastructure I.16a: the unbundled order-one slope transform evaluated in
+/-- Supporting fact: the unbundled order-one slope transform evaluated in
 output center coordinates. -/
 def metricOrderOneSlopeValue
     (d : MetricGraphTransformData X)
@@ -397,7 +396,7 @@ def metricOrderOneSlopeValue
   let u := d.inverseCenter zeta y
   (metricOrderOneDenominator d zeta b u)⁻¹ • metricOrderOneNumerator d zeta b u
 
-/-- Helper for Infrastructure I.16a: the unbundled slope transform is continuous in the
+/-- Supporting fact: the unbundled slope transform is continuous in the
 output center coordinate. -/
 theorem continuous_metricOrderOneSlopeValue
     (d : MetricGraphTransformData X)
@@ -418,7 +417,7 @@ theorem continuous_metricOrderOneSlopeValue
     (continuous_metricOrderOneNumerator d zeta b).comp hinverse
   exact (hden.inv₀ hden_ne).smul hnum
 
-/-- Helper for Infrastructure I.16a: inversion of the scalar denominator costs at most the
+/-- Supporting fact: inversion of the scalar denominator costs at most the
 reciprocal certified lower bound. -/
 theorem abs_inv_metricOrderOneDenominator_le
     (d : MetricGraphTransformData X)
@@ -433,7 +432,7 @@ theorem abs_inv_metricOrderOneDenominator_le
   rw [abs_inv]
   exact (inv_le_inv₀ hden_pos hlower_pos).2 hden
 
-/-- Helper for Infrastructure I.16a: the unbundled slope transform remains in the prescribed
+/-- Supporting fact: the unbundled slope transform remains in the prescribed
 uniform slope ball. -/
 theorem norm_metricOrderOneSlopeValue_le
     (d : MetricGraphTransformData X)
@@ -460,7 +459,7 @@ theorem norm_metricOrderOneSlopeValue_le
         (d.lower : ℝ)⁻¹ := by ring
     _ ≤ (d.slope : ℝ) := hslope
 
-/-- Helper for Infrastructure I.16a: the order-one slope value bundled as a bounded continuous
+/-- Supporting fact: the order-one slope value bundled as a bounded continuous
 section. -/
 def metricOrderOneSlopeBoundedSection
     (d : MetricGraphTransformData X)
@@ -472,7 +471,7 @@ def metricOrderOneSlopeBoundedSection
     d.slope
     (norm_metricOrderOneSlopeValue_le d zeta b)
 
-/-- Helper for Infrastructure I.16a: the bundled slope transform evaluates by the explicit
+/-- Supporting fact: the bundled slope transform evaluates by the explicit
 inverse-center denominator/numerator formula. -/
 theorem metricOrderOneSlopeBoundedSection_apply
     (d : MetricGraphTransformData X)
@@ -482,7 +481,7 @@ theorem metricOrderOneSlopeBoundedSection_apply
       metricOrderOneSlopeValue d zeta b y := by
   rfl
 
-/-- Helper for Infrastructure I.16a: the bundled slope transform obeys the sharp uniform
+/-- Supporting fact: the bundled slope transform obeys the sharp uniform
 slope bound. -/
 theorem norm_metricOrderOneSlopeBoundedSection_le
     (d : MetricGraphTransformData X)
@@ -493,7 +492,7 @@ theorem norm_metricOrderOneSlopeBoundedSection_le
     (continuous_metricOrderOneSlopeValue d zeta b) d.slope.coe_nonneg
     (norm_metricOrderOneSlopeValue_le d zeta b)
 
-/-- Helper for Infrastructure I.16a: the order-one slope transform is a self-map of the
+/-- Supporting fact: the order-one slope transform is a self-map of the
 closed slope-section ball. -/
 def metricOrderOneSlopeOperator
     (d : MetricGraphTransformData X)
@@ -502,7 +501,7 @@ def metricOrderOneSlopeOperator
   fun b => ⟨metricOrderOneSlopeBoundedSection d zeta b,
     norm_metricOrderOneSlopeBoundedSection_le d zeta b⟩
 
-/-- Helper for Infrastructure I.16a: evaluation of the closed-ball slope operator is the
+/-- Supporting fact: evaluation of the closed-ball slope operator is the
 explicit slope-transform value. -/
 theorem metricOrderOneSlopeOperator_apply
     (d : MetricGraphTransformData X)
@@ -512,7 +511,7 @@ theorem metricOrderOneSlopeOperator_apply
       metricOrderOneSlopeValue d zeta b y := by
   rfl
 
-/-- Helper for Infrastructure I.16a: subtracting two candidate denominators cancels the
+/-- Supporting fact: subtracting two candidate denominators cancels the
 first-slot contribution and leaves only the center fiber derivative on the slope difference. -/
 theorem metricOrderOneDenominator_sub_eq
     (d : MetricGraphTransformData X)
@@ -523,7 +522,7 @@ theorem metricOrderOneDenominator_sub_eq
   rw [metricOrderOneDenominator, metricOrderOneDenominator, map_sub]
   module
 
-/-- Helper for Infrastructure I.16a: subtracting two candidate numerators cancels the
+/-- Supporting fact: subtracting two candidate numerators cancels the
 first-slot contribution and leaves `L + derivFiber` on the slope difference. -/
 theorem metricOrderOneNumerator_sub_eq
     (d : MetricGraphTransformData X)
@@ -534,7 +533,7 @@ theorem metricOrderOneNumerator_sub_eq
   rw [metricOrderOneNumerator, metricOrderOneNumerator, map_sub, map_sub]
   module
 
-/-- Helper for Infrastructure I.16a: candidate denominators vary by at most `epsilon` times
+/-- Supporting fact: candidate denominators vary by at most `epsilon` times
 the pointwise slope difference. -/
 theorem abs_metricOrderOneDenominator_sub_le
     (d : MetricGraphTransformData X)
@@ -553,7 +552,7 @@ theorem abs_metricOrderOneDenominator_sub_le
   rw [metricOrderOneDenominator_sub_eq]
   simpa only [Real.norm_eq_abs] using hcenter
 
-/-- Helper for Infrastructure I.16a: candidate numerators vary by at most
+/-- Supporting fact: candidate numerators vary by at most
 `linearRate + epsilon` times the pointwise slope difference. -/
 theorem norm_metricOrderOneNumerator_sub_le
     (d : MetricGraphTransformData X)
@@ -585,7 +584,7 @@ theorem norm_metricOrderOneNumerator_sub_le
     _ = ((d.linearRate : ℝ) + (d.epsilon : ℝ)) * ‖b.1 u - c.1 u‖ := by
       ring
 
-/-- Helper for Infrastructure I.16a: reciprocal scalars with a common positive absolute-value
+/-- Supporting fact: reciprocal scalars with a common positive absolute-value
 lower bound satisfy the standard inverse-difference estimate. -/
 private theorem abs_inv_sub_inv_le_of_lower_bound
     {a b lower : ℝ} (hlower : 0 < lower)
@@ -612,7 +611,7 @@ private theorem abs_inv_sub_inv_le_of_lower_bound
       rw [inv_pow]
       ring
 
-/-- Helper for Infrastructure I.16a: the inverse candidate denominators vary with the sharp
+/-- Supporting fact: the inverse candidate denominators vary with the sharp
 `lower⁻² * epsilon` factor. -/
 theorem abs_inv_metricOrderOneDenominator_sub_le
     (d : MetricGraphTransformData X)
@@ -641,7 +640,7 @@ theorem abs_inv_metricOrderOneDenominator_sub_le
     _ = (d.lower : ℝ)⁻¹ ^ 2 * (d.epsilon : ℝ) *
         ‖b.1 u - c.1 u‖ := by ring
 
-/-- Helper for Infrastructure I.16a: the difference of two slope-transform values separates
+/-- Supporting fact: the difference of two slope-transform values separates
 into a numerator difference and an inverse-denominator difference. -/
 theorem metricOrderOneSlopeValue_sub_eq
     (d : MetricGraphTransformData X)
@@ -657,7 +656,7 @@ theorem metricOrderOneSlopeValue_sub_eq
   rw [metricOrderOneSlopeValue, metricOrderOneSlopeValue, smul_sub, sub_smul]
   abel
 
-/-- Helper for Infrastructure I.16a: at a fixed output coordinate, the slope transform obeys
+/-- Supporting fact: at a fixed output coordinate, the slope transform obeys
 the exact full-rate estimate against the input difference at the inverse center. -/
 theorem metricOrderOneSlopeValue_dist_le_source
     (d : MetricGraphTransformData X)
@@ -732,7 +731,7 @@ theorem metricOrderOneSlopeValue_dist_le_source
         dist (b.1 source) (c.1 source) := by
       rw [dist_eq_norm]
 
-/-- Infrastructure I.16a: the closed-ball order-one slope operator has the precise pointwise
+/-- Supporting infrastructure: the closed-ball order-one slope operator has the precise pointwise
 contraction factor `metricGraphTransformRate * lower⁻¹`. -/
 theorem metricOrderOneSlopeOperator_dist_apply_le
     (d : MetricGraphTransformData X)
@@ -759,7 +758,7 @@ theorem metricOrderOneSlopeOperator_dist_apply_le
       (d.lower : ℝ)⁻¹) * dist b.1 c.1
   exact hsource.trans (mul_le_mul_of_nonneg_left heval hfactor_nonneg)
 
-/-- Helper for Infrastructure I.16a: the real bunching inequality makes the closed-ball slope
+/-- Supporting fact: the real bunching inequality makes the closed-ball slope
 operator a `ContractingWith` map. -/
 theorem metricOrderOneSlopeOperator_contractingWith
     [CompleteSpace X]
@@ -785,7 +784,7 @@ theorem metricOrderOneSlopeOperator_contractingWith
   intro y
   exact metricOrderOneSlopeOperator_dist_apply_le d zeta b c y
 
-/-- Helper for Infrastructure I.16a: first-order bunching gives a unique bounded continuous
+/-- Supporting fact: first-order bunching gives a unique bounded continuous
 fixed slope field in the prescribed closed ball. -/
 theorem existsUnique_metricOrderOneSlopeOperator_fixedPoint
     [CompleteSpace X]

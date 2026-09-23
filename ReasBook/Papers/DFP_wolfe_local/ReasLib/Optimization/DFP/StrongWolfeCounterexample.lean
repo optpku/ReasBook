@@ -6,7 +6,6 @@ public import ReasLib.Optimization.DFP.TwoPhaseOrbit.Wolfe
 public import ReasLib.Optimization.DFP.TwoPhaseOrbit.RealizedObjective.Interpolation
 public import ReasLib.Optimization.DFP.OrthogonalSum
 import ReasLib.LinearAlgebra.Matrix.OrthogonalTransport
-
 /-!
 # Strong-Wolfe counterexample certificates
 
@@ -29,7 +28,7 @@ namespace LineSearch
 
 /-! `IsStrongWolfe` is the canonical gradient-facing strong predicate in this module. -/
 
-/-- TASK-03: A gradient-based step satisfies strong Wolfe when it has endpoint
+/-- A gradient-based step satisfies strong Wolfe when it has endpoint
 differentiability, Armijo decrease, and absolute curvature control. -/
 structure IsStrongWolfe {E : Type u} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
     [CompleteSpace E] (c₁ c₂ : ℝ) (f : E → ℝ) (x s : E) : Prop where
@@ -42,7 +41,7 @@ structure IsStrongWolfe {E : Type u} [NormedAddCommGroup E] [InnerProductSpace �
   strongCurvature :
     |inner ℝ (gradient f (x + s)) s| ≤ c₂ * |inner ℝ (gradient f x) s|
 
-/-- Helper for TASK-03: certified endpoint gradients normalize the canonical
+/-- Helper for certified endpoint gradients normalize the canonical
 gradient pairings in the strong-Wolfe inequalities. -/
 private lemma canonicalStrongWolfeInequalities_of_hasGradientAt
     {E : Type u} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [CompleteSpace E]
@@ -58,7 +57,7 @@ private lemma canonicalStrongWolfeInequalities_of_hasGradientAt
   · simpa only [gradientAt.gradient] using armijo
   · simpa only [gradientAt.gradient, gradientAtNext.gradient] using strongCurvature
 
-/-- TASK-03: Certified endpoint gradients and strong curvature construct the
+/-- Certified endpoint gradients and strong curvature construct the
 gradient-based strong-Wolfe predicate. -/
 theorem IsStrongWolfe.ofHasGradientAt {E : Type u} [NormedAddCommGroup E]
     [InnerProductSpace ℝ E] [CompleteSpace E] {c₁ c₂ : ℝ} {f : E → ℝ}
@@ -80,7 +79,7 @@ theorem IsStrongWolfe.ofHasGradientAt {E : Type u} [NormedAddCommGroup E]
     strongCurvature := canonicalStrongCurvature
   }
 
-/-- TASK-03: Strong curvature gives weak curvature when the initial directional
+/-- Strong curvature gives weak curvature when the initial directional
 derivative is nonpositive. -/
 theorem IsStrongWolfe.toWeakWolfe {E : Type u} [NormedAddCommGroup E]
     [InnerProductSpace ℝ E] [CompleteSpace E] {c₁ c₂ : ℝ} {f : E → ℝ}
@@ -111,7 +110,7 @@ namespace DFP
 
 /-! A wrapper preserves all projections of the existing weak certificate. -/
 
-/-- TASK-03: A strong-Wolfe certificate extends a weak DFP certificate with
+/-- A strong-Wolfe certificate extends a weak DFP certificate with
 absolute-curvature certificates for every iteration step. -/
 structure StrongWolfeCounterexample (ι : Type u) [Fintype ι]
     (m M c₁ c₂ : ℝ) extends WolfeCounterexample ι m M c₁ c₂ where
@@ -120,7 +119,7 @@ structure StrongWolfeCounterexample (ι : Type u) [Fintype ι]
 
 namespace StrongWolfeCounterexample
 
-/-- TASK-03: Attach strong-Wolfe endpoint certificates to an existing weak
+/-- Attach strong-Wolfe endpoint certificates to an existing weak
 certificate without changing its trajectory or analytic bounds. -/
 def ofWeak {ι : Type u} [Fintype ι] {m M c₁ c₂ : ℝ}
     (weak : WolfeCounterexample ι m M c₁ c₂)
@@ -132,7 +131,7 @@ def ofWeak {ι : Type u} [Fintype ι] {m M c₁ c₂ : ℝ}
   strongWolfe := strongWolfe
 }
 
-/-- TASK-03: The initial inverse-Hessian positivity projection is inherited
+/-- The initial inverse-Hessian positivity projection is inherited
 from the weak certificate wrapper. -/
 theorem initialInverseHessianPosDef {ι : Type u} [Fintype ι]
     {m M c₁ c₂ : ℝ} (c : StrongWolfeCounterexample ι m M c₁ c₂) :
@@ -145,7 +144,7 @@ end DFP
 
 namespace DFP.TwoPhaseOrbit
 
-/-- Helper for TASK-03: a special-orthogonal phase frame preserves the Euclidean
+/-- Helper for a special-orthogonal phase frame preserves the Euclidean
 inner product of the transported abstract vectors. -/
 private theorem inner_toLp_mulVec_eq_of_mem_specialOrthogonalGroup
     (R : Matrix (Fin 2) (Fin 2) ℝ)
@@ -156,7 +155,7 @@ private theorem inner_toLp_mulVec_eq_of_mem_specialOrthogonalGroup
   simpa [dotProduct_comm] using
     Matrix.dotProduct_mulVec_eq_of_mem_specialOrthogonalGroup R hR v u
 
-/-- Helper for TASK-03: the strong scalar-curvature certificate of one exact
+/-- Helper for the strong scalar-curvature certificate of one exact
 phase transports to its flattened physical endpoint step. -/
 private theorem endpointPhaseStrongCurvature
     (orbit : DFP.TwoPhaseOrbit) (j : ℕ) (i : Fin 2)
@@ -194,7 +193,7 @@ private theorem endpointPhaseStrongCurvature
   exact DFP.AbstractSecantStep.strongCurvature_of_tau_values
     (h.step i) (h.step_tau_mem i) hc₂
 
-/-- TASK-03: Every flattened endpoint step of an exact two-phase orbit has
+/-- Every flattened endpoint step of an exact two-phase orbit has
 strong curvature for any `c₂ ≥ 2 / 3`. -/
 theorem endpointStrongCurvature (orbit : DFP.TwoPhaseOrbit)
     (h_exact : ∀ j, State.ExactCycle (orbit.state j)) {c₂ : ℝ}
@@ -209,7 +208,7 @@ theorem endpointStrongCurvature (orbit : DFP.TwoPhaseOrbit)
   · simpa only [Fin.val_one] using
       endpointPhaseStrongCurvature orbit j (1 : Fin 2) (h_exact j) hc₂
 
-/-- TASK-03: Endpoint gradient data and the exact two-phase ratio certificate
+/-- Endpoint gradient data and the exact two-phase ratio certificate
 construct the strong-Wolfe predicate for every flattened endpoint step. -/
 theorem endpointStrongWolfe_of_endpointData
     (orbit : DFP.TwoPhaseOrbit)
@@ -241,7 +240,7 @@ end DFP.TwoPhaseOrbit
 
 namespace LineSearch.IsStrongWolfe
 
-/-- TASK-03: The gradient-based strong-Wolfe predicate is invariant under an
+/-- The gradient-based strong-Wolfe predicate is invariant under an
 orthogonal-sum quadratic extension. -/
 theorem orthogonalSum_iff {ι : Type u} {κ : Type v}
     [Fintype ι] [Fintype κ] {c₁ c₂ : ℝ}
@@ -325,7 +324,7 @@ theorem orthogonalSum_iff {ι : Type u} {κ : Type v}
         EuclideanSpace.OrthogonalSum.Gradient.gradient_objective_inl h.differentiableAtNext,
         EuclideanSpace.OrthogonalSum.inner_inl] using h.strongCurvature
 
-/-- TASK-03: Pulling back a strong-Wolfe step through a linear isometry
+/-- Pulling back a strong-Wolfe step through a linear isometry
 equivalence preserves endpoint gradients and absolute curvature. -/
 theorem comp_linearIsometryEquiv
     {E : Type u} {F : Type v} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
@@ -441,7 +440,7 @@ theorem orthogonalSumWithObjective {ι : Type u} {κ : Type v}
   exact ⟨result, DFP.InverseIteration.orthogonalSum_objective c.iteration c.stepLengthPos,
     fun k ↦ DFP.InverseIteration.orthogonalSum_point c.iteration c.stepLengthPos k⟩
 
-/-- TASK-03: Adjoining an identity quadratic block transports a strong-Wolfe
+/-- Adjoining an identity quadratic block transports a strong-Wolfe
 counterexample while preserving all inherited weak-certificate fields. -/
 theorem orthogonalSum {ι : Type u} {κ : Type v}
     [Fintype ι] [Fintype κ] {m M c₁ c₂ : ℝ}
@@ -522,7 +521,7 @@ theorem pullbackWithObjective {ι : Type u} {κ : Type v}
     fun k ↦ DFP.InverseIteration.pullback_linearIsometryEquiv_point
       c.iteration c.stepLengthPos Q k⟩
 
-/-- TASK-03: Pulling a strong-Wolfe counterexample back through a linear
+/-- Pulling a strong-Wolfe counterexample back through a linear
 isometry equivalence preserves its trajectory, bounds, and strong field. -/
 theorem pullback_linearIsometryEquiv {ι : Type u} {κ : Type v}
     [Fintype ι] [Fintype κ] {m M c₁ c₂ : ℝ}

@@ -15,7 +15,6 @@ import Mathlib.Tactic.Linarith
 import Mathlib.Tactic.NormNum
 import Mathlib.Tactic.Positivity
 import Mathlib.Tactic.Ring
-
 public section
 
 noncomputable section
@@ -341,7 +340,8 @@ theorem slowCurveEndpoint_injective (p h : ℝ → ℝ)
     orbit.endpoint (fun k ↦ cPair * (orbit.state (k / 2)).ε ^ 2)
     hlower hPairData
 
-/-- Every endpoint of a sufficiently small invariant slow-curve orbit is uniformly
+/-- Lemma 9 (`lem:separation`). Every endpoint of a sufficiently small invariant
+slow-curve orbit is uniformly
 isolated from all other endpoints and from the limiting circle at its squared scale. -/
 theorem slowCurveUniformEndpointSeparation (p h : ℝ → ℝ)
     (h_invariant :

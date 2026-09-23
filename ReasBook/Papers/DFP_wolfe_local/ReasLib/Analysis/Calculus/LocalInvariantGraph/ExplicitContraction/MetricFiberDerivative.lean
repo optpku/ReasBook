@@ -3,7 +3,6 @@ module
 public import ReasLib.Analysis.Calculus.LocalInvariantGraph.ExplicitContraction.MetricInvariantGraph
 public import Mathlib.Analysis.Calculus.FDeriv.Prod
 public import Mathlib.Analysis.Normed.Operator.Prod
-
 public section
 
 noncomputable section
@@ -105,7 +104,7 @@ theorem derivFiber_zero
   simp only [ContinuousLinearMap.comp_apply, ContinuousLinearMap.inr_apply,
     LocalCutoff.centerStable_apply, ContinuousLinearMap.coe_snd', Prod.snd_zero]
 
-/-- Helper for Infrastructure I.16a: along a continuous graph, the fiber derivative of a
+/-- Supporting fact: along a continuous graph, the fiber derivative of a
 `C²` metric remainder varies continuously with the center coordinate. -/
 theorem continuous_derivFiber
     (d : MetricGraphTransformData X)
@@ -137,7 +136,7 @@ theorem continuous_derivFiber
     hsnd.clm_comp hinner
   exact houter
 
-/-- Helper for Infrastructure I.16a: the center component of the derivative of the metric
+/-- Supporting fact: the center component of the derivative of the metric
 remainder in its fiber slot, viewed as a continuous linear map `X →L[ℝ] ℝ`. -/
 def derivCenterFiber
     (d : MetricGraphTransformData X)
@@ -145,7 +144,7 @@ def derivCenterFiber
   (ContinuousLinearMap.fst ℝ ℝ X).comp
     ((fderiv ℝ d.R (u, (ζ : ℝ → X) u)).comp (ContinuousLinearMap.inr ℝ ℝ X))
 
-/-- Helper for Infrastructure I.16a: applying `derivCenterFiber d ζ u` to `w` gives the
+/-- Supporting fact: applying `derivCenterFiber d ζ u` to `w` gives the
 center component of `fderiv ℝ d.R (u, ζ u)` in the fiber direction `(0, w)`. -/
 theorem derivCenterFiber_apply
     (d : MetricGraphTransformData X)
@@ -155,7 +154,7 @@ theorem derivCenterFiber_apply
   simp only [ContinuousLinearMap.comp_apply, ContinuousLinearMap.coe_fst',
     ContinuousLinearMap.inr_apply]
 
-/-- Helper for Infrastructure I.16a: the center component of the fiber derivative of the
+/-- Supporting fact: the center component of the fiber derivative of the
 metric remainder has operator norm at most `d.epsilon`. -/
 theorem norm_derivCenterFiber_le
     (d : MetricGraphTransformData X)
@@ -189,7 +188,7 @@ theorem norm_derivCenterFiber_le
     _ = ‖fderiv ℝ d.R (u, (ζ : ℝ → X) u)‖ := mul_one _
     _ ≤ (d.epsilon : ℝ) := hfderiv
 
-/-- Helper for Infrastructure I.16a: along a continuous graph, the center component of the
+/-- Supporting fact: along a continuous graph, the center component of the
 fiber derivative of a `C²` metric remainder varies continuously with the center coordinate. -/
 theorem continuous_derivCenterFiber
     (d : MetricGraphTransformData X)

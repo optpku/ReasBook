@@ -8,7 +8,6 @@ public import ReasLib.Analysis.Calculus.LocalInvariantGraph.ExplicitContraction.
 import all ReasLib.Analysis.Calculus.LocalInvariantGraph.ExplicitContraction.MetricTopSectionCoreAssembly
 public import ReasLib.Analysis.Calculus.LocalInvariantGraph.ExplicitContraction.MetricRawDefectEnvelope
 public import ReasLib.Analysis.Calculus.LocalCutoff.GraphJetTransform.ProofSupport.AffineCocycle
-
 public section
 
 noncomputable section
@@ -31,17 +30,17 @@ defect.  The remaining base variation is compared with the order-two reserved fo
 inverse-center radius envelope is applied.
 -/
 
-/-- Helper for Infrastructure I.16a: translation by a fixed scalar is continuous. -/
+/-- Supporting fact: translation by a fixed scalar is continuous. -/
 theorem continuous_metricOrderTwoTranslation (s : ℝ) :
     Continuous (fun x : ℝ ↦ x + s) :=
   continuous_id.add continuous_const
 
-/-- Helper for Infrastructure I.16a: the continuous self-map of `ℝ` given by translation by
+/-- Supporting fact: the continuous self-map of `ℝ` given by translation by
 `s`. -/
 def metricOrderTwoTranslation (s : ℝ) : C(ℝ, ℝ) :=
   ⟨fun x ↦ x + s, continuous_metricOrderTwoTranslation s⟩
 
-/-- Helper for Infrastructure I.16a: translating a bounded slope field does not increase its
+/-- Supporting fact: translating a bounded slope field does not increase its
 uniform norm beyond the metric slope bound. -/
 theorem norm_metricOrderTwoTranslatedSlope_le
     {d : MetricGraphTransformData X} (b : MetricSlopeSection d) (s : ℝ) :
@@ -49,7 +48,7 @@ theorem norm_metricOrderTwoTranslatedSlope_le
   exact (BoundedContinuousFunction.norm_compContinuous_le b.1
     (metricOrderTwoTranslation s)).trans b.2
 
-/-- Helper for Infrastructure I.16a: the order-one slope candidate obtained by translating a
+/-- Supporting fact: the order-one slope candidate obtained by translating a
 bounded slope field in source coordinates. -/
 def metricOrderTwoTranslatedSlope
     (d : MetricGraphTransformData X) (b : MetricSlopeSection d) (s : ℝ) :
@@ -57,28 +56,28 @@ def metricOrderTwoTranslatedSlope
   ⟨b.1.compContinuous (metricOrderTwoTranslation s),
     norm_metricOrderTwoTranslatedSlope_le b s⟩
 
-/-- Helper for Infrastructure I.16a: evaluating the translated slope candidate shifts its source
+/-- Supporting fact: evaluating the translated slope candidate shifts its source
 coordinate by the prescribed increment. -/
 theorem metricOrderTwoTranslatedSlope_apply
     (d : MetricGraphTransformData X) (b : MetricSlopeSection d) (s x : ℝ) :
     (metricOrderTwoTranslatedSlope d b s).1 x = b.1 (x + s) := by
   rfl
 
-/-- Helper for Infrastructure I.16a: the frozen denominator evaluates the derivative of the
+/-- Supporting fact: the frozen denominator evaluates the derivative of the
 center component on a direction whose stable coordinate is held fixed. -/
 def metricOrderTwoFrozenDenominator
     (d : MetricGraphTransformData X)
     (zeta : SmallLipschitzGraph X d.radius d.slope) (v : ℝ) (w : X) : ℝ :=
   1 + ((fderiv ℝ d.R (v, (zeta : ℝ → X) v)) (1, w)).1
 
-/-- Helper for Infrastructure I.16a: the frozen numerator evaluates the derivative of the
+/-- Supporting fact: the frozen numerator evaluates the derivative of the
 stable component on a direction whose stable coordinate is held fixed. -/
 def metricOrderTwoFrozenNumerator
     (d : MetricGraphTransformData X)
     (zeta : SmallLipschitzGraph X d.radius d.slope) (v : ℝ) (w : X) : X :=
   d.L w + ((fderiv ℝ d.R (v, (zeta : ℝ → X) v)) (1, w)).2
 
-/-- Helper for Infrastructure I.16a: the frozen rational slope value varies only its source
+/-- Supporting fact: the frozen rational slope value varies only its source
 base while retaining the prescribed stable direction. -/
 def metricOrderTwoFrozenSlopeValue
     (d : MetricGraphTransformData X)
@@ -86,7 +85,7 @@ def metricOrderTwoFrozenSlopeValue
   (metricOrderTwoFrozenDenominator d zeta v w)⁻¹ •
     metricOrderTwoFrozenNumerator d zeta v w
 
-/-- Helper for Infrastructure I.16a: a frozen direction in the closed slope ball has product
+/-- Supporting fact: a frozen direction in the closed slope ball has product
 norm at most one. -/
 theorem norm_metricOrderTwoFrozenDirection_le_one
     (d : MetricGraphTransformData X) {w : X}
@@ -98,7 +97,7 @@ theorem norm_metricOrderTwoFrozenDirection_le_one
   rw [Prod.norm_def]
   exact max_le (norm_one.le) hw_one
 
-/-- Helper for Infrastructure I.16a: the derivative of the smooth remainder on any frozen
+/-- Supporting fact: the derivative of the smooth remainder on any frozen
 direction in the closed slope ball has norm at most epsilon. -/
 theorem norm_metricOrderTwoFrozenRDirection_le
     (d : MetricGraphTransformData X)
@@ -115,7 +114,7 @@ theorem norm_metricOrderTwoFrozenRDirection_le
         (norm_metricOrderTwoFrozenDirection_le_one d hw) d.epsilon.coe_nonneg
     _ = (d.epsilon : ℝ) := mul_one _
 
-/-- Helper for Infrastructure I.16a: every frozen denominator over the closed slope ball is
+/-- Supporting fact: every frozen denominator over the closed slope ball is
 bounded below by the certified center factor. -/
 theorem metricOrderTwoFrozenDenominator_lower
     (d : MetricGraphTransformData X)
@@ -141,7 +140,7 @@ theorem metricOrderTwoFrozenDenominator_lower
   rw [abs_of_nonneg hden_nonneg]
   exact hden_lower
 
-/-- Helper for Infrastructure I.16a: every frozen denominator over the closed slope ball is
+/-- Supporting fact: every frozen denominator over the closed slope ball is
 nonzero. -/
 theorem metricOrderTwoFrozenDenominator_ne_zero
     (d : MetricGraphTransformData X)
@@ -154,7 +153,7 @@ theorem metricOrderTwoFrozenDenominator_ne_zero
     hlower_pos.trans_le (metricOrderTwoFrozenDenominator_lower d zeta u hw)
   exact abs_pos.mp habs_pos
 
-/-- Helper for Infrastructure I.16a: the frozen rational slope is jointly C¹ at every source
+/-- Supporting fact: the frozen rational slope is jointly C¹ at every source
 and every stable direction in the closed slope ball. -/
 theorem metricOrderTwoFrozenSlopeValue_contDiffAt
     (d : MetricGraphTransformData X)
@@ -217,7 +216,7 @@ theorem metricOrderTwoFrozenSlopeValue_contDiffAt
   rw [hsmul_fun] at hsmul
   simpa only [metricOrderTwoFrozenSlopeValue] using hsmul
 
-/-- Helper for Infrastructure I.16a: the source partial derivative of the frozen rational slope
+/-- Supporting fact: the source partial derivative of the frozen rational slope
 is the joint Frechet derivative evaluated on the pure source direction. -/
 def metricOrderTwoFrozenSourceDerivative
     (d : MetricGraphTransformData X)
@@ -226,7 +225,7 @@ def metricOrderTwoFrozenSourceDerivative
       (fun p : ℝ × X ↦ metricOrderTwoFrozenSlopeValue d zeta p.1 p.2)
       (u, w)) ((1 : ℝ), (0 : X))
 
-/-- Helper for Infrastructure I.16a: each frozen source slice has derivative given by the
+/-- Supporting fact: each frozen source slice has derivative given by the
 source partial derivative whenever its direction lies in the closed slope ball. -/
 theorem metricOrderTwoFrozenSlopeValue_hasDerivAt_sourceDerivative
     (d : MetricGraphTransformData X)
@@ -247,7 +246,7 @@ theorem metricOrderTwoFrozenSlopeValue_hasDerivAt_sourceDerivative
     metricOrderTwoFrozenSourceDerivative] using
     hcomposition
 
-/-- Helper for Infrastructure I.16a: the frozen source partial derivative is continuous at
+/-- Supporting fact: the frozen source partial derivative is continuous at
 every stable direction in the closed slope ball. -/
 theorem continuousAt_metricOrderTwoFrozenSourceDerivative
     (d : MetricGraphTransformData X)
@@ -266,7 +265,7 @@ theorem continuousAt_metricOrderTwoFrozenSourceDerivative
       ContinuousAt (fun _ : ℝ × X ↦ ((1 : ℝ), (0 : X))) (u, w))
   simpa only [metricOrderTwoFrozenSourceDerivative] using hevaluated
 
-/-- Helper for Infrastructure I.16a: off the support of the smooth remainder, the frozen
+/-- Supporting fact: off the support of the smooth remainder, the frozen
 rational slope is just the linear stable map. -/
 theorem metricOrderTwoFrozenSlopeValue_eq_linear_of_notMem_tsupport
     (d : MetricGraphTransformData X)
@@ -278,7 +277,7 @@ theorem metricOrderTwoFrozenSlopeValue_eq_linear_of_notMem_tsupport
     metricOrderTwoFrozenNumerator, fderiv_of_notMem_tsupport ℝ hu]
   simp
 
-/-- Helper for Infrastructure I.16a: off the support of the smooth remainder, the frozen
+/-- Supporting fact: off the support of the smooth remainder, the frozen
 rational slope has zero source partial derivative. -/
 theorem metricOrderTwoFrozenSourceDerivative_eq_zero_of_notMem_tsupport
     (d : MetricGraphTransformData X)
@@ -312,7 +311,7 @@ theorem metricOrderTwoFrozenSourceDerivative_eq_zero_of_notMem_tsupport
       d zeta hzeta u hw
   exact hsource.unique hzero
 
-/-- Helper for Infrastructure I.16a: an order-one derivative jet has the usual affine
+/-- Supporting fact: an order-one derivative jet has the usual affine
 Taylor remainder. -/
 theorem finiteTaylorJet_one_remainder_eq
     (f : ℝ → X) (u s : ℝ) (hf : DifferentiableAt ℝ f u) :
@@ -324,7 +323,7 @@ theorem finiteTaylorJet_one_remainder_eq
     iteratedDeriv_one, sub_eq_add_neg, add_assoc]
   abel
 
-/-- Helper for Infrastructure I.16a: the order-one Taylor remainder of a translated frozen
+/-- Supporting fact: the order-one Taylor remainder of a translated frozen
 slope slice is its affine source-partial error. -/
 theorem metricOrderTwoFrozenSlopeValue_translated_remainder_eq
     (d : MetricGraphTransformData X)
@@ -361,7 +360,7 @@ theorem metricOrderTwoFrozenSlopeValue_translated_remainder_eq
   rw [finiteTaylorJet_one_remainder_eq _ 0 s htranslated.differentiableAt,
     htranslated.deriv, zero_add, add_zero]
 
-/-- Helper for Infrastructure I.16a: differentiating an inverse scalar times a vector can be
+/-- Supporting fact: differentiating an inverse scalar times a vector can be
 written in denominator-cancelled quotient form. -/
 theorem hasDerivAt_inv_smul_quotient
     {D : ℝ → ℝ} {N : ℝ → X} {u D' : ℝ} {N' : X}
@@ -374,7 +373,7 @@ theorem hasDerivAt_inv_smul_quotient
   field_simp [hD_ne]
   module
 
-/-- Helper for Infrastructure I.16a: freezing a slope candidate at its value over `u` recovers
+/-- Supporting fact: freezing a slope candidate at its value over `u` recovers
 the ordinary candidate denominator at `u`. -/
 theorem metricOrderTwoFrozenDenominator_eq
     (d : MetricGraphTransformData X)
@@ -384,7 +383,7 @@ theorem metricOrderTwoFrozenDenominator_eq
       metricOrderOneDenominator d zeta b u := by
   rw [metricOrderTwoFrozenDenominator, metricOrderOneDenominator_eq]
 
-/-- Helper for Infrastructure I.16a: freezing a slope candidate at its value over `u` recovers
+/-- Supporting fact: freezing a slope candidate at its value over `u` recovers
 the ordinary candidate numerator at `u`. -/
 theorem metricOrderTwoFrozenNumerator_eq
     (d : MetricGraphTransformData X)
@@ -394,7 +393,7 @@ theorem metricOrderTwoFrozenNumerator_eq
       metricOrderOneNumerator d zeta b u := by
   rw [metricOrderTwoFrozenNumerator, metricOrderOneNumerator_eq]
 
-/-- Helper for Infrastructure I.16a: source-coordinate evaluation of the slope transform is
+/-- Supporting fact: source-coordinate evaluation of the slope transform is
 the frozen rational value at the candidate direction. -/
 theorem metricOrderOneSlopeOperator_apply_centerMap_eq_frozen
     (d : MetricGraphTransformData X)
@@ -406,7 +405,7 @@ theorem metricOrderOneSlopeOperator_apply_centerMap_eq_frozen
     d.inverseCenter_centerMap zeta u, metricOrderTwoFrozenSlopeValue,
     metricOrderTwoFrozenDenominator_eq, metricOrderTwoFrozenNumerator_eq]
 
-/-- Helper for Infrastructure I.16a: no ordered partition of two has length distinct from
+/-- Supporting fact: no ordered partition of two has length distinct from
 both one and two. -/
 theorem orderedFinpartition_two_residual_filter_eq_empty :
     Finset.univ.filter
@@ -424,7 +423,7 @@ theorem orderedFinpartition_two_residual_filter_eq_empty :
   · intro hc
     exact False.elim (by simpa using hc)
 
-/-- Helper for Infrastructure I.16a: along the fixed graph, differentiating the frozen
+/-- Supporting fact: along the fixed graph, differentiating the frozen
 first derivative of `R` produces its diagonal second derivative. -/
 theorem metricOrderTwoFrozenRDerivative_hasDerivAt
     [CompleteSpace X]
@@ -479,7 +478,7 @@ theorem metricOrderTwoFrozenRDerivative_hasDerivAt
   rw [← hatomic] at hevaluated'
   simpa only [graph, direction] using hevaluated'
 
-/-- Helper for Infrastructure I.16a: the frozen denominator derivative is the center
+/-- Supporting fact: the frozen denominator derivative is the center
 coordinate of the diagonal second derivative of `R`. -/
 theorem metricOrderTwoFrozenDenominator_hasDerivAt
     [CompleteSpace X]
@@ -534,7 +533,7 @@ theorem metricOrderTwoFrozenDenominator_hasDerivAt
   simpa only [metricOrderTwoFrozenDenominator, b, atomic,
     iteratedFDeriv_two_apply, zero_add, add_zero] using hsum
 
-/-- Helper for Infrastructure I.16a: the frozen numerator derivative is the stable
+/-- Supporting fact: the frozen numerator derivative is the stable
 coordinate of the diagonal second derivative of `R`. -/
 theorem metricOrderTwoFrozenNumerator_hasDerivAt
     [CompleteSpace X]
@@ -590,7 +589,7 @@ theorem metricOrderTwoFrozenNumerator_hasDerivAt
   simpa only [metricOrderTwoFrozenNumerator, b, atomic,
     iteratedFDeriv_two_apply, zero_add, add_zero] using hsum
 
-/-- Helper for Infrastructure I.16a: at order two the reserved forcing consists exactly of
+/-- Supporting fact: at order two the reserved forcing consists exactly of
 the diagonal second derivative of `R` with the center feedback subtracted. -/
 theorem metricReservedTopForcing_two_eq_frozenAtomic
     [CompleteSpace X]
@@ -664,7 +663,7 @@ theorem metricReservedTopForcing_two_eq_frozenAtomic
     orderedFinpartition_two_residual_filter_eq_empty, hR_fst_coeff, hR_snd_coeff]
   simp only [Finset.sum_empty, add_zero, sub_zero, b]
 
-/-- Helper for Infrastructure I.16a: the frozen rational value at the fixed slope direction is
+/-- Supporting fact: the frozen rational value at the fixed slope direction is
 the fixed slope at the corresponding output center. -/
 theorem metricOrderTwoFrozenSlopeValue_fixed
     [CompleteSpace X]
@@ -686,7 +685,7 @@ theorem metricOrderTwoFrozenSlopeValue_fixed
   rw [metricOrderOneSlopeOperator_apply_centerMap_eq_frozen] at hvalue
   exact hvalue
 
-/-- Helper for Infrastructure I.16a: the canonical order-two reserved section obtained from the
+/-- Supporting fact: the canonical order-two reserved section obtained from the
 previous-order fixed graph and the order-two bunching inequality. -/
 noncomputable def metricOrderTwoFixedSection
     [CompleteSpace X]
@@ -705,7 +704,7 @@ noncomputable def metricOrderTwoFixedSection
       d zeta hfixed h_bunching_one)
     h_bunching_two
 
-/-- Helper for Infrastructure I.16a: the order-two raw defect compares the translated canonical
+/-- Supporting fact: the order-two raw defect compares the translated canonical
 fixed slope with the canonical reserved order-two section. -/
 noncomputable def metricOrderTwoRawDefect
     [CompleteSpace X]
@@ -723,7 +722,7 @@ noncomputable def metricOrderTwoRawDefect
     (metricOrderOneFixedSlope d zeta h_bunching_one).1 y -
       t • metricOrderTwoFixedSection d zeta hfixed h_bunching_one h_bunching_two y
 
-/-- Helper for Infrastructure I.16a: the order-two raw defect vanishes at zero increment. -/
+/-- Supporting fact: the order-two raw defect vanishes at zero increment. -/
 theorem metricOrderTwoRawDefect_zero
     [CompleteSpace X]
     (d : MetricGraphTransformData X)
@@ -739,7 +738,7 @@ theorem metricOrderTwoRawDefect_zero
     metricOrderTwoRawDefect d zeta hfixed h_bunching_one h_bunching_two y 0 = 0 := by
   simp only [metricOrderTwoRawDefect, add_zero, sub_self, zero_smul, sub_zero]
 
-/-- Helper for Infrastructure I.16a: the order-two raw defect is uniformly bounded on a fixed
+/-- Supporting fact: the order-two raw defect is uniformly bounded on a fixed
 neighborhood of the zero increment. -/
 theorem metricOrderTwoRawDefect_locallyUniformlyBounded
     [CompleteSpace X]
@@ -783,7 +782,7 @@ theorem metricOrderTwoRawDefect_locallyUniformlyBounded
           (b.norm_apply_le y)) hstable
       _ = 2 * (d.slope : ℝ) + ‖a‖ := by ring
 
-/-- Helper for Infrastructure I.16a: on the canonical fixed slope, the rational denominator is
+/-- Supporting fact: on the canonical fixed slope, the rational denominator is
 the derivative of the center change of variables. -/
 theorem metricOrderOneDenominator_fixedSlope_eq_centerMap_deriv
     [CompleteSpace X]
@@ -825,7 +824,7 @@ theorem metricOrderOneDenominator_fixedSlope_eq_centerMap_deriv
   rw [metricOrderOneDenominator_eq]
   exact hcenterMap.deriv.symm
 
-/-- Helper for Infrastructure I.16a: with the stable direction frozen at the canonical fixed
+/-- Supporting fact: with the stable direction frozen at the canonical fixed
 slope, the rational slope value has derivative equal to the center derivative times the
 order-two reserved forcing. -/
 theorem metricOrderTwoFrozenSlopeValue_hasDerivAt
@@ -889,7 +888,7 @@ theorem metricOrderTwoFrozenSlopeValue_hasDerivAt
   apply hquotient'.congr_deriv
   rw [hinverseNumerator, hdenominatorValue, hforcing, smul_smul, hscalar]
 
-/-- Helper for Infrastructure I.16a: at the canonical fixed direction, the frozen source
+/-- Supporting fact: at the canonical fixed direction, the frozen source
 partial derivative is the center derivative times the reserved order-two forcing. -/
 theorem metricOrderTwoFrozenSourceDerivative_fixed
     [CompleteSpace X]
@@ -916,7 +915,7 @@ theorem metricOrderTwoFrozenSourceDerivative_fixed
       d zeta hfixed h_bunching_one u
   exact hsource.unique hforcing
 
-/-- Helper for Infrastructure I.16a: the canonical fixed slope is uniformly continuous on the
+/-- Supporting fact: the canonical fixed slope is uniformly continuous on the
 whole source line. -/
 theorem uniformContinuous_metricOrderOneFixedSlope
     [CompleteSpace X]
@@ -940,7 +939,7 @@ theorem uniformContinuous_metricOrderOneFixedSlope
     (metricOrderOneFixedSlope d zeta h_bunching_one).1.continuous
       |>.uniformContinuous_of_tendsto_cocompact hsupport.is_zero_at_infty
 
-/-- Helper for Infrastructure I.16a: at the canonical fixed slope, the exact rational difference
+/-- Supporting fact: at the canonical fixed slope, the exact rational difference
 coefficient is the center derivative times the reserved order-two coefficient. -/
 theorem metricOrderOneDifferenceCoefficient_fixed_eq_centerDeriv_smul_reserved
     [CompleteSpace X]
@@ -979,7 +978,7 @@ theorem metricOrderOneDifferenceCoefficient_fixed_eq_centerDeriv_smul_reserved
     field_simp [hcenter_ne]
   rw [hscalar]
 
-/-- Helper for Infrastructure I.16a: the canonical order-two section satisfies the reserved
+/-- Supporting fact: the canonical order-two section satisfies the reserved
 affine equation in source coordinates. -/
 theorem metricOrderTwoFixedSection_sourceEquation
     [CompleteSpace X]
@@ -1004,7 +1003,7 @@ theorem metricOrderTwoFixedSection_sourceEquation
       d zeta hfixed h_bunching_one)
     h_bunching_two u
 
-/-- Helper for Infrastructure I.16a: after multiplying by the center derivative, the order-two
+/-- Supporting fact: after multiplying by the center derivative, the order-two
 fixed-section equation uses the rational difference coefficient and the scaled reserved forcing. -/
 theorem metricOrderTwoFixedSection_centerDerivativeEquation
     [CompleteSpace X]
@@ -1045,7 +1044,7 @@ theorem metricOrderTwoFixedSection_centerDerivativeEquation
     rfl
   rw [hpack, ← hcoefficientApply]
 
-/-- Helper for Infrastructure I.16a: the base variation compares the fixed-slope value at a
+/-- Supporting fact: the base variation compares the fixed-slope value at a
 translated source center with the slope transform of the translated candidate at the old center. -/
 def metricOrderTwoBaseVariation
     (d : MetricGraphTransformData X)
@@ -1055,7 +1054,7 @@ def metricOrderTwoBaseVariation
     (metricOrderOneSlopeOperator d zeta (metricOrderTwoTranslatedSlope d b s)).1
       (d.centerMap zeta u)
 
-/-- Helper for Infrastructure I.16a: for a fixed slope, the base variation is exactly the
+/-- Supporting fact: for a fixed slope, the base variation is exactly the
 source increment of the frozen rational value at the translated stable direction. -/
 theorem metricOrderTwoBaseVariation_eq_frozenDifference
     (d : MetricGraphTransformData X)
@@ -1079,7 +1078,7 @@ theorem metricOrderTwoBaseVariation_eq_frozenDifference
       metricOrderTwoTranslatedSlope_apply]
   rw [metricOrderTwoBaseVariation, hfirst, hsecond]
 
-/-- Helper for Infrastructure I.16a: the fixed-slope base variation has a source-uniform
+/-- Supporting fact: the fixed-slope base variation has a source-uniform
 first-order expansion given by the scaled reserved order-two forcing. -/
 theorem metricOrderTwoBaseVariation_uniform
     [CompleteSpace X]
@@ -1342,7 +1341,7 @@ theorem metricOrderTwoBaseVariation_uniform
     rw [hbaseZero, hforcingZero, smul_zero, sub_zero, norm_zero]
     exact mul_nonneg he.le (abs_nonneg s)
 
-/-- Helper for Infrastructure I.16a: off the graph trace of the remainder support, the metric
+/-- Supporting fact: off the graph trace of the remainder support, the metric
 center map is the identity. -/
 theorem metricCenterMap_eq_self_of_graph_notMem_tsupport
     (d : MetricGraphTransformData X)
@@ -1356,7 +1355,7 @@ theorem metricCenterMap_eq_self_of_graph_notMem_tsupport
   rw [hzero]
   simp only [Prod.fst_zero, add_zero]
 
-/-- Helper for Infrastructure I.16a: off the graph trace of the remainder support, the metric
+/-- Supporting fact: off the graph trace of the remainder support, the metric
 center map has derivative one. -/
 theorem metricCenterMap_deriv_eq_one_of_graph_notMem_tsupport
     [CompleteSpace X]
@@ -1374,7 +1373,7 @@ theorem metricCenterMap_deriv_eq_one_of_graph_notMem_tsupport
     fderiv_of_notMem_tsupport ℝ hu]
   simp
 
-/-- Helper for Infrastructure I.16a: the center change of variables has a globally
+/-- Supporting fact: the center change of variables has a globally
 source-uniform first-order Taylor remainder. -/
 theorem metricCenterMapRemainder_uniform
     [CompleteSpace X]
@@ -1476,7 +1475,7 @@ theorem metricCenterMapRemainder_uniform
     norm_num
     exact mul_nonneg he.le (abs_nonneg s)
 
-/-- Helper for Infrastructure I.16a: the common linear kernel of the exact difference
+/-- Supporting fact: the common linear kernel of the exact difference
 coefficients has a uniform pointwise operator bound. -/
 theorem norm_metricOrderOneDifferenceKernel_apply_le
     (d : MetricGraphTransformData X)
@@ -1525,7 +1524,7 @@ theorem norm_metricOrderOneDifferenceKernel_apply_le
     _ = ((d.linearRate : ℝ) + (d.epsilon : ℝ) +
         (d.epsilon : ℝ) * (d.slope : ℝ)) * ‖w‖ := by ring
 
-/-- Helper for Infrastructure I.16a: changing only the candidate slope in the exact difference
+/-- Supporting fact: changing only the candidate slope in the exact difference
 coefficient is controlled by the pointwise slope change. -/
 theorem norm_metricOrderOneDifferenceCoefficient_sub_apply_le
     (d : MetricGraphTransformData X)
@@ -1574,7 +1573,7 @@ theorem norm_metricOrderOneDifferenceCoefficient_sub_apply_le
             (d.epsilon : ℝ) * (d.slope : ℝ))) *
         ‖c.1 u - b.1 u‖ * ‖w‖ := by ring
 
-/-- Helper for Infrastructure I.16a: translating the canonical fixed slope changes the exact
+/-- Supporting fact: translating the canonical fixed slope changes the exact
 difference coefficient uniformly little in operator norm. -/
 theorem metricOrderOneDifferenceCoefficient_translated_uniform
     [CompleteSpace X]
@@ -1653,7 +1652,7 @@ theorem metricOrderOneDifferenceCoefficient_translated_uniform
     _ ≤ e * ‖w‖ :=
       mul_le_mul_of_nonneg_right hfactorBound (norm_nonneg w)
 
-/-- Helper for Infrastructure I.16a: the fixed-slope increment is the exact rational principal
+/-- Supporting fact: the fixed-slope increment is the exact rational principal
 term plus the named source-coordinate base variation. -/
 theorem metricOrderTwoFixedSlope_increment_decomposition
     (d : MetricGraphTransformData X)
@@ -1671,7 +1670,7 @@ theorem metricOrderTwoFixedSlope_increment_decomposition
   rw [← hprincipal]
   module
 
-/-- Helper for Infrastructure I.16a: the order-two residual collects precisely the translated
+/-- Supporting fact: the order-two residual collects precisely the translated
 base variation and the two first-order compatibility terms left after isolating the source raw
 defect. -/
 def metricOrderTwoResidual
@@ -1695,7 +1694,7 @@ def metricOrderTwoResidual
     s • metricOrderOneDifferenceCoefficient d zeta b translated u (a u) -
       t • a y
 
-/-- Helper for Infrastructure I.16a: the residual is the sum of the frozen-base Taylor error,
+/-- Supporting fact: the residual is the sum of the frozen-base Taylor error,
 the translated-coefficient error, and the center-map Taylor error. -/
 theorem metricOrderTwoResidual_error_decomposition
     [CompleteSpace X]
@@ -1789,7 +1788,7 @@ theorem metricOrderTwoResidual_error_decomposition
   rw [metricOrderTwoResidual]
   simpa only [b, a, u, s, translated, sub_smul, smul_smul] using hresidual_local
 
-/-- Helper for Infrastructure I.16a: the complete order-two residual is uniformly little
+/-- Supporting fact: the complete order-two residual is uniformly little
 compared with the output-center increment. -/
 theorem metricOrderTwoResidual_uniform
     [CompleteSpace X]
@@ -1996,7 +1995,7 @@ theorem metricOrderTwoResidual_uniform
     _ = e * |t| := by ring
     _ = e * ‖t‖ := by rw [Real.norm_eq_abs]
 
-/-- Helper for Infrastructure I.16a: the output raw defect is the rational coefficient applied
+/-- Supporting fact: the output raw defect is the rational coefficient applied
 to the inverse-center raw defect, plus the named base-variation residual. -/
 theorem metricOrderTwoRawDefect_decomposition
     [CompleteSpace X]
@@ -2038,7 +2037,7 @@ theorem metricOrderTwoRawDefect_decomposition
   simp only [map_sub, map_smul]
   module
 
-/-- Helper for Infrastructure I.16a: the exact rational coefficient gives the principal raw
+/-- Supporting fact: the exact rational coefficient gives the principal raw
 defect the order-one contraction factor `metricGraphTransformRate * lower⁻¹`. -/
 theorem norm_metricOrderTwoRawDefect_le_principal_add_residual
     [CompleteSpace X]
@@ -2072,7 +2071,7 @@ theorem norm_metricOrderTwoRawDefect_le_principal_add_residual
   rw [hdecomposition]
   exact (norm_add_le _ _).trans (add_le_add_left hcoefficient _)
 
-/-- Helper for Infrastructure I.16a: uniform smallness of the order-two residual turns the
+/-- Supporting fact: uniform smallness of the order-two residual turns the
 raw identity into the inverse-center affine recurrence used by the radius envelope. -/
 theorem metricOrderTwoRawDefect_inverseRecurrence
     [CompleteSpace X]
@@ -2115,7 +2114,7 @@ theorem metricOrderTwoRawDefect_inverseRecurrence
   rw [← hsource] at hcombined
   exact hcombined
 
-/-- Helper for Infrastructure I.16a: the raw defect of the canonical fixed slope relative to
+/-- Supporting fact: the raw defect of the canonical fixed slope relative to
 the reserved order-two section is little-o of its increment at every base point. -/
 theorem metricOrderTwoRawDefect_isLittleO
     [CompleteSpace X]
@@ -2159,7 +2158,7 @@ theorem metricOrderTwoRawDefect_isLittleO
   · exact metricOrderTwoRawDefect_inverseRecurrence
       d zeta hfixed h_bunching_one h_bunching_two
 
-/-- Helper for Infrastructure I.16a: the canonical reserved order-two section is the derivative
+/-- Supporting fact: the canonical reserved order-two section is the derivative
 of the canonical fixed slope at every source center. -/
 theorem metricOrderOneFixedSlope_hasDerivAt_orderTwo
     [CompleteSpace X]
@@ -2185,7 +2184,7 @@ theorem metricOrderOneFixedSlope_hasDerivAt_orderTwo
     metricOrderTwoRawDefect_isLittleO
       d zeta hfixed h_bunching_one h_bunching_two y
 
-/-- Infrastructure I.16a: under the order-one and order-two bunching inequalities, the first
+/-- Supporting infrastructure: under the order-one and order-two bunching inequalities, the first
 derivative of the metric fixed graph has the continuous canonical reserved order-two derivative
 section. -/
 theorem metricFixedGraph_orderTwoDerivativeSection
@@ -2215,7 +2214,7 @@ theorem metricFixedGraph_orderTwoDerivativeSection
   exact metricOrderOneFixedSlope_hasDerivAt_orderTwo
     d zeta hfixed h_bunching_one h_bunching_two u
 
-/-- Helper for Infrastructure I.16a: the order-two derivative section upgrades the metric fixed
+/-- Supporting fact: the order-two derivative section upgrades the metric fixed
 graph from `C¹` to `C²`. -/
 theorem metricFixedGraph_contDiff_two_of_orderTwoBunching
     [CompleteSpace X]

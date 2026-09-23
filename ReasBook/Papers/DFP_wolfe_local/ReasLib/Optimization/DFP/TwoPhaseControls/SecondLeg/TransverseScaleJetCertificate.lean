@@ -16,7 +16,7 @@ universe u
 
 namespace FiniteTaylorJet
 
-/-- Helper for Infrastructure I.16a companion: a twice continuously differentiable scalar-input
+/-- Supporting fact: companion: a twice continuously differentiable scalar-input
 map that is `O(ε³)` has vanishing first and second iterated Fréchet derivatives at zero. -/
 theorem firstSecondIteratedFDeriv_eq_zero_of_isBigO_cube
     {F : Type u} [NormedAddCommGroup F] [NormedSpace ℝ F]
@@ -57,7 +57,7 @@ The source calculation may expose the transverse derivative either directly as a
 first and second scale-jet vanishings used by the finite Taylor estimate.
 -/
 
-/-- Helper for Infrastructure I.16a companion: a local bounded `ε³` factorization of
+/-- Supporting fact: companion: a local bounded `ε³` factorization of
 `lowGradientTransverseFDerivFamily` near the canceled base point. -/
 structure LowGradientTransverseScaleFactorizationCertificate
     (Q : (ℝ × ℝ × ℝ) → (ℝ × ℝ) →L[ℝ] ℝ)
@@ -68,7 +68,7 @@ structure LowGradientTransverseScaleFactorizationCertificate
   coefficient_bound : ∀ᶠ x in 𝓝 ((0, 2, 1) : ℝ × ℝ × ℝ),
     ‖Q x‖ ≤ C
 
-/-- Helper for Infrastructure I.16a companion: a bounded local scale factorization gives an
+/-- Supporting fact: companion: a bounded local scale factorization gives an
 eventual `O(ε³)` estimate on every nearby transverse slice. -/
 theorem LowGradientTransverseScaleFactorizationCertificate.eventually_isBigO_cube
     {Q : (ℝ × ℝ × ℝ) → (ℝ × ℝ) →L[ℝ] ℝ}
@@ -91,7 +91,7 @@ theorem LowGradientTransverseScaleFactorizationCertificate.eventually_isBigO_cub
       mul_le_mul_of_nonneg_left hdata.2 (norm_nonneg _)
     _ = C * ‖ε ^ (3 : ℕ)‖ := by ring
 
-/-- Helper for Infrastructure I.16a companion: the transverse derivative family is eventually
+/-- Supporting fact: companion: the transverse derivative family is eventually
 `C²` in the scale variable near the canceled transverse base point. -/
 theorem lowGradientTransverseFDerivFamily_eventually_contDiffAt_two :
     ∀ᶠ z : ℝ × ℝ in 𝓝 ((2, 1) : ℝ × ℝ),
@@ -118,7 +118,7 @@ theorem lowGradientTransverseFDerivFamily_eventually_contDiffAt_two :
     simpa only [Function.comp_def, Function.uncurry_apply_pair] using hcomp
   exact hsliceThree.of_le htwoLeThree
 
-/-- Infrastructure I.16a companion: a bounded local cubic scale factorization supplies the
+/-- Supporting infrastructure companion: a bounded local cubic scale factorization supplies the
 eventual first- and second-scale iterated Fréchet derivative vanishings. -/
 theorem LowGradientTransverseScaleFactorizationCertificate.firstSecondScaleJet
     {Q : (ℝ × ℝ × ℝ) → (ℝ × ℝ) →L[ℝ] ℝ}
@@ -140,7 +140,7 @@ theorem LowGradientTransverseScaleFactorizationCertificate.firstSecondScaleJet
   · exact hboth.mono fun _ hz ↦ hz.1
   · exact hboth.mono fun _ hz ↦ hz.2
 
-/-- Helper for Infrastructure I.16a companion: a bounded local cubic scale factorization yields the
+/-- Supporting fact: companion: a bounded local cubic scale factorization yields the
 uniform transverse derivative norm bound through the first/second scale-jet interface. -/
 theorem LowGradientTransverseScaleFactorizationCertificate.normBound
     {Q : (ℝ × ℝ × ℝ) → (ℝ × ℝ) →L[ℝ] ℝ}
@@ -154,7 +154,7 @@ theorem LowGradientTransverseScaleFactorizationCertificate.normBound
   exact lowGradientFactorTransverseFDeriv_norm_bound_of_firstSecondScaleJet
     hfirst hsecond
 
-/-- Helper for Infrastructure I.16a companion: numerator, denominator, frame, and coefficient
+/-- Supporting fact: companion: numerator, denominator, frame, and coefficient
 data expose the local cubic scale factorization of the transverse derivative family. -/
 theorem lowGradientTransverseFDerivFamily_factorization_of_sourceCertificate
     {A B : (ℝ × ℝ × ℝ) → (ℝ × ℝ) →L[ℝ] ℝ}
@@ -173,7 +173,7 @@ theorem lowGradientTransverseFDerivFamily_factorization_of_sourceCertificate
     lowGradientTransverseFDeriv_of_frame_certificates
       hframe hnum hden hdenNe
 
-/-- Helper for Infrastructure I.16a companion: source-side numerator and denominator derivative
+/-- Supporting fact: companion: source-side numerator and denominator derivative
 data form a bounded local cubic scale-factorization certificate; existence of that source data
 remains an explicit obligation. -/
 theorem LowGradientTransverseSourceCertificate.toScaleFactorizationCertificate
@@ -190,7 +190,7 @@ theorem LowGradientTransverseSourceCertificate.toScaleFactorizationCertificate
   · exact lowGradientTransverseFDerivFamily_factorization_of_sourceCertificate source
   · exact source.coefficient_bound
 
-/-- Helper for Infrastructure I.16a companion: source-side numerator and denominator derivative
+/-- Supporting fact: companion: source-side numerator and denominator derivative
 data imply the eventual first- and second-scale iterated Fréchet derivative vanishings. -/
 theorem LowGradientTransverseSourceCertificate.firstSecondScaleJet
     {A B : (ℝ × ℝ × ℝ) → (ℝ × ℝ) →L[ℝ] ℝ}

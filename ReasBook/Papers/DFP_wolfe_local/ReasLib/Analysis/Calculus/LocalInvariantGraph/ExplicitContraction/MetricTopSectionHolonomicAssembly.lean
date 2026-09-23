@@ -9,7 +9,6 @@ public import Mathlib.Analysis.Calculus.ContDiff.FTaylorSeries
 public import Mathlib.Analysis.Asymptotics.Defs
 public import Mathlib.Topology.ContinuousMap.Bounded.Basic
 public import Mathlib.Topology.Order.LeftRight
-
 public section
 
 noncomputable section
@@ -66,7 +65,7 @@ theorem hasDerivAt_of_eventually_le_pos_neg
   rw [Filter.eventually_sup]
   exact ⟨hbound, hpure⟩
 
-/-- Helper for Infrastructure I.16a: explicit positive and negative secant radii are
+/-- Supporting fact: explicit positive and negative secant radii are
 converted into the two one-sided filter bounds needed for a derivative at u₀. -/
 theorem hasDerivAt_of_secant_bounds
     (g : ℝ → X) (v : X) (u₀ : ℝ)
@@ -86,7 +85,7 @@ theorem hasDerivAt_of_secant_bounds
     filter_upwards [Ioo_mem_nhdsLT hδneg] with t ht
     exact hbound t ht.1 ht.2
 
-/-- Helper for Infrastructure I.16a: convergence of a normalized secant model at zero gives the
+/-- Supporting fact: convergence of a normalized secant model at zero gives the
 derivative once the model agrees with the genuine secant at every nonzero increment. -/
 theorem hasDerivAt_of_tendsto_normalized_secant
     (g q : ℝ → X) (v : X) (u : ℝ)
@@ -98,7 +97,7 @@ theorem hasDerivAt_of_tendsto_normalized_secant
   filter_upwards [self_mem_nhdsWithin] with t ht
   exact hsecant t ht
 
-/-- Helper for Infrastructure I.16a: evaluating a BoundedContinuousFunction-valued map at a
+/-- Supporting fact: evaluating a BoundedContinuousFunction-valued map at a
 fixed point preserves its filter convergence. -/
 theorem tendsto_boundedContinuousFunction_apply
     {I α Y : Type*} [TopologicalSpace I] [TopologicalSpace α]
@@ -109,7 +108,7 @@ theorem tendsto_boundedContinuousFunction_apply
     Tendsto (fun i ↦ F i x) l (𝓝 (f x)) := by
   exact ((BoundedContinuousFunction.evalCLM ℝ x).continuous.tendsto f).comp hF
 
-/-- Helper for Infrastructure I.16a: a convergent BoundedContinuousFunction-valued secant,
+/-- Supporting fact: a convergent BoundedContinuousFunction-valued secant,
 after fixed-point evaluation and constant scaling, yields the derivative of the underlying map. -/
 theorem hasDerivAt_of_tendsto_boundedContinuousFunction_secant
     {α Y : Type*} [TopologicalSpace α]
@@ -130,7 +129,7 @@ theorem hasDerivAt_of_tendsto_boundedContinuousFunction_secant
   exact hasDerivAt_of_tendsto_normalized_secant g (fun t ↦ scale • sec t x) v u
     hscaled hscale
 
-/-- Helper for Infrastructure I.16a: a pointwise derivative field that is continuous upgrades the
+/-- Supporting fact: a pointwise derivative field that is continuous upgrades the
 underlying scalar map to a globally first-order continuously differentiable map. -/
 theorem contDiff_one_of_hasDerivAt_continuous
     (g v : ℝ → X)
@@ -147,7 +146,7 @@ theorem contDiff_one_of_hasDerivAt_continuous
     rw [hderiv_eq]
     exact hv
 
-/-- Helper for Infrastructure I.16a: a bounded continuous secant family with a continuous limit
+/-- Supporting fact: a bounded continuous secant family with a continuous limit
 field yields first-order continuous differentiability when its scaled evaluations are the genuine
 nonzero secants at every base point. -/
 theorem contDiff_one_of_tendsto_boundedContinuousFunction_secant
@@ -265,7 +264,7 @@ theorem hasFDerivAt_iteratedFDeriv_of_hasDerivAt
   rw [← hmapeq]
   exact hcomp
 
-/-- Helper for Infrastructure I.16a: explicit two-sided secant bounds on the scalar
+/-- Supporting fact: explicit two-sided secant bounds on the scalar
 `m`-th iterated derivative produce the curried Fréchet derivative required by a holonomic
 top section. -/
 theorem hasFDerivAt_iteratedFDeriv_of_secant_bounds

@@ -3,7 +3,6 @@ module
 public import ReasLib.Analysis.Calculus.FiniteTaylorJet.Ext
 public import ReasLib.Analysis.Calculus.FiniteTaylorJet.Operations
 public import Mathlib.Analysis.Calculus.ContDiff.Comp
-
 public section
 
 namespace FiniteTaylorJet
@@ -15,7 +14,7 @@ variable [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable [NormedAddCommGroup F] [NormedSpace ℝ F]
 variable [NormedAddCommGroup G] [NormedSpace ℝ G]
 
-/-- Helper for Infrastructure I.16 (Finite-order graph-jet contraction):
+/-- Supporting fact: (Finite-order graph-jet contraction):
 derivative-constructed jets commute with function composition at order zero. -/
 theorem comp_ofFunction_zero {f : E → F} {g : F → G} {x : E} :
     comp (ofFunction ℝ 0 g (f x)) (ofFunction ℝ 0 f x) =
@@ -45,7 +44,7 @@ theorem comp_ofFunction_zero {f : E → F} {g : F → G} {x : E} :
   rw [hv]
   exact hzero
 
-/-- Infrastructure I.16 (Finite-order graph-jet contraction):
+/-- Supporting infrastructure (Finite-order graph-jet contraction):
 derivative-constructed jets commute with function composition at order one. -/
 theorem comp_ofFunction_one {f : E → F} {g : F → G} {x : E}
     (hf : ContDiffAt ℝ 1 f x) (hg : ContDiffAt ℝ 1 g (f x)) :

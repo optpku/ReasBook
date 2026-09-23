@@ -2,7 +2,6 @@ module
 
 public import ReasLib.Optimization.DFP.AbstractSecantStep
 public import ReasLib.Optimization.DFP.InverseUpdate.Scaling
-
 public section
 
 open scoped Matrix
@@ -25,7 +24,8 @@ private lemma gradientChange_eq_neg_smul_secantImage {n : Type u} [Fintype n]
   rw [z.gradientChange_def, displacement_eq_neg_smul_preconditionedGradient,
     Matrix.mulVec_smul]
 
-/-- Writing `v = Hg`, `w = Av`, `β = vᵀw`, and `γ = wᵀHw`, the next
+/-- Matrix formula for Proposition 4 (`prop:one-step`).
+Writing `v = Hg`, `w = Av`, `β = vᵀw`, and `γ = wᵀHw`, the next
 inverse-Hessian matrix has the exact rank-two DFP formula. -/
 theorem nextInverseHessian_formula {n : Type u} [Fintype n] (z : AbstractSecantStep n) :
     let v := z.preconditionedGradient

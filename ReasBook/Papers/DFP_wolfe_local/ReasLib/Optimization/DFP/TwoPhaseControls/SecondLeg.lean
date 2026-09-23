@@ -3,7 +3,6 @@ module
 public import ReasLib.Optimization.DFP.TwoPhaseControls.FirstLeg
 public import ReasLib.Optimization.DFP.TwoPhaseControls.FirstLeg
 import all ReasLib.Optimization.DFP.TwoPhaseControls.FirstLeg
-
 public section
 
 noncomputable section
@@ -948,7 +947,7 @@ theorem factorsBase :
   norm_num [factors, canonicalFactors, hspectral, hgradient]
 
 /-- The low second-leg gradient factor is constant on the positive zero-scale slice;
-this cancellation supports Lemma 4.15 (Near-return winding number is nonzero). -/
+this cancellation supports Supporting Lemma (Near-return winding number is nonzero). -/
 theorem gradientFactors_low_zeroScale (p h : ℝ) (hp : 0 < p) :
     (gradientFactors 0 p h).1 = 1 := by
   have hp_one_ne : p + 1 ≠ 0 := by
@@ -966,7 +965,7 @@ theorem gradientFactors_low_zeroScale (p h : ℝ) (hp : 0 < p) :
   field_simp [hp_one_ne]
   all_goals norm_num
 
-/- Claim 2 of Lemma 4.15 — `DFP.SecondLeg.lowGradientFactorTransverseFDeriv_norm_bound`
+/- Claim 2 of Supporting Lemma — `DFP.SecondLeg.lowGradientFactorTransverseFDeriv_norm_bound`
 (the uniform cubic bound on the transverse derivative of the low gradient factor) — is now proven
 unconditionally in the leaf module
 `ReasLib.Optimization.DFP.TwoPhaseControls.SecondLeg.TransverseNormBoundFinal`.

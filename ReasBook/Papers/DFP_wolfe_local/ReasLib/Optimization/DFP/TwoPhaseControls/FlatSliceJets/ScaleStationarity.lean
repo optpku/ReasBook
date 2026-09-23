@@ -6,7 +6,6 @@ import all ReasLib.Optimization.DFP.TwoPhaseControls.StateMap
 import all ReasLib.Optimization.DFP.TwoPhaseControls.FirstLeg
 import all ReasLib.Optimization.DFP.TwoPhaseControls.SecondLeg
 import all ReasLib.LinearAlgebra.Matrix.RealSymmetric2
-
 public section
 
 noncomputable section
@@ -417,7 +416,7 @@ private lemma secondLegFactorsScale_hasDerivAt (p h : ℝ)
       a, b, d, q, v, beta, gamma, delta, w₁, w₂, X, L, H, Q, U, two,
       three])
 
-/-- Helper for Infrastructure I.16a and Lemma 4.15: on a positive transverse
+/-- Supporting fact: and Supporting Lemma: on a positive transverse
 slice, every second-leg removable factor is stationary in the signed scale. The
 wrapper exposes the source calculation without its local algebraic scaffolding. -/
 theorem secondLegFactors_scale_hasDerivAt (p h : ℝ)
@@ -521,7 +520,7 @@ private theorem iteratedFDeriv_scale_transverse_eq_zero
     hf2.iteratedFDeriv_two_apply_eq_zero_of_eventually_fderiv_line_eq_zero
       ((1, 0, 0) : ℝ × ℝ × ℝ) v (by simpa only [a, u] using hzero)
 
-/-- Helper for Infrastructure I.16a and Lemma 4.15: scale stationarity of an
+/-- Supporting fact: and Supporting Lemma: scale stationarity of an
 analytic scalar family annihilates its scale/transverse mixed Hessian at the
 canceled base point. -/
 theorem iteratedFDeriv_scale_transverse_eq_zero_of_scaleStationarity

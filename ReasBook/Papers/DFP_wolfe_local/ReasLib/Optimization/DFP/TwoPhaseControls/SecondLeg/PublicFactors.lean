@@ -17,7 +17,7 @@ lemmas expose the small, stable interface needed by the transverse derivative es
 unfolding the full eigenframe construction in downstream proofs.
 -/
 
-/-- Helper for Lemma 4.15: the gradient-factor pair is analytic at the canceled base point. -/
+/-- Supporting fact: the gradient-factor pair is analytic at the canceled base point. -/
 theorem gradientFactors_analyticAt_base :
     AnalyticAt ℝ
       (fun x : ℝ × ℝ × ℝ ↦ gradientFactors x.1 x.2.1 x.2.2)
@@ -31,18 +31,18 @@ theorem gradientFactors_analyticAt_base :
   filter_upwards [] with x
   rfl
 
-/-- Helper for Lemma 4.15: analyticity of the gradient factors yields their base continuity. -/
+/-- Supporting fact: analyticity of the gradient factors yields their base continuity. -/
 theorem gradientFactors_continuousAt_base :
     ContinuousAt
       (fun x : ℝ × ℝ × ℝ ↦ gradientFactors x.1 x.2.1 x.2.2)
       (0, 2, 1) := by
   exact gradientFactors_analyticAt_base.continuousAt
 
-/-- Helper for Lemma 4.15: the normalized gradient factors take the canonical base value. -/
+/-- Supporting fact: the normalized gradient factors take the canonical base value. -/
 theorem gradientFactors_base : gradientFactors 0 2 1 = (1, 2) := by
   exact congrArg (fun t ↦ t.2.1) factorsBase
 
-/-- Helper for Lemma 4.15: the low gradient factor is nonzero on a neighborhood of the
+/-- Supporting fact: the low gradient factor is nonzero on a neighborhood of the
     canceled base point. -/
 theorem eventually_gradientFactors_low_ne_zero :
     ∀ᶠ x in 𝓝 ((0, 2, 1) : ℝ × ℝ × ℝ),

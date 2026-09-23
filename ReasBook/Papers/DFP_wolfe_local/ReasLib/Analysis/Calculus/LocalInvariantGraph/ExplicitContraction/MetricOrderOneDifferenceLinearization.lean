@@ -2,7 +2,6 @@ module
 
 public import ReasLib.Analysis.Calculus.LocalInvariantGraph.ExplicitContraction.MetricOrderOneSlopeOperator
 import all ReasLib.Analysis.Calculus.LocalInvariantGraph.ExplicitContraction.MetricOrderOneSlopeOperator
-
 public section
 
 noncomputable section
@@ -23,7 +22,7 @@ recurrence.  The denominator is evaluated at the candidate section, while the ce
 term contains the output of a fixed slope section.  No second derivative of the graph is used.
 -/
 
-/-- Helper for Infrastructure I.16a: the selected inverse center map cancels the center map. -/
+/-- Supporting fact: the selected inverse center map cancels the center map. -/
 theorem MetricGraphTransformData.inverseCenter_centerMap
     (d : MetricGraphTransformData X)
     (zeta : SmallLipschitzGraph X d.radius d.slope) (u : ℝ) :
@@ -31,7 +30,7 @@ theorem MetricGraphTransformData.inverseCenter_centerMap
   rw [d.inverseCenter_eq zeta]
   exact Function.leftInverse_invFun (d.centerMap_bijective zeta).1 u
 
-/-- Helper for Infrastructure I.16a: before using the cone self-map inequality, the explicit
+/-- Supporting fact: before using the cone self-map inequality, the explicit
 order-one slope value satisfies the sharper numerator-over-denominator bound. -/
 theorem norm_metricOrderOneSlopeValue_le_sharp
     (d : MetricGraphTransformData X)
@@ -56,7 +55,7 @@ theorem norm_metricOrderOneSlopeValue_le_sharp
         (d.lower : ℝ)⁻¹ := by
       ring
 
-/-- Helper for Infrastructure I.16a: a fixed slope section obeys the sharp pointwise
+/-- Supporting fact: a fixed slope section obeys the sharp pointwise
 numerator-over-denominator bound, without assuming differentiability of the section. -/
 theorem MetricSlopeSection.norm_apply_le_sharp_of_fixed
     {d : MetricGraphTransformData X}
@@ -76,7 +75,7 @@ theorem MetricSlopeSection.norm_apply_le_sharp_of_fixed
     _ ≤ ((d.linearRate : ℝ) * (d.slope : ℝ) + (d.epsilon : ℝ)) *
         (d.lower : ℝ)⁻¹ := norm_metricOrderOneSlopeValue_le_sharp d zeta b y
 
-/-- Helper for Infrastructure I.16a: at a fixed slope section, the numerator equals the
+/-- Supporting fact: at a fixed slope section, the numerator equals the
 candidate denominator times the fixed output over the corresponding center coordinate. -/
 theorem metricOrderOneNumerator_eq_denominator_smul_fixedValue
     (d : MetricGraphTransformData X)
@@ -100,7 +99,7 @@ theorem metricOrderOneNumerator_eq_denominator_smul_fixedValue
   rw [smul_smul, mul_inv_cancel₀ hdenominator_ne, one_smul] at hscaled
   exact hscaled
 
-/-- Helper for Infrastructure I.16a: the exact finite-difference coefficient of the rational
+/-- Supporting fact: the exact finite-difference coefficient of the rational
 order-one slope transform.  Its denominator is taken at the candidate `c`, and its rank-one
 feedback uses the fixed output `b (centerMap zeta u)`. -/
 def metricOrderOneDifferenceCoefficient
@@ -111,7 +110,7 @@ def metricOrderOneDifferenceCoefficient
     (d.L + derivFiber d zeta u -
       (derivCenterFiber d zeta u).smulRight (b.1 (d.centerMap zeta u)))
 
-/-- Helper for Infrastructure I.16a: application of the order-one difference coefficient
+/-- Supporting fact: application of the order-one difference coefficient
 exposes its fiber term and fixed-output center feedback. -/
 theorem metricOrderOneDifferenceCoefficient_apply
     (d : MetricGraphTransformData X)
@@ -123,7 +122,7 @@ theorem metricOrderOneDifferenceCoefficient_apply
           (derivCenterFiber d zeta u w) • b.1 (d.centerMap zeta u)) := by
   rfl
 
-/-- Helper for Infrastructure I.16a: at `y = centerMap zeta u`, subtracting a fixed slope
+/-- Supporting fact: at `y = centerMap zeta u`, subtracting a fixed slope
 section from the transformed candidate is the difference coefficient applied to `c u - b u`. -/
 theorem metricOrderOneSlopeOperator_sub_fixed_apply_centerMap
     (d : MetricGraphTransformData X)
@@ -152,7 +151,7 @@ theorem metricOrderOneSlopeOperator_sub_fixed_apply_centerMap
     ← hnumerator_sub, ← hdenominator_sub, hcollapse, smul_sub, smul_smul,
     inv_mul_cancel₀ hdenominator_ne, one_smul]
 
-/-- Helper for Infrastructure I.16a: the exact order-one difference coefficient has the sharp
+/-- Supporting fact: the exact order-one difference coefficient has the sharp
 pointwise bound `metricGraphTransformRate * lower⁻¹`, paid for by the fixed slope output bound. -/
 theorem metricOrderOneDifferenceCoefficient_apply_norm_le
     (d : MetricGraphTransformData X)
@@ -254,7 +253,7 @@ theorem metricOrderOneDifferenceCoefficient_apply_norm_le
         (d.lower : ℝ)⁻¹) * ‖w‖ := by
       ring
 
-/-- Infrastructure I.16a: the operator norm of the exact order-one difference coefficient is
+/-- Supporting infrastructure: the operator norm of the exact order-one difference coefficient is
 bounded by `metricGraphTransformRate * lower⁻¹`. -/
 theorem norm_metricOrderOneDifferenceCoefficient_le
     (d : MetricGraphTransformData X)

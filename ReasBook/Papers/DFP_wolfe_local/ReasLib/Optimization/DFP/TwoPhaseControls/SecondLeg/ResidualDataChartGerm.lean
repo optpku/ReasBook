@@ -24,7 +24,7 @@ public output metric, output gradient, and frame-coordinate certificate.  A pare
 instantiate the six coordinate identities locally, while the chart calculation remains reusable.
 -/
 
-/-- Helper for Lemma 4.15: a public certificate identifies the output coordinates with a
+/-- Supporting fact: a public certificate identifies the output coordinates with a
 signed-scale low chart and records the component quadratic germs used by that chart. -/
 structure LowGradientScaleChartCertificate
     (p h : ℝ)
@@ -50,7 +50,7 @@ structure LowGradientScaleChartCertificate
   frame_certificate : ∀ r : ℝ,
     LowGradientTransverseFrameCertificate (r, p, h)
 
-/-- Helper for Lemma 4.15: the public output-coordinate certificate gives the exact generic
+/-- Supporting fact: the public output-coordinate certificate gives the exact generic
 low-chart path for the low second-leg gradient factor. -/
 theorem lowGradientChartPath_eq_lowGradientFactor_of_scaleChartCertificate
     {p h : ℝ}
@@ -85,7 +85,7 @@ theorem lowGradientChartPath_eq_lowGradientFactor_of_scaleChartCertificate
   rw [hradius]
   ring_nf
 
-/-- Helper for Lemma 4.15: component germs with a cubic metric scaling transfer to the actual
+/-- Supporting fact: component germs with a cubic metric scaling transfer to the actual
 second-leg low-factor quadratic germ. -/
 theorem lowGradientFactor_scale_quadraticGerm_of_scaleChartCertificate
     {p h : ℝ}
@@ -150,7 +150,7 @@ theorem lowGradientFactor_scale_quadraticGerm_of_scaleChartCertificate
   · rfl
   · ring
 
-/-- Helper for Lemma 4.15: a `C³` scale-chart certificate gives the vanishing second scale
+/-- Supporting fact: a `C³` scale-chart certificate gives the vanishing second scale
 derivative of the low second-leg gradient factor. -/
 theorem lowGradientFactor_scale_iteratedDeriv_two_eq_zero_of_scaleChartCertificate
     {p h : ℝ}
@@ -167,7 +167,7 @@ theorem lowGradientFactor_scale_iteratedDeriv_two_eq_zero_of_scaleChartCertifica
   have hderiv := HasQuadraticGerm.iteratedDeriv_two_eq_of_contDiffAt hgerm hregular
   simpa [hq₂] using hderiv
 
-/-- Helper for Lemma 4.15: the removable SecondLeg gradient-factor pair is the independent
+/-- Supporting fact: the removable SecondLeg gradient-factor pair is the independent
 second-step pair after the scale substitution `b = ε`, `r = ε²`. -/
 theorem gradientFactors_eq_independentSecondGradientFactors
     (ε p h : ℝ) :
@@ -181,7 +181,7 @@ theorem gradientFactors_eq_independentSecondGradientFactors
   dsimp [independentSecondResiduals, independentSecondGradientResiduals]
   ring_nf
 
-/-- Helper for Lemma 4.15: projecting the normalized pair bridge gives the removable
+/-- Supporting fact: projecting the normalized pair bridge gives the removable
 SecondLeg low factor as the independent second-step low factor. -/
 theorem lowGradientFactor_eq_independentSecondGradientFactors
     (ε p h : ℝ) :
@@ -193,7 +193,7 @@ theorem lowGradientFactor_eq_independentSecondGradientFactors
         (DFP.FirstLeg.gradientFactors ε p h).2).1 := by
   exact congrArg Prod.fst (gradientFactors_eq_independentSecondGradientFactors ε p h)
 
-/-- Helper for Lemma 4.15: the removable SecondLeg spectral-factor pair is the independent
+/-- Supporting fact: the removable SecondLeg spectral-factor pair is the independent
 second-step pair after the scale substitution `b = ε`, `r = ε²`. -/
 theorem spectralFactors_eq_independentSecondSpectralFactors
     (ε p h : ℝ) :
@@ -207,7 +207,7 @@ theorem spectralFactors_eq_independentSecondSpectralFactors
   dsimp [independentSecondResiduals]
   ring_nf
 
-/-- Helper for Lemma 4.15: the second-leg output metric agrees with the independent
+/-- Supporting fact: the second-leg output metric agrees with the independent
 second-step metric under the same scale substitution and first-step factors. -/
 theorem outputMetric_eq_independentSecondMetric
     (ε p h : ℝ) :
@@ -234,7 +234,7 @@ theorem outputMetric_eq_independentSecondMetric
     · simp
       ring_nf
 
-/-- Helper for Lemma 4.15: the second-leg output gradient agrees with the independent
+/-- Supporting fact: the second-leg output gradient agrees with the independent
 second-step gradient under the same scale substitution and first-step factors. -/
 theorem outputGradient_eq_independentSecondGradient
     (ε p h : ℝ) :

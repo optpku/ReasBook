@@ -570,7 +570,7 @@ private theorem hpath_eq (r : ℝ) :
   rw [hsqrt]
   ring_nf
 
-/-- Helper for Lemma 4.15 (Claim 2, `𝒢₂ = 1 + O(ε³)`): via the FirstLeg component germ tower
+/-- Supporting fact: (Claim 2, `𝒢₂ = 1 + O(ε³)`): via the FirstLeg component germ tower
 and the pure-algebra chart factorization, the pure second signed-scale derivative of the low
 second-leg gradient factor vanishes at any transverse parameter with `0 < h` and `(p+1)/3 ≠ 0`. -/
 theorem lowGradientFactor_scale_iteratedDeriv_two_eq_zero

@@ -18,7 +18,7 @@ This adapter keeps the owner-side calculation separate from the quotient plumbin
 are exactly the eventual facts that a concrete residual calculation must provide.
 -/
 
-/-- Helper for Infrastructure I.16a: source-side eventual data for the transverse low-gradient
+/-- Supporting fact: source-side eventual data for the transverse low-gradient
 quotient, with coefficient maps `A` and `B` and a uniform quotient bound. -/
 structure LowGradientTransverseSourceCertificate
     (x₀ : ℝ × ℝ × ℝ)
@@ -43,7 +43,7 @@ structure LowGradientTransverseSourceCertificate
         (lowGradientTransverseDenominator x) (A x) (B x)‖ ≤ C
   positive_bound : 0 < C
 
-/-- Infrastructure I.16a: source-side numerator, denominator, frame, and coefficient data imply
+/-- Supporting infrastructure: source-side numerator, denominator, frame, and coefficient data imply
 the uniform cubic transverse derivative bound consumed by downstream estimates. -/
 theorem lowGradientFactorTransverseFDeriv_norm_bound_of_sourceCertificate
     {x₀ : ℝ × ℝ × ℝ}

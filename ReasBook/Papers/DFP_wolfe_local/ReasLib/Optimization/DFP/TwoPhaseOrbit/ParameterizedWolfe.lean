@@ -4,7 +4,6 @@ public import ReasLib.Optimization.DFP.TwoPhaseOrbit.Wolfe
 public import ReasLib.Optimization.DFP.AbstractSecantStep.Wolfe.DiscreteRatio
 public import ReasLib.Optimization.LineSearch
 import ReasLib.LinearAlgebra.Matrix.OrthogonalTransport
-
 /-!
 # Parameterized Wolfe endpoint certificates
 
@@ -25,7 +24,7 @@ open scoped Asymptotics Topology
 
 namespace DFP.TwoLeg.SlowCurve
 
-/-- Infrastructure I.16a: the realized decrease ratio approaches the two-phase
+/-- Supporting infrastructure: the realized decrease ratio approaches the two-phase
 limit from below uniformly for every first Wolfe coefficient strictly below
 `2 / 3`. -/
 theorem phaseDecreaseRatioLowerBound_of_lt_two_thirds
@@ -196,7 +195,7 @@ end DFP.TwoLeg.SlowCurve
 
 namespace DFP.TwoPhaseOrbit
 
-/-- Helper for Infrastructure I.16a: special-orthogonal phase transport preserves
+/-- Supporting fact: special-orthogonal phase transport preserves
 the Euclidean pairings used by the endpoint Wolfe certificates. -/
 theorem inner_toLp_mulVec_eq_of_specialOrthogonal
     (R : Matrix (Fin 2) (Fin 2) ℝ)
@@ -207,7 +206,7 @@ theorem inner_toLp_mulVec_eq_of_specialOrthogonal
   simpa [dotProduct_comm] using
     Matrix.dotProduct_mulVec_eq_of_mem_specialOrthogonalGroup R hR v u
 
-/-- Helper for Infrastructure I.16a: the two physical endpoint pairings of a
+/-- Supporting fact: the two physical endpoint pairings of a
 phase are the slope and next-slope of its abstract secant step. -/
 theorem endpointPhaseSlope_transport
     (orbit : DFP.TwoPhaseOrbit) (j : ℕ) (i : Fin 2)
@@ -231,7 +230,7 @@ theorem endpointPhaseSlope_transport
       ((orbit.state j).phaseFrame i) (h.valid.phaseFrame_mem_specialOrthogonal i)
       (h.step i).nextGradient (h.step i).displacement
 
-/-- Infrastructure I.16a: every exact phase has strong-Wolfe curvature for any
+/-- Supporting infrastructure: every exact phase has strong-Wolfe curvature for any
 `c₂` with `2 / 3 ≤ c₂`, using the exact phase ratios. -/
 theorem endpointPhaseStrongCurvature_of_ge_two_thirds
     (orbit : DFP.TwoPhaseOrbit) (j : ℕ) (i : Fin 2)
@@ -248,7 +247,7 @@ theorem endpointPhaseStrongCurvature_of_ge_two_thirds
   exact DFP.AbstractSecantStep.strongCurvature_of_tau_values
     (h.step i) (h.step_tau_mem i) hc₂
 
-/-- Infrastructure I.16a: every exact phase has weak-Wolfe curvature for any
+/-- Supporting infrastructure: every exact phase has weak-Wolfe curvature for any
 `c₂` in the paper's range, again using the exact phase ratios. -/
 theorem endpointPhaseWeakCurvature_of_ge_two_thirds
     (orbit : DFP.TwoPhaseOrbit) (j : ℕ) (i : Fin 2)
@@ -269,7 +268,7 @@ theorem endpointPhaseWeakCurvature_of_ge_two_thirds
   · rw [hτ]
     linarith
 
-/-- Infrastructure I.16a: every flattened exact-cycle endpoint has strong-Wolfe
+/-- Supporting infrastructure: every flattened exact-cycle endpoint has strong-Wolfe
 curvature for all coefficients `c₂ ≥ 2 / 3`. -/
 theorem endpointStrongCurvature_of_ge_two_thirds
     (orbit : DFP.TwoPhaseOrbit)
@@ -287,7 +286,7 @@ theorem endpointStrongCurvature_of_ge_two_thirds
       endpointPhaseStrongCurvature_of_ge_two_thirds orbit j (1 : Fin 2)
         (h_exact j) hc₂
 
-/-- Infrastructure I.16a: every flattened exact-cycle endpoint has weak-Wolfe
+/-- Supporting infrastructure: every flattened exact-cycle endpoint has weak-Wolfe
 curvature for all coefficients `c₂ ≥ 2 / 3`. -/
 theorem endpointWeakCurvature_of_ge_two_thirds
     (orbit : DFP.TwoPhaseOrbit)
@@ -305,7 +304,7 @@ theorem endpointWeakCurvature_of_ge_two_thirds
       endpointPhaseWeakCurvature_of_ge_two_thirds orbit j (1 : Fin 2)
         (h_exact j) hc₂
 
-/-- Infrastructure I.16a: the endpoint strong/weak curvature certificates are
+/-- Supporting infrastructure: the endpoint strong/weak curvature certificates are
 available together for every `c₂ ≥ 2 / 3`. -/
 theorem endpointCurvatureCertificates_of_ge_two_thirds
     (orbit : DFP.TwoPhaseOrbit)
@@ -322,7 +321,7 @@ theorem endpointCurvatureCertificates_of_ge_two_thirds
   · exact endpointStrongCurvature_of_ge_two_thirds orbit h_exact hc₂ k
   · exact endpointWeakCurvature_of_ge_two_thirds orbit h_exact hc₂ k
 
-/-- Helper for Infrastructure I.16a: the flattened strong-curvature theorem in
+/-- Supporting fact: the flattened strong-curvature theorem in
 the absolute-inequality form consumed by gradient-facing strong-Wolfe APIs. -/
 theorem endpointStrongCurvature_inequality_of_ge_two_thirds
     (orbit : DFP.TwoPhaseOrbit)
@@ -334,7 +333,7 @@ theorem endpointStrongCurvature_inequality_of_ge_two_thirds
   exact LineSearch.Wolfe.isStrongCurvature_iff.mp
     (endpointStrongCurvature_of_ge_two_thirds orbit h_exact hc₂ k)
 
-/-- Helper for Infrastructure I.16a: the endpoint gradient certificate of the
+/-- Supporting fact: the endpoint gradient certificate of the
 realized objective can be expressed with the orbit's prescribed gradient. -/
 theorem realizedObjective_hasEndpointGradientAt
     (orbit : DFP.TwoPhaseOrbit) (C : EuclideanSpace ℝ (Fin 2)) (G : ℝ)
@@ -354,7 +353,7 @@ theorem realizedObjective_hasEndpointGradientAt
   rw [hvector] at hraw
   exact hraw
 
-/-- Infrastructure I.16a: an endpoint Armijo inequality together with the
+/-- Supporting infrastructure: an endpoint Armijo inequality together with the
 parameterized exact-cycle curvature certificate constructs the gradient-facing
 weak-Wolfe predicate used by downstream iteration consumers. -/
 theorem endpointWeakWolfe_of_endpointData
@@ -402,7 +401,7 @@ end DFP.TwoPhaseOrbit
 
 namespace DFP.TwoLeg.SlowCurve
 
-/-- Infrastructure I.16a: the endpoint Armijo inequality inherits any coefficient
+/-- Supporting infrastructure: the endpoint Armijo inequality inherits any coefficient
 `c₁` in the open interval `(0, 2 / 3)` from the uniform phase estimate. -/
 theorem endpointArmijo_of_lt_two_thirds
     (curve : DFP.TwoLeg.SlowCurve) {c₁ : ℝ}

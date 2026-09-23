@@ -2,7 +2,6 @@ module
 
 public import ReasLib.Analysis.Calculus.FiniteTaylorJet.PeanoComparison
 public import ReasLib.Analysis.Calculus.FiniteTaylorJet.Uniform
-
 public section
 
 /-!
@@ -24,7 +23,7 @@ namespace FiniteTaylorJet
 variable {Theta : Type u} {F : Type v}
 variable [NormedAddCommGroup F] [NormedSpace ℝ F]
 
-/-- Helper for Infrastructure I.16 (Finite-smooth invariant graph under an explicit stable
+/-- Supporting fact: (Finite-smooth invariant graph under an explicit stable
 contraction): a scalar member of a uniform jet family has a pointwise Peano remainder. -/
 theorem IsUniformOn.scalarRemainder_isLittleO {m : ℕ} {f : Theta → ℝ → F}
     {J : Theta → FiniteTaylorJet ℝ ℝ F m} {x : ℝ} {K : Set Theta}
@@ -41,7 +40,7 @@ theorem IsUniformOn.scalarRemainder_isLittleO {m : ℕ} {f : Theta → ℝ → F
   have hb := hbound theta htheta h hsmall
   simpa only [Real.rpow_natCast, norm_pow] using hb
 
-/-- Infrastructure I.16 (Finite-smooth invariant graph under an explicit stable contraction):
+/-- Supporting infrastructure (Finite-smooth invariant graph under an explicit stable contraction):
 for a scalar source, derivative-constructed finite jets commute with composition in every
 finite order. -/
 theorem comp_ofFunction_scalar {m : ℕ} {f : ℝ → F} {G : Type w}
@@ -90,7 +89,7 @@ theorem comp_ofFunction_scalar {m : ℕ} {f : ℝ → F} {G : Type w}
   simp only [J, Kjet, remainder_def]
   abel
 
-/-- Helper for Infrastructure I.16 (Finite-smooth invariant graph under an explicit stable
+/-- Supporting fact: (Finite-smooth invariant graph under an explicit stable
 contraction): every coefficient of a scalar formal jet composition is the corresponding
 coefficient of the derivative-constructed composite jet. -/
 theorem coeff_comp_ofFunction_scalar {m : ℕ} {f : ℝ → F} {G : Type w}

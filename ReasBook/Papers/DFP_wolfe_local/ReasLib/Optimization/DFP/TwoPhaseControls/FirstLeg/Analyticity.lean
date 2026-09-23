@@ -2,7 +2,6 @@ module
 
 public import ReasLib.Optimization.DFP.TwoPhaseControls.FirstLeg
 import all ReasLib.Optimization.DFP.TwoPhaseControls.FirstLeg
-
 /-!
 # Analyticity of the first-leg output coordinates
 
@@ -59,20 +58,20 @@ theorem outputGradientEntry_analyticAt (i : Fin 2) : AnalyticAt ℝ
     dsimp
     fun_prop (disch := norm_num) [Prod.fst, Prod.snd]
 
-/-- Helper for Infrastructure I.16a: the first-leg metric entries used by frame analyticity. -/
+/-- Supporting fact: the first-leg metric entries used by frame analyticity. -/
 private def metricEntriesForAnalyticity (x : ℝ × ℝ × ℝ) : ℝ × ℝ × ℝ :=
   (outputMetric x.1 x.2.1 x.2.2 0 0,
     outputMetric x.1 x.2.1 x.2.2 0 1,
     outputMetric x.1 x.2.1 x.2.2 1 1)
 
-/-- Helper for Infrastructure I.16a: analyticity of the assembled first-leg metric entries. -/
+/-- Supporting fact: analyticity of the assembled first-leg metric entries. -/
 private lemma metricEntriesForAnalyticity_analyticAt :
     AnalyticAt ℝ metricEntriesForAnalyticity (0, 2, 1) := by
   exact (outputMetricEntry_analyticAt 0 0).prod
     ((outputMetricEntry_analyticAt 0 1).prod
       (outputMetricEntry_analyticAt 1 1))
 
-/-- Helper for Infrastructure I.16a: the first-leg metric entries at the canceled base. -/
+/-- Supporting fact: the first-leg metric entries at the canceled base. -/
 private lemma metricEntriesForAnalyticity_base :
     metricEntriesForAnalyticity (0, 2, 1) = ((0, 0, 1) : ℝ × ℝ × ℝ) := by
   norm_num [metricEntriesForAnalyticity, outputMetric]

@@ -22,10 +22,10 @@ variable {Theta : Type u} {F : Type v}
 variable [NormedAddCommGroup Theta] [NormedSpace ℝ Theta]
 variable [NormedAddCommGroup F] [NormedSpace ℝ F]
 
-/-- Infrastructure I.16 (Finite-smooth invariant graph under an explicit stable contraction):
+/-- Supporting infrastructure (Finite-smooth invariant graph under an explicit stable contraction):
 a jointly `C³` scalar-input family on a compact parameter set is uniformly cubic when its
 slice derivatives of orders zero, one, and two vanish.  This also supplies the finite-jet
-form of the transverse cubic estimate required by Lemma 4.15. -/
+form of the transverse cubic estimate required by Supporting Lemma. -/
 theorem exists_cubic_bound_of_contDiffAt_of_iteratedFDeriv_eq_zero
     {f : Theta → ℝ → F} {K : Set Theta}
     (hK : IsCompact K)
@@ -42,7 +42,7 @@ theorem exists_cubic_bound_of_contDiffAt_of_iteratedFDeriv_eq_zero
     rw [coeff_ofFunction, hzero theta htheta n hn, smul_zero]
   exact huniform.exists_cubic_bound_of_coeff_zero hcoeffZero
 
-/-- Helper for Infrastructure I.16 (Finite-smooth invariant graph under an explicit stable
+/-- Supporting fact: (Finite-smooth invariant graph under an explicit stable
 contraction): if the compact parameter set is also a neighborhood of `theta0`, the uniform
 cubic derivative estimate holds eventually near `(0, theta0)`. -/
 theorem eventually_cubic_bound_of_contDiffAt_of_iteratedFDeriv_eq_zero

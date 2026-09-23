@@ -5,7 +5,6 @@ public import ReasLib.Optimization.DFP.TwoPhaseControls.FlatSliceJets.UniformZer
 public import ReasLib.Optimization.DFP.TwoPhaseControls.FlatSliceJets.WeightedDefectJets
 public import ReasLib.Optimization.DFP.TwoPhaseControls.RadiusJet
 import all ReasLib.Analysis.Asymptotics.UniformRemainder
-
 public section
 
 noncomputable section
@@ -66,7 +65,7 @@ theorem weightedTransverseHDefectJet (P₃ H₃ P₄ H₄ : ℝ) :
         (fun ε : ℝ ↦ (8 - H₃) * ε ^ 3 - H₄ * ε ^ 4) 0 := by
   exact weightedTransverseHDefectJet_via_scaleStationarity P₃ H₃ P₄ H₄
 
-/-- Helper for Appendix Proposition A.5c (Weighted transverse shape jet): the two
+/-- Helper for Supporting Proposition (Weighted transverse shape jet): the two
 updated transverse coordinates relative to the graph at the updated signed scale. -/
 private def weightedTransverseActual
     (θ : (ℝ × ℝ) × (ℝ × ℝ)) (ε : ℝ) : ℝ × ℝ :=
@@ -75,7 +74,7 @@ private def weightedTransverseActual
   let nextGraph := graphJetPath θ.1.1 θ.1.2 θ.2.1 θ.2.2 y.1
   (y.2.1 - nextGraph.2.1, y.2.2 - nextGraph.2.2)
 
-/-- Helper for Appendix Proposition A.5c (Weighted transverse shape jet): the
+/-- Helper for Supporting Proposition (Weighted transverse shape jet): the
 cubic-quartic model for the two transverse graph defects. -/
 private def weightedTransversePolynomial
     (θ : (ℝ × ℝ) × (ℝ × ℝ)) (ε : ℝ) : ℝ × ℝ :=
@@ -83,13 +82,13 @@ private def weightedTransversePolynomial
       ((6 * θ.2.2 - 10 * θ.2.1 - 18) / 9) * ε ^ 4,
     (8 - θ.1.2) * ε ^ 3 - θ.2.2 * ε ^ 4)
 
-/-- Helper for Appendix Proposition A.5c (Weighted transverse shape jet): the
+/-- Helper for Supporting Proposition (Weighted transverse shape jet): the
 paired difference between the actual transverse defect and its order-four model. -/
 private def weightedTransverseResidual
     (θ : (ℝ × ℝ) × (ℝ × ℝ)) (ε : ℝ) : ℝ × ℝ :=
   weightedTransverseActual θ ε - weightedTransversePolynomial θ ε
 
-/-- Helper for Appendix Proposition A.5c (Weighted transverse shape jet): the
+/-- Helper for Supporting Proposition (Weighted transverse shape jet): the
 actual transverse defect family is jointly analytic at the zero-scale fiber. -/
 private theorem weightedTransverseActual_analyticAt
     (θ : (ℝ × ℝ) × (ℝ × ℝ)) :
@@ -179,7 +178,7 @@ private theorem weightedTransverseActual_analyticAt
   filter_upwards [] with z
   rfl
 
-/-- Helper for Appendix Proposition A.5c (Weighted transverse shape jet): the
+/-- Helper for Supporting Proposition (Weighted transverse shape jet): the
 paired model-subtracted defect is jointly analytic at the zero-scale fiber. -/
 private theorem weightedTransverseResidual_analyticAt
     (θ : (ℝ × ℝ) × (ℝ × ℝ)) :
@@ -227,7 +226,7 @@ private theorem weightedTransverseResidual_analyticAt
   filter_upwards [] with z
   rfl
 
-/-- Helper for Appendix Proposition A.5c (Weighted transverse shape jet): the
+/-- Helper for Supporting Proposition (Weighted transverse shape jet): the
 paired model-subtracted transverse defect has zero finite Taylor jet through order four. -/
 private theorem weightedTransverseResidual_zero_fourJet
     (θ : (ℝ × ℝ) × (ℝ × ℝ)) :

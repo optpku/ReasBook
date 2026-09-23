@@ -2,7 +2,6 @@ module
 
 public import ReasLib.Analysis.Calculus.LocalInvariantGraph.ExplicitContraction.MetricTopSectionHolonomicBridge
 public import Mathlib.Analysis.Calculus.IteratedDeriv.FaaDiBruno
-
 public section
 noncomputable section
 open scoped BigOperators NNReal Topology
@@ -29,7 +28,7 @@ whose entries are `iteratedDeriv (c.partSize j) Φ` with `c.partSize j ≤ m` (c
 is `Cᵐ`).  No `C¹` control on the remainder itself is assumed.
 -/
 
-/-- Helper for Infrastructure I.16a: among ordered finpartitions of `m`, the only one whose `length`
+/-- Supporting fact: among ordered finpartitions of `m`, the only one whose `length`
 equals `m` is the atomic partition (each part a singleton).  This is the combinatorial core
 that lets us isolate the single "top" term in the Faà-di-Bruno expansion. -/
 private theorem orderedFinpartition_length_eq_iff_atomic
@@ -79,7 +78,7 @@ private theorem orderedFinpartition_length_eq_iff_atomic
     subst h
     simp [OrderedFinpartition.atomic]
 
-/-- Infrastructure I.16a: the order-`m` iterated derivative of the
+/-- Supporting infrastructure: the order-`m` iterated derivative of the
 composition `ζ ∘ (centerMap ζ)` splits into the isolated atomic top term
 `(deriv Φ u)^m • iteratedDeriv m ζ (Φ u)` plus the Faà-di-Bruno remainder over all
 non-atomic ordered finpartitions (`c.length ≠ m`). -/
@@ -144,7 +143,7 @@ theorem iteratedDeriv_zeta_comp_centerMap_atomic_split
   simp only [Finset.mem_erase, Finset.mem_filter, Finset.mem_univ, and_true, true_and,
     ne_eq, orderedFinpartition_length_eq_iff_atomic]
 
-/-- Helper for Infrastructure I.16a: when the center-map derivative is nonzero, the atomic
+/-- Supporting fact: when the center-map derivative is nonzero, the atomic
 Faà-di-Bruno split can be solved for the top iterated derivative of the graph. -/
 theorem iteratedDeriv_zeta_comp_centerMap_solved_atomic
     (d : MetricGraphTransformData X)
@@ -180,7 +179,7 @@ theorem iteratedDeriv_zeta_comp_centerMap_solved_atomic
       rw [hsplit]
       abel
 
-/-- Helper for Infrastructure I.16a: the solved atomic split can be transported through the
+/-- Supporting fact: the solved atomic split can be transported through the
 fixed-graph equation, replacing `ζ ∘ centerMap` by the metric right-hand side. -/
 theorem iteratedDeriv_fixedGraph_equation_solved_atomic
     [CompleteSpace X]
@@ -207,7 +206,7 @@ theorem iteratedDeriv_fixedGraph_equation_solved_atomic
   rw [htransport] at hsolved
   exact hsolved
 
-/-- Helper for Infrastructure I.16a: the Faà-di-Bruno remainder (sum over non-atomic
+/-- Supporting fact: the Faà-di-Bruno remainder (sum over non-atomic
 ordered finpartitions) is a continuous function of `u`.  Uses only that `ζ` and `Φ = centerMap ζ`
 are `Cᵐ`: each summand is a continuous order-`c.length` (`< m`) multilinear jet of `ζ` composed
 with the continuous `Φ`, evaluated at a continuously varying tuple of iterated `Φ`-derivatives of
@@ -246,7 +245,7 @@ theorem iteratedDeriv_zeta_comp_centerMap_remainder_continuous
   -- The evaluation of a continuous multilinear map on a continuously varying vector is continuous.
   exact hjet.eval hvec
 
-/-- Helper for Infrastructure I.16a: every part of a non-singleton ordered finpartition has
+/-- Supporting fact: every part of a non-singleton ordered finpartition has
 size strictly below the size of the partitioned finite set. -/
 private theorem orderedFinpartition_partSize_lt_of_length_ne_one
     {m : ℕ} (c : OrderedFinpartition m) (hlen : c.length ≠ 1) (j : Fin c.length) :
@@ -276,7 +275,7 @@ private theorem orderedFinpartition_partSize_lt_of_length_ne_one
   have hk_pos : 0 < c.partSize k := c.partSize_pos k
   omega
 
-/-- Helper for Infrastructure I.16a: a retained doubled-filter Faà-di-Bruno summand is
+/-- Supporting fact: a retained doubled-filter Faà-di-Bruno summand is
 `C¹` when the outer map and inner curve are `C^m`.  Excluding the atomic and single-block
 branches leaves one derivative for the outer jet and every inner jet. -/
 private theorem orderedFinpartition_evaluation_contDiff_one
@@ -328,7 +327,7 @@ private theorem orderedFinpartition_evaluation_contDiff_one
     exact heval.contDiff
   simpa only [Function.comp_def] using hevaluation.comp (hjet.prodMk hvec)
 
-/-- Helper for Infrastructure I.16a: under exactly `C^r` regularity and `r ≥ 2`, the doubled-filter
+/-- Supporting fact: under exactly `C^r` regularity and `r ≥ 2`, the doubled-filter
 residual from `ζ ∘ centerMap` in the reserved-top affine forcing is `C¹`. -/
 theorem iteratedDeriv_zeta_comp_centerMap_length_one_residual_contDiff
     (d : MetricGraphTransformData X)
@@ -349,7 +348,7 @@ theorem iteratedDeriv_zeta_comp_centerMap_length_one_residual_contDiff
   exact orderedFinpartition_evaluation_contDiff_one
     (ζ : ℝ → X) (d.centerMap ζ) hr hprev hcenter c hc.2.1 hc.2.2
 
-/-- Helper for Infrastructure I.16a: the Faà-di-Bruno remainder has a uniform norm bound on
+/-- Supporting fact: the Faà-di-Bruno remainder has a uniform norm bound on
 every compact set of center coordinates.  This is the boundedness interface needed before a
 remainder term can be inserted into a bounded top-section operator. -/
 theorem iteratedDeriv_zeta_comp_centerMap_remainder_norm_bound_on_compact
@@ -376,7 +375,7 @@ theorem iteratedDeriv_zeta_comp_centerMap_remainder_norm_bound_on_compact
   have hbound := hC ⟨u, hu, rfl⟩
   simpa only [remainder] using hbound
 
-/-- Helper for Infrastructure I.16a: the fixed-graph invariance equation transports the
+/-- Supporting fact: the fixed-graph invariance equation transports the
 Faà-di-Bruno atomic split from `ζ ∘ centerMap` to the differentiated metric right-hand side. -/
 theorem iteratedDeriv_fixedGraph_equation_atomic_split
     [CompleteSpace X]
