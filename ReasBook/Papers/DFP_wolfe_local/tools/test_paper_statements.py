@@ -41,7 +41,7 @@ class StatementTests(unittest.TestCase):
         attach_statements(expected, excerpts)
         self.assertEqual(graph['items'], expected['items'])
         self.assertEqual(len(excerpts['items']), 11)
-        self.assertEqual(sum(x['formulaCount'] for x in excerpts['items']), 113)
+        self.assertEqual(sum(x['formulaCount'] for x in excerpts['items']), 115)
         for item in excerpts['items']:
             self.assertEqual(hashlib.sha256(item['statementLatex'].encode()).hexdigest(), item['statementSha256'])
             self.assertNotIn('katex-error', item['statementHtml'])

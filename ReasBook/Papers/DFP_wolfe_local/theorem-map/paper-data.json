@@ -2,7 +2,7 @@
   "schemaVersion": 2,
   "project": {
     "branch": "v4.32.0",
-    "commit": "1a74e5e51ee05415c98410f9052ba371ec546b43",
+    "commit": "2d35734871c7f1dc028c4f1c376e17fcfe062443",
     "id": "DFP_wolfe_local",
     "kind": "papers",
     "repository": "https://github.com/optpku/ReasBook",
@@ -15,7 +15,6 @@
       "dependencies": [
         "lem-center-manifold",
         "lem-disjoint-interpolation",
-        "lem-scalar-asymptotics",
         "lem-separation",
         "lem-two-step-expansions",
         "prop-one-step"
@@ -28,7 +27,6 @@
       "proofDependencies": [
         "lem-center-manifold",
         "lem-disjoint-interpolation",
-        "lem-scalar-asymptotics",
         "lem-separation",
         "lem-two-step-expansions",
         "prop-one-step"
@@ -38,24 +36,19 @@
       "statementDependencies": [],
       "title": "DFP can fail under strong Wolfe conditions",
       "type": "Theorem",
-      "paperMapping": "Main result, strengthened by the sharpness statement proved later in the paper.",
+      "paperMapping": "The complete strong-Wolfe counterexample in every dimension n ≥ 2, with the additional failure of all Hölder exponents greater than one half on the initial sublevel.",
       "texLabel": "thm:main",
       "relatedDeclarations": [
         {
           "declaration": "DFP.existsStrongWolfeCounterexampleHolderSharp_of_dimension_ge_two",
           "file": "ReasLib/Optimization/DFP/WolfeCounterexample/HolderSharpness.lean",
           "line": 406
-        },
-        {
-          "declaration": "DFP.existsStrongWolfeCounterexampleHolder_of_dimension_ge_two",
-          "file": "ReasLib/Optimization/DFP/WolfeCounterexample/Holder.lean",
-          "line": 72
         }
       ],
       "statementSha256": "a417ea88c994e639dffe59d208d0f34ce58dc07e04fce7a61b795d75f859c85a",
       "statementSource": {
-        "manuscript": "main-new-modify.tex",
-        "manuscriptSha256": "ea498dae68597a548bb38597a2e36d0a9c68eb31e8a528dd8fe59673f128b178",
+        "manuscript": "main-new.tex",
+        "manuscriptSha256": "f5a03e9fbb68f8d56fa36b5aa774e7f7e1c5c75682f4a56576bce1bdf4f2727a",
         "startLine": 277,
         "endLine": 288
       }
@@ -63,76 +56,80 @@
     {
       "declaration": "DFP.existsMatrixIdentityLiminfStrongWolfeHolder",
       "dependencies": [
-        "thm-main"
+        "lem-center-manifold",
+        "lem-disjoint-interpolation",
+        "lem-separation",
+        "lem-two-step-expansions",
+        "prop-one-step"
       ],
       "dependencyEvidence": "compiled",
       "file": "ReasLib/Optimization/DFP/WolfeCounterexample/Holder.lean",
       "id": "cor-identity-initialization",
       "label": "Corollary 2",
-      "line": 108,
+      "line": 107,
       "proofDependencies": [
-        "thm-main"
+        "lem-center-manifold",
+        "lem-disjoint-interpolation",
+        "lem-separation",
+        "lem-two-step-expansions",
+        "prop-one-step"
       ],
       "section": "main",
       "statement": "\\label{cor:identity-initialization}\nFix any pair $(c_1,c_2)$ in the range of Theorem~\\ref{thm:main}.  There exist\n$\\widetilde f\\in C^2(\\R^2)$ with a globally H\\\"older continuous Hessian of\nexponent $1/2$, an initial point $\\widetilde x_0\\in\\R^2$, a sequence of positive\nstep lengths $\\{\\alpha_k\\}_{k\\ge0}$, and constants\n$0<\\widetilde m\\le \\widetilde M<\\infty$ with\n$\\widetilde m I\\preceq\\nabla^2\\widetilde f(x)\\preceq\\widetilde M I$\nfor all $x\\in\\R^2$. For this objective function, classical DFP initialized with $\\widetilde H_0=I$ is well\ndefined, and every accepted step satisfies \\eqref{eq:armijo} and\n\\eqref{eq:strong-curvature}.  Nevertheless,\n$\\liminf_{k\\to\\infty}\\|\\nabla\\widetilde f(\\widetilde x_k)\\|>0$.\nThe same conclusion holds in every dimension $n\\ge2$.",
       "statementDependencies": [],
       "title": "The counterexample can start from the identity",
       "type": "Corollary",
-      "paperMapping": "Main result in every dimension n ≥ 2.",
+      "paperMapping": "The complete identity-initialization corollary in every dimension n ≥ 2.",
       "texLabel": "cor:identity-initialization",
       "relatedDeclarations": [
         {
           "declaration": "DFP.existsMatrixIdentityLiminfStrongWolfeHolder",
           "file": "ReasLib/Optimization/DFP/WolfeCounterexample/Holder.lean",
-          "line": 108
+          "line": 107
         }
       ],
       "statementSha256": "dd466c497ba8c2b98282d53f370a816a3b2b0547091a885c230292fb2eb015ab",
       "statementSource": {
-        "manuscript": "main-new-modify.tex",
-        "manuscriptSha256": "ea498dae68597a548bb38597a2e36d0a9c68eb31e8a528dd8fe59673f128b178",
-        "startLine": 303,
-        "endLine": 315
+        "manuscript": "main-new.tex",
+        "manuscriptSha256": "f5a03e9fbb68f8d56fa36b5aa774e7f7e1c5c75682f4a56576bce1bdf4f2727a",
+        "startLine": 393,
+        "endLine": 405
       }
     },
     {
       "declaration": "DFP.main_planarWeakWolfeConvergence",
-      "dependencies": [
-        "lem-planar-degeneration"
-      ],
+      "dependencies": [],
       "dependencyEvidence": "compiled",
-      "file": "DFPWolfe/A_uniformly_convex_counterexample_to_global_convergence_of_DFP_under_weak_Wolfe_/Theorem_Main_theorem.lean",
+      "file": "DFPWolfe/Main.lean",
       "id": "thm-planar-convergence",
       "label": "Theorem 3",
-      "line": 242,
-      "proofDependencies": [
-        "lem-planar-degeneration"
-      ],
+      "line": 198,
+      "proofDependencies": [],
       "section": "main",
       "statement": "\\label{thm:planar-convergence}\nLet $f\\in C^2(\\R^2)$ satisfy $\\nabla^2f(x)\\succeq\\mu I$ for all\n$x\\in\\R^2$ and some $\\mu>0$. Let $x_0\\in\\R^2$ and $H_0\\succ0$\nbe arbitrary, and fix $0<c_1<c_2<1$. Suppose $\\nabla^2f$ is locally\nLipschitz continuous on a neighborhood of the initial level set\n$K=\\{x\\in\\R^2:f(x)\\le f(x_0)\\}$.\nThen classical DFP with update \\eqref{eq:dfp-update} and positive step\nlengths satisfying \\eqref{eq:armijo} and \\eqref{eq:weak-curvature}\neither reaches the unique minimizer $x_*$ in finitely many iterations or\ngenerates an infinite sequence satisfying\n$x_k\\longrightarrow x_*$ and $\\|\\nabla f(x_k)\\|\\longrightarrow0$.",
       "statementDependencies": [],
       "title": "A locally Lipschitz Hessian restores planar convergence",
       "type": "Theorem",
-      "paperMapping": "Weak- and strong-Wolfe interfaces; finite stationary termination is represented by constant continuation.",
+      "paperMapping": "The weak-Wolfe theorem and its strong-Wolfe consequence; finite stationary termination is represented by constant continuation.",
       "texLabel": "thm:planar-convergence",
       "relatedDeclarations": [
         {
           "declaration": "DFP.main_planarWeakWolfeConvergence",
-          "file": "DFPWolfe/A_uniformly_convex_counterexample_to_global_convergence_of_DFP_under_weak_Wolfe_/Theorem_Main_theorem.lean",
-          "line": 242
+          "file": "DFPWolfe/Main.lean",
+          "line": 198
         },
         {
           "declaration": "DFP.main_planarStrongWolfeConvergence",
-          "file": "DFPWolfe/A_uniformly_convex_counterexample_to_global_convergence_of_DFP_under_weak_Wolfe_/Theorem_Main_theorem.lean",
-          "line": 266
+          "file": "DFPWolfe/Main.lean",
+          "line": 223
         }
       ],
       "statementSha256": "fea9cdef0548455086e40abf6b34f7e43fe297a607e7635eba42429f8b166b66",
       "statementSource": {
-        "manuscript": "main-new-modify.tex",
-        "manuscriptSha256": "ea498dae68597a548bb38597a2e36d0a9c68eb31e8a528dd8fe59673f128b178",
-        "startLine": 321,
-        "endLine": 333
+        "manuscript": "main-new.tex",
+        "manuscriptSha256": "f5a03e9fbb68f8d56fa36b5aa774e7f7e1c5c75682f4a56576bce1bdf4f2727a",
+        "startLine": 415,
+        "endLine": 427
       }
     },
     {
@@ -149,7 +146,7 @@
       "statementDependencies": [],
       "title": "Exact formulas for one DFP step",
       "type": "Proposition",
-      "paperMapping": "Separate declarations prove the gradient formula, matrix formula, parameter independence, and denominator positivity.",
+      "paperMapping": "Both exact one-step formulas, independence of τ, and positivity of the two denominators β and γ.",
       "texLabel": "prop:one-step",
       "relatedDeclarations": [
         {
@@ -168,11 +165,6 @@
           "line": 71
         },
         {
-          "declaration": "DFP.AbstractSecantStep.gradientEnergy_pos",
-          "file": "ReasLib/Optimization/DFP/AbstractSecantStep.lean",
-          "line": 144
-        },
-        {
           "declaration": "DFP.AbstractSecantStep.preconditionedEnergy_pos",
           "file": "ReasLib/Optimization/DFP/AbstractSecantStep.lean",
           "line": 151
@@ -185,73 +177,64 @@
       ],
       "statementSha256": "8da934cfeb979993cb75a2cc4df2ea3b6f219fdfa4c71c2f38a4f9851cb0218c",
       "statementSource": {
-        "manuscript": "main-new-modify.tex",
-        "manuscriptSha256": "ea498dae68597a548bb38597a2e36d0a9c68eb31e8a528dd8fe59673f128b178",
-        "startLine": 454,
-        "endLine": 465
+        "manuscript": "main-new.tex",
+        "manuscriptSha256": "f5a03e9fbb68f8d56fa36b5aa774e7f7e1c5c75682f4a56576bce1bdf4f2727a",
+        "startLine": 465,
+        "endLine": 476
       }
     },
     {
-      "declaration": "LocalInvariantGraph.exists_metricInvariantGraph_of_regularFixedPoint",
+      "declaration": "LocalInvariantGraph.existsOfComplexSpectralRadiusLtOne",
       "dependencies": [],
       "dependencyEvidence": "compiled",
-      "file": "ReasLib/Analysis/Calculus/LocalInvariantGraph/ExplicitContraction/MetricInvariantGraph.lean",
+      "file": "ReasLib/Analysis/Calculus/LocalInvariantGraph.lean",
       "id": "lem-graph-transform",
       "label": "Lemma 5",
-      "line": 108,
+      "line": 494,
       "proofDependencies": [],
       "section": "construction",
       "statement": "\\label{lem:graph-transform}\nLet $\\nu\\ge2$ and $d_s\\ge1$ be integers, and let $F=(F_c,F_s)$ be a\n$C^{\\nu+1}$ map from a neighborhood of $(0,0)\\in\\R\\times\\R^{d_s}$ into\n$\\R\\times\\R^{d_s}$.  Suppose that, for some\n$L\\in\\R^{d_s\\times d_s}$,\n\\[\nF(0,0)=(0,0),\\qquad\nDF(0,0)=\\begin{pmatrix}1&0\\\\0&L\\end{pmatrix},\n\\qquad \\rho(L)<1.\n\\]\nThen, after restricting the neighborhood, there is a $C^\\nu$ function\n$z=\\zeta(u)$ with $\\zeta(0)=D\\zeta(0)=0$ whose graph is locally forward\ninvariant.  The conclusion does not require $L$, or the full derivative\n$DF(0,0)$, to be invertible.",
       "statementDependencies": [],
       "title": "Construct a smooth invariant graph",
       "type": "Lemma",
-      "paperMapping": "Linked proof components are the metric graph-transform certificate and its finite-smooth regularity interface. These expose supporting hypotheses explicitly; they are not one verbatim Lean statement of the general lemma.",
+      "paperMapping": "The full finite-dimensional spectral-radius theorem. Lean assumes C^ν regularity, weaker than the manuscript’s C^(ν+1) hypothesis, and does not assume invertibility.",
       "texLabel": "lem:graph-transform",
       "relatedDeclarations": [
         {
-          "declaration": "LocalInvariantGraph.exists_metricInvariantGraph_of_regularFixedPoint",
-          "file": "ReasLib/Analysis/Calculus/LocalInvariantGraph/ExplicitContraction/MetricInvariantGraph.lean",
-          "line": 108
-        },
-        {
-          "declaration": "LocalInvariantGraph.MetricGraphTransformData.exists_metricFixedGraph",
-          "file": "ReasLib/Analysis/Calculus/LocalInvariantGraph/ExplicitContraction/MetricPicardCertificate.lean",
-          "line": 676
+          "declaration": "LocalInvariantGraph.existsOfComplexSpectralRadiusLtOne",
+          "file": "ReasLib/Analysis/Calculus/LocalInvariantGraph.lean",
+          "line": 494
         }
       ],
       "statementSha256": "beea5c265f23afd95b0848613fd4bccea15ea18d2eefa251475960a3bfeae463",
       "statementSource": {
-        "manuscript": "main-new-modify.tex",
-        "manuscriptSha256": "ea498dae68597a548bb38597a2e36d0a9c68eb31e8a528dd8fe59673f128b178",
-        "startLine": 812,
-        "endLine": 826
+        "manuscript": "main-new.tex",
+        "manuscriptSha256": "f5a03e9fbb68f8d56fa36b5aa774e7f7e1c5c75682f4a56576bce1bdf4f2727a",
+        "startLine": 827,
+        "endLine": 841
       }
     },
     {
-      "declaration": "DFP.TwoLeg.exists_localForwardInvariantSlowCurve",
-      "dependencies": [
-        "lem-graph-transform"
-      ],
+      "declaration": "DFP.TwoLeg.stateMap_eventuallyEq_recovered",
+      "dependencies": [],
       "dependencyEvidence": "compiled",
-      "file": "ReasLib/Optimization/DFP/TwoPhaseControls/SlowCurve.lean",
+      "file": "ReasLib/Optimization/DFP/TwoPhaseControls/StateMap.lean",
       "id": "lem-center-manifold",
       "label": "Lemma 6",
-      "line": 941,
-      "proofDependencies": [
-        "lem-graph-transform"
-      ],
+      "line": 181,
+      "proofDependencies": [],
       "section": "construction",
       "statement": "\\label{lem:center-manifold}\nAfter cancellation of the explicit singular factors, $\\mathcal F$ has a real\nanalytic extension near $(0,2,1)$.  Its derivative there has one eigenvalue\nequal to $1$ and two other eigenvalues\n$-1/9$ and $0$, so it has a\nlocally invariant one-dimensional $C^7$ center manifold\n$p=p(\\epsilon)$ and $h=h(\\epsilon)$,\non which\n\\begin{align}\np(\\epsilon)&=2+\\frac{198}{5}\\epsilon^3\n-\\frac95\\epsilon^4+O(\\epsilon^5),\n&h(\\epsilon)&=1+8\\epsilon^3+O(\\epsilon^5),\n\\label{eq:center-curve}\\\\\n\\epsilon_+&=\\epsilon-\\frac32\\epsilon^4\n+\\frac54\\epsilon^5+O(\\epsilon^6).\n\\label{eq:epsilon-map}\n\\end{align}",
       "statementDependencies": [],
       "title": "The two-step map has an invariant C⁷ curve",
       "type": "Lemma",
-      "paperMapping": "Invariant-curve existence, analytic extension, derivative, and signed recurrence are split across declarations.",
+      "paperMapping": "Agreement with the recovered map, analytic extension, the derivative and eigenvalues 1, −1/9, and 0, and the invariant C⁷ graph with both shape jets and the scale recurrence.",
       "texLabel": "lem:center-manifold",
       "relatedDeclarations": [
         {
-          "declaration": "DFP.TwoLeg.exists_localForwardInvariantSlowCurve",
-          "file": "ReasLib/Optimization/DFP/TwoPhaseControls/SlowCurve.lean",
-          "line": 941
+          "declaration": "DFP.TwoLeg.stateMap_eventuallyEq_recovered",
+          "file": "ReasLib/Optimization/DFP/TwoPhaseControls/StateMap.lean",
+          "line": 181
         },
         {
           "declaration": "DFP.TwoLeg.stateMapAnalytic",
@@ -264,42 +247,65 @@
           "line": 470
         },
         {
-          "declaration": "DFP.TwoLeg.slowGraphSignedRecurrence",
-          "file": "ReasLib/Optimization/DFP/TwoPhaseControls/RadiusJet.lean",
-          "line": 75
+          "declaration": "DFP.TwoLeg.stateMap_centerEigenvalue",
+          "file": "ReasLib/Optimization/DFP/TwoPhaseControls/StateMap/Linearization.lean",
+          "line": 488
+        },
+        {
+          "declaration": "DFP.TwoLeg.stateMap_transverseEigenvalue_negNinth",
+          "file": "ReasLib/Optimization/DFP/TwoPhaseControls/StateMap/Linearization.lean",
+          "line": 500
+        },
+        {
+          "declaration": "DFP.TwoLeg.stateMap_transverseEigenvalue_zero",
+          "file": "ReasLib/Optimization/DFP/TwoPhaseControls/StateMap/Linearization.lean",
+          "line": 513
+        },
+        {
+          "declaration": "DFP.TwoLeg.exists_localForwardInvariantSlowCurve",
+          "file": "ReasLib/Optimization/DFP/TwoPhaseControls/SlowCurve.lean",
+          "line": 941
         }
       ],
       "statementSha256": "927295ab160ce4befd3d856b368d5964c527572f920a6ae48fbc131c0035023d",
       "statementSource": {
-        "manuscript": "main-new-modify.tex",
-        "manuscriptSha256": "ea498dae68597a548bb38597a2e36d0a9c68eb31e8a528dd8fe59673f128b178",
-        "startLine": 939,
-        "endLine": 957
+        "manuscript": "main-new.tex",
+        "manuscriptSha256": "f5a03e9fbb68f8d56fa36b5aa774e7f7e1c5c75682f4a56576bce1bdf4f2727a",
+        "startLine": 954,
+        "endLine": 972
       }
     },
     {
-      "declaration": "DFP.TwoPhaseOrbit.slowCurveFullCenterDrift",
+      "declaration": "DFP.TwoLeg.slowCurveAmplitudeDrift",
       "dependencies": [
-        "lem-center-manifold",
         "prop-one-step"
       ],
       "dependencyEvidence": "compiled",
-      "file": "ReasLib/Optimization/DFP/TwoPhaseOrbit/CenterDisplacement.lean",
+      "file": "ReasLib/Optimization/DFP/TwoPhaseControls/AmplitudeJet.lean",
       "id": "lem-two-step-expansions",
       "label": "Lemma 7",
-      "line": 509,
+      "line": 105,
       "proofDependencies": [
-        "lem-center-manifold",
         "prop-one-step"
       ],
       "section": "construction",
-      "statement": "\\label{lem:two-step-expansions}\nLet $\\phi_j\\in\\R$ be the angle of the unit eigenvector for the smaller\neigenvalue at iteration $2j$.  Choose this angle continuously along the\nsequence.  Let $G_j$ be the corresponding gradient component in\n\\eqref{eq:coordinate-representation}, and define\n$C_k=x_k-g_k$.\nOn the invariant center manifold,\n\\begin{align}\n\\frac{G_{j+1}}{G_j}\n&=1-\\frac{13}{2}\\epsilon_j^4+O(\\epsilon_j^6),\n\\label{eq:G-map}\\\\\n\\phi_{j+1}-\\phi_j\n&=-3\\epsilon_j^2+O(\\epsilon_j^4),\n\\label{eq:phi-map}\\\\\nC_{2j+2}-C_{2j}\n&=-\\frac{116}{5}G_j\\epsilon_j^6e_j\n+O(G_j\\epsilon_j^7),\n\\label{eq:C-map}\\\\\n\\|C_{2j+1}-C_{2j}\\|&=O(G_j\\epsilon_j^3).\n\\label{eq:C-half}\n\\end{align}\nThe two consecutive increments in the polar angle of the gradient within\na cycle are respectively\n\\begin{equation}\\label{eq:half-angles}\n-2\\epsilon_j^2+o(\\epsilon_j^2),\n\\qquad -\\epsilon_j^2+o(\\epsilon_j^2).\n\\end{equation}\nHere $e_j$ is the unit eigenvector corresponding to the smaller eigenvalue,\nexpressed in the original coordinates.",
+      "statement": "\\label{lem:two-step-expansions}\nLet $\\phi_j\\in\\R$ be the angle of the unit eigenvector $e_{2j}$ for\nthe smaller eigenvalue at iteration $2j$.  Choose this angle continuously along the\nsequence.  Let $G_j$ be the corresponding gradient component in\n\\eqref{eq:coordinate-representation}, and define\n$C_k=x_k-g_k$.\nOn the invariant center manifold,\n\\begin{align}\n\\frac{G_{j+1}}{G_j}\n&=1-\\frac{13}{2}\\epsilon_j^4+O(\\epsilon_j^6),\n\\label{eq:G-map}\\\\\n\\phi_{j+1}-\\phi_j\n&=-3\\epsilon_j^2+O(\\epsilon_j^4),\n\\label{eq:phi-map}\\\\\nC_{2j+2}-C_{2j}\n&=-\\frac{116}{5}G_j\\epsilon_j^6e_{2j}\n+O(G_j\\epsilon_j^7),\n\\label{eq:C-map}\\\\\n\\|C_{2j+1}-C_{2j}\\|&=O(G_j\\epsilon_j^3).\n\\label{eq:C-half}\n\\end{align}\nThe two consecutive increments in the polar angle of the gradient within\na cycle are respectively\n\\begin{equation}\\label{eq:half-angles}\n-2\\epsilon_j^2+o(\\epsilon_j^2),\n\\qquad -\\epsilon_j^2+o(\\epsilon_j^2).\n\\end{equation}\nHere $e_{2j}$ is the first column of $R_{2j}$, expressed in the original\ncoordinates.",
       "statementDependencies": [],
       "title": "Control amplitude, angle, and center drift",
       "type": "Lemma",
-      "paperMapping": "Representative proof components for the amplitude and angle estimates and the full-/half-cycle center displacement; see the Lean view for the finer expansion lemmas.",
+      "paperMapping": "All five components: the O(ε⁶) amplitude remainder, frame rotation, full- and half-cycle center drift, and both within-cycle gradient-angle remainders.",
       "texLabel": "lem:two-step-expansions",
       "relatedDeclarations": [
+        {
+          "declaration": "DFP.TwoLeg.slowCurveAmplitudeDrift",
+          "file": "ReasLib/Optimization/DFP/TwoPhaseControls/AmplitudeJet.lean",
+          "line": 105
+        },
+        {
+          "declaration": "DFP.TwoPhaseOrbit.slowCurveFrameRotation",
+          "file": "ReasLib/Optimization/DFP/TwoPhaseOrbit/FrameAngleDrift.lean",
+          "line": 17
+        },
         {
           "declaration": "DFP.TwoPhaseOrbit.slowCurveFullCenterDrift",
           "file": "ReasLib/Optimization/DFP/TwoPhaseOrbit/CenterDisplacement.lean",
@@ -308,17 +314,7 @@
         {
           "declaration": "DFP.TwoPhaseOrbit.slowCurveHalfCenterDisplacement",
           "file": "ReasLib/Optimization/DFP/TwoPhaseOrbit/CenterDisplacement.lean",
-          "line": 329
-        },
-        {
-          "declaration": "DFP.TwoPhaseOrbit.slowCurveAmplitudeDriftModulus",
-          "file": "ReasLib/Optimization/DFP/TwoPhaseOrbit/AmplitudeDrift.lean",
-          "line": 31
-        },
-        {
-          "declaration": "DFP.TwoPhaseOrbit.slowCurveFrameAngleIncrementUnique",
-          "file": "ReasLib/Optimization/DFP/TwoPhaseOrbit/FrameAngle.lean",
-          "line": 352
+          "line": 328
         },
         {
           "declaration": "DFP.TwoPhaseOrbit.slowCurveEndpointAngleRemainderModulus",
@@ -326,71 +322,59 @@
           "line": 19
         }
       ],
-      "statementSha256": "5f0e379292478fda70a1512aa148e8cd7be0001f012ded158ef258d9c3b70f80",
+      "statementSha256": "ac987f27912f390e5f7d78366603978f99a1160670580549714605886a73324c",
       "statementSource": {
-        "manuscript": "main-new-modify.tex",
-        "manuscriptSha256": "ea498dae68597a548bb38597a2e36d0a9c68eb31e8a528dd8fe59673f128b178",
-        "startLine": 1184,
-        "endLine": 1213
+        "manuscript": "main-new.tex",
+        "manuscriptSha256": "f5a03e9fbb68f8d56fa36b5aa774e7f7e1c5c75682f4a56576bce1bdf4f2727a",
+        "startLine": 1199,
+        "endLine": 1228
       }
     },
     {
-      "declaration": "DFP.TwoPhaseOrbit.slowCurveAmplitudeAsymptotics",
+      "declaration": "DFP.TwoPhaseOrbit.slowCurveScalarAsymptotics",
       "dependencies": [
-        "lem-center-manifold",
-        "lem-two-step-expansions"
+        "lem-two-step-expansions",
+        "prop-one-step"
       ],
       "dependencyEvidence": "compiled",
-      "file": "ReasLib/Optimization/DFP/TwoPhaseOrbit/AmplitudeTail.lean",
+      "file": "ReasLib/Optimization/DFP/TwoPhaseOrbit/ScalarAsymptotics.lean",
       "id": "lem-scalar-asymptotics",
       "label": "Lemma 8",
-      "line": 167,
+      "line": 20,
       "proofDependencies": [
-        "lem-center-manifold",
-        "lem-two-step-expansions"
+        "lem-two-step-expansions",
+        "prop-one-step"
       ],
       "section": "construction",
       "statement": "\\label{lem:scalar-asymptotics}\nThere are limits $G_\\infty>0$ and $C_\\infty\\in\\R^2$ such that\n\\begin{align}\n\\epsilon_j&\\sim\\left(\\frac92j\\right)^{-1/3},\n\\label{eq:epsilon-asymptotic}\\\\\nG_j-G_\\infty&\\sim\\frac{13}{3}G_\\infty\\epsilon_j,\n\\label{eq:G-tail}\\\\\n\\|C_{2j}-C_\\infty\\|&=O(\\epsilon_j^3),\n\\qquad\n\\|C_{2j+1}-C_\\infty\\|=O(\\epsilon_j^3).\n\\label{eq:C-tail}\n\\end{align}\nAlso, $\\phi_j\\to-\\infty$, and the accumulation set $\\Gamma$ of\n$\\{x_k\\}$ is the full circle\n\\begin{equation}\\label{eq:limit-circle}\n\\Gamma=\\{C_\\infty+G_\\infty v:\\|v\\|=1\\}.\n\\end{equation}",
       "statementDependencies": [],
       "title": "Positive limiting amplitude and a limiting circle",
       "type": "Lemma",
-      "paperMapping": "Linked components cover scale, amplitude, and center tails. The circle accumulation-set clause is not represented by this bundle; related topological declarations remain in the full Lean view.",
+      "paperMapping": "The complete scalar asymptotics theorem, including negative-infinite winding and equality of the full endpoint cluster set with the limiting circle; the circle theorem is also linked separately.",
       "texLabel": "lem:scalar-asymptotics",
       "relatedDeclarations": [
         {
-          "declaration": "DFP.TwoPhaseOrbit.slowCurveAmplitudeAsymptotics",
-          "file": "ReasLib/Optimization/DFP/TwoPhaseOrbit/AmplitudeTail.lean",
-          "line": 167
-        },
-        {
-          "declaration": "DFP.TwoLeg.slowCurveScaleAsymptotic",
-          "file": "ReasLib/Optimization/DFP/TwoPhaseControls/SlowCurve/ScaleAsymptotics.lean",
-          "line": 19
-        },
-        {
-          "declaration": "DFP.TwoPhaseOrbit.slowCurveCenterTendsto",
-          "file": "ReasLib/Optimization/DFP/TwoPhaseOrbit/CenterConvergence.lean",
-          "line": 169
-        },
-        {
-          "declaration": "DFP.TwoPhaseOrbit.slowCurveCenterTailUniformBound",
-          "file": "ReasLib/Optimization/DFP/TwoPhaseOrbit/CenterTailUniform.lean",
+          "declaration": "DFP.TwoPhaseOrbit.slowCurveScalarAsymptotics",
+          "file": "ReasLib/Optimization/DFP/TwoPhaseOrbit/ScalarAsymptotics.lean",
           "line": 20
+        },
+        {
+          "declaration": "DFP.TwoPhaseOrbit.slowCurveEndpointClusterSet_eq_limitCircle",
+          "file": "ReasLib/Optimization/DFP/TwoPhaseOrbit/EndpointClusterSet.lean",
+          "line": 21
         }
       ],
       "statementSha256": "e9f2c514f0297250f9acae8935bff8b2b9390c0608e1c3fb0365bfc14ba73d76",
       "statementSource": {
-        "manuscript": "main-new-modify.tex",
-        "manuscriptSha256": "ea498dae68597a548bb38597a2e36d0a9c68eb31e8a528dd8fe59673f128b178",
-        "startLine": 1307,
-        "endLine": 1324
+        "manuscript": "main-new.tex",
+        "manuscriptSha256": "f5a03e9fbb68f8d56fa36b5aa774e7f7e1c5c75682f4a56576bce1bdf4f2727a",
+        "startLine": 1368,
+        "endLine": 1385
       }
     },
     {
       "declaration": "DFP.TwoPhaseOrbit.slowCurveUniformEndpointSeparation",
       "dependencies": [
-        "lem-center-manifold",
-        "lem-scalar-asymptotics",
         "lem-two-step-expansions",
         "prop-one-step"
       ],
@@ -400,8 +384,6 @@
       "label": "Lemma 9",
       "line": 346,
       "proofDependencies": [
-        "lem-center-manifold",
-        "lem-scalar-asymptotics",
         "lem-two-step-expansions",
         "prop-one-step"
       ],
@@ -410,7 +392,7 @@
       "statementDependencies": [],
       "title": "Keep endpoints uniformly separated",
       "type": "Lemma",
-      "paperMapping": "Uniform endpoint separation theorem.",
+      "paperMapping": "The uniform endpoint separation theorem, with one constant valid at every endpoint.",
       "texLabel": "lem:separation",
       "relatedDeclarations": [
         {
@@ -421,29 +403,25 @@
       ],
       "statementSha256": "b9a7793cb608ed7d10388edc6ded915236d06ebc8c67555336d0e53f14ca4ded",
       "statementSource": {
-        "manuscript": "main-new-modify.tex",
-        "manuscriptSha256": "ea498dae68597a548bb38597a2e36d0a9c68eb31e8a528dd8fe59673f128b178",
-        "startLine": 1427,
-        "endLine": 1436
+        "manuscript": "main-new.tex",
+        "manuscriptSha256": "f5a03e9fbb68f8d56fa36b5aa774e7f7e1c5c75682f4a56576bce1bdf4f2727a",
+        "startLine": 1488,
+        "endLine": 1497
       }
     },
     {
       "declaration": "contDiff_two_slowCurveBumpCorrection",
       "dependencies": [
-        "lem-center-manifold",
-        "lem-scalar-asymptotics",
         "lem-separation",
         "lem-two-step-expansions",
         "prop-one-step"
       ],
       "dependencyEvidence": "compiled",
-      "file": "DFPWolfe/A_uniformly_convex_counterexample_to_global_convergence_of_DFP_under_weak_Wolfe_/Lemma_5_8_Global_C_2_extension_of_the_disjoint_bump_sum.lean",
+      "file": "ReasLib/Optimization/DFP/TwoPhaseOrbit/Interpolation/SmoothExtension.lean",
       "id": "lem-disjoint-interpolation",
       "label": "Lemma 10",
-      "line": 31,
+      "line": 16,
       "proofDependencies": [
-        "lem-center-manifold",
-        "lem-scalar-asymptotics",
         "lem-separation",
         "lem-two-step-expansions",
         "prop-one-step"
@@ -453,18 +431,18 @@
       "statementDependencies": [],
       "title": "Interpolate with a C², one-half Hölder correction",
       "type": "Lemma",
-      "paperMapping": "The regularity, interpolation jets, Hölder bound, and Hessian bound are separate declarations.",
+      "paperMapping": "C² smoothness, zero-extension on the circle, endpoint values and gradients, the O(ε₀) Hessian bound, and global one-half Hölder regularity. Component statements expose the construction hypotheses.",
       "texLabel": "lem:disjoint-interpolation",
       "relatedDeclarations": [
         {
           "declaration": "contDiff_two_slowCurveBumpCorrection",
-          "file": "DFPWolfe/A_uniformly_convex_counterexample_to_global_convergence_of_DFP_under_weak_Wolfe_/Lemma_5_8_Global_C_2_extension_of_the_disjoint_bump_sum.lean",
-          "line": 31
+          "file": "ReasLib/Optimization/DFP/TwoPhaseOrbit/Interpolation/SmoothExtension.lean",
+          "line": 16
         },
         {
-          "declaration": "DFP.PlanarConvergence.bumpCorrectionHessianHolder",
-          "file": "ReasLib/Optimization/DFP/PlanarConvergence.lean",
-          "line": 4531
+          "declaration": "slowCurveBumpCorrection_eqOn_zero",
+          "file": "ReasLib/Optimization/DFP/TwoPhaseOrbit/Interpolation/SmoothExtension.lean",
+          "line": 48
         },
         {
           "declaration": "DFP.TwoPhaseOrbit.bumpCorrection_endpoint",
@@ -477,17 +455,22 @@
           "line": 52
         },
         {
-          "declaration": "DFP.TwoLeg.SlowCurve.bumpCorrectionHessianBound",
-          "file": "ReasLib/Optimization/DFP/TwoPhaseOrbit/EndpointBump/GlobalRegularity.lean",
-          "line": 188
+          "declaration": "slowCurveBumpCorrectionHessianBound",
+          "file": "ReasLib/Optimization/DFP/TwoPhaseOrbit/Interpolation/HessianBound.lean",
+          "line": 18
+        },
+        {
+          "declaration": "DFP.PlanarConvergence.bumpCorrectionHessianHolder",
+          "file": "ReasLib/Optimization/DFP/PlanarConvergence.lean",
+          "line": 4531
         }
       ],
       "statementSha256": "9e8cb4f592fbd3a4d80d0377b8d5f219dc41a8c72009ccb9e97d336ed2cb1f52",
       "statementSource": {
-        "manuscript": "main-new-modify.tex",
-        "manuscriptSha256": "ea498dae68597a548bb38597a2e36d0a9c68eb31e8a528dd8fe59673f128b178",
-        "startLine": 1591,
-        "endLine": 1604
+        "manuscript": "main-new.tex",
+        "manuscriptSha256": "f5a03e9fbb68f8d56fa36b5aa774e7f7e1c5c75682f4a56576bce1bdf4f2727a",
+        "startLine": 1652,
+        "endLine": 1665
       }
     },
     {
@@ -497,38 +480,28 @@
       "file": "ReasLib/Optimization/DFP/SecantDegeneration.lean",
       "id": "lem-planar-degeneration",
       "label": "Lemma 11",
-      "line": 727,
+      "line": 726,
       "proofDependencies": [],
       "section": "convergence",
       "statement": "\\label{lem:planar-degeneration}\nLet $f\\in C^2(\\R^2)$ be $\\mu$-strongly convex, where $\\mu>0$.\nConsider an infinite sequence of nonstationary iterates with\n$g_k=\\nabla f(x_k)$, $s_k=-\\alpha_kH_kg_k$,\n$x_{k+1}=x_k+s_k$, and $y_k=g_{k+1}-g_k$, where $H_k\\succ0$,\n$\\alpha_k>0$, and every step satisfies \\eqref{eq:armijo} and\n\\eqref{eq:weak-curvature} for fixed $0<c_1<c_2<1$.\nSuppose $H_ky_{k-1}=s_{k-1}$ for $k\\ge1$. Put\n\\begin{equation}\\label{eq:planar-scalar-definition}\n\\ell_k=\\|s_k\\|,\\qquad\n\\kappa_k=\\frac{s_k^Ty_k}{\\ell_k^2},\\qquad\n\\lambda_k=\\kappa_{k-1}\\det H_k\\quad(k\\ge1).\n\\end{equation}\nIf $x_k$ does not converge to the unique minimizer $x_*$, then\n\\begin{equation}\\label{eq:planar-degeneration}\n0<\\lambda_k\\le C\\ell_{k-1}\\ell_k\\longrightarrow0\n\\end{equation}\nfor all sufficiently large $k$, with $C$ independent of $k$.\nMoreover, $\\{H_k\\}$ is bounded and $\\lambda_{\\min}(H_k)\\to0$.",
       "statementDependencies": [],
       "title": "Nonconvergence forces planar secant degeneration",
       "type": "Lemma",
-      "paperMapping": "General secant theorem plus the DFP-specialized degeneration interfaces used in the convergence proof.",
+      "paperMapping": "The general positive-definite secant theorem, without a DFP update assumption. Lean’s lam k is the paper’s λₖ₊₁; the bound, limit, matrix boundedness, and smallest-eigenvalue limit are all included.",
       "texLabel": "lem:planar-degeneration",
       "relatedDeclarations": [
         {
           "declaration": "DFP.SecantIteration.planarDegeneration",
           "file": "ReasLib/Optimization/DFP/SecantDegeneration.lean",
-          "line": 727
-        },
-        {
-          "declaration": "DFP.PlanarConvergence.orbitFreeCoefficientDegeneration",
-          "file": "ReasLib/Optimization/DFP/PlanarConvergence.lean",
-          "line": 1254
-        },
-        {
-          "declaration": "DFP.PlanarConvergence.orbitInverseHessianBoundedOfNonconvergence",
-          "file": "ReasLib/Optimization/DFP/PlanarConvergence.lean",
-          "line": 1437
+          "line": 726
         }
       ],
       "statementSha256": "bc0d07f49ad729ec48f8e23b255b1959248894e10b2c29f8feea096a19b945c9",
       "statementSource": {
-        "manuscript": "main-new-modify.tex",
-        "manuscriptSha256": "ea498dae68597a548bb38597a2e36d0a9c68eb31e8a528dd8fe59673f128b178",
-        "startLine": 1976,
-        "endLine": 1996
+        "manuscript": "main-new.tex",
+        "manuscriptSha256": "f5a03e9fbb68f8d56fa36b5aa774e7f7e1c5c75682f4a56576bce1bdf4f2727a",
+        "startLine": 2037,
+        "endLine": 2057
       }
     }
   ],
@@ -568,24 +541,24 @@
       "DFPWolfe",
       "ReasLib"
     ],
-    "rawDeclarationCount": 5702,
+    "rawDeclarationCount": 6628,
     "rootModule": "DFP_wolfe_local.Paper",
-    "sdkSha256": "962421c7ab9227372ee813ac09ed8b8b60b4e1ad2397b2bc2f63d2ffa34f1cee",
+    "sdkSha256": "070d17c9cb59b3df9a7848d0550e89e0f6bd770a628d49d69fb588f416bf9bfe",
     "selection": "Reviewed manuscript-result bundles; unassigned nodes are contracted",
     "sourceInventoryItemCount": 11,
     "sourceOnlyItemCount": 0,
-    "sourceSha256": "b46788dae978318d914497546e0ff818315487566c1b1cb6091c2ef32c06a1d0",
+    "sourceSha256": "f6782937e6ea11249d088f3a75a20f0f678d972fa59e0aa1b132dc3d50731670",
     "view": "paper-numbered",
-    "baseGraphItemCount": 3402,
-    "baseGraphCompiledItemCount": 2271,
+    "baseGraphItemCount": 2565,
+    "baseGraphCompiledItemCount": 2565,
     "paperItemCount": 11,
     "mappingScope": "Nodes identify paper results. Linked declarations include full statements and supporting proof components as described individually.",
-    "numbering": "Shared theorem counter: Theorem 1, Corollary 2, Theorem 3, Proposition 4, Lemmas 5–11. Older Lean docstring numbers belong to an earlier manuscript and are not used here.",
-    "manuscript": "main-new-modify.tex (September 2026 revision)",
+    "numbering": "Shared theorem counter: Theorem 1, Corollary 2, Theorem 3, Proposition 4, Lemmas 5–11. The DFPWolfe navigation files follow these numbers.",
+    "manuscript": "main-new.tex (September 2026 revision)",
     "statementMode": "verbatim-manuscript-excerpts",
-    "manuscriptSha256": "ea498dae68597a548bb38597a2e36d0a9c68eb31e8a528dd8fe59673f128b178",
-    "inputGraphSha256": "13ea23ff2e86b24ba792339f3aee9f3ac5541d7de9ca74b0c4bb531be06a0086",
-    "mappingSha256": "7e9818afdd50dda0ea5c8ba941f8677c7af54cb9ec55f1c8784b5cec49dd76c5"
+    "manuscriptSha256": "f5a03e9fbb68f8d56fa36b5aa774e7f7e1c5c75682f4a56576bce1bdf4f2727a",
+    "inputGraphSha256": "d2a6f8f6013392f8ca40841e447cbac3753afb99d0dc5d12de64fc53d8708b4c",
+    "mappingSha256": "f9419557e0e60dd0d55b2bab3b16859a412426ca540b73f687d4731ffa05f4b7"
   },
   "edgeWitnesses": [
     {
@@ -604,21 +577,11 @@
       "prerequisite": "lem-disjoint-interpolation",
       "kind": "proofDependencies",
       "declarationPath": [
-        "DFP.existsStrongWolfeCounterexampleHolder_of_dimension_ge_two",
-        "DFP.existsPlanarStrongWolfeCounterexampleHolder",
-        "DFP.PlanarConvergence.realizedObjectiveHessianHolder",
-        "DFP.PlanarConvergence.bumpCorrectionHessianHolder"
-      ]
-    },
-    {
-      "consumer": "thm-main",
-      "prerequisite": "lem-scalar-asymptotics",
-      "kind": "proofDependencies",
-      "declarationPath": [
         "DFP.existsStrongWolfeCounterexampleHolderSharp_of_dimension_ge_two",
         "DFP.existsPlanarStrongWolfeCounterexampleHolderSharp",
         "DFP.existsPlanarStrongWolfeCounterexampleWithProperty",
-        "DFP.TwoPhaseOrbit.slowCurveCenterTendsto"
+        "contDiff_two_slowCurveRealizedObjective",
+        "contDiff_two_slowCurveBumpCorrection"
       ]
     },
     {
@@ -641,10 +604,10 @@
       "declarationPath": [
         "DFP.existsStrongWolfeCounterexampleHolderSharp_of_dimension_ge_two",
         "DFP.existsPlanarStrongWolfeCounterexampleHolderSharp",
-        "DFP.TwoLeg.SlowCurve.realizedObjectiveHolderSharp",
-        "DFP.TwoLeg.SlowCurve.phaseStepNormUniformBounds",
-        "DFP.TwoPhaseOrbit.slowCurveAmplitudeUniformBounds",
-        "DFP.TwoPhaseOrbit.slowCurveAmplitudeDriftModulus"
+        "DFP.existsPlanarStrongWolfeCounterexampleWithProperty",
+        "DFP.TwoPhaseOrbit.slowCurveCenterTendsto",
+        "DFP.TwoPhaseOrbit.slowCurveCenterIncrementNormSummable",
+        "DFP.TwoPhaseOrbit.slowCurveFullCenterDrift"
       ]
     },
     {
@@ -658,54 +621,74 @@
         "DFP.TwoPhaseOrbit.realizedObjective_isOrbit",
         "DFP.TwoPhaseOrbit.isOrbit_of_exactCycles",
         "DFP.AbstractSecantStep.stepLength_pos",
-        "DFP.AbstractSecantStep.gradientEnergy_pos"
+        "DFP.AbstractSecantStep.preconditionedEnergy_pos"
       ]
     },
     {
       "consumer": "cor-identity-initialization",
-      "prerequisite": "thm-main",
-      "kind": "proofDependencies",
-      "declarationPath": [
-        "DFP.existsMatrixIdentityLiminfStrongWolfeHolder",
-        "DFP.existsStrongWolfeCounterexampleHolder_of_dimension_ge_two"
-      ]
-    },
-    {
-      "consumer": "thm-planar-convergence",
-      "prerequisite": "lem-planar-degeneration",
-      "kind": "proofDependencies",
-      "declarationPath": [
-        "DFP.main_planarWeakWolfeConvergence",
-        "DFP.PlanarConvergence.rawOrbitConvergenceOfNeighborhood",
-        "DFP.PlanarConvergence.rawOrbitConvergence",
-        "DFP.PlanarConvergence.rawOrbitConvergenceOfNonstationary",
-        "DFP.PlanarConvergence.existsUniqueLimitOfLocallyLipschitzHessian",
-        "DFP.PlanarConvergence.tendstoMinimizerOfLocallyLipschitzHessian",
-        "DFP.PlanarConvergence.orbitFreeCoefficientTendstoZero",
-        "DFP.PlanarConvergence.orbitFreeCoefficientDegeneration"
-      ]
-    },
-    {
-      "consumer": "lem-center-manifold",
-      "prerequisite": "lem-graph-transform",
-      "kind": "proofDependencies",
-      "declarationPath": [
-        "DFP.TwoLeg.exists_localForwardInvariantSlowCurve",
-        "LocalInvariantGraph.existsOfEquivalentContractingSeminorm",
-        "LocalInvariantGraph.existsOfNormLtOne",
-        "LocalInvariantGraph.invariantGraph_of_metricFixedPoint_germ",
-        "LocalInvariantGraph.exists_metricInvariantGraph_of_regularFixedPoint"
-      ]
-    },
-    {
-      "consumer": "lem-two-step-expansions",
       "prerequisite": "lem-center-manifold",
       "kind": "proofDependencies",
       "declarationPath": [
-        "DFP.TwoPhaseOrbit.slowCurveFullCenterDrift",
-        "DFP.TwoLeg.slowCurveForwardOrbitOnGraph",
-        "DFP.TwoLeg.slowCurveNextPosLt",
-        "DFP.TwoLeg.slowGraphSignedRecurrence"
+        "DFP.existsMatrixIdentityLiminfStrongWolfeHolder",
+        "DFP.existsStrongWolfeCounterexampleHolder_of_dimension_ge_two",
+        "DFP.existsPlanarStrongWolfeCounterexampleHolder",
+        "DFP.existsPlanarStrongWolfeCounterexampleWithProperty",
+        "DFP.TwoLeg.exists_localForwardInvariantSlowCurve"
+      ]
+    },
+    {
+      "consumer": "cor-identity-initialization",
+      "prerequisite": "lem-disjoint-interpolation",
+      "kind": "proofDependencies",
+      "declarationPath": [
+        "DFP.existsMatrixIdentityLiminfStrongWolfeHolder",
+        "DFP.existsStrongWolfeCounterexampleHolder_of_dimension_ge_two",
+        "DFP.existsPlanarStrongWolfeCounterexampleHolder",
+        "DFP.PlanarConvergence.realizedObjectiveHessianHolder",
+        "DFP.PlanarConvergence.bumpCorrectionHessianHolder"
+      ]
+    },
+    {
+      "consumer": "cor-identity-initialization",
+      "prerequisite": "lem-separation",
+      "kind": "proofDependencies",
+      "declarationPath": [
+        "DFP.existsMatrixIdentityLiminfStrongWolfeHolder",
+        "DFP.existsStrongWolfeCounterexampleHolder_of_dimension_ge_two",
+        "DFP.existsPlanarStrongWolfeCounterexampleHolder",
+        "DFP.existsPlanarStrongWolfeCounterexampleWithProperty",
+        "slowCurveInterpolationRadiusUniformBounds",
+        "DFP.TwoLeg.SlowCurve.interpolationRadiusUniformBounds",
+        "DFP.TwoPhaseOrbit.slowCurveUniformEndpointSeparation"
+      ]
+    },
+    {
+      "consumer": "cor-identity-initialization",
+      "prerequisite": "lem-two-step-expansions",
+      "kind": "proofDependencies",
+      "declarationPath": [
+        "DFP.existsMatrixIdentityLiminfStrongWolfeHolder",
+        "DFP.existsStrongWolfeCounterexampleHolder_of_dimension_ge_two",
+        "DFP.existsPlanarStrongWolfeCounterexampleHolder",
+        "DFP.existsPlanarStrongWolfeCounterexampleWithProperty",
+        "DFP.TwoPhaseOrbit.slowCurveCenterTendsto",
+        "DFP.TwoPhaseOrbit.slowCurveCenterIncrementNormSummable",
+        "DFP.TwoPhaseOrbit.slowCurveFullCenterDrift"
+      ]
+    },
+    {
+      "consumer": "cor-identity-initialization",
+      "prerequisite": "prop-one-step",
+      "kind": "proofDependencies",
+      "declarationPath": [
+        "DFP.existsMatrixIdentityLiminfStrongWolfeHolder",
+        "DFP.existsStrongWolfeCounterexampleHolder_of_dimension_ge_two",
+        "DFP.existsPlanarStrongWolfeCounterexampleHolder",
+        "DFP.existsPlanarStrongWolfeCounterexampleWithProperty",
+        "DFP.TwoPhaseOrbit.realizedObjective_isOrbit",
+        "DFP.TwoPhaseOrbit.isOrbit_of_exactCycles",
+        "DFP.AbstractSecantStep.stepLength_pos",
+        "DFP.AbstractSecantStep.preconditionedEnergy_pos"
       ]
     },
     {
@@ -722,54 +705,38 @@
     },
     {
       "consumer": "lem-scalar-asymptotics",
-      "prerequisite": "lem-center-manifold",
-      "kind": "proofDependencies",
-      "declarationPath": [
-        "DFP.TwoLeg.slowCurveScaleAsymptotic",
-        "DFP.TwoLeg.slowGraphSignedRecurrenceBound",
-        "DFP.TwoLeg.slowGraphSignedRecurrence"
-      ]
-    },
-    {
-      "consumer": "lem-scalar-asymptotics",
       "prerequisite": "lem-two-step-expansions",
       "kind": "proofDependencies",
       "declarationPath": [
-        "DFP.TwoPhaseOrbit.slowCurveCenterTailUniformBound",
+        "DFP.TwoPhaseOrbit.slowCurveScalarAsymptotics",
+        "DFP.TwoPhaseOrbit.slowCurveBoundaryCenterTailIsBigO",
         "DFP.TwoPhaseOrbit.slowCurveFullCenterDrift"
       ]
     },
     {
-      "consumer": "lem-separation",
-      "prerequisite": "lem-center-manifold",
+      "consumer": "lem-scalar-asymptotics",
+      "prerequisite": "prop-one-step",
       "kind": "proofDependencies",
       "declarationPath": [
-        "DFP.TwoPhaseOrbit.slowCurveUniformEndpointSeparation",
-        "DFP.TwoLeg.slowCurveForwardOrbitOnGraph",
-        "DFP.TwoLeg.slowCurveNextPosLt",
-        "DFP.TwoLeg.slowGraphSignedRecurrence"
+        "DFP.TwoPhaseOrbit.slowCurveEndpointClusterSet_eq_limitCircle",
+        "DFP.TwoPhaseOrbit.slowCurveEndpointPolarAngleGapUniformBounds",
+        "DFP.TwoPhaseOrbit.slowCurveEndpointPolarAngleGapExplicitBounds",
+        "DFP.TwoPhaseOrbit.endpointGradientAngle_nextEven_sub_odd",
+        "DFP.TwoPhaseOrbit.State.secondStep_output",
+        "DFP.SecondLeg.outputEqStep",
+        "DFP.AbstractSecantStep.secantImageEnergy_pos"
       ]
     },
     {
       "consumer": "lem-separation",
-      "prerequisite": "lem-scalar-asymptotics",
+      "prerequisite": "lem-two-step-expansions",
       "kind": "proofDependencies",
       "declarationPath": [
         "DFP.TwoPhaseOrbit.slowCurveUniformEndpointSeparation",
         "DFP.TwoPhaseOrbit.slowCurveEndpointLimitCircleInfDistUniformLower",
         "DFP.TwoPhaseOrbit.slowCurvePhaseRadiusErrorUniform",
-        "DFP.TwoPhaseOrbit.slowCurveCenterTailUniformBound"
-      ]
-    },
-    {
-      "consumer": "lem-separation",
-      "prerequisite": "lem-two-step-expansions",
-      "kind": "proofDependencies",
-      "declarationPath": [
-        "DFP.TwoPhaseOrbit.slowCurveUniformEndpointSeparation",
-        "DFP.TwoPhaseOrbit.slowCurveEndpointLimitCircleInfDistUniformLower",
-        "DFP.TwoPhaseOrbit.slowCurveAmplitudeTailUniform",
-        "DFP.TwoPhaseOrbit.slowCurveAmplitudeDriftModulus"
+        "DFP.TwoPhaseOrbit.slowCurveCenterTailUniformBound",
+        "DFP.TwoPhaseOrbit.slowCurveFullCenterDrift"
       ]
     },
     {
@@ -790,34 +757,11 @@
     },
     {
       "consumer": "lem-disjoint-interpolation",
-      "prerequisite": "lem-center-manifold",
-      "kind": "proofDependencies",
-      "declarationPath": [
-        "DFP.PlanarConvergence.bumpCorrectionHessianHolder",
-        "DFP.PlanarConvergence.endpointBumpHessianHolder",
-        "DFP.TwoLeg.slowCurveForwardOrbitPos",
-        "DFP.TwoLeg.slowCurveNextPosLt",
-        "DFP.TwoLeg.slowGraphSignedRecurrence"
-      ]
-    },
-    {
-      "consumer": "lem-disjoint-interpolation",
-      "prerequisite": "lem-scalar-asymptotics",
-      "kind": "proofDependencies",
-      "declarationPath": [
-        "DFP.TwoLeg.SlowCurve.bumpCorrectionHessianBound",
-        "DFP.TwoLeg.SlowCurve.endpointBumpUniformBounds",
-        "DFP.TwoPhaseOrbit.slowCurveEndpointCorrectionUniformBound",
-        "DFP.TwoPhaseOrbit.slowCurveCenterTailUniformBound"
-      ]
-    },
-    {
-      "consumer": "lem-disjoint-interpolation",
       "prerequisite": "lem-separation",
       "kind": "proofDependencies",
       "declarationPath": [
-        "DFP.PlanarConvergence.bumpCorrectionHessianHolder",
-        "DFP.TwoLeg.SlowCurve.interpolationClosedBallDisjointLimitCircle",
+        "slowCurveBumpCorrectionHessianBound",
+        "DFP.TwoLeg.SlowCurve.interpolationRadiusUniformBounds",
         "DFP.TwoPhaseOrbit.slowCurveUniformEndpointSeparation"
       ]
     },
@@ -826,11 +770,12 @@
       "prerequisite": "lem-two-step-expansions",
       "kind": "proofDependencies",
       "declarationPath": [
-        "DFP.PlanarConvergence.bumpCorrectionHessianHolder",
-        "DFP.TwoLeg.SlowCurve.interpolationClosedBallDisjointLimitCircle",
-        "DFP.TwoPhaseOrbit.slowCurveEndpointLimitCircleInfDistUniformLower",
-        "DFP.TwoPhaseOrbit.slowCurveAmplitudeTailUniform",
-        "DFP.TwoPhaseOrbit.slowCurveAmplitudeDriftModulus"
+        "slowCurveBumpCorrectionHessianBound",
+        "slowCurveBumpSecondFDerivUniformBound",
+        "DFP.TwoLeg.SlowCurve.endpointBumpUniformBounds",
+        "DFP.TwoPhaseOrbit.slowCurveEndpointCorrectionUniformBound",
+        "DFP.TwoPhaseOrbit.slowCurveCenterTailUniformBound",
+        "DFP.TwoPhaseOrbit.slowCurveFullCenterDrift"
       ]
     },
     {
@@ -838,8 +783,8 @@
       "prerequisite": "prop-one-step",
       "kind": "proofDependencies",
       "declarationPath": [
-        "DFP.PlanarConvergence.bumpCorrectionHessianHolder",
-        "DFP.TwoLeg.SlowCurve.pairwiseDisjointInterpolationClosedBalls",
+        "slowCurveBumpCorrectionHessianBound",
+        "DFP.TwoLeg.SlowCurve.interpolationRadiusUniformBounds",
         "DFP.TwoPhaseOrbit.slowCurveEndpoint_injective",
         "DFP.TwoPhaseOrbit.slowCurveUniformEndpointPairSeparation",
         "DFP.TwoPhaseOrbit.slowCurveAdjacentEndpointSeparation",

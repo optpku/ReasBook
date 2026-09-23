@@ -92,6 +92,8 @@ def main() -> None:
                         help="A new evidence directory outside the source tree")
     parser.add_argument("--reuse-evidence", type=Path,
                         help="Reuse raw compiled evidence with matching source/extractor hashes")
+    parser.add_argument("--docs-root", type=Path,
+                        help="Fresh docs database used to regenerate exact Lean excerpts")
     args = parser.parse_args()
     project_root = Path(__file__).resolve().parents[1]
     repo_root = project_root.parents[2]
@@ -217,7 +219,7 @@ def main() -> None:
             return "Main results"
         parts = item["file"].split("/")
         if parts[0] == "DFPWolfe":
-            return "Paper-facing lemmas" if parts[1].startswith("A_uniformly") else "Paper infrastructure"
+            return "Paper-facing results"
         if "PlanarConvergence.lean" in parts:
             return "Planar convergence"
         if "SecantDegeneration.lean" in parts:
@@ -295,16 +297,29 @@ def main() -> None:
         assets = resources / "assets"
     copy_generic_map(assets, output, data)
     shutil.copy2(project_root / "theorem-map/paper-statements.json", output / "paper-statements.json")
+    subprocess.run([sys.executable, str(Path(__file__).with_name("generate_paper_graph.py")),
+                    "--graph-root", str(output)], check=True)
     code_path = project_root / "theorem-map/paper-lean.json"
-    code_data = json.loads(code_path.read_text())
+    if args.docs_root:
+        from extract_paper_lean import extract
+        paper_graph = json.loads((output / "paper-data.json").read_text())
+        code_data = extract(project_root, args.docs_root.resolve(), paper_graph)
+    else:
+        code_data = json.loads(code_path.read_text())
+    if code_data["sourceCommit"] != commit:
+        raise RuntimeError("Lean excerpts and graph must refer to the same source commit")
+    paper_graph = json.loads((output / "paper-data.json").read_text())
+    expected = {row["declaration"] for item in paper_graph["items"]
+                for row in item["relatedDeclarations"]}
+    if set(code_data["declarations"]) != expected:
+        raise RuntimeError("Lean excerpts do not cover the current paper mapping exactly")
     for record in code_data["declarations"].values():
         actual = hashlib.sha256((project_root / record["file"]).read_bytes()).hexdigest()
         if actual != record["sourceSha256"]:
             raise RuntimeError("Lean code excerpts need regeneration for " + record["file"])
-    shutil.copy2(code_path, output / "paper-lean.json")
+    (output / "paper-lean.json").write_text(
+        json.dumps(code_data, ensure_ascii=False, indent=2) + "\n")
     shutil.copy2(assets / "lean-code.js", output / "lean-code.js")
-    subprocess.run([sys.executable, str(Path(__file__).with_name("generate_paper_graph.py")),
-                    "--graph-root", str(output)], check=True)
     print(json.dumps(dict(output=str(output), sourceCommit=commit, nodes=len(items),
                           edges=sum(len(x["dependencies"]) for x in items)), indent=2))
 

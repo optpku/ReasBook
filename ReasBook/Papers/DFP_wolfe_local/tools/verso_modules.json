@@ -1,0 +1,46 @@
+{
+  "modules": [
+    {
+      "module": "DFPWolfe.Main",
+      "title": "Main counterexample and convergence theorems",
+      "slug": "main-theorems"
+    },
+    {
+      "module": "ReasLib.Optimization.DFP.GlobalConvergence",
+      "title": "Global convergence predicates",
+      "slug": "global-convergence"
+    },
+    {
+      "module": "ReasLib.Optimization.DFP.LevelSetGlobalConvergence",
+      "title": "Level-set convergence predicates",
+      "slug": "level-set-convergence"
+    },
+    {
+      "module": "ReasLib.Optimization.DFP.WolfeCounterexample.Holder",
+      "title": "Hölder regularity and identity initialization",
+      "slug": "holder-regularity"
+    },
+    {
+      "module": "ReasLib.Optimization.DFP.WolfeCounterexample.HolderSharpness",
+      "title": "Sharpness of the one-half Hölder exponent",
+      "slug": "holder-sharpness"
+    },
+    {
+      "module": "ReasLib.Optimization.DFP.SecantDegeneration",
+      "title": "General planar secant degeneration",
+      "slug": "secant-degeneration"
+    },
+    {
+      "module": "ReasLib.Optimization.DFP.PlanarConvergence",
+      "title": "Planar convergence proof and C³ consequences",
+      "slug": "planar-convergence"
+    },
+    {
+      "module": "ReasLib.Analysis.Calculus.Gradient.HessianHolder",
+      "title": "Hessian Hölder calculus",
+      "slug": "hessian-holder"
+    }
+  ],
+  "schemaVersion": 1,
+  "description": "Source-backed Verso reading routes. Resolve all modules against the same source snapshot as docs and the theorem graph."
+}

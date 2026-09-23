@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
-  "manuscript": "main-new-modify.tex (September 2026 revision)",
-  "numbering": "Shared theorem counter: Theorem 1, Corollary 2, Theorem 3, Proposition 4, Lemmas 5–11. Older Lean docstring numbers belong to an earlier manuscript and are not used here.",
+  "manuscript": "main-new.tex (September 2026 revision)",
+  "numbering": "Shared theorem counter: Theorem 1, Corollary 2, Theorem 3, Proposition 4, Lemmas 5–11. The DFPWolfe navigation files follow these numbers.",
   "items": [
     {
       "id": "thm-main",
@@ -9,11 +9,11 @@
       "label": "Theorem 1",
       "title": "DFP can fail under strong Wolfe conditions",
       "section": "main",
-      "mapping": "Main result, strengthened by the sharpness statement proved later in the paper.",
+      "mapping": "The complete strong-Wolfe counterexample in every dimension n ≥ 2, with the additional failure of all Hölder exponents greater than one half on the initial sublevel.",
       "declarations": [
-        "DFP.existsStrongWolfeCounterexampleHolderSharp_of_dimension_ge_two",
-        "DFP.existsStrongWolfeCounterexampleHolder_of_dimension_ge_two"
-      ]
+        "DFP.existsStrongWolfeCounterexampleHolderSharp_of_dimension_ge_two"
+      ],
+      "navigationFile": "DFPWolfe/Theorem_1_StrongWolfeCounterexample.lean"
     },
     {
       "id": "cor-identity-initialization",
@@ -21,10 +21,11 @@
       "label": "Corollary 2",
       "title": "The counterexample can start from the identity",
       "section": "main",
-      "mapping": "Main result in every dimension n ≥ 2.",
+      "mapping": "The complete identity-initialization corollary in every dimension n ≥ 2.",
       "declarations": [
         "DFP.existsMatrixIdentityLiminfStrongWolfeHolder"
-      ]
+      ],
+      "navigationFile": "DFPWolfe/Corollary_2_IdentityInitialization.lean"
     },
     {
       "id": "thm-planar-convergence",
@@ -32,11 +33,12 @@
       "label": "Theorem 3",
       "title": "A locally Lipschitz Hessian restores planar convergence",
       "section": "main",
-      "mapping": "Weak- and strong-Wolfe interfaces; finite stationary termination is represented by constant continuation.",
+      "mapping": "The weak-Wolfe theorem and its strong-Wolfe consequence; finite stationary termination is represented by constant continuation.",
       "declarations": [
         "DFP.main_planarWeakWolfeConvergence",
         "DFP.main_planarStrongWolfeConvergence"
-      ]
+      ],
+      "navigationFile": "DFPWolfe/Theorem_3_PlanarConvergence.lean"
     },
     {
       "id": "prop-one-step",
@@ -44,15 +46,15 @@
       "label": "Proposition 4",
       "title": "Exact formulas for one DFP step",
       "section": "construction",
-      "mapping": "Separate declarations prove the gradient formula, matrix formula, parameter independence, and denominator positivity.",
+      "mapping": "Both exact one-step formulas, independence of τ, and positivity of the two denominators β and γ.",
       "declarations": [
         "DFP.AbstractSecantStep.nextGradient_formula",
         "DFP.AbstractSecantStep.nextInverseHessian_formula",
         "DFP.AbstractSecantStep.nextInverseHessian_tau_independent",
-        "DFP.AbstractSecantStep.gradientEnergy_pos",
         "DFP.AbstractSecantStep.preconditionedEnergy_pos",
         "DFP.AbstractSecantStep.secantImageEnergy_pos"
-      ]
+      ],
+      "navigationFile": "DFPWolfe/Proposition_4_OneStepMap.lean"
     },
     {
       "id": "lem-graph-transform",
@@ -60,11 +62,11 @@
       "label": "Lemma 5",
       "title": "Construct a smooth invariant graph",
       "section": "construction",
-      "mapping": "Linked proof components are the metric graph-transform certificate and its finite-smooth regularity interface. These expose supporting hypotheses explicitly; they are not one verbatim Lean statement of the general lemma.",
+      "mapping": "The full finite-dimensional spectral-radius theorem. Lean assumes C^ν regularity, weaker than the manuscript’s C^(ν+1) hypothesis, and does not assume invertibility.",
       "declarations": [
-        "LocalInvariantGraph.exists_metricInvariantGraph_of_regularFixedPoint",
-        "LocalInvariantGraph.MetricGraphTransformData.exists_metricFixedGraph"
-      ]
+        "LocalInvariantGraph.existsOfComplexSpectralRadiusLtOne"
+      ],
+      "navigationFile": "DFPWolfe/Lemma_5_LocalInvariantGraph.lean"
     },
     {
       "id": "lem-center-manifold",
@@ -72,13 +74,17 @@
       "label": "Lemma 6",
       "title": "The two-step map has an invariant C⁷ curve",
       "section": "construction",
-      "mapping": "Invariant-curve existence, analytic extension, derivative, and signed recurrence are split across declarations.",
+      "mapping": "Agreement with the recovered map, analytic extension, the derivative and eigenvalues 1, −1/9, and 0, and the invariant C⁷ graph with both shape jets and the scale recurrence.",
       "declarations": [
-        "DFP.TwoLeg.exists_localForwardInvariantSlowCurve",
+        "DFP.TwoLeg.stateMap_eventuallyEq_recovered",
         "DFP.TwoLeg.stateMapAnalytic",
         "DFP.TwoLeg.stateMap_fderiv_apply",
-        "DFP.TwoLeg.slowGraphSignedRecurrence"
-      ]
+        "DFP.TwoLeg.stateMap_centerEigenvalue",
+        "DFP.TwoLeg.stateMap_transverseEigenvalue_negNinth",
+        "DFP.TwoLeg.stateMap_transverseEigenvalue_zero",
+        "DFP.TwoLeg.exists_localForwardInvariantSlowCurve"
+      ],
+      "navigationFile": "DFPWolfe/Lemma_6_CenterManifold.lean"
     },
     {
       "id": "lem-two-step-expansions",
@@ -86,14 +92,15 @@
       "label": "Lemma 7",
       "title": "Control amplitude, angle, and center drift",
       "section": "construction",
-      "mapping": "Representative proof components for the amplitude and angle estimates and the full-/half-cycle center displacement; see the Lean view for the finer expansion lemmas.",
+      "mapping": "All five components: the O(ε⁶) amplitude remainder, frame rotation, full- and half-cycle center drift, and both within-cycle gradient-angle remainders.",
       "declarations": [
+        "DFP.TwoLeg.slowCurveAmplitudeDrift",
+        "DFP.TwoPhaseOrbit.slowCurveFrameRotation",
         "DFP.TwoPhaseOrbit.slowCurveFullCenterDrift",
         "DFP.TwoPhaseOrbit.slowCurveHalfCenterDisplacement",
-        "DFP.TwoPhaseOrbit.slowCurveAmplitudeDriftModulus",
-        "DFP.TwoPhaseOrbit.slowCurveFrameAngleIncrementUnique",
         "DFP.TwoPhaseOrbit.slowCurveEndpointAngleRemainderModulus"
-      ]
+      ],
+      "navigationFile": "DFPWolfe/Lemma_7_TwoStepExpansions.lean"
     },
     {
       "id": "lem-scalar-asymptotics",
@@ -101,13 +108,12 @@
       "label": "Lemma 8",
       "title": "Positive limiting amplitude and a limiting circle",
       "section": "construction",
-      "mapping": "Linked components cover scale, amplitude, and center tails. The circle accumulation-set clause is not represented by this bundle; related topological declarations remain in the full Lean view.",
+      "mapping": "The complete scalar asymptotics theorem, including negative-infinite winding and equality of the full endpoint cluster set with the limiting circle; the circle theorem is also linked separately.",
       "declarations": [
-        "DFP.TwoPhaseOrbit.slowCurveAmplitudeAsymptotics",
-        "DFP.TwoLeg.slowCurveScaleAsymptotic",
-        "DFP.TwoPhaseOrbit.slowCurveCenterTendsto",
-        "DFP.TwoPhaseOrbit.slowCurveCenterTailUniformBound"
-      ]
+        "DFP.TwoPhaseOrbit.slowCurveScalarAsymptotics",
+        "DFP.TwoPhaseOrbit.slowCurveEndpointClusterSet_eq_limitCircle"
+      ],
+      "navigationFile": "DFPWolfe/Lemma_8_ScalarAsymptotics.lean"
     },
     {
       "id": "lem-separation",
@@ -115,10 +121,11 @@
       "label": "Lemma 9",
       "title": "Keep endpoints uniformly separated",
       "section": "construction",
-      "mapping": "Uniform endpoint separation theorem.",
+      "mapping": "The uniform endpoint separation theorem, with one constant valid at every endpoint.",
       "declarations": [
         "DFP.TwoPhaseOrbit.slowCurveUniformEndpointSeparation"
-      ]
+      ],
+      "navigationFile": "DFPWolfe/Lemma_9_UniformSeparation.lean"
     },
     {
       "id": "lem-disjoint-interpolation",
@@ -126,14 +133,16 @@
       "label": "Lemma 10",
       "title": "Interpolate with a C², one-half Hölder correction",
       "section": "construction",
-      "mapping": "The regularity, interpolation jets, Hölder bound, and Hessian bound are separate declarations.",
+      "mapping": "C² smoothness, zero-extension on the circle, endpoint values and gradients, the O(ε₀) Hessian bound, and global one-half Hölder regularity. Component statements expose the construction hypotheses.",
       "declarations": [
         "contDiff_two_slowCurveBumpCorrection",
-        "DFP.PlanarConvergence.bumpCorrectionHessianHolder",
+        "slowCurveBumpCorrection_eqOn_zero",
         "DFP.TwoPhaseOrbit.bumpCorrection_endpoint",
         "DFP.TwoPhaseOrbit.bumpCorrection_gradient_endpoint",
-        "DFP.TwoLeg.SlowCurve.bumpCorrectionHessianBound"
-      ]
+        "slowCurveBumpCorrectionHessianBound",
+        "DFP.PlanarConvergence.bumpCorrectionHessianHolder"
+      ],
+      "navigationFile": "DFPWolfe/Lemma_10_DisjointInterpolation.lean"
     },
     {
       "id": "lem-planar-degeneration",
@@ -141,12 +150,11 @@
       "label": "Lemma 11",
       "title": "Nonconvergence forces planar secant degeneration",
       "section": "convergence",
-      "mapping": "General secant theorem plus the DFP-specialized degeneration interfaces used in the convergence proof.",
+      "mapping": "The general positive-definite secant theorem, without a DFP update assumption. Lean’s lam k is the paper’s λₖ₊₁; the bound, limit, matrix boundedness, and smallest-eigenvalue limit are all included.",
       "declarations": [
-        "DFP.SecantIteration.planarDegeneration",
-        "DFP.PlanarConvergence.orbitFreeCoefficientDegeneration",
-        "DFP.PlanarConvergence.orbitInverseHessianBoundedOfNonconvergence"
-      ]
+        "DFP.SecantIteration.planarDegeneration"
+      ],
+      "navigationFile": "DFPWolfe/Lemma_11_PlanarSecantDegeneration.lean"
     }
   ]
 }
