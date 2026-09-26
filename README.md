@@ -9,10 +9,12 @@ while producing machine-checkable statements and proofs. Browse the generated
 explore the current collection.
 
 Many ReasBook projects are initialized with
-[M2F](https://github.com/optsuite/M2F.git) and then checked and refined in
-Lean. You can also try [Quokka](https://quokka.reaslab.io/), the public
-automated formalization system for turning long-form mathematical literature
-into compilable Lean 4 projects.
+[M2F](https://github.com/optsuite/M2F), the algorithmic framework for
+formalizing mathematical literature, and then checked and refined in Lean.
+[Quokka](https://quokka.reaslab.io/) is the engineering implementation of M2F
+and its public online service on ReasLab, providing a web interface for turning
+mathematical literature into Lean 4 projects. Quokka's source code will be
+released as open source in a future release.
 
 ## Toolchain Branches
 
