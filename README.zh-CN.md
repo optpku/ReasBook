@@ -4,7 +4,12 @@
 
 **ReasBook** 是一个使用 Lean 4 对数学教材和研究论文进行形式化的项目。它在保留原始文献结构的同时，生成可由机器检查的命题与证明。你可以浏览已生成的[文档与项目目录](https://optpku.github.io/ReasBook/)，了解当前收录的形式化项目。
 
-许多 ReasBook 项目由 [M2F](https://github.com/optsuite/M2F) 初始化，随后在 Lean 中进行检查和完善。M2F 是数学文献自动形式化的算法框架；[Quokka](https://quokka.reaslab.io/) 是 M2F 的工程实现和公开在线服务，托管于 ReasLab，通过网页提供将数学文献转化为 Lean 4 项目的功能。Quokka 的源代码将在后续开源。
+许多 ReasBook 项目由 M2F 初始化，随后在 Lean 中进行检查和完善。M2F 与 Quokka 的关系如下：
+
+| 项目 | 定位 | 访问入口 |
+| --- | --- | --- |
+| M2F | 数学文献自动形式化的算法与研究方法 | [论文](https://arxiv.org/abs/2602.17016) · [项目与示例](https://github.com/optsuite/M2F) |
+| Quokka | M2F 的工程实现与公开在线服务 | [ReasLab 在线服务](https://quokka.reaslab.io/)；源代码后续开源 |
 
 ## 工具链分支
 
