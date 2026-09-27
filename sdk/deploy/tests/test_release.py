@@ -1262,6 +1262,10 @@ class ReleasePlanningTests(unittest.TestCase):
                 (layout.site / "versions" / "v4.26.0" / "index.html").is_file()
             )
             self.assertIn(
+                "https://github.com/optpku/ReasBook#readme",
+                (layout.site / "index.html").read_text(encoding="utf-8"),
+            )
+            self.assertNotIn(
                 "Version Archive",
                 (layout.site / "index.html").read_text(encoding="utf-8"),
             )

@@ -34,6 +34,7 @@ from .static_assets import deduplicate_verso_assets
 
 
 _SHARED_DOC_DIRECTORIES = {"declarations", "find", "src"}
+README_URL = "https://github.com/optpku/ReasBook#readme"
 _EXTERNAL_DOC_NAMESPACES = {
     "Aesop",
     "Batteries",
@@ -585,40 +586,23 @@ class PagesSiteProjector:
         branch: str,
         routes: list[tuple[str, str]],
     ) -> str:
-        items = "\n".join(
-            '      <li><a href="{}"><code>{}</code></a></li>'.format(
-                html.escape(route, quote=True), html.escape(name)
-            )
-            for route, name in routes
-        )
-        if not items:
-            items = (
-                "      <li>No canonical projects are published for this "
-                "version.</li>"
-            )
-        home = "../../"
+        # Version roots are compatibility entrypoints, not another catalog.
+        # Project routes below them remain intact for Docs/Verso deep links.
+        target = README_URL
         return "\n".join(
             [
                 "<!doctype html>",
                 '<html lang="en">',
                 "<head>",
                 '  <meta charset="utf-8" />',
-                '  <meta name="viewport" '
-                'content="width=device-width,initial-scale=1" />',
-                f"  <title>ReasBook {html.escape(branch)}</title>",
-                '  <link rel="stylesheet" href="../../static/catalog.css" />',
+                '  <meta name="viewport" content="width=device-width,initial-scale=1" />',
+                '  <meta name="robots" content="noindex,follow" />',
+                f'  <meta http-equiv="refresh" content="0; url={target}" />',
+                f'  <link rel="canonical" href="{target}" />',
+                "  <title>ReasBook README</title>",
                 "</head>",
                 "<body>",
-                '  <main class="page-shell narrow-shell">',
-                '    <p class="eyebrow">Canonical Pages Projection</p>',
-                f'    <h1><span translate="no">{html.escape(branch)}</span></h1>',
-                "    <p>Project API documentation is complete. External "
-                "dependency links resolve to explicit placeholders.</p>",
-                '    <ul class="resource-list">',
-                items,
-                "    </ul>",
-                f'    <a class="back-link" href="{home}">Back to ReasBook</a>',
-                "  </main>",
+                f'  <p><a href="{target}">Open ReasBook README</a></p>',
                 "</body>",
                 "</html>",
                 "",

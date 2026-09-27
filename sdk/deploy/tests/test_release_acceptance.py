@@ -341,6 +341,7 @@ class ReleaseAcceptanceTests(unittest.TestCase):
         *,
         fail_request: bool = False,
         external_mobile: bool = False,
+        redirect_url: str | None = None,
     ):
         executable = root / "fake-chromium"
         executable.write_text("fixture", encoding="utf-8")
@@ -355,6 +356,9 @@ class ReleaseAcceptanceTests(unittest.TestCase):
             def on(self, event, callback):
                 self.handlers[event] = callback
 
+            def route(self, pattern, callback):
+                self.handlers[pattern] = callback
+
             def goto(self, url, *, wait_until, timeout):
                 if wait_until != "networkidle" or timeout != 30_000:
                     raise AssertionError("browser navigation contract changed")
@@ -362,7 +366,7 @@ class ReleaseAcceptanceTests(unittest.TestCase):
                 self.url = (
                     "https://outside.invalid/escaped/"
                     if self.mobile and external_mobile
-                    else url
+                    else (redirect_url or url)
                 )
                 response = SimpleNamespace(status=200, url=self.url)
                 self.handlers["response"](response)
@@ -1765,6 +1769,36 @@ class ReleaseAcceptanceTests(unittest.TestCase):
                 result["routes_by_viewport"]["390x844"],
                 [route.path for route in routes],
             )
+
+    def test_browser_allows_readme_redirect_only_from_catalog_routes(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            spec, layout, policies = self._package(root)
+            runner = ReleaseAcceptanceRunner(
+                REPO_ROOT, layout, spec,
+                expected_artifact_policy_sha256=artifact_policy_digest(policies),
+            )
+            readme = "https://github.com/optpku/ReasBook#readme"
+            for kind in ("root", "versions", "version-branch", "docs-index", "project", "docs", "verso"):
+                with self.subTest(kind=kind):
+                    fake_api, browser = self._fake_playwright(root, redirect_url=readme)
+                    with patch(
+                        "reasbook_deploy_sdk.release.acceptance.importlib.import_module",
+                        return_value=fake_api,
+                    ):
+                        def run():
+                            return runner._browser_smoke(
+                                "http://127.0.0.1:18000",
+                                (_Route(kind, spec.base_path),),
+                                name="pages", mode="required",
+                                screenshots=root / "screenshots",
+                            )
+                        if kind in {"docs", "verso"}:
+                            with self.assertRaisesRegex(DeployExecutionError, "escaped"):
+                                run()
+                        else:
+                            self.assertEqual(run()["status"], "passed")
+                    self.assertTrue(browser.closed)
 
     def test_browser_rejects_transport_failure_and_mobile_origin_escape(self) -> None:
         with tempfile.TemporaryDirectory() as temp:

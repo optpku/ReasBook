@@ -29,13 +29,11 @@ RESOURCE_LABELS = {
     "en": {
         "docs": "Docs",
         "source_only": "Source only (excluded from the current release profile)",
-        "theorem_map": "Theorem map",
         "verso_unpublished": "Verso not published",
     },
     "zh-CN": {
         "docs": "文档",
         "source_only": "仅源代码（不包含在当前发布配置中）",
-        "theorem_map": "定理图",
         "verso_unpublished": "尚未发布 Verso",
     },
 }
@@ -60,12 +58,6 @@ def resource_cell(project: dict[str, str], *, language: str = "en") -> str:
         pieces.append(f"[Verso]({SITE_BASE}/sites/{slug}/pages/)")
     else:
         pieces.append(labels["verso_unpublished"])
-
-    if name == "TR_LALM_theory":
-        pieces.append(
-            f"[{labels['theorem_map']}]"
-            f"({SITE_BASE}/theorem-maps/papers/tr_lalm_theory/)"
-        )
 
     # Use an entity so the separator is rendered inside the Markdown table
     # cell instead of being parsed as another table column.
