@@ -29,6 +29,8 @@ from collections import defaultdict
 from pathlib import Path
 from urllib.parse import unquote, urlsplit
 
+from reader_entrypoints import write_reader_entrypoints
+
 
 ASSETS_DIR = Path(__file__).resolve().parent / "assets"
 
@@ -891,6 +893,10 @@ def main() -> None:
             f"{unavailable} generated Documentation link(s) as unavailable; "
             f"see {_UNAVAILABLE_DOCUMENTATION_MANIFEST}"
         )
+
+    # The README is the public catalog. Keep old catalog URLs as redirects,
+    # while preserving all per-project Docs and Verso routes and assets.
+    write_reader_entrypoints(dst_root)
 
 
 if __name__ == "__main__":

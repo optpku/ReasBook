@@ -31,7 +31,7 @@ import uuid
 from reasbook_sdk_common import atomic_write_json
 
 from ..errors import DeployConfigError, DeployExecutionError
-from .artifacts import artifact_policy_digest
+from .artifacts import README_URL, artifact_policy_digest
 from .bundle import BundleVerifier, normalize_sha256
 from .models import (
     ProjectSpec,
@@ -56,6 +56,7 @@ from .tooling import (
 
 _BROWSER_MODES = {"auto", "required", "skip"}
 _PRODUCTION_ROUTING_MODE = "strict"
+_README_REDIRECT_KINDS = {"root", "versions", "version-branch", "docs-index", "project"}
 _VERSO_EMPTY_MARKERS = (
     "no separate reading sections are published for this version.",
     "directory: no section modules discovered yet.",
@@ -1313,6 +1314,22 @@ class ReleaseAcceptanceRunner:
                             failed_requests.append(f"{detail}: {request.url}")
 
                     def attach_observers(page) -> None:
+                        # Check the browser's actual redirect destination without
+                        # depending on GitHub availability in local acceptance.
+                        # Only this exact external target is intercepted; Docs
+                        # and Verso are still required to stay inside the site.
+                        page.route(
+                            README_URL.split("#", 1)[0],
+                            lambda request: request.fulfill(
+                                status=200,
+                                content_type="text/html",
+                                body=(
+                                    "<!doctype html><html><head>"
+                                    "<title>ReasBook README redirect target</title>"
+                                    "</head><body><p>ReasBook README</p></body></html>"
+                                ),
+                            ),
+                        )
                         page.on(
                             "console",
                             lambda message: console_errors.append(message.text)
@@ -1345,11 +1362,15 @@ class ReleaseAcceptanceRunner:
                                     f"browser navigation failed for {route.path}"
                                 )
                             final_url = urlsplit(page.url)
+                            expected_readme_redirect = (
+                                route.kind in _README_REDIRECT_KINDS
+                                and page.url == README_URL
+                            )
                             if (
                                 final_url.scheme != origin_parts.scheme
                                 or final_url.netloc != origin_parts.netloc
                                 or not final_url.path.startswith(self.spec.base_path)
-                            ):
+                            ) and not expected_readme_redirect:
                                 raise DeployExecutionError(
                                     "browser navigation escaped the site at "
                                     f"{route.path} ({viewport_name})"

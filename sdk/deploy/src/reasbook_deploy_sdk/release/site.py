@@ -142,6 +142,16 @@ class ReleaseSiteAssembler:
         self._run(
             (
                 str(self.tooling_root / "sdk" / "common" / "bin" / "python"),
+                str(self.tooling_root / "scripts" / "pages" / "reader_entrypoints.py"),
+                str(workspace / ".site"),
+            ),
+            workspace,
+            {},
+            "reader-entrypoints.log",
+        )
+        self._run(
+            (
+                str(self.tooling_root / "sdk" / "common" / "bin" / "python"),
                 str(self.tooling_root / "scripts" / "pages" / "verify.py"),
             ),
             workspace,

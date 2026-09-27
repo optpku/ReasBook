@@ -242,7 +242,8 @@ class RepositoryScriptTests(unittest.TestCase):
                 "slug": "tr_lalm_theory",
             }
         )
-        self.assertEqual(theorem_resource.count("&#124;"), 2)
+        self.assertEqual(theorem_resource.count("&#124;"), 1)
+        self.assertNotIn("theorem-maps", theorem_resource)
         self.assertEqual(
             update_readme.resource_cell(excluded, language="zh-CN"),
             "仅源代码（不包含在当前发布配置中）",
@@ -1490,11 +1491,14 @@ class RepositoryScriptTests(unittest.TestCase):
             docs_index = (site / "docs" / "ReasBook" / "index.html").read_text(
                 encoding="utf-8"
             )
-            self.assertIn("./Books/DemoBook/", docs_index)
+            self.assertIn("https://github.com/optpku/ReasBook#readme", docs_index)
+            self.assertNotIn("./Books/DemoBook/", docs_index)
             self.assertTrue((site / "static" / "catalog.css").is_file())
             root_page = (site / "index.html").read_text(encoding="utf-8")
             self.assertIn('id="main-content"', root_page)
-            self.assertIn("v4.30.0", root_page)
+            self.assertIn('http-equiv="refresh"', root_page)
+            self.assertIn("https://github.com/optpku/ReasBook#readme", root_page)
+            self.assertNotIn("Version Archive", root_page)
             canonical_doc = (
                 site / "docs" / "ReasBook" / "Books" / "DemoBook" / "Book.html"
             ).read_text(encoding="utf-8")
