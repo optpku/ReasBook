@@ -11,6 +11,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts" / "pages"))
 
 from reader_entrypoints import README_URL, write_reader_entrypoints  # noqa: E402
+from update_readme import resource_cell, update_resource_cells  # noqa: E402
 
 
 class ReaderEntrypointsTests(unittest.TestCase):
@@ -50,7 +51,7 @@ class ReaderEntrypointsTests(unittest.TestCase):
                 self.assertEqual((site / relative).read_text(), f"original: {relative}")
             self.assertEqual(write_reader_entrypoints(site), changed)
 
-    def test_readmes_link_only_to_project_docs_or_verso_on_pages(self):
+    def test_readmes_link_to_project_resources_not_aggregate_catalogs(self):
         readmes = [ROOT / "README.md", ROOT / "README.zh-CN.md"]
         readmes.extend((ROOT / "ReasBook").rglob("README.md"))
         for readme in readmes:
@@ -60,9 +61,26 @@ class ReaderEntrypointsTests(unittest.TestCase):
                     self.assertRegex(
                         path,
                         r"^(?:docs/ReasBook/(?:Books|Papers)/[^/]+/(?:Book|Paper)\.html"
-                        r"|sites/[^/]+/(?:pages|docs)/)$",
+                        r"|sites/[^/]+/(?:pages|docs)/"
+                        r"|theorem-maps/(?:books|papers)/[^/]+/)$",
                     )
             self.assertNotIn("https://optpku.github.io/ReasBook/)", text)
+
+    def test_published_paper_maps_survive_bilingual_readme_regeneration(self):
+        for filename, language in (("README.md", "en"), ("README.zh-CN.md", "zh-CN")):
+            original = (ROOT / filename).read_text(encoding="utf-8")
+            for name in ("DFP_wolfe_local", "TR_LALM_theory"):
+                with self.subTest(language=language, paper=name):
+                    project = {"kind": "papers", "name": name, "slug": name.lower()}
+                    url = f"https://optpku.github.io/ReasBook/theorem-maps/papers/{name.lower()}/"
+                    row = next(line for line in original.splitlines() if line.startswith("| **[") and f"ReasBook/Papers/{name}/" in line)
+                    self.assertIn(url, row)
+                    self.assertIn(url, resource_cell(project, language=language))
+                    with tempfile.TemporaryDirectory() as temp:
+                        readme = Path(temp) / filename
+                        readme.write_text(original, encoding="utf-8")
+                        update_resource_cells(readme, {("papers", name): project}, language=language)
+                        self.assertIn(url, readme.read_text(encoding="utf-8"))
 
     def test_rejects_symlinked_catalog_outside_site(self):
         with tempfile.TemporaryDirectory() as temp:

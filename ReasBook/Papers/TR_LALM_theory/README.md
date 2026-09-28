@@ -3,6 +3,7 @@
 This is a catalog link folder on `main`; the complete Lean formalization is kept on the version branch.
 
 [Docs](https://optpku.github.io/ReasBook/docs/ReasBook/Papers/TR_LALM_theory/Paper.html) ·
-[Verso](https://optpku.github.io/ReasBook/sites/tr_lalm_theory/pages/)
+[Verso](https://optpku.github.io/ReasBook/sites/tr_lalm_theory/pages/) ·
+[Theorem dependency map](https://optpku.github.io/ReasBook/theorem-maps/papers/tr_lalm_theory/)
 
 **[Open the source on `v4.32.2`](https://github.com/optpku/ReasBook/tree/v4.32.2/ReasBook/Papers/TR_LALM_theory/)**

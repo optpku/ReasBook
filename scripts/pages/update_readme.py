@@ -21,6 +21,8 @@ from project_catalog import (
 
 
 SITE_BASE = "https://optpku.github.io/ReasBook"
+# Only link graphs already published at stable per-project URLs.
+PUBLISHED_THEOREM_MAPS = {("papers", "DFP_wolfe_local"), ("papers", "TR_LALM_theory")}
 README_LANGUAGES = {
     "README.md": "en",
     "README.zh-CN.md": "zh-CN",
@@ -28,11 +30,13 @@ README_LANGUAGES = {
 RESOURCE_LABELS = {
     "en": {
         "docs": "Docs",
+        "theorem_map": "Theorem map",
         "source_only": "Source only (excluded from the current release profile)",
         "verso_unpublished": "Verso not published",
     },
     "zh-CN": {
         "docs": "文档",
+        "theorem_map": "定理依赖图",
         "source_only": "仅源代码（不包含在当前发布配置中）",
         "verso_unpublished": "尚未发布 Verso",
     },
@@ -58,6 +62,11 @@ def resource_cell(project: dict[str, str], *, language: str = "en") -> str:
         pieces.append(f"[Verso]({SITE_BASE}/sites/{slug}/pages/)")
     else:
         pieces.append(labels["verso_unpublished"])
+
+    if (kind, name) in PUBLISHED_THEOREM_MAPS:
+        pieces.append(
+            f"[{labels['theorem_map']}]({SITE_BASE}/theorem-maps/{kind}/{slug}/)"
+        )
 
     # Use an entity so the separator is rendered inside the Markdown table
     # cell instead of being parsed as another table column.
