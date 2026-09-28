@@ -2,7 +2,7 @@
 
 [English](README.md) | **简体中文**
 
-**ReasBook** 是一个使用 Lean 4 对数学教材和研究论文进行形式化的项目。它在保留原始文献结构的同时，生成可由机器检查的命题与证明。请通过下方书籍和论文表格中的 Docs（文档）与 Verso 链接阅读各项目。
+**ReasBook** 是一个使用 Lean 4 对数学教材和研究论文进行形式化的项目。它在保留原始文献结构的同时，生成可由机器检查的命题与证明。请通过下方书籍和论文表格中的 Docs（文档）、Verso 和已发布的定理依赖图链接浏览各项目。
 
 许多 ReasBook 项目由 M2F 初始化，随后在 Lean 中进行检查和完善。M2F 与 Quokka 的关系如下：
 
@@ -80,7 +80,7 @@ git sparse-checkout list
 | Challenge/Solution 比较 | [Comparator SDK](sdk/comparator/README.md) · [Comparator 上游仓库](https://github.com/leanprover/comparator) |
 | 多阶段部署与发布组装 | [Deploy SDK](sdk/deploy/README.md) |
 
-各项操作命令请参阅对应能力的 SDK 指南。本 README 是对外的项目总目录，阅读入口仅保留各项目的 Docs（文档）和 Verso。
+各项操作命令请参阅对应能力的 SDK 指南。本 README 是对外的项目总目录，集中提供各项目的 Docs（文档）、Verso 和已发布的定理依赖图入口。
 
 ## 部署阅读与评审平台
 
@@ -140,8 +140,8 @@ GitHub Pages 继续发布静态站点，公众评论需要运行 reviewer 后端
 
 | 形式化项目 | 源代码 | 贡献者 | 资源 |
 | --- | :---: | --- | --- |
-| **[A Counterexample to Global Convergence of Classical DFP Under the Standard Strong Wolfe Conditions](ReasBook/Papers/DFP_wolfe_local/)**<br><sub>Benqi Liu、Zichen Wang、Zaiwen Wen、Liwei Zhang 与 Yaxiang Yuan</sub> | [`v4.32.0`](https://github.com/optpku/ReasBook/tree/v4.32.0/ReasBook/Papers/DFP_wolfe_local/) | Zichen Wang | [Docs](https://optpku.github.io/ReasBook/sites/dfp_wolfe_local/docs/) &#124; [Verso](https://optpku.github.io/ReasBook/sites/dfp_wolfe_local/pages/) &#124; [arXiv](https://arxiv.org/html/2608.21708v1) |
-| **[A Fixed-Penalty Linearized Augmented Lagrangian Method with Classical Multiplier Updates](ReasBook/Papers/TR_LALM_theory/)**<br><sub>Benqi Liu、Kangkang Deng、Zichen Wang 与 Zaiwen Wen</sub> | [`v4.32.2`](https://github.com/optpku/ReasBook/tree/v4.32.2/ReasBook/Papers/TR_LALM_theory/) | Zichen Wang, Zaiwen Wen | [文档](https://optpku.github.io/ReasBook/docs/ReasBook/Papers/TR_LALM_theory/Paper.html) &#124; [Verso](https://optpku.github.io/ReasBook/sites/tr_lalm_theory/pages/) |
+| **[A Counterexample to Global Convergence of Classical DFP Under the Standard Strong Wolfe Conditions](ReasBook/Papers/DFP_wolfe_local/)**<br><sub>Benqi Liu、Zichen Wang、Zaiwen Wen、Liwei Zhang 与 Yaxiang Yuan</sub> | [`v4.32.0`](https://github.com/optpku/ReasBook/tree/v4.32.0/ReasBook/Papers/DFP_wolfe_local/) | Zichen Wang | [Docs](https://optpku.github.io/ReasBook/sites/dfp_wolfe_local/docs/) &#124; [Verso](https://optpku.github.io/ReasBook/sites/dfp_wolfe_local/pages/) &#124; [定理依赖图](https://optpku.github.io/ReasBook/theorem-maps/papers/dfp_wolfe_local/) &#124; [arXiv](https://arxiv.org/html/2608.21708v1) |
+| **[A Fixed-Penalty Linearized Augmented Lagrangian Method with Classical Multiplier Updates](ReasBook/Papers/TR_LALM_theory/)**<br><sub>Benqi Liu、Kangkang Deng、Zichen Wang 与 Zaiwen Wen</sub> | [`v4.32.2`](https://github.com/optpku/ReasBook/tree/v4.32.2/ReasBook/Papers/TR_LALM_theory/) | Zichen Wang, Zaiwen Wen | [文档](https://optpku.github.io/ReasBook/docs/ReasBook/Papers/TR_LALM_theory/Paper.html) &#124; [Verso](https://optpku.github.io/ReasBook/sites/tr_lalm_theory/pages/) &#124; [定理依赖图](https://optpku.github.io/ReasBook/theorem-maps/papers/tr_lalm_theory/) |
 | **[The Minimum Q-Order of BFGS with Exact Line Search Is One](ReasBook/Papers/BFGSMinimumQOrder_Liu_2026/)**<br><sub>Benqi Liu、Chenyi Li 与 Zaiwen Wen (2026)</sub> | [`v4.32.2`](https://github.com/optpku/ReasBook/tree/v4.32.2/ReasBook/Papers/BFGSMinimumQOrder_Liu_2026/) | Chenyi Li | 仅源代码（文档待发布） |
 | **[Technical note: a counterexample to the Rockafellar sum conjecture on c₀](ReasBook/Papers/RockafellarSum_2026/)**<br><sub>Junyu Zhang, Jinbiao Chen, Zichen Wang, Benqi Liu, and Zaiwen Wen (2026)</sub> | [`v4.32.0`](https://github.com/optpku/ReasBook/tree/v4.32.0/ReasBook/Papers/RockafellarSum_2026/) | Zichen Wang | 仅源代码（文档待发布） |
 

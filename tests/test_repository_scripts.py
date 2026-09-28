@@ -242,8 +242,8 @@ class RepositoryScriptTests(unittest.TestCase):
                 "slug": "tr_lalm_theory",
             }
         )
-        self.assertEqual(theorem_resource.count("&#124;"), 1)
-        self.assertNotIn("theorem-maps", theorem_resource)
+        self.assertEqual(theorem_resource.count("&#124;"), 2)
+        self.assertIn("theorem-maps/papers/tr_lalm_theory/", theorem_resource)
         self.assertEqual(
             update_readme.resource_cell(excluded, language="zh-CN"),
             "仅源代码（不包含在当前发布配置中）",
