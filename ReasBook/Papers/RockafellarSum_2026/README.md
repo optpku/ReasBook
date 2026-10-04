@@ -11,6 +11,12 @@ This contribution imports the seed-based formalization from
 [`43333eb`](https://github.com/imathwy/rockafellar_sum/commit/43333ebf4a14497001aadbc3d74e1d825c240688).
 The manuscript has no arXiv identifier at the time of this contribution.
 
+This Lean formalization is based on the mathematical construction in the
+technical note: [read the PDF](note/rockafellar_sum_technical_note.pdf) or
+browse its [LaTeX source](note/rockafellar_sum_technical_note.tex).
+The [`note/`](note/) directory contains the supplied v3 manuscript,
+bibliography, locally compiled PDF, and build instructions.
+
 ## Result and coverage
 
 Rockafellar's sum theorem establishes maximal monotonicity under an
