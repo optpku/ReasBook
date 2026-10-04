@@ -1,0 +1,834 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[T1]{fontenc}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[utf8]{inputenc}
+\fi
+\usepackage{lmodern}
+\usepackage[margin=27mm,headheight=14pt]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{microtype}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage[hidelinks]{hyperref}
+\hypersetup{pdftitle={Technical note: a counterexample to the Rockafellar sum conjecture on c0}}
+
+
+
+\newtheoremstyle{reportstyle}
+{7pt}{7pt}{\itshape}{} {\bfseries}{.}{0.5em}{}
+\theoremstyle{reportstyle}
+\newtheorem{lemma}{Lemma}
+\newtheorem{proposition}[lemma]{Proposition}
+\newtheorem{theorem}[lemma]{Theorem}
+\newtheorem*{remark}{Remark}
+\numberwithin{equation}{section}
+
+\DeclareMathOperator{\gra}{gra}
+\DeclareMathOperator{\dom}{dom}
+\DeclareMathOperator{\ran}{ran}
+\DeclareMathOperator{\Int}{int}
+\newcommand{\R}{\mathbb R}
+\newcommand{\Q}{\mathbb Q}
+\newcommand{\NN}{\mathbb N}
+\newcommand{\HH}{\mathcal H}
+\newcommand{\bx}{\mathbf x}
+\newcommand{\by}{\mathbf y}
+\newcommand{\ba}{\mathbf a}
+\newcommand{\bb}{\mathbf b}
+\newcommand{\be}{\mathbf e}
+\newcommand{\br}{\mathbf r}
+\newcommand{\bn}{\mathbf n}
+\newcommand{\bv}{\mathbf v}
+\newcommand{\bz}{\mathbf z}
+\newcommand{\bm}{\mathbf m}
+\newcommand{\bw}{\mathbf w}
+\newcommand{\bh}{\mathbf h}
+\newcommand{\bxi}{\boldsymbol\xi}
+\newcommand{\bnu}{\boldsymbol\nu}
+\newcommand{\bzero}{\mathbf 0}
+\newcommand{\ind}{\mathbf 1}
+\DeclarePairedDelimiter{\norm}{\lVert}{\rVert}
+\DeclarePairedDelimiter{\abs}{\lvert}{\rvert}
+\DeclarePairedDelimiterX{\pair}[2]{\langle}{\rangle}{#1,#2}
+
+\setlist[enumerate]{leftmargin=2.3em,itemsep=3pt,topsep=5pt}
+\setlength{\parindent}{1.25em}
+\setlength{\parskip}{3pt}
+\setlength{\emergencystretch}{2em}
+\allowdisplaybreaks[2]
+\clubpenalty=10000
+\widowpenalty=10000
+\displaywidowpenalty=10000
+\raggedbottom
+
+
+\renewcommand{\headrulewidth}{0.3pt}
+
+\begin{document}
+
+	\title{Technical note: a counterexample to the\\ Rockafellar sum conjecture on $c_0$}
+	\author{}
+	\date{}
+
+	\maketitle
+
+	\begin{abstract}
+		We give a counterexample to the Rockafellar sum conjecture on $c_0$.
+		There exists a maximally monotone operator $M:c_0\rightrightarrows\ell^1$
+		such that, for the closed ball $C_0$ of radius $12$ centered at the origin,
+		$\dom M\cap\Int C_0\ne\varnothing$ but $M+N_{C_0}$ is not maximally monotone.
+		We construct a monotone seed set using interval indicators and Lorentz-type
+		coordinates, then control the local duality pairing of every point in its
+		monotone polar. Zorn's lemma supplies a maximal monotone extension.
+		The origin is monotonically related to the graph of the resulting sum
+		but does not belong to that graph.
+	\end{abstract}
+
+	\section{Introduction}
+	Rockafellar's 1970 sum theorem~\cite{rockafellar1970maximality} states that, on a
+	real reflexive Banach space $X$, two maximally monotone operators
+	$A,B:X\rightrightarrows X^*$ have a maximally monotone sum whenever
+	$$ \dom A\cap\Int\dom B\ne\varnothing. $$
+	The Rockafellar sum conjecture asks whether the same implication holds
+	without the reflexivity assumption. Throughout this note, interior is
+	taken in the norm topology.
+
+	We give a counterexample on the nonreflexive Banach space $c_0$.
+	Specifically, Theorem~\ref{thm:main} provides a maximally monotone operator
+	$M:c_0\rightrightarrows\ell^1$ and the closed ball $C_0\subset c_0$
+	of radius $12$ centered at the origin such that
+	$$ \dom M\cap\Int C_0\ne\varnothing,
+	\qquad M+N_{C_0}\text{ is not maximally monotone}. $$
+	Thus the interior condition does not suffice in arbitrary Banach spaces,
+	even when the second operator is the normal cone of a closed ball.
+
+	The Hilbert-space range theory underlying the resolvent approach goes
+	back to Minty~\cite{minty1962monotone} in 1962. In 1970, Rockafellar
+	\cite{rockafellar1970subdifferential} proved that subdifferentials of
+	proper lower semicontinuous convex functions are maximally monotone on
+	general Banach spaces; normal-cone operators are a special case.
+	Bauschke, Borwein, Wang, and Yao~\cite{bauschke2012construction} constructed
+	maximally monotone operators that fail Gossez's dense-type (D) property
+	in 2012. This failure alone does not constitute a counterexample to the
+	sum conjecture.
+
+	Positive sum results beyond reflexive spaces also hold under additional
+	structure. For example, Borwein and Yao~\cite{borwein2014sum}
+	proved in 2014 that the above interior condition suffices when $A$ is of
+	Fitzpatrick--Phelps--Verona (FPV) type and $\dom A$ is convex.
+	Their paper described the unrestricted Banach-space sum problem as open
+	at that time.
+
+	Our proof starts with an explicitly constructed monotone \emph{seed set}
+	$S\subseteq c_0\times\ell^1$. Interval indicators provide Lorentz-type
+	coordinates for constructing $S$ and controlling its monotone polar
+	$S^\mu$. Once the three conditions of Lemma~\ref{lem:seed} are verified,
+	Zorn's lemma supplies a maximal monotone extension $G$ with
+	$S\subseteq G\subseteq S^\mu$. The argument requires neither uniqueness
+	nor a characterization of the resulting maximal extension.
+
+	\section{From a Monotone Seed Set to a Sum Counterexample}
+	\label{sec:reduction}
+	We first isolate the properties of a monotone seed set that suffice for
+	the counterexample. The reduction uses a maximal monotone extension of
+	the seed and the normal cone of a closed ball.
+
+
+	\subsection{Notation and preliminaries}
+	Let $X$ be a real Banach space with dual $X^*$, and set $Z=X\times X^*$.
+	For all primal vectors in $X$, we write $\bx,\by\in X$, and for all dual
+	vectors in $X^*$, we write $\bx^*,\by^*\in X^*$. A generic product-space point is written
+	$\bz=(\bx,\bx^*)$, while its two components are denoted by $\bz_X=\bx$ and $\bz_{X^*}=\bx^*$, respectively. For $\bz=(\bx,\bx^*)$ and $\bw=(\by,\by^*)$ in $Z$, let us define the \emph{duality coupling} $c: Z \to \mathbb{R}$ and the symmetric bilinear form $B: Z \times Z \to \mathbb{R}$ by
+	\begin{equation*}
+		c(\bz)=\pair{\bx}{\bx^*} \qquad\mbox{and}\qquad B(\bz,\bw)=\pair{\bx}{\by^*}+\pair{\by}{\bx^*}.
+		% \label{eq:pairing}
+	\end{equation*}
+	Then
+	\begin{equation*}
+		c(\bz-\bw)=c(\bz)+c(\bw)-B(\bz,\bw).
+		% \label{eq:polar-identity}
+	\end{equation*}
+	With the duality coupling $c$, we know a set $S\subseteq Z$ is \emph{monotone} if and only if  $c(\bz-\bw)\ge0$ for every pair of $\bz,\bw\in S$. Its \emph{monotone polar} $S^\mu$ is then defined as:
+	\begin{equation*}
+		S^\mu=\{\bw\in Z:c(\bw-\bz)\ge0\text{ for every }\bz\in S\}.
+		% \label{eq:polar}
+	\end{equation*}
+	Thus $S^\mu$ consists of all points compatible with every point of $S$
+	under the monotonicity inequality. A monotone set is maximally monotone
+	if it has no proper monotone extension, or equivalently when $S=S^\mu$.
+
+	For a nonempty closed convex set $D\subseteq X$, its normal-cone operator is
+	\begin{equation*}
+		N_D(\bx)=
+		\begin{cases}
+			\{\bnu^*\in X^*: \pair{\by-\bx}{\bnu^*}\le0\ \text{for all }\by\in D\}, &\bx\in D,\\
+			\varnothing,&\bx\notin D.
+		\end{cases}
+		% \label{eq:normal-cone}
+	\end{equation*}
+	The operator $N_D$ is maximally monotone: it is the subdifferential of
+	the proper lower semicontinuous convex indicator of $D$, so
+	Rockafellar's subdifferential theorem applies~\cite{rockafellar1970subdifferential}.
+
+	\subsection{The seed-to-counterexample reduction}
+	The next lemma reduces the construction to three conditions on a
+	monotone seed and its polar. We write $\norm{\cdot}_X$ for the norm of $X$.
+
+	\begin{lemma}
+		\label{lem:seed}
+		Suppose that $S\subseteq Z$ is a monotone set, and there exist $0<R_0<R$ such that:
+		\begin{enumerate}[label=(\roman*),ref=\roman*]
+			\item \label{cond:negative}
+			There exists a point $\bz_0\in S$ with negative duality coupling, that is, $c(\bz_0)<0$.
+			\item \label{cond:interior}
+			There exists $\bw_0=(\by,\by^*)\in S$ such that $\norm{\by}_X<R_0$.
+			\item \label{cond:local}
+			For every $\bz=(\bx,\bx^*)\in S^\mu$, if $\norm{\bx}_X<R$, then $c(\bz)\ge0.$
+		\end{enumerate}
+		Set $C_0=\{\bx\in X: \|\bx\|_X\leq R_0\}$, then there is a maximally monotone operator
+		$M:X\rightrightarrows X^*$ such that $\dom M\cap\Int C_0\ne\varnothing$, but $M+N_{C_0}$ is not maximally monotone.
+	\end{lemma}
+
+	\begin{proof}
+		Consider the partially ordered set ordered by inclusion:
+		$$ \mathcal F=\{T\subseteq Z:S\subseteq T,\ T\text{ is monotone}\}. $$
+		It is nonempty because $S\in\mathcal F$.
+		The union of any nonempty chain in $\mathcal F$ is again monotone and the union contains
+		$S$, indicating that it is an upper bound in $\mathcal F$. For empty chains, they have $S$ as an upper bound. Therefore,  by Zorn's lemma, there is a maximal element $G\in\mathcal F$. Any monotone
+		proper extension of $G$ would still contain $S$, so $G$ is maximally
+		monotone in the full space $Z$. Then define the operator induced by $G$ as
+		$$ M\bx=\{\bx^*\in X^*:(\bx,\bx^*)\in G\}. $$
+		Then $\gra M=G$. Since $G$ is monotone and contains $S$, we have
+		$S\subseteq G\subseteq S^\mu$.
+
+		Denote $\bzero_Z=(\bzero,\bzero^*)$. Condition~\textup{(\ref{cond:negative})}
+		implies $\bzero_Z\notin G$, since otherwise monotonicity with $\bz_0$ would give
+		$c(\bz_0)=c(\bzero_Z-\bz_0)\ge0$, which is a contradiction. Condition~\textup{(\ref{cond:interior})} and $\bw_0\in S\subseteq G$ give
+		$\by\in\dom M\cap\Int C_0$, and hence $\dom M\cap\Int C_0\ne\varnothing$.
+
+		Now, take any point of the sum graph, and choose a decomposition
+		$$ (\bx,\bx^*+\bnu^*)\in\gra(M+N_{C_0}), \qquad \bx^*\in M\bx,\quad\bnu^*\in N_{C_0}(\bx). $$
+		Since $\bx\in C_0$, we have
+		$\norm{\bx}_X\le R_0<R$. By $G\subseteq S^\mu$ and
+		condition~\textup{(\ref{cond:local})}, we have
+		$\pair{\bx}{\bx^*}\ge0$. As $\bzero\in C_0$, the normal-cone 		inequality with $\by=\bzero$ gives
+		$\pair{-\bx}{\bnu^*}\le0$ and hence
+		$$ c\bigl(\bzero_Z-(\bx,\bx^*+\bnu^*)\bigr) =\pair{\bx}{\bx^*+\bnu^*}\ge0. $$
+		Thus $\bzero_Z$ is monotonically related to $\gra(M+N_{C_0})$. However, if $\gra(M+N_{C_0})$ is maximal, then
+		$\bzero\in\Int C_0$ implies $N_{C_0}(\bzero)=\{\bzero^*\}$, so
+		$\bzero_Z\in\gra(M+N_{C_0})$ would force $\bzero_Z\in G$, which yields a contradiction as Condition~\textup{(\ref{cond:negative})} requires $\bzero_Z\notin G$.
+		Therefore $\gra(M+N_{C_0})$ cannot be
+		maximally monotone, which completes the proof of this lemma.
+	\end{proof}
+
+	The remaining task is to construct one seed $S$ satisfying this lemma.
+	There is no need to describe every point of the eventual maximal extension.
+
+	% =====================================================================
+	\section{Lorentz geometry and the seed template}
+	\subsection{A Lorentz-type geometry framework}
+	\label{sec:framework}
+	Lorentz-type coordinates turn the monotonicity condition into a
+	Lipschitz bound. From now on, we work with
+	$$ X=c_0,\qquad X^*=\ell^1,\qquad Z=c_0\times\ell^1,
+	\qquad \pair{\bx}{\ba^*}=\sum_{j\ge1}x_j a_j^*, $$
+	where $c_0:=\{\mathbf{x}=(x_j)_{j\ge1}:x_j\to0\}$ with norm $\|\mathbf{x}\|_\infty := \sup_{j\ge1}|x_j|$ is the nonreflexive Banach space of real null sequences, and $\ell^1:=\{\mathbf{a}^* =(a_j^*)_{j\ge1} : \sum_{j\ge1}|a_j^*| < \infty\}$ with norm $\|\mathbf{a}^*\|_1:=\sum_{j\ge1}|a_j^*|$ is the nonreflexive Banach space of real absolutely summable sequences. Sequences are bold, their scalar entries are not, and a star distinguishes dual from primal sequences.
+
+	We first specify the geometry we need and leave its precise realization to
+	Section~\ref{sec:realization}. In particular, we seek a linear subspace $C\subseteq Z$ that contains the seed set $S$, a
+	real Hilbert space $\HH$ that will be used for introducing the negative duality coupling in Lemma \ref{lem:seed}, and a linear \emph{injective} map
+	\begin{equation}
+		\label{eq:Lambda}
+		\Lambda:C\rightarrow\R\oplus\HH, \qquad \Lambda \bz=(P(\bz),N(\bz)),
+	\end{equation}
+	with $P:C\to\R$ and $N:C\to\HH$, such that the following identity holds for all $\bz\in C$:
+	\begin{equation}
+		c(\bz)=P(\bz)^2-\norm{N(\bz)}_{\HH}^{\,2}
+		\label{eq:framework-energy}
+	\end{equation}
+	Because $C$ is linear and $P,N$ are linear, applying this identity to
+	$\bz-\bw\in C$ gives
+	\begin{equation}
+		c(\bz-\bw)=\bigl(P(\bz)-P(\bw)\bigr)^2
+		-\norm{N(\bz)-N(\bw)}_{\HH}^{\,2},
+		\qquad\forall \bz,\bw\in C.
+		\label{eq:lorentz-difference}
+	\end{equation}
+	Thus no additional polarization is required for the difference identity. The difference-of-squares form \eqref{eq:lorentz-difference} is what is meant here by \emph{Lorentz 	coordinates}. It has three immediate consequences:
+	\begin{align*}
+		\norm{N(\bz)-N(\bw)}_{\HH}\le\abs{P(\bz)-P(\bw)}
+		&\quad\rightarrow\quad c(\bz-\bw)\ge0,\\
+		\norm{N(\bz)}_{\HH}\le\abs{P(\bz)}
+		&\quad\rightarrow\quad c(\bz)\ge0,\\
+		P(\bz)=0,\quad N(\bz)\ne\bzero_{\HH}
+		&\quad\rightarrow\quad c(\bz)<0.
+	\end{align*}
+	These observations will be used frequently in the later discussion. In the following sections, we will reserve the uppercase $P,N$ for the maps. For the coordinates of a
+	particular point $\bw\in C$, we will use lowercase letters:
+	\begin{equation*}
+		\Lambda \bw=(p,\bn),\qquad p=P(\bw)\in\R,\quad\bn=N(\bw)\in\HH.
+		% \label{eq:coordinate-values}
+	\end{equation*}
+	Finally, the injectivity of $\Lambda$ means that these coordinates determine $\bw$ uniquely when
+	$(p,\bn)\in\Lambda(C)$. It does not assert that every pair in
+	$\R\oplus\HH$ has a preimage.
+
+	\subsection{The seed template}
+	\label{sec:template}
+	We specify the seed's form before constructing its components. We seek
+	points $\bz_0,\bv\in C$ with
+	$P(\bz_0)=0$ and $P(\bv)=1$, together with a sequence
+	$(\bm_i)_{i\ge1}\subseteq C$. Then we will construct the seed set of the form
+	\begin{equation}
+		\gamma(p)=\bz_0+p\bv\quad(p\le\tfrac12), \qquad S=\{\gamma(p):p\le\tfrac12\} \cup\{\bm_i:i\ge1\}\cup\{2\bv\},
+		\label{eq:seed-template}
+	\end{equation}
+	where $\gamma(p), p\leq 1/2$ is a parameterized half-line in $C$. %for which $P(\gamma(p))=p$. Namely, the parameter $p$ equals exactly the first Lorentz coordinate of the point $\gamma(p)\in C$.
+	Roughly speaking, the point $\bz_0\in C$ will correspond to the negative-duality-coupling point $\bz_0$ required by Lemma~\ref{lem:seed}\textup{(\ref{cond:negative})}. %Its potentially negative-energy part will be kept far from the origin in the original $c_0$ variable. Including a point at every coordinate $p\le1/2$ will also allow same-coordinate comparisons to determine polar points on this side.
+	The point $2\bv$ will serve as the point $\bw_0$ in Lemma~\ref{lem:seed}\textup{(\ref{cond:interior})} that guarantees the constraint qualification.
+	And finally, the sequence $\bm_i$ is used to force the monotone polar $S^\mu$ to stay in $C$, which is key to verifying Lemma~\ref{lem:seed}\textup{(\ref{cond:local})}. %The same coordinate limit will control the energy of polar points with $p>1/2$.
+
+
+	% =====================================================================
+	\section{Realization of the Lorentz framework}
+	\label{sec:realization}
+	We now realize the framework of Section~\ref{sec:framework}.
+	The operator $V$ supplies a Hilbert-space square norm, and the operator
+	$A$ places this quadratic form into the $c_0$--$\ell^1$ pairing.
+
+	\subsection{Interval indicators and an injective Hilbert space map}
+	\label{subsec:V}
+
+	Choose a \emph{non-repeating enumeration} $(t_j)_{j\ge1}$ of $\Q\cap(0,1)$ with
+	\begin{equation*}
+		t_1=\frac12,\qquad t_2=\frac14.
+		% \label{eq:enumeration}
+	\end{equation*}
+	For every pair of integers $i,k\ge1$ and every $\varepsilon>0$,
+	there is an index $j>k$ such that
+	\begin{equation}
+		0<\abs{t_j-t_i}<\varepsilon.
+		\label{eq:recurrence}
+	\end{equation}
+	Indeed, any neighborhood of $t_i$ contains infinitely many rational
+	numbers in $(0,1)$, whereas the first $k$ indices exclude only finitely many of them.
+
+	Let $H=L^2(0,1)$ be the real Hilbert space of equivalence classes of square-integrable measurable functions on $(0,1)$. Two functions are viewed as the same point in $H$ if they differ only on a set of Lebesgue measure zero, and the zero element in $H$, denoted by $0_H$, represents the functions that equal  $0$ almost everywhere on $(0,1)$. The inner product and norm on the Hilbert space $H$ are given by
+	$$ \langle f,g\rangle_H := \int_0^1 f(s)g(s)\,ds,
+	\qquad \|f\|_H := \left( \int_0^1 |f(s)|^2\,ds \right)^{1/2}.$$
+	For each $j\ge 1$, define the interval indicator function
+	$$ \phi_j := \mathbf{1}_{(0,t_j)} \in H. $$
+	Note that these are the $0$--$1$ indicators so that $\phi_j(x)=1$ only when $x\in(0,t_j)$, not the extended-real-valued indicators in convex analysis. Therefore, direct integration gives
+	\begin{equation}
+		\pair{\phi_j}{\phi_k}_H=\min\{t_j,t_k\},
+		\qquad
+		\norm{\phi_j-\phi_k}_H=\sqrt{\abs{t_j-t_k}}.
+		\label{eq:interval-identities}
+	\end{equation}
+	For any $\ba^*=(a_j^*)_{j\ge1}\in\ell^1$, define the linear operator $V:\ell^1\to H$ such that
+	\begin{equation}
+		V\ba^*:=\sum_{j\ge1}a_j^*\phi_j\in H.
+		\label{eq:V-definition}
+	\end{equation}
+	Since $\norm{\phi_j}_H\le1$, this series converges absolutely in $H$,
+	and hence $\norm{V\ba^*}_H\le\norm{\ba^*}_1$. \vspace{0.3cm}
+
+	\begin{lemma}[Injectivity]
+		\label{lem:V-injective}
+		For $\ba^*\in\ell^1$, $V\ba^*=0_H$ implies
+		$\ba^*=\bzero^*$.
+	\end{lemma}
+	\begin{proof}
+		Suppose $V\ba^*=0_H$ and consider the representative
+		$$ F(s)=\sum_{j\ge1}a_j^*\ind_{(0,t_j)}(s),\qquad 0<s<1. $$
+		The series converges uniformly and absolutely because
+		$\sum_j\abs{a_j^*}<\infty$, hence
+		$$F=0\quad a.e.$$
+		Fix any $j_0\ge1$ and $\varepsilon>0$. Choose a finite set
+		$J\subseteq\NN$ containing $j_0$ such that
+		$$ \sum_{j\notin J}\abs{a_j^*}<\varepsilon. $$
+		In particular, such a required set $J$ exists because $\ba^*\in\ell^1$ and is hence absolutely summable. Since $(t_j)_{j\geq1}$ is non-repeating, we know $t_j\neq t_{j_0}$ whenever $j\neq j_0$, and we can choose
+		$s_-<t_{j_0}<s_+$ sufficiently close to $t_{j_0}$ such that $[s_-,s_+]$ contains no $t_j$ with $j\in J\setminus\{j_0\}$.
+		We can also require $F(s_-)=F(s_+)=0$, because $F=0$ a.e. It then follows that
+		$$ 0=F(s_-)-F(s_+) =a_{j_0}^*+ \sum_{\substack{j\notin J\\s_-<t_j\le s_+}}a_j^*. $$
+		Therefore, through standard triangle inequality, we have
+		$$ \abs{a_{j_0}^*} \le\sum_{\substack{j\notin J\\s_-<t_j\le s_+}}\abs{a_j^*} \le\sum_{j\notin J}\abs{a_j^*}<\varepsilon. $$
+		Since $\varepsilon$ was arbitrary, we can drive it to zero and obtain $a_{j_0}^*=0$. As the index $j_0$ is also arbitrarily selected, we have $\ba^*=\bzero^*$.
+	\end{proof}
+
+	\subsection{Encoding the quadratic form in the duality pairing}
+	\label{subsec:A}
+
+	Expanding the Hilbert norm in~\eqref{eq:V-definition} gives
+	$$ \norm{V\ba^*}_H^2 =\sum_{j\ge1}t_j(a_j^*)^2 +2\sum_{j<k}\min\{t_j,t_k\}\,a_j^*a_k^*. $$
+	For any $\ba^*\in\ell^1$, define the linear operator $A:\ell^1\to c_0$ coordinatewise by
+	\begin{equation}
+		(A\ba^*)_j :=t_j a_j^*+2\sum_{k>j}\min\{t_j,t_k\}\,a_k^*, \qquad j\ge1.
+		\label{eq:A-definition}
+	\end{equation}
+	This formula is obtained by grouping each cross term $2\min\{t_j,t_k\}a_j^*a_k^*$ with its smaller index $j<k$ and then, together with the diagonal term $t_j(a_j^*)^2$, factoring out $a_j^*$.
+	\begin{proposition}
+		\label{prop:A}
+		Equation \ref{eq:A-definition} defines a bounded linear operator $A:\ell^1\to c_0$
+		with $\norm{A}\le2$. For all pairs of $\ba^*,\bb^*\in\ell^1$, the following identities hold:
+		\begin{align}
+			\pair{A\ba^*}{\ba^*} &=\norm{V\ba^*}_H^2, \label{eq:quadratic}\\
+			\pair{A\ba^*}{\bb^*}+\pair{A\bb^*}{\ba^*} &=2\pair{V\ba^*}{V\bb^*}_H.
+			\label{eq:cross}
+		\end{align}
+	\end{proposition}
+
+	\begin{proof}
+		First, it is straightforward to see that the operator $A$ is linear. Then because $\ba^*\in\ell^1$ and $t_i\leq 1, \forall i$, for every $j\ge1$, we have
+		$$ \abs{(A\ba^*)_j} \le\abs{a_j^*}+2\sum_{k>j}\abs{a_k^*} \le2\sum_{k\ge j}\abs{a_k^*}\rightarrow0, $$
+		which indicates that $A\ba^*\in c_0$ and
+		$\norm{A\ba^*}_\infty\le2\norm{\ba^*}_1$.  Moreover, \eqref{eq:quadratic} holds because $A$ is exactly constructed to let it hold. We only need to notice that all the rearrangements in constructing $A$ are justified by $\sum_{j,k}\abs{a_j^*a_k^*}=\norm{\ba^*}_1^2<\infty$ and $\min\{t_j,t_k\}\le1$.
+
+		Finally, apply~\eqref{eq:quadratic} to $\ba^*+\bb^*$ and subtract its
+		instances for $\ba^*$ and $\bb^*$. Expanding the two sides leaves
+		precisely~\eqref{eq:cross}. This is the standard real quadratic-form polarization trick.
+	\end{proof}
+
+	\subsection{The subspace \texorpdfstring{$C$}{C} and its Lorentz coordinates}
+	\label{subsec:carrier}
+	Now we are ready to present the Lorentz geometry framework needed for our construction. For each $j\ge1$, write $\be_j\in c_0$ for the $j$th standard unit
+	sequence and $\be_j^*\in\ell^1$ for the corresponding dual unit sequence.
+	They have the same numerical entries but they lie in different spaces. For each pair of $j,k$, we have
+	$\pair{\be_j}{\be_k^*}=\delta_{jk}$, which takes value $1$ when $j = k$ and $0$ otherwise. For any $\ba^*\in\ell^1$ and $\tau\in\R$, define
+	\begin{equation*}
+		\Psi(\ba^*,\tau) :=\bigl(-A\ba^*+\tau\be_1,\ \ba^*\bigr)\in Z, \qquad C:=\ran\Psi,
+		% \label{eq:carrier}
+	\end{equation*}
+	where $\operatorname{ran}\Psi$ denotes the range of $\Psi$, that is,
+	$$ \operatorname{ran}\Psi = \left\{ \Psi(\mathbf a^*,\tau): \mathbf a^*\in \ell^1,\ \tau\in\mathbb R
+	\right\}. $$
+	Because the map $\Psi$ is linear, $C$ is a linear subspace in $Z$. In particular, the parameters
+	are unique in the sense that the second component determines the sequence $\ba^*$, after which the first determines the scalar $\tau$. Then let $\HH:=H\times\R$, and for $f\in H,\ r\in\R$, define
+	$$ \norm{(f,r)}_{\HH}^2:=\norm{f}_H^2+r^2 $$
+	For any $\bz=\Psi(\ba^*,\tau)\in C$, define
+	\begin{equation}
+		P(\bz):=\frac{\tau+a_1^*}{2}, \qquad N(\bz):=\left(V\ba^*,\frac{\tau-a_1^*}{2}\right)\in\HH,
+		\label{eq:coordinates}
+	\end{equation}
+	These maps provide the Lorentz coordinates of
+	Section~\ref{sec:framework}. The unique parameter representation makes
+	the definitions unambiguous. More explicitly, if
+	$$\Lambda \bz= (P(\bz),N(\bz)) = (p,\bn)$$
+	for some $\mathbf z\in C$, see \eqref{eq:Lambda}, then the $H$-component of $\mathbf n$ is
+	$V\mathbf a^*$. Since $V$ is injective, this uniquely determines
+	$\mathbf a^*$, and then
+	$$\tau = 2p-a_1^*$$
+	can be uniquely determined as well.
+
+	\begin{proposition}
+		\label{prop:lorentz}
+		The maps $P,N$ are linear, and $\Lambda \bz=(P(\bz),N(\bz))$ is injective on $C$. The identities~\eqref{eq:framework-energy} and
+		\eqref{eq:lorentz-difference} hold on $C$.
+	\end{proposition}
+
+	\begin{proof}
+		For $\bz=\Psi(\ba^*,\tau)\in C$, the pairing identity~\eqref{eq:quadratic} gives
+		\begin{align*}
+			c(\bz) &=\pair{-A\ba^*+\tau\be_1}{\ba^*} =-\norm{V\ba^*}_H^2+\tau a_1^*\\
+			&=\left(\frac{\tau+a_1^*}{2}\right)^2 -\left[\norm{V\ba^*}_H^2 +\left(\frac{\tau-a_1^*}{2}\right)^2\right] = P(\bz)^2-\norm{N(\bz)}_{\HH}^2,
+		\end{align*}
+		which proves \eqref{eq:framework-energy}. Then applying the energy identity to $\bz-\bw\in C$ and
+		using linearity proves the difference identity \eqref{eq:lorentz-difference}. Regarding injectivity, if
+		$\Lambda \bz=0$, then $V\ba^*=0$. Lemma~\ref{lem:V-injective} gives
+		$\ba^*=\bzero^*$, and $P(\bz)=0$ then gives $\tau=0$. Thus $\bz=\bzero_Z$, which completes the proof.
+	\end{proof}
+
+	The construction also makes membership in $C$ explicit, as presented below.
+
+	\begin{lemma}[Carrier membership]
+		\label{lem:membership}
+		For every $\bw=(\bx,\bx^*)\in c_0\times\ell^1$, we have
+		\begin{equation*}
+			\bw\in C \quad\Longleftrightarrow\quad \bx+A\bx^*\in\R\be_1,
+			% \label{eq:membership}
+		\end{equation*}
+		or equivalently, $(\bx+A\bx^*)_i=0$ for every $i\ge2$.
+	\end{lemma}
+
+	\begin{proof}
+		The equality $\bw=\Psi(\ba^*,\tau)$ first forces $\ba^*=\bx^*$ and hence $\bx=-A\bx^*+\tau\be_1$.
+	\end{proof}
+
+	% =====================================================================
+	\section{Realization and verification of the seed set}
+	\label{sec:seed}
+	We construct $\bz_0$, $\bv$, and $(\bm_i)_{i\ge1}$, then verify
+	monotonicity and the three conditions of Lemma~\ref{lem:seed}.
+
+	\paragraph{Construction of  $\bv$ and $\bz_0$.}
+	By~\eqref{eq:recurrence}, we can choose an index $i_0>2$ such that
+	\begin{equation}
+		0<\abs{t_{i_0}-t_1}<\frac1{64^2}, \qquad \bv:=\Psi(\be_1^*-\be_{i_0}^*,1)\in C.
+		\label{eq:v-choice}
+	\end{equation}
+	And we can choose an index $j_0>2$ satisfying
+	\begin{equation*}
+		\abs{t_{j_0}-t_2}<\frac1{16}, \qquad 512\sqrt{\abs{t_{j_0}-t_2}}<\frac1{64}, \qquad \bz_0:=512\,\Psi(\be_2^*-\be_{j_0}^*,0)\in C.
+		% \label{eq:z0-choice}
+	\end{equation*}
+	Note that $i_0,j_0>2$ and non-repetition ensure $t_{i_0}\neq t_1,t_{j_0}\ne t_2$. Hence $\bv,\bz_0\neq \bzero_Z$.
+
+	\paragraph{A detector needed for the construction of $(\bm_i)_{i\geq1}$.}
+	When $\bw\notin C$, Lemma~\ref{lem:membership} provides a nonzero coordinate $(\bx+A\bx^*)_i$ for some $i\ge2$. Since membership in a monotone polar is tested through $c(\bz-\bw)=c(\bz)+c(\bw)-B(\bz,\bw),$
+	and our goal is to force $S^\mu\subseteq C$, we need to convert this coordinate information into a signal detectable through the bilinear form $B$, which will later be encoded into the sequence $(\bm_j)_{j\ge1}$. The following lemma performs this conversion while keeping the Lorentz displacement small.
+
+	\begin{lemma}[Single-coordinate detector]
+		\label{lem:detector}
+		For integers $j>i\ge2$, define
+		\begin{equation*}
+			\bh(i,j):=\Psi(\be_i^*-\be_j^*,0) =\bigl(-A(\be_i^*-\be_j^*),\ \be_i^*-\be_j^*\bigr)\in C.
+		\end{equation*}
+		Then we have
+		\begin{equation}
+			P(\bh(i,j))=0, \qquad N(\bh(i,j))=(\phi_i-\phi_j,0).
+			\label{eq:detector-coordinates}
+		\end{equation}
+		For any $\bw=(\bx,\bx^*)\in Z$, write $\br=\bx+A\bx^*\in c_0$, then it holds that
+		\begin{equation*}
+			B(\bw,\bh(i,j)) =r_i-r_j-2\pair{V\bx^*}{\phi_i-\phi_j}_H.
+		\end{equation*}
+		Consequently, for fixed $i$, along any sequence of indices $j\to\infty$
+		such that $t_j\to t_i$, we have
+		\begin{equation}
+			\norm{N(\bh(i,j))}_{\HH}\rightarrow0, \qquad B(\bw,\bh(i,j))\rightarrow r_i = (\bx+A\bx^*)_i.
+			\label{eq:detector-limit}
+		\end{equation}
+	\end{lemma}
+
+	\begin{proof}
+		Denote $\ba^*=\be_i^*-\be_j^*\in\ell^1$. Since $i,j\ge2$, we have $a^*_1=0$. Then \eqref{eq:coordinates} and
+		$V\be_k^*=\phi_k$ give~\eqref{eq:detector-coordinates}. By the definition of the bilinear form $B$, we have
+		$$ B(\bw,\bh(i,j))=\pair{\bx}{\ba^*}-\pair{A\ba^*}{\bx^*}. $$
+		Apply~\eqref{eq:cross} to $\ba^*,\bx^*\in\ell^1$ and rearrange:
+		$$ -\pair{A\ba^*}{\bx^*} = \pair{A\bx^*}{\ba^*} -2\pair{V\bx^*}{V\ba^*}_H. $$
+		Therefore
+		\begin{align*}
+			B(\bw,\bh(i,j)) &=\pair{\bx+A\bx^*}{\ba^*} - 2\pair{V\bx^*}{V\ba^*}_H\\
+			&=\pair{\br}{\be_i^*-\be_j^*} -2\pair{V\bx^*}{\phi_i-\phi_j}_H\\
+			&=r_i-r_j-2\pair{V\bx^*}{\phi_i-\phi_j}_H.
+		\end{align*}
+		Now $r_j\to0$ because $\br\in c_0$. Also, by Cauchy--Schwarz and
+		\eqref{eq:interval-identities},
+		$$ \abs{\pair{V\bx^*}{\phi_i-\phi_j}_H} \le\norm{V\bx^*}_H\sqrt{\abs{t_i-t_j}}\rightarrow0. $$
+		The same equality \eqref{eq:interval-identities} gives the first limit in~\eqref{eq:detector-limit}. Hence we complete the proof.
+	\end{proof}
+
+	\paragraph{The construction of sequence $(\bm_i)_{i\geq1}$.}
+	Choose an arbitrary sequence
+	$$(q_i,\sigma_i)_{i\ge1}\subseteq\{2,3,\ldots\}\times\{-1,1\}$$
+	such that every pair of $(q,\sigma), q\geq2,\sigma\in\{-1,+1\}$ appears infinitely many times. Such a sequence can be obtained, for example, by concatenating for
+	$k=1,2,\ldots$ the finite lists containing both $\{-1,+1\}$ for each
+	$q=2,\ldots,k+1$. Set
+	\begin{equation*}
+		s_i:=1+2^{-i},\qquad \rho_i:=2^{-(i+6)},\qquad i\ge1.
+	\end{equation*}
+	Then fix each $i\geq 1$, we can use~\eqref{eq:recurrence} and~\eqref{eq:interval-identities} to choose
+	$k_i>r_i>\max\{i,q_i\}$ such that
+	\begin{equation}
+		s_i\norm{\phi_1-\phi_{r_i}}_H<\frac{\rho_i}{2}, \qquad i\norm{\phi_{q_i}-\phi_{k_i}}_H<\frac{\rho_i}{2},
+		\label{eq:close-indices}
+	\end{equation}
+	and then define the following points of $C$:
+	\begin{align}
+		\bxi_i&:=\Psi\bigl(s_i(\be_1^*-\be_{r_i}^*),s_i\bigr),
+		\label{eq:xi-definition}\\
+		\bh_i&:=\bh(q_i,k_i), \qquad \bm_i:=\bxi_i+ i \sigma_i \bh_i.
+		\label{eq:mi-definition}
+	\end{align}
+	These choices specify all components of the seed template~\eqref{eq:seed-template}.
+
+	\paragraph{The construction of $S$.}
+	With the above choices of $\bz_0,\bv$ and $(\bm_i)_{i\geq1}$, define
+	\begin{equation}
+		\gamma(p):=\bz_0+p\bv\quad(p\le\tfrac12), \qquad S:=\{\gamma(p):p\le\tfrac12\} \cup\{\bm_i:i\ge1\}\cup\{2\bv\}\subseteq C.
+		\label{eq:S-definition}
+	\end{equation}
+	We now verify monotonicity and the three conditions of
+	Lemma~\ref{lem:seed}, in that order.
+
+	\subsection{The monotonicity of \texorpdfstring{$S$}{S}}
+	\label{subsec:monotonicity}
+	We verify the pairwise inequalities required for monotonicity.
+	\begin{lemma}
+		\label{lem:S-monotone}
+		The set $S$ defined in~\eqref{eq:S-definition} is monotone.
+	\end{lemma}
+
+	\begin{proof}
+		By the Lorentz identity~\eqref{eq:lorentz-difference}, it is enough to
+		show $\norm{N(\bz)-N(\bw)}_{\HH} \le		\abs{P(\bz)-P(\bw)}$ for all $\bz,\bw\in S$.
+		From the definitions of $\bv$ and $\bz_0$,
+		\eqref{eq:coordinates}, and~\eqref{eq:interval-identities}, we have
+		\begin{equation}
+			\begin{aligned}
+				P(\bv) & =1, & N(\bv) & =(\phi_1-\phi_{i_0},0), & 0<\norm{N(\bv)}_{\HH}<\frac1{64},\\
+				P(\bz_0) & =0, & N(\bz_0) & =(512(\phi_2-\phi_{j_0}),0), & 0<\norm{N(\bz_0)}_{\HH}< \frac1{64}.
+			\end{aligned}
+			\label{eq:z0-lorentz}
+		\end{equation}
+		In particular, the two norms are strictly positive because the nonrepetition of the enumeration gives $t_{i_0}\neq t_1$ and $t_{j_0}\neq t_2$. For every $i\ge1$, the parameter $\tau$ and the first dual
+		coordinate of $\bm_i$ are both equal to $s_i$, since
+		$q_i,k_i\ge2$. Hence
+		\begin{equation}
+			P(\bm_i)=s_i, \qquad N(\bm_i) = \bigl( s_i(\phi_1-\phi_{r_i}) +i\sigma_i(\phi_{q_i}- \phi_{k_i}), 0 \bigr).
+			\label{eq:mi-coordinates}
+		\end{equation}
+		By the triangle inequality and~\eqref{eq:close-indices}, we have
+		\begin{equation}
+			\norm{N(\bm_i)}_{\HH} <
+			\rho_i < s_i-1.
+			\label{eq:mi-small}
+		\end{equation}
+		In particular, as $s_i\rightarrow1$,  $N(\bm_i)\rightarrow\bzero_{\HH}$ in $\HH$. For $p\le\tfrac12$, the linearity of maps $P$ and $N$ gives
+		$$P(\gamma(p))=p, \qquad N(\gamma(p))=N(\bz_0)+pN(\bv).$$
+		And we shall be repeatedly using the following estimate
+		\begin{equation}
+			\norm{N(\gamma(p))}_{\HH}\le1-p,
+			\qquad p\le\tfrac12.
+			\label{eq:gamma-cone}
+		\end{equation}
+		To see this, when $p\le0$, we have
+		$$ \norm{N(\gamma(p))}_{\HH} \le \norm{N(\bz_0)}_{\HH} +(-p)\norm{N(\bv)}_{\HH} < \frac{1-p}{64} \le1-p. $$
+		When $0\le p\le\tfrac12$, it holds that
+		$$ \norm{N(\gamma(p))}_{\HH} \le \norm{N(\bz_0)}_{\HH} +p\norm{N(\bv)}_{\HH} < \frac3{128} < \frac12 \le1-p. $$
+		Finally, $P(2\bv)=2$ and $\norm{N(2\bv)}_{\HH} = 2\norm{N(\bv)}_{\HH} <1$.
+		Identical points give equality in the monotonicity inequality.
+		For distinct points, there are five cases. \vspace{0.3cm}
+
+		\noindent\emph{Case 1: two points on the half-line.}
+		For distinct $p,p'\le\tfrac12$, we have
+		$$ \norm{N(\gamma(p))-N(\gamma(p'))}_{\HH} = \norm{N(\bv)}_{\HH}\cdot\abs{p-p'} < \abs{p-p'} = \abs{P(\gamma(p))- P(\gamma(p'))}. $$
+
+		\smallskip
+		\noindent
+		\emph{Case 2: a half-line point and a point $\bm_i$.}
+		For $p\le\tfrac12$, using~\eqref{eq:mi-small} and
+		\eqref{eq:gamma-cone} yields
+		\begin{align*}
+			\norm{N&(\bm_i) -N(\gamma(p))}_{\HH} \le \norm{N(\bm_i)}_{\HH} + \norm{N(\gamma(p))}_{\HH}\\
+			& \quad < (s_i-1)+(1-p) = s_i-p = \abs{P(\bm_i)-P(\gamma(p))}.
+		\end{align*}
+
+		\smallskip
+		\noindent
+		\emph{Case 3: a half-line point and $2\bv$.}
+		For $p\le\tfrac12$, the triangle inequality gives
+		\begin{align*}
+			\norm{N(2\bv) - &N(\gamma(p))}_{\HH}  \le \norm{N(2\bv)}_{\HH} + \norm{N(\gamma(p))}_{\HH}\\
+			& \quad < 1+(1-p) = 2-p = \abs{P(2\bv)-P(\gamma(p))}.
+		\end{align*}
+
+		\smallskip
+		\noindent
+		\emph{Case 4: two distinct  $\bm_i$ and $\bm_j$.}
+		Suppose $i<j$ without loss of generality, by~\eqref{eq:mi-small}, we have
+		\begin{align*}
+			\norm{N(\bm_i) & - N(\bm_j)}_{\HH} \le \norm{N(\bm_i)}_{\HH} +
+			\norm{N(\bm_j)}_{\HH}\\
+			&\quad < \rho_i+\rho_j \le 2^{-(i+6)}+2^{-(i+7)} < 2^{-(i+1)}\\
+			& \quad \le s_i-s_j = \abs{P(\bm_i)-P(\bm_j)}.
+		\end{align*}
+
+		\smallskip
+		\noindent
+		\emph{Case 5: a point $\bm_i$ and $2\bv$.}
+		Using~\eqref{eq:mi-small}, we have
+		\begin{align*}
+			\norm{N(2\bv)-N(\bm_i)&}_{\HH}
+			\le \norm{N(2\bv)}_{\HH} + \norm{N(\bm_i)}_{\HH} \\
+			& < \frac12 \le 2-s_i = \abs{P(2\bv)-P(\bm_i)}.
+		\end{align*}
+		Thus every pair of points in $S$ satisfies the monotonicity inequality.
+	\end{proof}
+
+	\subsection{Condition (i): a negative duality pairing point}
+	\label{subsec:negative}
+
+	The point $\bz_0=\gamma(0)$ belongs to $S$. By
+	\eqref{eq:framework-energy} and~\eqref{eq:z0-lorentz}, it holds that
+	\begin{equation}
+		c(\bz_0)=P(\bz_0)^2-\norm{N(\bz_0)}_{\HH}^2
+		=-\norm{N(\bz_0)}_{\HH}^2 < 0.
+		\label{eq:negative-witness}
+	\end{equation}
+	Thus Lemma~\ref{lem:seed}\textup{(\ref{cond:negative})} holds at the currently constructed $\bz_0$.
+
+	\subsection{Condition (ii): a point in \texorpdfstring{$\dom M\cap \mathrm{int }\, C_0$}{dom M intersect int C0}}
+	\label{subsec:interior}
+
+	The verified point is $\bw_0=2\bv\in S$. To locate its first component,
+	use~\eqref{eq:v-choice} and $\norm{A}\le2$:
+	\begin{equation}
+		\begin{aligned}
+			\norm{\bv_X}_\infty
+			&=\norm{-A(\be_1^*-\be_{i_0}^*)+\be_1}_\infty\\
+			&\le\norm{A}\,\norm{\be_1^*-\be_{i_0}^*}_1
+			+\norm{\be_1}_\infty
+			\le2\cdot2+1=5.
+		\end{aligned}
+		\label{eq:v-primal-bound}
+	\end{equation}
+	Therefore
+	\begin{equation}
+		\norm{(2\bv)_X}_\infty\le10<12.
+		\label{eq:interior-anchor}
+	\end{equation}
+	This verifies Lemma~\ref{lem:seed}\textup{(\ref{cond:interior})} with
+	$R_0=12$.
+
+	\subsection{Condition (iii): local nonnegative duality pairing in \texorpdfstring{$S^\mu$}{the monotone polar}}
+	\label{subsec:local}
+
+	This condition concerns every point of $S^\mu$, not only points of $S$.
+	We first show that the polar lies in $C$.
+
+	\begin{lemma}
+		\label{lem:polar-carrier}
+		The monotone polar satisfies $S^\mu\subseteq C$.
+	\end{lemma}
+
+	\begin{proof}
+		Fix any $\bw=(\bx,\bx^*)\in Z\setminus C$.
+		Lemma~\ref{lem:membership} gives $q\ge2$ such that $\alpha:= (\bx + A\bx^*)_q \ne0.$ Choose $\sigma\in\{-1,1\}$ so that $\sigma\alpha=\abs{\alpha}$,and let $I\subseteq\NN$ be the infinite set of indices for which
+		$(q_i,\sigma_i)=(q,\sigma)$. In particular, such a required set $I$ exists because $(q_i,\sigma_i)_{i\geq1}$ is constructed so that every pair appears infinitely many times in the sequence. Then along $i\in I$, we have $k_i>i$, and \eqref{eq:close-indices} gives
+		$\norm{\phi_q-\phi_{k_i}}_H<\rho_i/(2i)\to0$. By~\eqref{eq:interval-identities}, $t_{k_i}\to t_q$. Hence
+		Lemma~\ref{lem:detector} gives
+		$$ B(\bw,\bh_i) \rightarrow \alpha \quad \mbox{as} \quad i\to\infty,\ i\in I. $$
+		Set $\eta:=\abs{\alpha}/2>0$. For all sufficiently large $i\in I$, we have $\sigma_i B(\bw,\bh_i)\ge\eta$. Next, equip $Z$ with the norm $\norm{\bz}_Z := \norm{\bz_X}_\infty + \norm{\bz_{X^*}}_1.$ Then for $\bw=(\bx,\bx^*)$ and $\bz=(\by,\by^*)$ in $Z$, we have
+		\begin{equation*}
+			\begin{aligned}
+				\abs{B(\bw,\bz)} & \le \norm{\bx}_\infty \norm{\by^*}_1 + \norm{\by}_\infty\norm{\bx^*}_1\\ &\le\bigl(\norm{\bx}_\infty+\norm{\bx^*}_1\bigr) \bigl(\norm{\by}_\infty + \norm{\by^*}_1\bigr) = \norm{\bw}_Z \norm{\bz}_Z.
+			\end{aligned}
+			% \label{eq:B-bound}
+		\end{equation*}
+		For $1<s_i\le3/2$,	$\norm{s_i(\be_1^* - \be_{r_i}^*)}_1 = 2s_i\le3$.
+		Expanding~\eqref{eq:xi-definition} with $\norm{A}\le2$, we obtain
+		\begin{equation*}
+			\begin{aligned}
+				\norm{(\bxi_i)_X}_\infty
+				&\le2\cdot3+\frac32=\frac{15}{2},\\
+				\norm{(\bxi_i)_{X^*}}_1&\le3,
+				\qquad
+				\norm{\bxi_i}_Z\le\frac{21}{2}<11.
+			\end{aligned}
+			% \label{eq:base-bound}
+		\end{equation*}
+		Also,~\eqref{eq:mi-coordinates} and~\eqref{eq:mi-small} yield
+		\begin{equation*}
+			0<c(\bm_i)=s_i^2-\norm{N(\bm_i)}_{\HH}^2
+			\le s_i^2 <3.
+			% \label{eq:mi-energy-bound}
+		\end{equation*}
+		Thus the duality pairing of $\bm_i$ is uniformly bounded regardless of $i$. Using~\eqref{eq:mi-definition} and the linearity of $B$ in its second
+		argument, for all sufficiently large $i\in I$ we have
+		\begin{equation}
+			\begin{aligned}
+				B(\bw,\bm_i) - & c(\bm_i) = B(\bw,\bxi_i) + \sigma_i iB(\bw,\bh_i)-c(\bm_i)\\
+				&\ge -11\norm{\bw}_Z+\eta i-3 \to +\infty,\quad\mbox{as}\quad i\to\infty,\ i\in I
+			\end{aligned}
+			\label{eq:detector-divergence}
+		\end{equation}
+		Then if $\bw\in S^\mu$, every $\bm_i\in S$ would satisfy
+		$$ 0\le c(\bw - \bm_i) = c(\bw) + c(\bm_i) -B(\bw,\bm_i), $$
+		and hence $B(\bw,\bm_i)-c(\bm_i)\le c(\bw)$ for every $i$.
+		This immediately contradicts~\eqref{eq:detector-divergence}, since $\bw$ is fixed and
+		$c(\bw)$ is finite. Thus $\bw\notin S^\mu$ and we finish the proof of this lemma.
+	\end{proof}
+
+	\begin{proposition}
+		\label{prop:local-energy}
+		For every $\bw=(\bx,\bx^*)\in S^\mu$ satisfying $\norm{\bx}_\infty<16$, we have $c(\bw)\ge0$.
+	\end{proposition}
+
+	\begin{proof}
+		By Lemma~\ref{lem:polar-carrier}, we know $\bw\in C$ and its Lorentz coordinates
+		are well defined. Write
+		$$ \Lambda \bw =(p,\bn) \quad \mbox{with} \quad p=P(\bw),\quad\bn=N(\bw). $$
+		We distinguish two ranges of $p$. \vspace{0.2cm}
+
+		\noindent\emph{Case 1: $p>1/2$.} Compare $\bw$ with each $\bm_i\in S$. Because $\bw\in S^\mu$, we know
+		$$ 0\leq c(\bw-\bm_i) = (p-s_i)^2-\norm{\bn-N(\bm_i)}_{\HH}^2. $$
+		Hence $\norm{\bn-N(\bm_i)}_{\HH}\le\abs{p-s_i}$. Together with the fact that $s_i\rightarrow1$ and $N(\bm_i)\rightarrow\bzero_{\HH}$ in $\HH$, this gives
+		$\norm{\bn}_{\HH}\le\abs{p-1}$ and therefore
+		\begin{equation*}
+			c(\bw)=p^2-\norm{\bn}_{\HH}^2
+			\ge p^2-(p-1)^2=2p-1>0.
+			% \label{eq:right-positive}
+		\end{equation*}
+		Thus any $\bw$ with negative duality pairing $c(\bw)<0$ must have $p\le 1/2$. \vspace{0.2cm}
+
+
+		\noindent\emph{Case 2: $p\le1/2$.}
+		Compare $\bw$ with $\gamma(p)\in S$ that shares the same $P$-coordinate as $\bw$ because $P(\gamma(p))=p$, then $\bw\in S^\mu$ gives
+		$$0\le c(\bw-\gamma(p))	= -\norm{\bn-N(\gamma(p))}_{\HH}^2 \leq 0. $$
+		Thus $\bn=N(\gamma(p))$ and the injectivity of $\Lambda$ gives $\bw=\gamma(p)\in S$. In this case, $c(\gamma(p))<0$ gives
+		$$ \abs p<\norm{N(\bz_0)+pN(\bv)}_{\HH}
+		\le\norm{N(\bz_0)}_{\HH}+\abs p\cdot\norm{N(\bv)}_{\HH}. $$
+		Since $\norm{N(\bz_0)}_{\HH},\norm{N(\bv)}_{\HH}<1/64$, it follows that
+		\begin{equation}
+			\abs p<\frac{\norm{N(\bz_0)}_{\HH}}{1-\norm{N(\bv)}_{\HH}}<\frac1{63}.
+			\label{eq:negative-parameter}
+		\end{equation}
+		We now locate the candidate points $\gamma(p), |p|\leq 1/63$ in the original $c_0$ variable, which equals
+		$$\gamma(p)_X = (\bz_0)_X + p\bv_X = -512A(\be_2^*-\be_{j_0}^*) + p\bv_X.$$
+		By \eqref{eq:v-primal-bound}, $\|\bv_X\|_\infty\leq 5$.
+		It remains to bound $\|(\bz_0)_X\|_\infty$ from below. By definition
+		\eqref{eq:A-definition} and our choice that $t_2 = 1/4$, we have
+		$$ (A(\be_2^*-\be_{j_0}^*))_2
+		=\frac14-2\min\!\left\{\frac14,t_{j_0}\right\}. $$
+		The choice $\abs{t_{j_0}-1/4}<1/16$ implies
+		$\min\{1/4,t_{j_0}\}>3/16$. Hence $(A(\be_2^*-\be_{j_0}^*))_2<-1/8$, and
+		\begin{equation*}
+			\norm{(\bz_0)_X}_\infty
+			=512\norm{A(\be_2^*-\be_{j_0}^*)}_\infty
+			\ge512\abs{(A(\be_2^*-\be_{j_0}^*))_2}\ge64.
+			% \label{eq:remote-witness}
+		\end{equation*}
+		Combining this with~\eqref{eq:v-primal-bound} and
+		\eqref{eq:negative-parameter} gives
+		\begin{equation*}
+			\begin{aligned}
+				\norm{\gamma(p)_X}_\infty
+				\ge\norm{(\bz_0)_X}_\infty
+				-\abs p\,\norm{\bv_X}_\infty > 63,
+				\qquad\forall |p|<1/63.
+			\end{aligned}
+			% \label{eq:remote-negative-part}
+		\end{equation*}
+		Combining the results of the two cases proves the proposition.
+	\end{proof}
+
+	Taking $R=16$, Proposition~\ref{prop:local-energy} verifies
+	Lemma~\ref{lem:seed}\textup{(\ref{cond:local})}.
+
+	\subsection{Failure of the Rockafellar sum conjecture on \texorpdfstring{$c_0$}{c0}}
+	\label{subsec:assembly}
+	The seed reduction now gives the claimed counterexample.
+
+	\begin{theorem}
+		\label{thm:main}
+		There exists a maximally monotone operator
+		$M:c_0\rightrightarrows\ell^1$ such that, for the closed ball in $c_0$
+		$$C_0=\{\bx\in c_0: \|\bx\|_\infty\leq 12\},$$
+		its normal cone operator $N_{C_0}$ is maximally monotone and
+		\begin{equation*}
+			\dom M\cap\Int\dom N_{C_0} \ne\varnothing, \qquad M+N_{C_0} \text{ is not maximally monotone}.
+		\end{equation*}
+	\end{theorem}
+
+	\begin{proof}[Proof]
+		Apply Lemma~\ref{lem:seed} with $R_0=12$, $R=16,$ and $\bw_0=2\bv$. Take $\bz_0$ in Lemma \ref{lem:seed} the same as that in the seed monotone set construction. The preceding verifications establish all its hypotheses. It supplies a maximal monotone extension $G\supseteq S$ and an operator $M$ with $\gra M=G$. Moreover, $\dom N_{C_0}=C_0$, since the normal cone is empty
+		outside $C_0$ and contains $\bzero^*$ at every point of $C_0$. Thus the interior condition has the stated form. The origin $\bzero_Z = (\bzero,\bzero^*)$ is the explicit witness to the non-maximality:
+		$$\bzero_Z \in \bigl(\gra(M+N_{C_0})\bigr)^\mu \setminus \gra(M+N_{C_0}),$$
+		which concludes the proof.
+	\end{proof}
+
+	\bibliographystyle{plain}
+	\bibliography{references}
+\end{document}
