@@ -234,7 +234,8 @@ class RepositoryScriptTests(unittest.TestCase):
                 "slug": "analysis2_tao_2022",
             }
         )
-        self.assertEqual(linked_resource.count("&#124;"), 1)
+        self.assertEqual(linked_resource.count("&#124;"), 3)
+        self.assertIn("https://reasbook-reviewer.reaslab.io/ReasBook/books/analysis2_tao_2022/", linked_resource)
         theorem_resource = update_readme.resource_cell(
             {
                 "kind": "papers",
@@ -242,7 +243,7 @@ class RepositoryScriptTests(unittest.TestCase):
                 "slug": "tr_lalm_theory",
             }
         )
-        self.assertEqual(theorem_resource.count("&#124;"), 2)
+        self.assertEqual(theorem_resource.count("&#124;"), 3)
         self.assertIn("theorem-maps/papers/tr_lalm_theory/", theorem_resource)
         self.assertEqual(
             update_readme.resource_cell(excluded, language="zh-CN"),

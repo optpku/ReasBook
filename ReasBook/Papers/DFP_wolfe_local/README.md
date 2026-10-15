@@ -10,9 +10,10 @@ kept on the `v4.32.0` version branch.
 
 **[Open the source on `v4.32.0`](https://github.com/optpku/ReasBook/tree/v4.32.0/ReasBook/Papers/DFP_wolfe_local/)**
 
-[API documentation](https://optpku.github.io/ReasBook/sites/dfp_wolfe_local/docs/) ·
-[Verso reading pages](https://optpku.github.io/ReasBook/sites/dfp_wolfe_local/pages/) ·
-[Theorem dependency map](https://optpku.github.io/ReasBook/theorem-maps/papers/dfp_wolfe_local/)
+[API documentation](https://reasbook.reaslab.io/ReasBook/projects/dfp_wolfe_local/docs/ReasBook/DFP_wolfe_local/Paper.html) ·
+[Verso reading pages](https://reasbook.reaslab.io/ReasBook/projects/dfp_wolfe_local/) ·
+[Theorem dependency map](https://reasbook.reaslab.io/ReasBook/projects/dfp_wolfe_local/theorem-maps/papers/dfp_wolfe_local/) ·
+[Reviewer](https://reasbook-reviewer.reaslab.io/ReasBook/books/dfp_wolfe_local/)
 
 The API documentation covers the complete module closure imported by the public
 paper entry point; see the version-branch README for current source statistics.

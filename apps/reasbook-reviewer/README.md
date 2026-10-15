@@ -5,6 +5,9 @@ books and papers, inspect Lean source, Docs, Verso and theorem dependencies, and
 publish a review comment after signing in. Source and generated evidence come
 from the existing ReasBook SDK cache; starting the web server never builds Lean.
 
+[Open the hosted Reviewer](https://reasbook-reviewer.reaslab.io/ReasBook/) ·
+[Browse static Docs and Verso](https://reasbook.reaslab.io/ReasBook/)
+
 ### Selecting a completed single-book Verso
 
 An operator may independently select a successful project-finalizer's Verso in

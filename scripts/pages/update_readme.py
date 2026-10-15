@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Regenerate bilingual README resource columns from the project catalog.
+"""Regenerate bilingual README resource columns from verified public resources.
 
 This is a maintenance tool, not a CI runtime dependency.  It preserves the
 manually curated title/source/contributor columns and only replaces the final
@@ -11,18 +11,38 @@ from __future__ import annotations
 import re
 from pathlib import Path
 
-from project_catalog import (
-    EXCLUDED_PROJECTS,
-    NO_VERSO_PROJECTS,
-    discover_projects,
-    existing_branches,
-    load_registry_branches,
-)
+from urllib.parse import urlsplit
+
+from project_catalog import EXCLUDED_PROJECTS, NO_VERSO_PROJECTS
 
 
-SITE_BASE = "https://optpku.github.io/ReasBook"
-# Only link graphs already published at stable per-project URLs.
-PUBLISHED_THEOREM_MAPS = {("papers", "DFP_wolfe_local"), ("papers", "TR_LALM_theory")}
+SITE_BASE = "https://reasbook.reaslab.io/ReasBook"
+REVIEWER_BASE = "https://reasbook-reviewer.reaslab.io/ReasBook"
+# Verified deployment entry points (2026-10-15), relative to each project's
+# docs/ directory. Build outputs use different module roots across toolchains.
+PUBLISHED_DOCS = {
+    ("books", "AlgebraicTopology_May_1999"): "ReasBook/AlgebraicTopology_May_1999/Book.html",
+    ("books", "Analysis2_Tao_2022"): "ReasBook/Analysis2_Tao_2022/Book.html",
+    ("books", "CombinatorialGroupTheory_Magnus_2004"): "ReasBook/CombinatorialGroupTheory_Magnus_2004/Book.html",
+    ("books", "ConvexAnalysis_Rockafellar_1970"): "ReasBook/Books/ConvexAnalysis_Rockafellar_1970/Book.html",
+    ("books", "ConvexAnalysisMonotoneOperators_BauschkeCombettes_2017"): "ReasBook/ConvexAnalysisMonotoneOperators_BauschkeCombettes_2017/Book.html",
+    ("books", "FirstOrderMethodsOptimization_Beck_2017"): "ReasBook/FirstOrderMethodsOptimization_Beck_2017/Book.html",
+    ("books", "IntegerProgramming_Conforti_2014"): "ReasBook/Books/IntegerProgramming_Conforti_2014/Book.html",
+    ("books", "IntroductiontoRealAnalysisVolumeI_JiriLebl_2025"): "ReasBook/IntroductiontoRealAnalysisVolumeI_JiriLebl_2025/Book.html",
+    ("books", "IntroductoryLecturesOnConvexOptimization_Nesterov_2004"): "ReasBook/IntroductoryLecturesOnConvexOptimization_Nesterov_2004/Book.html",
+    ("books", "OptimizationTheoryAndMethods_SunYuan_2006"): "ReasBook/OptimizationTheoryAndMethods_SunYuan_2006/Book.html",
+    ("books", "RiemannSurfaces_Forster_1981"): "ReasBook/RiemannSurfaces_Forster_1981/Book.html",
+    ("papers", "BFGSMinimumQOrder_Liu_2026"): "ReasBook/Paper.html",
+    ("papers", "DFP_wolfe_local"): "ReasBook/DFP_wolfe_local/Paper.html",
+    ("papers", "OnSomeLocalRings_Maassaran_2025"): "ReasBook/OnSomeLocalRings_Maassaran_2025/Paper.html",
+    ("papers", "RockafellarSum_2026"): "ReasBook/RockafellarSum_2026/Paper.html",
+    ("papers", "SmoothMinimization_Nesterov_2004"): "ReasBook/SmoothMinimization_Nesterov_2004/Paper.html",
+    ("papers", "TR_LALM_theory"): "ReasBook/TR_LALM_theory.html",
+}
+PUBLISHED_THEOREM_MAPS = set(PUBLISHED_DOCS) - {
+    ("books", "IntegerProgramming_Conforti_2014"),
+    ("papers", "RockafellarSum_2026"),
+}
 README_LANGUAGES = {
     "README.md": "en",
     "README.zh-CN.md": "zh-CN",
@@ -49,24 +69,23 @@ def resource_cell(project: dict[str, str], *, language: str = "en") -> str:
     kind = project["kind"]
     labels = RESOURCE_LABELS[language]
 
-    if name in EXCLUDED_PROJECTS:
+    if name in EXCLUDED_PROJECTS or (kind, name) not in PUBLISHED_DOCS:
         return labels["source_only"]
 
-    if kind == "books":
-        docs_href = f"{SITE_BASE}/docs/ReasBook/Books/{name}/Book.html"
-    else:
-        docs_href = f"{SITE_BASE}/docs/ReasBook/Papers/{name}/Paper.html"
+    project_base = f"{SITE_BASE}/projects/{slug}"
+    docs_href = f"{project_base}/docs/{PUBLISHED_DOCS[(kind, name)]}"
 
     pieces = [f"[{labels['docs']}]({docs_href})"]
     if name not in NO_VERSO_PROJECTS:
-        pieces.append(f"[Verso]({SITE_BASE}/sites/{slug}/pages/)")
+        pieces.append(f"[Verso]({project_base}/)")
     else:
         pieces.append(labels["verso_unpublished"])
 
     if (kind, name) in PUBLISHED_THEOREM_MAPS:
         pieces.append(
-            f"[{labels['theorem_map']}]({SITE_BASE}/theorem-maps/{kind}/{slug}/)"
+            f"[{labels['theorem_map']}]({project_base}/theorem-maps/{kind}/{slug}/)"
         )
+    pieces.append(f"[Reviewer]({REVIEWER_BASE}/books/{slug}/)")
 
     # Use an entity so the separator is rendered inside the Markdown table
     # cell instead of being parsed as another table column.
@@ -98,7 +117,16 @@ def update_resource_cells(
         cells = line.split("|")
         if len(cells) != 6:
             continue
-        new_resources = f" {resource_cell(project, language=language)} "
+        # The last cell can also contain original papers and source notes.
+        # Keep those links when regenerating hosted reading resources.
+        references = [
+            link for link in re.findall(r"\[[^\]]+\]\([^)]+\)", cells[4])
+            if urlsplit(link.split("](", 1)[1][:-1]).hostname not in {
+                "optpku.github.io", "reasbook.reaslab.io", "reasbook-reviewer.reaslab.io",
+            }
+        ]
+        resources = [resource_cell(project, language=language), *references]
+        new_resources = " " + " &#124; ".join(resources) + " "
         if cells[4] != new_resources:
             cells[4] = new_resources
             lines[index] = "|".join(cells)
@@ -111,12 +139,12 @@ def update_resource_cells(
 
 def main() -> None:
     repo_root = Path.cwd()
-    branches = existing_branches(
-        [record["version"] for record in load_registry_branches(repo_root)],
-        repo_root,
-    )
-    _, discovered = discover_projects(branches, repo_root)
-    projects = {(project["kind"], project["name"]): project for project in discovered}
+    # Reading links follow the deployed inventory, independently of which
+    # version branches happen to be fetched in this checkout.
+    projects = {
+        (kind, name): {"kind": kind, "name": name, "slug": name.lower()}
+        for kind, name in PUBLISHED_DOCS
+    }
     # Keep excluded source-only entries present in the table.
     for kind, name, kind_title in (
         ("books", "ProbabilityTheory_Klenke_2020", "Books"),
