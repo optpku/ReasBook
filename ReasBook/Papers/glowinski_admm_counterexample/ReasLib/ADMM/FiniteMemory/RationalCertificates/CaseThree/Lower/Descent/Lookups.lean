@@ -1,0 +1,753 @@
+module
+public import glowinski_admm_counterexample.ReasLib.ADMM.FiniteMemory.RationalCertificates.CaseThree.Lower.Descent.Data
+@[expose] public section
+set_option linter.style.longLine false
+namespace ADMM.FiniteMemory.Reconstruction.RationalCertificates.CaseThree.Lower.Descent
+@[simp] theorem lookupK0_0 : candidateK (0, 0) (0, 0) = (3926439 / 1250000000) := rfl
+@[simp] theorem lookupK0_1 : candidateK (0, 0) (0, 1) = (989663 / 2400000000) := rfl
+@[simp] theorem lookupK0_2 : candidateK (0, 0) (1, 0) = (-10855219 / 2000000000) := rfl
+@[simp] theorem lookupK0_3 : candidateK (0, 0) (1, 1) = (-7054425209 / 6000000000000) := rfl
+@[simp] theorem lookupK0_4 : candidateK (0, 0) (2, 0) = (-3795193 / 20000000000) := rfl
+@[simp] theorem lookupK0_5 : candidateK (0, 0) (2, 1) = (542438513 / 400000000000) := rfl
+@[simp] theorem lookupK0_6 : candidateK (0, 0) (3, 0) = (92536843 / 20000000000) := rfl
+@[simp] theorem lookupK0_7 : candidateK (0, 0) (3, 1) = (-1116259227 / 2000000000000) := rfl
+@[simp] theorem lookupK0_8 : candidateK (0, 0) (4, 0) = (-26536701 / 20000000000) := rfl
+@[simp] theorem lookupK0_9 : candidateK (0, 0) (4, 1) = (-1211312239 / 1000000000000) := rfl
+@[simp] theorem lookupK0_10 : candidateK (0, 0) (5, 0) = (175693 / 800000000) := rfl
+@[simp] theorem lookupK0_11 : candidateK (0, 0) (5, 1) = (1339159969 / 1000000000000) := rfl
+@[simp] theorem lookupK0_12 : candidateK (0, 0) (6, 0) = (-12650727 / 10000000000) := rfl
+@[simp] theorem lookupK0_13 : candidateK (0, 0) (6, 1) = (150821561 / 2000000000000) := rfl
+@[simp] theorem lookupK0_14 : candidateK (0, 0) (7, 0) = (-2502637 / 2500000000) := rfl
+@[simp] theorem lookupK0_15 : candidateK (0, 0) (7, 1) = (200012567 / 1000000000000) := rfl
+@[simp] theorem lookupK0_16 : candidateK (0, 0) (8, 0) = (769927 / 2500000000) := rfl
+@[simp] theorem lookupK0_17 : candidateK (0, 0) (8, 1) = (-717316127 / 2000000000000) := rfl
+@[simp] theorem lookupK1_0 : candidateK (0, 1) (0, 0) = (989663 / 2400000000) := rfl
+@[simp] theorem lookupK1_1 : candidateK (0, 1) (0, 1) = (181933127 / 250000000000) := rfl
+@[simp] theorem lookupK1_2 : candidateK (0, 1) (1, 0) = (-4338513333 / 2000000000000) := rfl
+@[simp] theorem lookupK1_3 : candidateK (0, 1) (1, 1) = (-1318771633 / 2000000000000) := rfl
+@[simp] theorem lookupK1_4 : candidateK (0, 1) (2, 0) = (15563653 / 60000000000) := rfl
+@[simp] theorem lookupK1_5 : candidateK (0, 1) (2, 1) = (-20618837 / 80000000000) := rfl
+@[simp] theorem lookupK1_6 : candidateK (0, 1) (3, 0) = (6472026433 / 2000000000000) := rfl
+@[simp] theorem lookupK1_7 : candidateK (0, 1) (3, 1) = (-250996881 / 2000000000000) := rfl
+@[simp] theorem lookupK1_8 : candidateK (0, 1) (4, 0) = (-2587887 / 2500000000) := rfl
+@[simp] theorem lookupK1_9 : candidateK (0, 1) (4, 1) = (-198640463 / 400000000000) := rfl
+@[simp] theorem lookupK1_10 : candidateK (0, 1) (5, 0) = (-46089 / 2000000000) := rfl
+@[simp] theorem lookupK1_11 : candidateK (0, 1) (5, 1) = (774265751 / 1000000000000) := rfl
+@[simp] theorem lookupK1_12 : candidateK (0, 1) (6, 0) = (2078807 / 20000000000) := rfl
+@[simp] theorem lookupK1_13 : candidateK (0, 1) (6, 1) = (25877267 / 125000000000) := rfl
+@[simp] theorem lookupK1_14 : candidateK (0, 1) (7, 0) = (-18622063 / 20000000000) := rfl
+@[simp] theorem lookupK1_15 : candidateK (0, 1) (7, 1) = (348008459 / 2000000000000) := rfl
+@[simp] theorem lookupK1_16 : candidateK (0, 1) (8, 0) = (-15357991 / 20000000000) := rfl
+@[simp] theorem lookupK1_17 : candidateK (0, 1) (8, 1) = (-529102333 / 2000000000000) := rfl
+@[simp] theorem lookupK2_0 : candidateK (1, 0) (0, 0) = (-10855219 / 2000000000) := rfl
+@[simp] theorem lookupK2_1 : candidateK (1, 0) (0, 1) = (-4338513333 / 2000000000000) := rfl
+@[simp] theorem lookupK2_2 : candidateK (1, 0) (1, 0) = (159499529 / 10000000000) := rfl
+@[simp] theorem lookupK2_3 : candidateK (1, 0) (1, 1) = (10400633803 / 3000000000000) := rfl
+@[simp] theorem lookupK2_4 : candidateK (1, 0) (2, 0) = (-59184843 / 10000000000) := rfl
+@[simp] theorem lookupK2_5 : candidateK (1, 0) (2, 1) = (-15623772467 / 6000000000000) := rfl
+@[simp] theorem lookupK2_6 : candidateK (1, 0) (3, 0) = (-55597171 / 4000000000) := rfl
+@[simp] theorem lookupK2_7 : candidateK (1, 0) (3, 1) = (133225913 / 50000000000) := rfl
+@[simp] theorem lookupK2_8 : candidateK (1, 0) (4, 0) = (82427149 / 10000000000) := rfl
+@[simp] theorem lookupK2_9 : candidateK (1, 0) (4, 1) = (39839541 / 20000000000) := rfl
+@[simp] theorem lookupK2_10 : candidateK (1, 0) (5, 0) = (-423479 / 800000000) := rfl
+@[simp] theorem lookupK2_11 : candidateK (1, 0) (5, 1) = (-728569 / 160000000) := rfl
+@[simp] theorem lookupK2_12 : candidateK (1, 0) (6, 0) = (327849 / 160000000) := rfl
+@[simp] theorem lookupK2_13 : candidateK (1, 0) (6, 1) = (8410359 / 10000000000) := rfl
+@[simp] theorem lookupK2_14 : candidateK (1, 0) (7, 0) = (-327987 / 2000000000) := rfl
+@[simp] theorem lookupK2_15 : candidateK (1, 0) (7, 1) = (-720677 / 800000000) := rfl
+@[simp] theorem lookupK2_16 : candidateK (1, 0) (8, 0) = (23512079 / 20000000000) := rfl
+@[simp] theorem lookupK2_17 : candidateK (1, 0) (8, 1) = (30813587 / 20000000000) := rfl
+@[simp] theorem lookupK3_0 : candidateK (1, 1) (0, 0) = (-7054425209 / 6000000000000) := rfl
+@[simp] theorem lookupK3_1 : candidateK (1, 1) (0, 1) = (-1318771633 / 2000000000000) := rfl
+@[simp] theorem lookupK3_2 : candidateK (1, 1) (1, 0) = (10400633803 / 3000000000000) := rfl
+@[simp] theorem lookupK3_3 : candidateK (1, 1) (1, 1) = (3139212641 / 2000000000000) := rfl
+@[simp] theorem lookupK3_4 : candidateK (1, 1) (2, 0) = (-2505824989 / 1000000000000) := rfl
+@[simp] theorem lookupK3_5 : candidateK (1, 1) (2, 1) = (-1518912019 / 2000000000000) := rfl
+@[simp] theorem lookupK3_6 : candidateK (1, 1) (3, 0) = (-1711904193 / 500000000000) := rfl
+@[simp] theorem lookupK3_7 : candidateK (1, 1) (3, 1) = (115896837 / 2000000000000) := rfl
+@[simp] theorem lookupK3_8 : candidateK (1, 1) (4, 0) = (4172755977 / 1000000000000) := rfl
+@[simp] theorem lookupK3_9 : candidateK (1, 1) (4, 1) = (3517497 / 10000000000) := rfl
+@[simp] theorem lookupK3_10 : candidateK (1, 1) (5, 0) = (-87087103 / 250000000000) := rfl
+@[simp] theorem lookupK3_11 : candidateK (1, 1) (5, 1) = (-104732131 / 80000000000) := rfl
+@[simp] theorem lookupK3_12 : candidateK (1, 1) (6, 0) = (159508751 / 1000000000000) := rfl
+@[simp] theorem lookupK3_13 : candidateK (1, 1) (6, 1) = (220195267 / 500000000000) := rfl
+@[simp] theorem lookupK3_14 : candidateK (1, 1) (7, 0) = (14165477 / 2000000000000) := rfl
+@[simp] theorem lookupK3_15 : candidateK (1, 1) (7, 1) = (-66169397 / 500000000000) := rfl
+@[simp] theorem lookupK3_16 : candidateK (1, 1) (8, 0) = (964965721 / 1000000000000) := rfl
+@[simp] theorem lookupK3_17 : candidateK (1, 1) (8, 1) = (39448533 / 50000000000) := rfl
+@[simp] theorem lookupK4_0 : candidateK (2, 0) (0, 0) = (-3795193 / 20000000000) := rfl
+@[simp] theorem lookupK4_1 : candidateK (2, 0) (0, 1) = (15563653 / 60000000000) := rfl
+@[simp] theorem lookupK4_2 : candidateK (2, 0) (1, 0) = (-59184843 / 10000000000) := rfl
+@[simp] theorem lookupK4_3 : candidateK (2, 0) (1, 1) = (-2505824989 / 1000000000000) := rfl
+@[simp] theorem lookupK4_4 : candidateK (2, 0) (2, 0) = (172515093 / 10000000000) := rfl
+@[simp] theorem lookupK4_5 : candidateK (2, 0) (2, 1) = (18866212241 / 6000000000000) := rfl
+@[simp] theorem lookupK4_6 : candidateK (2, 0) (3, 0) = (-99130827 / 20000000000) := rfl
+@[simp] theorem lookupK4_7 : candidateK (2, 0) (3, 1) = (-5868336873 / 2000000000000) := rfl
+@[simp] theorem lookupK4_8 : candidateK (2, 0) (4, 0) = (-13748689 / 1000000000) := rfl
+@[simp] theorem lookupK4_9 : candidateK (2, 0) (4, 1) = (1720134901 / 500000000000) := rfl
+@[simp] theorem lookupK4_10 : candidateK (2, 0) (5, 0) = (15288967 / 2500000000) := rfl
+@[simp] theorem lookupK4_11 : candidateK (2, 0) (5, 1) = (22425197 / 10000000000) := rfl
+@[simp] theorem lookupK4_12 : candidateK (2, 0) (6, 0) = (-21767951 / 10000000000) := rfl
+@[simp] theorem lookupK4_13 : candidateK (2, 0) (6, 1) = (-8698681 / 2000000000) := rfl
+@[simp] theorem lookupK4_14 : candidateK (2, 0) (7, 0) = (26578337 / 5000000000) := rfl
+@[simp] theorem lookupK4_15 : candidateK (2, 0) (7, 1) = (6125423 / 5000000000) := rfl
+@[simp] theorem lookupK4_16 : candidateK (2, 0) (8, 0) = (-17740091 / 10000000000) := rfl
+@[simp] theorem lookupK4_17 : candidateK (2, 0) (8, 1) = (-4586827 / 2000000000) := rfl
+@[simp] theorem lookupK5_0 : candidateK (2, 1) (0, 0) = (542438513 / 400000000000) := rfl
+@[simp] theorem lookupK5_1 : candidateK (2, 1) (0, 1) = (-20618837 / 80000000000) := rfl
+@[simp] theorem lookupK5_2 : candidateK (2, 1) (1, 0) = (-15623772467 / 6000000000000) := rfl
+@[simp] theorem lookupK5_3 : candidateK (2, 1) (1, 1) = (-1518912019 / 2000000000000) := rfl
+@[simp] theorem lookupK5_4 : candidateK (2, 1) (2, 0) = (18866212241 / 6000000000000) := rfl
+@[simp] theorem lookupK5_5 : candidateK (2, 1) (2, 1) = (4683271663 / 2000000000000) := rfl
+@[simp] theorem lookupK5_6 : candidateK (2, 1) (3, 0) = (-41833657 / 20000000000) := rfl
+@[simp] theorem lookupK5_7 : candidateK (2, 1) (3, 1) = (-2223985719 / 2000000000000) := rfl
+@[simp] theorem lookupK5_8 : candidateK (2, 1) (4, 0) = (-29068501 / 10000000000) := rfl
+@[simp] theorem lookupK5_9 : candidateK (2, 1) (4, 1) = (-2616127 / 10000000000) := rfl
+@[simp] theorem lookupK5_10 : candidateK (2, 1) (5, 0) = (8871209677 / 2000000000000) := rfl
+@[simp] theorem lookupK5_11 : candidateK (2, 1) (5, 1) = (2631679 / 5000000000) := rfl
+@[simp] theorem lookupK5_12 : candidateK (2, 1) (6, 0) = (-1245337 / 625000000) := rfl
+@[simp] theorem lookupK5_13 : candidateK (2, 1) (6, 1) = (-13300741 / 10000000000) := rfl
+@[simp] theorem lookupK5_14 : candidateK (2, 1) (7, 0) = (1533097 / 2500000000) := rfl
+@[simp] theorem lookupK5_15 : candidateK (2, 1) (7, 1) = (354779 / 312500000) := rfl
+@[simp] theorem lookupK5_16 : candidateK (2, 1) (8, 0) = (3547419 / 5000000000) := rfl
+@[simp] theorem lookupK5_17 : candidateK (2, 1) (8, 1) = (-1892563 / 5000000000) := rfl
+@[simp] theorem lookupK6_0 : candidateK (3, 0) (0, 0) = (92536843 / 20000000000) := rfl
+@[simp] theorem lookupK6_1 : candidateK (3, 0) (0, 1) = (6472026433 / 2000000000000) := rfl
+@[simp] theorem lookupK6_2 : candidateK (3, 0) (1, 0) = (-55597171 / 4000000000) := rfl
+@[simp] theorem lookupK6_3 : candidateK (3, 0) (1, 1) = (-1711904193 / 500000000000) := rfl
+@[simp] theorem lookupK6_4 : candidateK (3, 0) (2, 0) = (-99130827 / 20000000000) := rfl
+@[simp] theorem lookupK6_5 : candidateK (3, 0) (2, 1) = (-41833657 / 20000000000) := rfl
+@[simp] theorem lookupK6_6 : candidateK (3, 0) (3, 0) = (170682071 / 5000000000) := rfl
+@[simp] theorem lookupK6_7 : candidateK (3, 0) (3, 1) = (1113087187 / 500000000000) := rfl
+@[simp] theorem lookupK6_8 : candidateK (3, 0) (4, 0) = (-219171183 / 20000000000) := rfl
+@[simp] theorem lookupK6_9 : candidateK (3, 0) (4, 1) = (-5553811961 / 1000000000000) := rfl
+@[simp] theorem lookupK6_10 : candidateK (3, 0) (5, 0) = (-6814203 / 400000000) := rfl
+@[simp] theorem lookupK6_11 : candidateK (3, 0) (5, 1) = (13599221613 / 2000000000000) := rfl
+@[simp] theorem lookupK6_12 : candidateK (3, 0) (6, 0) = (104202629 / 10000000000) := rfl
+@[simp] theorem lookupK6_13 : candidateK (3, 0) (6, 1) = (3210901 / 1000000000) := rfl
+@[simp] theorem lookupK6_14 : candidateK (3, 0) (7, 0) = (-26563309 / 10000000000) := rfl
+@[simp] theorem lookupK6_15 : candidateK (3, 0) (7, 1) = (-49239659 / 10000000000) := rfl
+@[simp] theorem lookupK6_16 : candidateK (3, 0) (8, 0) = (-35522463 / 10000000000) := rfl
+@[simp] theorem lookupK6_17 : candidateK (3, 0) (8, 1) = (113213 / 312500000) := rfl
+@[simp] theorem lookupK7_0 : candidateK (3, 1) (0, 0) = (-1116259227 / 2000000000000) := rfl
+@[simp] theorem lookupK7_1 : candidateK (3, 1) (0, 1) = (-250996881 / 2000000000000) := rfl
+@[simp] theorem lookupK7_2 : candidateK (3, 1) (1, 0) = (133225913 / 50000000000) := rfl
+@[simp] theorem lookupK7_3 : candidateK (3, 1) (1, 1) = (115896837 / 2000000000000) := rfl
+@[simp] theorem lookupK7_4 : candidateK (3, 1) (2, 0) = (-5868336873 / 2000000000000) := rfl
+@[simp] theorem lookupK7_5 : candidateK (3, 1) (2, 1) = (-2223985719 / 2000000000000) := rfl
+@[simp] theorem lookupK7_6 : candidateK (3, 1) (3, 0) = (1113087187 / 500000000000) := rfl
+@[simp] theorem lookupK7_7 : candidateK (3, 1) (3, 1) = (331315003 / 125000000000) := rfl
+@[simp] theorem lookupK7_8 : candidateK (3, 1) (4, 0) = (-43014771 / 20000000000) := rfl
+@[simp] theorem lookupK7_9 : candidateK (3, 1) (4, 1) = (-419044057 / 400000000000) := rfl
+@[simp] theorem lookupK7_10 : candidateK (3, 1) (5, 0) = (-27690857 / 10000000000) := rfl
+@[simp] theorem lookupK7_11 : candidateK (3, 1) (5, 1) = (-880241 / 1250000000) := rfl
+@[simp] theorem lookupK7_12 : candidateK (3, 1) (6, 0) = (3029583733 / 500000000000) := rfl
+@[simp] theorem lookupK7_13 : candidateK (3, 1) (6, 1) = (1032661 / 2000000000) := rfl
+@[simp] theorem lookupK7_14 : candidateK (3, 1) (7, 0) = (-13040791 / 5000000000) := rfl
+@[simp] theorem lookupK7_15 : candidateK (3, 1) (7, 1) = (-6695353 / 5000000000) := rfl
+@[simp] theorem lookupK7_16 : candidateK (3, 1) (8, 0) = (-301837 / 1250000000) := rfl
+@[simp] theorem lookupK7_17 : candidateK (3, 1) (8, 1) = (4378961 / 2500000000) := rfl
+@[simp] theorem lookupK8_0 : candidateK (4, 0) (0, 0) = (-26536701 / 20000000000) := rfl
+@[simp] theorem lookupK8_1 : candidateK (4, 0) (0, 1) = (-2587887 / 2500000000) := rfl
+@[simp] theorem lookupK8_2 : candidateK (4, 0) (1, 0) = (82427149 / 10000000000) := rfl
+@[simp] theorem lookupK8_3 : candidateK (4, 0) (1, 1) = (4172755977 / 1000000000000) := rfl
+@[simp] theorem lookupK8_4 : candidateK (4, 0) (2, 0) = (-13748689 / 1000000000) := rfl
+@[simp] theorem lookupK8_5 : candidateK (4, 0) (2, 1) = (-29068501 / 10000000000) := rfl
+@[simp] theorem lookupK8_6 : candidateK (4, 0) (3, 0) = (-219171183 / 20000000000) := rfl
+@[simp] theorem lookupK8_7 : candidateK (4, 0) (3, 1) = (-43014771 / 20000000000) := rfl
+@[simp] theorem lookupK8_8 : candidateK (4, 0) (4, 0) = (37540709 / 1000000000) := rfl
+@[simp] theorem lookupK8_9 : candidateK (4, 0) (4, 1) = (70453329 / 20000000000) := rfl
+@[simp] theorem lookupK8_10 : candidateK (4, 0) (5, 0) = (-116427657 / 10000000000) := rfl
+@[simp] theorem lookupK8_11 : candidateK (4, 0) (5, 1) = (-6846210273 / 1000000000000) := rfl
+@[simp] theorem lookupK8_12 : candidateK (4, 0) (6, 0) = (-51368313 / 2500000000) := rfl
+@[simp] theorem lookupK8_13 : candidateK (4, 0) (6, 1) = (855749037 / 125000000000) := rfl
+@[simp] theorem lookupK8_14 : candidateK (4, 0) (7, 0) = (5544039 / 400000000) := rfl
+@[simp] theorem lookupK8_15 : candidateK (4, 0) (7, 1) = (4515853 / 2000000000) := rfl
+@[simp] theorem lookupK8_16 : candidateK (4, 0) (8, 0) = (3991059 / 5000000000) := rfl
+@[simp] theorem lookupK8_17 : candidateK (4, 0) (8, 1) = (-7617889 / 1250000000) := rfl
+@[simp] theorem lookupK9_0 : candidateK (4, 1) (0, 0) = (-1211312239 / 1000000000000) := rfl
+@[simp] theorem lookupK9_1 : candidateK (4, 1) (0, 1) = (-198640463 / 400000000000) := rfl
+@[simp] theorem lookupK9_2 : candidateK (4, 1) (1, 0) = (39839541 / 20000000000) := rfl
+@[simp] theorem lookupK9_3 : candidateK (4, 1) (1, 1) = (3517497 / 10000000000) := rfl
+@[simp] theorem lookupK9_4 : candidateK (4, 1) (2, 0) = (1720134901 / 500000000000) := rfl
+@[simp] theorem lookupK9_5 : candidateK (4, 1) (2, 1) = (-2616127 / 10000000000) := rfl
+@[simp] theorem lookupK9_6 : candidateK (4, 1) (3, 0) = (-5553811961 / 1000000000000) := rfl
+@[simp] theorem lookupK9_7 : candidateK (4, 1) (3, 1) = (-419044057 / 400000000000) := rfl
+@[simp] theorem lookupK9_8 : candidateK (4, 1) (4, 0) = (70453329 / 20000000000) := rfl
+@[simp] theorem lookupK9_9 : candidateK (4, 1) (4, 1) = (3875731201 / 1000000000000) := rfl
+@[simp] theorem lookupK9_10 : candidateK (4, 1) (5, 0) = (-34440669 / 10000000000) := rfl
+@[simp] theorem lookupK9_11 : candidateK (4, 1) (5, 1) = (-1327019601 / 1000000000000) := rfl
+@[simp] theorem lookupK9_12 : candidateK (4, 1) (6, 0) = (-28279929 / 5000000000) := rfl
+@[simp] theorem lookupK9_13 : candidateK (4, 1) (6, 1) = (-9500077 / 10000000000) := rfl
+@[simp] theorem lookupK9_14 : candidateK (4, 1) (7, 0) = (4338496799 / 500000000000) := rfl
+@[simp] theorem lookupK9_15 : candidateK (4, 1) (7, 1) = (3489649 / 10000000000) := rfl
+@[simp] theorem lookupK9_16 : candidateK (4, 1) (8, 0) = (-252843 / 10000000000) := rfl
+@[simp] theorem lookupK9_17 : candidateK (4, 1) (8, 1) = (-67201 / 31250000) := rfl
+@[simp] theorem lookupK10_0 : candidateK (5, 0) (0, 0) = (175693 / 800000000) := rfl
+@[simp] theorem lookupK10_1 : candidateK (5, 0) (0, 1) = (-46089 / 2000000000) := rfl
+@[simp] theorem lookupK10_2 : candidateK (5, 0) (1, 0) = (-423479 / 800000000) := rfl
+@[simp] theorem lookupK10_3 : candidateK (5, 0) (1, 1) = (-87087103 / 250000000000) := rfl
+@[simp] theorem lookupK10_4 : candidateK (5, 0) (2, 0) = (15288967 / 2500000000) := rfl
+@[simp] theorem lookupK10_5 : candidateK (5, 0) (2, 1) = (8871209677 / 2000000000000) := rfl
+@[simp] theorem lookupK10_6 : candidateK (5, 0) (3, 0) = (-6814203 / 400000000) := rfl
+@[simp] theorem lookupK10_7 : candidateK (5, 0) (3, 1) = (-27690857 / 10000000000) := rfl
+@[simp] theorem lookupK10_8 : candidateK (5, 0) (4, 0) = (-116427657 / 10000000000) := rfl
+@[simp] theorem lookupK10_9 : candidateK (5, 0) (4, 1) = (-34440669 / 10000000000) := rfl
+@[simp] theorem lookupK10_10 : candidateK (5, 0) (5, 0) = (218262301 / 5000000000) := rfl
+@[simp] theorem lookupK10_11 : candidateK (5, 0) (5, 1) = (29346099 / 20000000000) := rfl
+@[simp] theorem lookupK10_12 : candidateK (5, 0) (6, 0) = (-7252517 / 2500000000) := rfl
+@[simp] theorem lookupK10_13 : candidateK (5, 0) (6, 1) = (-14595691353 / 2000000000000) := rfl
+@[simp] theorem lookupK10_14 : candidateK (5, 0) (7, 0) = (-51686991 / 2000000000) := rfl
+@[simp] theorem lookupK10_15 : candidateK (5, 0) (7, 1) = (16292303 / 2000000000) := rfl
+@[simp] theorem lookupK10_16 : candidateK (5, 0) (8, 0) = (11384479 / 2000000000) := rfl
+@[simp] theorem lookupK10_17 : candidateK (5, 0) (8, 1) = (27818559 / 5000000000) := rfl
+@[simp] theorem lookupK11_0 : candidateK (5, 1) (0, 0) = (1339159969 / 1000000000000) := rfl
+@[simp] theorem lookupK11_1 : candidateK (5, 1) (0, 1) = (774265751 / 1000000000000) := rfl
+@[simp] theorem lookupK11_2 : candidateK (5, 1) (1, 0) = (-728569 / 160000000) := rfl
+@[simp] theorem lookupK11_3 : candidateK (5, 1) (1, 1) = (-104732131 / 80000000000) := rfl
+@[simp] theorem lookupK11_4 : candidateK (5, 1) (2, 0) = (22425197 / 10000000000) := rfl
+@[simp] theorem lookupK11_5 : candidateK (5, 1) (2, 1) = (2631679 / 5000000000) := rfl
+@[simp] theorem lookupK11_6 : candidateK (5, 1) (3, 0) = (13599221613 / 2000000000000) := rfl
+@[simp] theorem lookupK11_7 : candidateK (5, 1) (3, 1) = (-880241 / 1250000000) := rfl
+@[simp] theorem lookupK11_8 : candidateK (5, 1) (4, 0) = (-6846210273 / 1000000000000) := rfl
+@[simp] theorem lookupK11_9 : candidateK (5, 1) (4, 1) = (-1327019601 / 1000000000000) := rfl
+@[simp] theorem lookupK11_10 : candidateK (5, 1) (5, 0) = (29346099 / 20000000000) := rfl
+@[simp] theorem lookupK11_11 : candidateK (5, 1) (5, 1) = (7818813547 / 2000000000000) := rfl
+@[simp] theorem lookupK11_12 : candidateK (5, 1) (6, 0) = (7311217 / 10000000000) := rfl
+@[simp] theorem lookupK11_13 : candidateK (5, 1) (6, 1) = (-472229993 / 500000000000) := rfl
+@[simp] theorem lookupK11_14 : candidateK (5, 1) (7, 0) = (-16816941 / 5000000000) := rfl
+@[simp] theorem lookupK11_15 : candidateK (5, 1) (7, 1) = (-12269171 / 10000000000) := rfl
+@[simp] theorem lookupK11_16 : candidateK (5, 1) (8, 0) = (311810599 / 400000000000) := rfl
+@[simp] theorem lookupK11_17 : candidateK (5, 1) (8, 1) = (702827 / 2000000000) := rfl
+@[simp] theorem lookupK12_0 : candidateK (6, 0) (0, 0) = (-12650727 / 10000000000) := rfl
+@[simp] theorem lookupK12_1 : candidateK (6, 0) (0, 1) = (2078807 / 20000000000) := rfl
+@[simp] theorem lookupK12_2 : candidateK (6, 0) (1, 0) = (327849 / 160000000) := rfl
+@[simp] theorem lookupK12_3 : candidateK (6, 0) (1, 1) = (159508751 / 1000000000000) := rfl
+@[simp] theorem lookupK12_4 : candidateK (6, 0) (2, 0) = (-21767951 / 10000000000) := rfl
+@[simp] theorem lookupK12_5 : candidateK (6, 0) (2, 1) = (-1245337 / 625000000) := rfl
+@[simp] theorem lookupK12_6 : candidateK (6, 0) (3, 0) = (104202629 / 10000000000) := rfl
+@[simp] theorem lookupK12_7 : candidateK (6, 0) (3, 1) = (3029583733 / 500000000000) := rfl
+@[simp] theorem lookupK12_8 : candidateK (6, 0) (4, 0) = (-51368313 / 2500000000) := rfl
+@[simp] theorem lookupK12_9 : candidateK (6, 0) (4, 1) = (-28279929 / 5000000000) := rfl
+@[simp] theorem lookupK12_10 : candidateK (6, 0) (5, 0) = (-7252517 / 2500000000) := rfl
+@[simp] theorem lookupK12_11 : candidateK (6, 0) (5, 1) = (7311217 / 10000000000) := rfl
+@[simp] theorem lookupK12_12 : candidateK (6, 0) (6, 0) = (371485861 / 10000000000) := rfl
+@[simp] theorem lookupK12_13 : candidateK (6, 0) (6, 1) = (20979931 / 20000000000) := rfl
+@[simp] theorem lookupK12_14 : candidateK (6, 0) (7, 0) = (-455743847 / 20000000000) := rfl
+@[simp] theorem lookupK12_15 : candidateK (6, 0) (7, 1) = (-6405985717 / 1000000000000) := rfl
+@[simp] theorem lookupK12_16 : candidateK (6, 0) (8, 0) = (-304707 / 80000000) := rfl
+@[simp] theorem lookupK12_17 : candidateK (6, 0) (8, 1) = (104081599 / 10000000000) := rfl
+@[simp] theorem lookupK13_0 : candidateK (6, 1) (0, 0) = (150821561 / 2000000000000) := rfl
+@[simp] theorem lookupK13_1 : candidateK (6, 1) (0, 1) = (25877267 / 125000000000) := rfl
+@[simp] theorem lookupK13_2 : candidateK (6, 1) (1, 0) = (8410359 / 10000000000) := rfl
+@[simp] theorem lookupK13_3 : candidateK (6, 1) (1, 1) = (220195267 / 500000000000) := rfl
+@[simp] theorem lookupK13_4 : candidateK (6, 1) (2, 0) = (-8698681 / 2000000000) := rfl
+@[simp] theorem lookupK13_5 : candidateK (6, 1) (2, 1) = (-13300741 / 10000000000) := rfl
+@[simp] theorem lookupK13_6 : candidateK (6, 1) (3, 0) = (3210901 / 1000000000) := rfl
+@[simp] theorem lookupK13_7 : candidateK (6, 1) (3, 1) = (1032661 / 2000000000) := rfl
+@[simp] theorem lookupK13_8 : candidateK (6, 1) (4, 0) = (855749037 / 125000000000) := rfl
+@[simp] theorem lookupK13_9 : candidateK (6, 1) (4, 1) = (-9500077 / 10000000000) := rfl
+@[simp] theorem lookupK13_10 : candidateK (6, 1) (5, 0) = (-14595691353 / 2000000000000) := rfl
+@[simp] theorem lookupK13_11 : candidateK (6, 1) (5, 1) = (-472229993 / 500000000000) := rfl
+@[simp] theorem lookupK13_12 : candidateK (6, 1) (6, 0) = (20979931 / 20000000000) := rfl
+@[simp] theorem lookupK13_13 : candidateK (6, 1) (6, 1) = (9715388591 / 2000000000000) := rfl
+@[simp] theorem lookupK13_14 : candidateK (6, 1) (7, 0) = (-6211379 / 20000000000) := rfl
+@[simp] theorem lookupK13_15 : candidateK (6, 1) (7, 1) = (-2913642159 / 2000000000000) := rfl
+@[simp] theorem lookupK13_16 : candidateK (6, 1) (8, 0) = (-3788077 / 1000000000) := rfl
+@[simp] theorem lookupK13_17 : candidateK (6, 1) (8, 1) = (-5720063 / 2500000000) := rfl
+@[simp] theorem lookupK14_0 : candidateK (7, 0) (0, 0) = (-2502637 / 2500000000) := rfl
+@[simp] theorem lookupK14_1 : candidateK (7, 0) (0, 1) = (-18622063 / 20000000000) := rfl
+@[simp] theorem lookupK14_2 : candidateK (7, 0) (1, 0) = (-327987 / 2000000000) := rfl
+@[simp] theorem lookupK14_3 : candidateK (7, 0) (1, 1) = (14165477 / 2000000000000) := rfl
+@[simp] theorem lookupK14_4 : candidateK (7, 0) (2, 0) = (26578337 / 5000000000) := rfl
+@[simp] theorem lookupK14_5 : candidateK (7, 0) (2, 1) = (1533097 / 2500000000) := rfl
+@[simp] theorem lookupK14_6 : candidateK (7, 0) (3, 0) = (-26563309 / 10000000000) := rfl
+@[simp] theorem lookupK14_7 : candidateK (7, 0) (3, 1) = (-13040791 / 5000000000) := rfl
+@[simp] theorem lookupK14_8 : candidateK (7, 0) (4, 0) = (5544039 / 400000000) := rfl
+@[simp] theorem lookupK14_9 : candidateK (7, 0) (4, 1) = (4338496799 / 500000000000) := rfl
+@[simp] theorem lookupK14_10 : candidateK (7, 0) (5, 0) = (-51686991 / 2000000000) := rfl
+@[simp] theorem lookupK14_11 : candidateK (7, 0) (5, 1) = (-16816941 / 5000000000) := rfl
+@[simp] theorem lookupK14_12 : candidateK (7, 0) (6, 0) = (-455743847 / 20000000000) := rfl
+@[simp] theorem lookupK14_13 : candidateK (7, 0) (6, 1) = (-6211379 / 20000000000) := rfl
+@[simp] theorem lookupK14_14 : candidateK (7, 0) (7, 0) = (474598673 / 10000000000) := rfl
+@[simp] theorem lookupK14_15 : candidateK (7, 0) (7, 1) = (21332463 / 20000000000) := rfl
+@[simp] theorem lookupK14_16 : candidateK (7, 0) (8, 0) = (-69377969 / 20000000000) := rfl
+@[simp] theorem lookupK14_17 : candidateK (7, 0) (8, 1) = (-23089536173 / 2000000000000) := rfl
+@[simp] theorem lookupK15_0 : candidateK (7, 1) (0, 0) = (200012567 / 1000000000000) := rfl
+@[simp] theorem lookupK15_1 : candidateK (7, 1) (0, 1) = (348008459 / 2000000000000) := rfl
+@[simp] theorem lookupK15_2 : candidateK (7, 1) (1, 0) = (-720677 / 800000000) := rfl
+@[simp] theorem lookupK15_3 : candidateK (7, 1) (1, 1) = (-66169397 / 500000000000) := rfl
+@[simp] theorem lookupK15_4 : candidateK (7, 1) (2, 0) = (6125423 / 5000000000) := rfl
+@[simp] theorem lookupK15_5 : candidateK (7, 1) (2, 1) = (354779 / 312500000) := rfl
+@[simp] theorem lookupK15_6 : candidateK (7, 1) (3, 0) = (-49239659 / 10000000000) := rfl
+@[simp] theorem lookupK15_7 : candidateK (7, 1) (3, 1) = (-6695353 / 5000000000) := rfl
+@[simp] theorem lookupK15_8 : candidateK (7, 1) (4, 0) = (4515853 / 2000000000) := rfl
+@[simp] theorem lookupK15_9 : candidateK (7, 1) (4, 1) = (3489649 / 10000000000) := rfl
+@[simp] theorem lookupK15_10 : candidateK (7, 1) (5, 0) = (16292303 / 2000000000) := rfl
+@[simp] theorem lookupK15_11 : candidateK (7, 1) (5, 1) = (-12269171 / 10000000000) := rfl
+@[simp] theorem lookupK15_12 : candidateK (7, 1) (6, 0) = (-6405985717 / 1000000000000) := rfl
+@[simp] theorem lookupK15_13 : candidateK (7, 1) (6, 1) = (-2913642159 / 2000000000000) := rfl
+@[simp] theorem lookupK15_14 : candidateK (7, 1) (7, 0) = (21332463 / 20000000000) := rfl
+@[simp] theorem lookupK15_15 : candidateK (7, 1) (7, 1) = (1686428671 / 400000000000) := rfl
+@[simp] theorem lookupK15_16 : candidateK (7, 1) (8, 0) = (-1640463 / 4000000000) := rfl
+@[simp] theorem lookupK15_17 : candidateK (7, 1) (8, 1) = (-2603595067 / 2000000000000) := rfl
+@[simp] theorem lookupK16_0 : candidateK (8, 0) (0, 0) = (769927 / 2500000000) := rfl
+@[simp] theorem lookupK16_1 : candidateK (8, 0) (0, 1) = (-15357991 / 20000000000) := rfl
+@[simp] theorem lookupK16_2 : candidateK (8, 0) (1, 0) = (23512079 / 20000000000) := rfl
+@[simp] theorem lookupK16_3 : candidateK (8, 0) (1, 1) = (964965721 / 1000000000000) := rfl
+@[simp] theorem lookupK16_4 : candidateK (8, 0) (2, 0) = (-17740091 / 10000000000) := rfl
+@[simp] theorem lookupK16_5 : candidateK (8, 0) (2, 1) = (3547419 / 5000000000) := rfl
+@[simp] theorem lookupK16_6 : candidateK (8, 0) (3, 0) = (-35522463 / 10000000000) := rfl
+@[simp] theorem lookupK16_7 : candidateK (8, 0) (3, 1) = (-301837 / 1250000000) := rfl
+@[simp] theorem lookupK16_8 : candidateK (8, 0) (4, 0) = (3991059 / 5000000000) := rfl
+@[simp] theorem lookupK16_9 : candidateK (8, 0) (4, 1) = (-252843 / 10000000000) := rfl
+@[simp] theorem lookupK16_10 : candidateK (8, 0) (5, 0) = (11384479 / 2000000000) := rfl
+@[simp] theorem lookupK16_11 : candidateK (8, 0) (5, 1) = (311810599 / 400000000000) := rfl
+@[simp] theorem lookupK16_12 : candidateK (8, 0) (6, 0) = (-304707 / 80000000) := rfl
+@[simp] theorem lookupK16_13 : candidateK (8, 0) (6, 1) = (-3788077 / 1000000000) := rfl
+@[simp] theorem lookupK16_14 : candidateK (8, 0) (7, 0) = (-69377969 / 20000000000) := rfl
+@[simp] theorem lookupK16_15 : candidateK (8, 0) (7, 1) = (-1640463 / 4000000000) := rfl
+@[simp] theorem lookupK16_16 : candidateK (8, 0) (8, 0) = (65820423 / 5000000000) := rfl
+@[simp] theorem lookupK16_17 : candidateK (8, 0) (8, 1) = (6087867 / 1250000000) := rfl
+@[simp] theorem lookupK17_0 : candidateK (8, 1) (0, 0) = (-717316127 / 2000000000000) := rfl
+@[simp] theorem lookupK17_1 : candidateK (8, 1) (0, 1) = (-529102333 / 2000000000000) := rfl
+@[simp] theorem lookupK17_2 : candidateK (8, 1) (1, 0) = (30813587 / 20000000000) := rfl
+@[simp] theorem lookupK17_3 : candidateK (8, 1) (1, 1) = (39448533 / 50000000000) := rfl
+@[simp] theorem lookupK17_4 : candidateK (8, 1) (2, 0) = (-4586827 / 2000000000) := rfl
+@[simp] theorem lookupK17_5 : candidateK (8, 1) (2, 1) = (-1892563 / 5000000000) := rfl
+@[simp] theorem lookupK17_6 : candidateK (8, 1) (3, 0) = (113213 / 312500000) := rfl
+@[simp] theorem lookupK17_7 : candidateK (8, 1) (3, 1) = (4378961 / 2500000000) := rfl
+@[simp] theorem lookupK17_8 : candidateK (8, 1) (4, 0) = (-7617889 / 1250000000) := rfl
+@[simp] theorem lookupK17_9 : candidateK (8, 1) (4, 1) = (-67201 / 31250000) := rfl
+@[simp] theorem lookupK17_10 : candidateK (8, 1) (5, 0) = (27818559 / 5000000000) := rfl
+@[simp] theorem lookupK17_11 : candidateK (8, 1) (5, 1) = (702827 / 2000000000) := rfl
+@[simp] theorem lookupK17_12 : candidateK (8, 1) (6, 0) = (104081599 / 10000000000) := rfl
+@[simp] theorem lookupK17_13 : candidateK (8, 1) (6, 1) = (-5720063 / 2500000000) := rfl
+@[simp] theorem lookupK17_14 : candidateK (8, 1) (7, 0) = (-23089536173 / 2000000000000) := rfl
+@[simp] theorem lookupK17_15 : candidateK (8, 1) (7, 1) = (-2603595067 / 2000000000000) := rfl
+@[simp] theorem lookupK17_16 : candidateK (8, 1) (8, 0) = (6087867 / 1250000000) := rfl
+@[simp] theorem lookupK17_17 : candidateK (8, 1) (8, 1) = (7040162709 / 1000000000000) := rfl
+@[simp] theorem lookupL0_0 : candidateL (0, 0) (0, 0) = 1 := rfl
+@[simp] theorem lookupL0_1 : candidateL (0, 0) (0, 1) = 0 := rfl
+@[simp] theorem lookupL0_2 : candidateL (0, 0) (1, 0) = 0 := rfl
+@[simp] theorem lookupL0_3 : candidateL (0, 0) (1, 1) = 0 := rfl
+@[simp] theorem lookupL0_4 : candidateL (0, 0) (2, 0) = 0 := rfl
+@[simp] theorem lookupL0_5 : candidateL (0, 0) (2, 1) = 0 := rfl
+@[simp] theorem lookupL0_6 : candidateL (0, 0) (3, 0) = 0 := rfl
+@[simp] theorem lookupL0_7 : candidateL (0, 0) (3, 1) = 0 := rfl
+@[simp] theorem lookupL0_8 : candidateL (0, 0) (4, 0) = 0 := rfl
+@[simp] theorem lookupL0_9 : candidateL (0, 0) (4, 1) = 0 := rfl
+@[simp] theorem lookupL0_10 : candidateL (0, 0) (5, 0) = 0 := rfl
+@[simp] theorem lookupL0_11 : candidateL (0, 0) (5, 1) = 0 := rfl
+@[simp] theorem lookupL0_12 : candidateL (0, 0) (6, 0) = 0 := rfl
+@[simp] theorem lookupL0_13 : candidateL (0, 0) (6, 1) = 0 := rfl
+@[simp] theorem lookupL0_14 : candidateL (0, 0) (7, 0) = 0 := rfl
+@[simp] theorem lookupL0_15 : candidateL (0, 0) (7, 1) = 0 := rfl
+@[simp] theorem lookupL0_16 : candidateL (0, 0) (8, 0) = 0 := rfl
+@[simp] theorem lookupL0_17 : candidateL (0, 0) (8, 1) = 0 := rfl
+@[simp] theorem lookupL1_0 : candidateL (0, 1) (0, 0) = (24741575 / 188469072) := rfl
+@[simp] theorem lookupL1_1 : candidateL (0, 1) (0, 1) = 1 := rfl
+@[simp] theorem lookupL1_2 : candidateL (0, 1) (1, 0) = 0 := rfl
+@[simp] theorem lookupL1_3 : candidateL (0, 1) (1, 1) = 0 := rfl
+@[simp] theorem lookupL1_4 : candidateL (0, 1) (2, 0) = 0 := rfl
+@[simp] theorem lookupL1_5 : candidateL (0, 1) (2, 1) = 0 := rfl
+@[simp] theorem lookupL1_6 : candidateL (0, 1) (3, 0) = 0 := rfl
+@[simp] theorem lookupL1_7 : candidateL (0, 1) (3, 1) = 0 := rfl
+@[simp] theorem lookupL1_8 : candidateL (0, 1) (4, 0) = 0 := rfl
+@[simp] theorem lookupL1_9 : candidateL (0, 1) (4, 1) = 0 := rfl
+@[simp] theorem lookupL1_10 : candidateL (0, 1) (5, 0) = 0 := rfl
+@[simp] theorem lookupL1_11 : candidateL (0, 1) (5, 1) = 0 := rfl
+@[simp] theorem lookupL1_12 : candidateL (0, 1) (6, 0) = 0 := rfl
+@[simp] theorem lookupL1_13 : candidateL (0, 1) (6, 1) = 0 := rfl
+@[simp] theorem lookupL1_14 : candidateL (0, 1) (7, 0) = 0 := rfl
+@[simp] theorem lookupL1_15 : candidateL (0, 1) (7, 1) = 0 := rfl
+@[simp] theorem lookupL1_16 : candidateL (0, 1) (8, 0) = 0 := rfl
+@[simp] theorem lookupL1_17 : candidateL (0, 1) (8, 1) = 0 := rfl
+@[simp] theorem lookupL2_0 : candidateL (1, 0) (0, 0) = (-54276095 / 31411512) := rfl
+@[simp] theorem lookupL2_1 : candidateL (1, 0) (0, 1) = (-411825275025158982 / 190428967333473239) := rfl
+@[simp] theorem lookupL2_2 : candidateL (1, 0) (1, 0) = 1 := rfl
+@[simp] theorem lookupL2_3 : candidateL (1, 0) (1, 1) = 0 := rfl
+@[simp] theorem lookupL2_4 : candidateL (1, 0) (2, 0) = 0 := rfl
+@[simp] theorem lookupL2_5 : candidateL (1, 0) (2, 1) = 0 := rfl
+@[simp] theorem lookupL2_6 : candidateL (1, 0) (3, 0) = 0 := rfl
+@[simp] theorem lookupL2_7 : candidateL (1, 0) (3, 1) = 0 := rfl
+@[simp] theorem lookupL2_8 : candidateL (1, 0) (4, 0) = 0 := rfl
+@[simp] theorem lookupL2_9 : candidateL (1, 0) (4, 1) = 0 := rfl
+@[simp] theorem lookupL2_10 : candidateL (1, 0) (5, 0) = 0 := rfl
+@[simp] theorem lookupL2_11 : candidateL (1, 0) (5, 1) = 0 := rfl
+@[simp] theorem lookupL2_12 : candidateL (1, 0) (6, 0) = 0 := rfl
+@[simp] theorem lookupL2_13 : candidateL (1, 0) (6, 1) = 0 := rfl
+@[simp] theorem lookupL2_14 : candidateL (1, 0) (7, 0) = 0 := rfl
+@[simp] theorem lookupL2_15 : candidateL (1, 0) (7, 1) = 0 := rfl
+@[simp] theorem lookupL2_16 : candidateL (1, 0) (8, 0) = 0 := rfl
+@[simp] theorem lookupL2_17 : candidateL (1, 0) (8, 1) = 0 := rfl
+@[simp] theorem lookupL3_0 : candidateL (1, 1) (0, 0) = (-7054425209 / 18846907200) := rfl
+@[simp] theorem lookupL3_1 : candidateL (1, 1) (0, 1) = (-571105407163939553 / 761715869333892956) := rfl
+@[simp] theorem lookupL3_2 : candidateL (1, 1) (1, 0) = (1568108432582727903161367649 / 15635853654818859285698855328) := rfl
+@[simp] theorem lookupL3_3 : candidateL (1, 1) (1, 1) = 1 := rfl
+@[simp] theorem lookupL3_4 : candidateL (1, 1) (2, 0) = 0 := rfl
+@[simp] theorem lookupL3_5 : candidateL (1, 1) (2, 1) = 0 := rfl
+@[simp] theorem lookupL3_6 : candidateL (1, 1) (3, 0) = 0 := rfl
+@[simp] theorem lookupL3_7 : candidateL (1, 1) (3, 1) = 0 := rfl
+@[simp] theorem lookupL3_8 : candidateL (1, 1) (4, 0) = 0 := rfl
+@[simp] theorem lookupL3_9 : candidateL (1, 1) (4, 1) = 0 := rfl
+@[simp] theorem lookupL3_10 : candidateL (1, 1) (5, 0) = 0 := rfl
+@[simp] theorem lookupL3_11 : candidateL (1, 1) (5, 1) = 0 := rfl
+@[simp] theorem lookupL3_12 : candidateL (1, 1) (6, 0) = 0 := rfl
+@[simp] theorem lookupL3_13 : candidateL (1, 1) (6, 1) = 0 := rfl
+@[simp] theorem lookupL3_14 : candidateL (1, 1) (7, 0) = 0 := rfl
+@[simp] theorem lookupL3_15 : candidateL (1, 1) (7, 1) = 0 := rfl
+@[simp] theorem lookupL3_16 : candidateL (1, 1) (8, 0) = 0 := rfl
+@[simp] theorem lookupL3_17 : candidateL (1, 1) (8, 1) = 0 := rfl
+@[simp] theorem lookupL4_0 : candidateL (2, 0) (0, 0) = (-3795193 / 62823024) := rfl
+@[simp] theorem lookupL4_1 : candidateL (2, 0) (0, 1) = (80374109864673525 / 190428967333473239) := rfl
+@[simp] theorem lookupL4_2 : candidateL (2, 0) (1, 0) = (-2144811760877124532919673575 / 1302987804568238273808237944) := rfl
+@[simp] theorem lookupL4_3 : candidateL (2, 0) (1, 1) = (-16876490192506507553220877349213703374100 / 6721449777766978436695925744481937813681) := rfl
+@[simp] theorem lookupL4_4 : candidateL (2, 0) (2, 0) = 1 := rfl
+@[simp] theorem lookupL4_5 : candidateL (2, 0) (2, 1) = 0 := rfl
+@[simp] theorem lookupL4_6 : candidateL (2, 0) (3, 0) = 0 := rfl
+@[simp] theorem lookupL4_7 : candidateL (2, 0) (3, 1) = 0 := rfl
+@[simp] theorem lookupL4_8 : candidateL (2, 0) (4, 0) = 0 := rfl
+@[simp] theorem lookupL4_9 : candidateL (2, 0) (4, 1) = 0 := rfl
+@[simp] theorem lookupL4_10 : candidateL (2, 0) (5, 0) = 0 := rfl
+@[simp] theorem lookupL4_11 : candidateL (2, 0) (5, 1) = 0 := rfl
+@[simp] theorem lookupL4_12 : candidateL (2, 0) (6, 0) = 0 := rfl
+@[simp] theorem lookupL4_13 : candidateL (2, 0) (6, 1) = 0 := rfl
+@[simp] theorem lookupL4_14 : candidateL (2, 0) (7, 0) = 0 := rfl
+@[simp] theorem lookupL4_15 : candidateL (2, 0) (7, 1) = 0 := rfl
+@[simp] theorem lookupL4_16 : candidateL (2, 0) (8, 0) = 0 := rfl
+@[simp] theorem lookupL4_17 : candidateL (2, 0) (8, 1) = 0 := rfl
+@[simp] theorem lookupL5_0 : candidateL (2, 1) (0, 0) = (542438513 / 1256460480) := rfl
+@[simp] theorem lookupL5_1 : candidateL (2, 1) (0, 1) = (-492762727917364425 / 761715869333892956) := rfl
+@[simp] theorem lookupL5_2 : candidateL (2, 1) (1, 0) = (-5498696112157943264694407827 / 15635853654818859285698855328) := rfl
+@[simp] theorem lookupL5_3 : candidateL (2, 1) (1, 1) = (-4295990056651731265142377957616243383555 / 6721449777766978436695925744481937813681) := rfl
+@[simp] theorem lookupL5_4 : candidateL (2, 1) (2, 0) = (3763927418542626566643897316531265689500066698917 / 44810229857417544399892742880368188106694657642600) := rfl
+@[simp] theorem lookupL5_5 : candidateL (2, 1) (2, 1) = 1 := rfl
+@[simp] theorem lookupL5_6 : candidateL (2, 1) (3, 0) = 0 := rfl
+@[simp] theorem lookupL5_7 : candidateL (2, 1) (3, 1) = 0 := rfl
+@[simp] theorem lookupL5_8 : candidateL (2, 1) (4, 0) = 0 := rfl
+@[simp] theorem lookupL5_9 : candidateL (2, 1) (4, 1) = 0 := rfl
+@[simp] theorem lookupL5_10 : candidateL (2, 1) (5, 0) = 0 := rfl
+@[simp] theorem lookupL5_11 : candidateL (2, 1) (5, 1) = 0 := rfl
+@[simp] theorem lookupL5_12 : candidateL (2, 1) (6, 0) = 0 := rfl
+@[simp] theorem lookupL5_13 : candidateL (2, 1) (6, 1) = 0 := rfl
+@[simp] theorem lookupL5_14 : candidateL (2, 1) (7, 0) = 0 := rfl
+@[simp] theorem lookupL5_15 : candidateL (2, 1) (7, 1) = 0 := rfl
+@[simp] theorem lookupL5_16 : candidateL (2, 1) (8, 0) = 0 := rfl
+@[simp] theorem lookupL5_17 : candidateL (2, 1) (8, 1) = 0 := rfl
+@[simp] theorem lookupL6_0 : candidateL (3, 0) (0, 0) = (92536843 / 62823024) := rfl
+@[simp] theorem lookupL6_1 : candidateL (3, 0) (0, 1) = (743119568739155757 / 190428967333473239) := rfl
+@[simp] theorem lookupL6_2 : candidateL (3, 0) (1, 0) = (-83733118088230941354408169 / 1302987804568238273808237944) := rfl
+@[simp] theorem lookupL6_3 : candidateL (3, 0) (1, 1) = (2823000604052449600214757990764204838900 / 6721449777766978436695925744481937813681) := rfl
+@[simp] theorem lookupL6_4 : candidateL (3, 0) (2, 0) = (-724954417732866886076210433783294011279894607541 / 448102298574175443998927428803681881066946576426) := rfl
+@[simp] theorem lookupL6_5 : candidateL (3, 0) (2, 1) = (-163172485607501282242668376169261146521014712647662969147700 / 65869033668542221995646422167171036227469910104492467412231) := rfl
+@[simp] theorem lookupL6_6 : candidateL (3, 0) (3, 0) = 1 := rfl
+@[simp] theorem lookupL6_7 : candidateL (3, 0) (3, 1) = 0 := rfl
+@[simp] theorem lookupL6_8 : candidateL (3, 0) (4, 0) = 0 := rfl
+@[simp] theorem lookupL6_9 : candidateL (3, 0) (4, 1) = 0 := rfl
+@[simp] theorem lookupL6_10 : candidateL (3, 0) (5, 0) = 0 := rfl
+@[simp] theorem lookupL6_11 : candidateL (3, 0) (5, 1) = 0 := rfl
+@[simp] theorem lookupL6_12 : candidateL (3, 0) (6, 0) = 0 := rfl
+@[simp] theorem lookupL6_13 : candidateL (3, 0) (6, 1) = 0 := rfl
+@[simp] theorem lookupL6_14 : candidateL (3, 0) (7, 0) = 0 := rfl
+@[simp] theorem lookupL6_15 : candidateL (3, 0) (7, 1) = 0 := rfl
+@[simp] theorem lookupL6_16 : candidateL (3, 0) (8, 0) = 0 := rfl
+@[simp] theorem lookupL6_17 : candidateL (3, 0) (8, 1) = 0 := rfl
+@[simp] theorem lookupL7_0 : candidateL (3, 1) (0, 0) = (-124028803 / 698033600) := rfl
+@[simp] theorem lookupL7_1 : candidateL (3, 1) (0, 1) = (-8437344794015103 / 108816552761984708) := rfl
+@[simp] theorem lookupL7_2 : candidateL (3, 1) (1, 0) = (2417948090808234153973173307 / 5211951218272953095232951776) := rfl
+@[simp] theorem lookupL7_3 : candidateL (3, 1) (1, 1) = (-142474993964559683921568128426076575577 / 292236946859433845073735901933997296247) := rfl
+@[simp] theorem lookupL7_4 : candidateL (3, 1) (2, 0) = (-16269519952980867859092821762967215959052001870751 / 44810229857417544399892742880368188106694657642600) := rfl
+@[simp] theorem lookupL7_5 : candidateL (3, 1) (2, 1) = (-41965042771402772771055418794502223561197161433541091303893 / 65869033668542221995646422167171036227469910104492467412231) := rfl
+@[simp] theorem lookupL7_6 : candidateL (3, 1) (3, 0) = (50432145120382814198867744648850495756723479847599740386751641589611 / 485835036986650274709960851496810564442452239396373714837208429089200) := rfl
+@[simp] theorem lookupL7_7 : candidateL (3, 1) (3, 1) = 1 := rfl
+@[simp] theorem lookupL7_8 : candidateL (3, 1) (4, 0) = 0 := rfl
+@[simp] theorem lookupL7_9 : candidateL (3, 1) (4, 1) = 0 := rfl
+@[simp] theorem lookupL7_10 : candidateL (3, 1) (5, 0) = 0 := rfl
+@[simp] theorem lookupL7_11 : candidateL (3, 1) (5, 1) = 0 := rfl
+@[simp] theorem lookupL7_12 : candidateL (3, 1) (6, 0) = 0 := rfl
+@[simp] theorem lookupL7_13 : candidateL (3, 1) (6, 1) = 0 := rfl
+@[simp] theorem lookupL7_14 : candidateL (3, 1) (7, 0) = 0 := rfl
+@[simp] theorem lookupL7_15 : candidateL (3, 1) (7, 1) = 0 := rfl
+@[simp] theorem lookupL7_16 : candidateL (3, 1) (8, 0) = 0 := rfl
+@[simp] theorem lookupL7_17 : candidateL (3, 1) (8, 1) = 0 := rfl
+@[simp] theorem lookupL8_0 : candidateL (4, 0) (0, 0) = (-8845567 / 20941008) := rfl
+@[simp] theorem lookupL8_1 : candidateL (4, 0) (0, 1) = (-243400013445212775 / 190428967333473239) := rfl
+@[simp] theorem lookupL8_2 : candidateL (4, 0) (1, 0) = (1556991165555255787054259125 / 1302987804568238273808237944) := rfl
+@[simp] theorem lookupL8_3 : candidateL (4, 0) (1, 1) = (24585203534634032204753847046591582266300 / 6721449777766978436695925744481937813681) := rfl
+@[simp] theorem lookupL8_4 : candidateL (4, 0) (2, 0) = (-3499852690308082716432036028695889786791376760 / 74683716429029240666487904800613646844491096071) := rfl
+@[simp] theorem lookupL8_5 : candidateL (4, 0) (2, 1) = (21037800280369827952875905749534409040475984608511477074000 / 65869033668542221995646422167171036227469910104492467412231) := rfl
+@[simp] theorem lookupL8_6 : candidateL (4, 0) (3, 0) = (-8106497734131061821003322441470422724452164062584768874087472627981 / 4858350369866502747099608514968105644424522393963737148372084290892) := rfl
+@[simp] theorem lookupL8_7 : candidateL (4, 0) (3, 1) = (-2274286355624583231179177970013046208176038957626780446549864991916084618023100 / 838744375740694428906995237567530808186171866983508167028682545534222529193009) := rfl
+@[simp] theorem lookupL8_8 : candidateL (4, 0) (4, 0) = 1 := rfl
+@[simp] theorem lookupL8_9 : candidateL (4, 0) (4, 1) = 0 := rfl
+@[simp] theorem lookupL8_10 : candidateL (4, 0) (5, 0) = 0 := rfl
+@[simp] theorem lookupL8_11 : candidateL (4, 0) (5, 1) = 0 := rfl
+@[simp] theorem lookupL8_12 : candidateL (4, 0) (6, 0) = 0 := rfl
+@[simp] theorem lookupL8_13 : candidateL (4, 0) (6, 1) = 0 := rfl
+@[simp] theorem lookupL8_14 : candidateL (4, 0) (7, 0) = 0 := rfl
+@[simp] theorem lookupL8_15 : candidateL (4, 0) (7, 1) = 0 := rfl
+@[simp] theorem lookupL8_16 : candidateL (4, 0) (8, 0) = 0 := rfl
+@[simp] theorem lookupL8_17 : candidateL (4, 0) (8, 1) = 0 := rfl
+@[simp] theorem lookupL9_0 : candidateL (4, 1) (0, 0) = (-1211312239 / 3141151200) := rfl
+@[simp] theorem lookupL9_1 : candidateL (4, 1) (0, 1) = (-190872560095543245 / 380857934666946478) := rfl
+@[simp] theorem lookupL9_2 : candidateL (4, 1) (1, 0) = (-633077994420095089542704325 / 2605975609136476547616475888) := rfl
+@[simp] theorem lookupL9_3 : candidateL (4, 1) (1, 1) = (-2546156315638822409297601589280379646494 / 6721449777766978436695925744481937813681) := rfl
+@[simp] theorem lookupL9_4 : candidateL (4, 1) (2, 0) = (2453407023289016094352770352858727779344538712974 / 5601278732177193049986592860046023513336832205325) := rfl
+@[simp] theorem lookupL9_5 : candidateL (4, 1) (2, 1) = (-48882557685236621680188489536607676144678590890372953133144 / 65869033668542221995646422167171036227469910104492467412231) := rfl
+@[simp] theorem lookupL9_6 : candidateL (4, 1) (3, 0) = (-90945106379747286780315468699648712966081204172543147692267126286039 / 242917518493325137354980425748405282221226119698186857418604214544600) := rfl
+@[simp] theorem lookupL9_7 : candidateL (4, 1) (3, 1) = (-229904638548730391168251614088480670938995618916480754830657458166219816647694 / 279581458580231476302331745855843602728723955661169389009560848511407509731003) := rfl
+@[simp] theorem lookupL9_8 : candidateL (4, 1) (4, 0) = (121511712105653896408387859101592427128606283197491602913081433678411096121272804900619 / 988219711897363885484886801152537276089714047774104176974509615742075119693170179789500) := rfl
+@[simp] theorem lookupL9_9 : candidateL (4, 1) (4, 1) = 1 := rfl
+@[simp] theorem lookupL9_10 : candidateL (4, 1) (5, 0) = 0 := rfl
+@[simp] theorem lookupL9_11 : candidateL (4, 1) (5, 1) = 0 := rfl
+@[simp] theorem lookupL9_12 : candidateL (4, 1) (6, 0) = 0 := rfl
+@[simp] theorem lookupL9_13 : candidateL (4, 1) (6, 1) = 0 := rfl
+@[simp] theorem lookupL9_14 : candidateL (4, 1) (7, 0) = 0 := rfl
+@[simp] theorem lookupL9_15 : candidateL (4, 1) (7, 1) = 0 := rfl
+@[simp] theorem lookupL9_16 : candidateL (4, 1) (8, 0) = 0 := rfl
+@[simp] theorem lookupL9_17 : candidateL (4, 1) (8, 1) = 0 := rfl
+@[simp] theorem lookupL10_0 : candidateL (5, 0) (0, 0) = (4392325 / 62823024) := rfl
+@[simp] theorem lookupL10_1 : candidateL (5, 0) (0, 1) = (-14665241175446625 / 190428967333473239) := rfl
+@[simp] theorem lookupL10_2 : candidateL (5, 0) (1, 0) = (-99807103636984944810753625 / 1302987804568238273808237944) := rfl
+@[simp] theorem lookupL10_3 : candidateL (5, 0) (1, 1) = (-2615170858576470559801161918099821909100 / 6721449777766978436695925744481937813681) := rfl
+@[simp] theorem lookupL10_4 : candidateL (5, 0) (2, 0) = (337380798343462547046914829893823733618756396091 / 224051149287087721999463714401840940533473288213) := rfl
+@[simp] theorem lookupL10_5 : candidateL (5, 0) (2, 1) = (324003735617965461574145083047267676469428107383071700610800 / 65869033668542221995646422167171036227469910104492467412231) := rfl
+@[simp] theorem lookupL10_6 : candidateL (5, 0) (3, 0) = (13313182914600450624608285681162310604331587541813396895229779507 / 2429175184933251373549804257484052822212261196981868574186042145446) := rfl
+@[simp] theorem lookupL10_7 : candidateL (5, 0) (3, 1) = (1336268148934117015484786542777738982823959832699250272539512768047930875647000 / 838744375740694428906995237567530808186171866983508167028682545534222529193009) := rfl
+@[simp] theorem lookupL10_8 : candidateL (5, 0) (4, 0) = (-24962007135086194767166002125023217773827823633287221258447759805847120438112038186859 / 15811515390357822167758188818440596417435424764385666831592153851873201915090722876632) := rfl
+@[simp] theorem lookupL10_9 : candidateL (5, 0) (4, 1) = (-167492241806098309788099363005047158061697158303251898025775586203897385161706093614675103475375 / 118348072644119435826792928569303740718232098121432021917590245351059446692765740312203408214164) := rfl
+@[simp] theorem lookupL10_10 : candidateL (5, 0) (5, 0) = 1 := rfl
+@[simp] theorem lookupL10_11 : candidateL (5, 0) (5, 1) = 0 := rfl
+@[simp] theorem lookupL10_12 : candidateL (5, 0) (6, 0) = 0 := rfl
+@[simp] theorem lookupL10_13 : candidateL (5, 0) (6, 1) = 0 := rfl
+@[simp] theorem lookupL10_14 : candidateL (5, 0) (7, 0) = 0 := rfl
+@[simp] theorem lookupL10_15 : candidateL (5, 0) (7, 1) = 0 := rfl
+@[simp] theorem lookupL10_16 : candidateL (5, 0) (8, 0) = 0 := rfl
+@[simp] theorem lookupL10_17 : candidateL (5, 0) (8, 1) = 0 := rfl
+@[simp] theorem lookupL11_0 : candidateL (5, 1) (0, 0) = (1339159969 / 3141151200) := rfl
+@[simp] theorem lookupL11_1 : candidateL (5, 1) (0, 1) = (48339523183860813 / 54408276380992354) := rfl
+@[simp] theorem lookupL11_2 : candidateL (5, 1) (1, 0) = (-720098032034458365102788057 / 2605975609136476547616475888) := rfl
+@[simp] theorem lookupL11_3 : candidateL (5, 1) (1, 1) = (-2480339041285368508738242945752950980726 / 6721449777766978436695925744481937813681) := rfl
+@[simp] theorem lookupL11_4 : candidateL (5, 1) (2, 0) = (-250609984280029331222981078486821085168826342991 / 5601278732177193049986592860046023513336832205325) := rfl
+@[simp] theorem lookupL11_5 : candidateL (5, 1) (2, 1) = (-13762423938768579194487804784648506418602459739151881649104 / 65869033668542221995646422167171036227469910104492467412231) := rfl
+@[simp] theorem lookupL11_6 : candidateL (5, 1) (3, 0) = (252968155459302856706709806657238105247916249480645268918403394798827 / 485835036986650274709960851496810564442452239396373714837208429089200) := rfl
+@[simp] theorem lookupL11_7 : candidateL (5, 1) (3, 1) = (-149468137397025282754241052741972796723540382343004380162012613798111364004629 / 279581458580231476302331745855843602728723955661169389009560848511407509731003) := rfl
+@[simp] theorem lookupL11_8 : candidateL (5, 1) (4, 0) = (-47778668153793270167787731889493881424172641500994093095436671356940076386077002332447 / 158115153903578221677581888184405964174354247643856668315921538518732019150907228766320) := rfl
+@[simp] theorem lookupL11_9 : candidateL (5, 1) (4, 1) = (-123390617280627799507150868150603277193207520293503976214955744302347124166865404972214270076025 / 236696145288238871653585857138607481436464196242864043835180490702118893385531480624406816428328) := rfl
+@[simp] theorem lookupL11_10 : candidateL (5, 1) (5, 0) = (3232488651322834073446799064975289808886763153895269542652746039645577840794043530377680538409862704623 / 52762976118317009105558938720833994573324952194653896550142686022970086972479066495312958485713571445578) := rfl
+@[simp] theorem lookupL11_11 : candidateL (5, 1) (5, 1) = 1 := rfl
+@[simp] theorem lookupL11_12 : candidateL (5, 1) (6, 0) = 0 := rfl
+@[simp] theorem lookupL11_13 : candidateL (5, 1) (6, 1) = 0 := rfl
+@[simp] theorem lookupL11_14 : candidateL (5, 1) (7, 0) = 0 := rfl
+@[simp] theorem lookupL11_15 : candidateL (5, 1) (7, 1) = 0 := rfl
+@[simp] theorem lookupL11_16 : candidateL (5, 1) (8, 0) = 0 := rfl
+@[simp] theorem lookupL11_17 : candidateL (5, 1) (8, 1) = 0 := rfl
+@[simp] theorem lookupL12_0 : candidateL (6, 0) (0, 0) = (-4216909 / 10470504) := rfl
+@[simp] theorem lookupL12_1 : candidateL (6, 0) (0, 1) = (76334148593036550 / 190428967333473239) := rfl
+@[simp] theorem lookupL12_2 : candidateL (6, 0) (1, 0) = (85135150728259342923123825 / 651493902284119136904118972) := rfl
+@[simp] theorem lookupL12_3 : candidateL (6, 0) (1, 1) = (-1467263404647722854004589539342102327400 / 6721449777766978436695925744481937813681) := rfl
+@[simp] theorem lookupL12_4 : candidateL (6, 0) (2, 0) = (-8002352938858313259533425817625022740981144334 / 13179479369828689529380218494225937678439605189) := rfl
+@[simp] theorem lookupL12_5 : candidateL (6, 0) (2, 1) = (-93603147991846953111794478899398657193313441573868764144800 / 65869033668542221995646422167171036227469910104492467412231) := rfl
+@[simp] theorem lookupL12_6 : candidateL (6, 0) (3, 0) = (7196400087203032921392612173472870274028665916935750876039046301713 / 4858350369866502747099608514968105644424522393963737148372084290892) := rfl
+@[simp] theorem lookupL12_7 : candidateL (6, 0) (3, 1) = (3502237810127278358444813234912304883541874371491327732657895552065684833339500 / 838744375740694428906995237567530808186171866983508167028682545534222529193009) := rfl
+@[simp] theorem lookupL12_8 : candidateL (6, 0) (4, 0) = (-13183745245021130597753272888365194061768715040668726505846154269779395994774906188811 / 39528788475894555419395472046101491043588561910964167078980384629683004787726807191580) := rfl
+@[simp] theorem lookupL12_9 : candidateL (6, 0) (4, 1) = (-159446832467252329545137119398103134387235710316624255641724957147889923464911131450125038599975 / 177522108966179153740189392853955611077348147182148032876385368026589170039148610468305112321246) := rfl
+@[simp] theorem lookupL12_10 : candidateL (6, 0) (5, 0) = (-35980973754329519946875807613819132530625542200119638856116649423256961270090212899144456415409703574474 / 26381488059158504552779469360416997286662476097326948275071343011485043486239533247656479242856785722789) := rfl
+@[simp] theorem lookupL12_11 : candidateL (6, 0) (5, 1) = (-74753420782615256236791655847726767400450804414256278671576851778671923013399147974556320623090002600902289919628 / 55570545143829581623307177578535490201088758693724170703307612500326834978248353847358029735849513324630026642217) := rfl
+@[simp] theorem lookupL12_12 : candidateL (6, 0) (6, 0) = 1 := rfl
+@[simp] theorem lookupL12_13 : candidateL (6, 0) (6, 1) = 0 := rfl
+@[simp] theorem lookupL12_14 : candidateL (6, 0) (7, 0) = 0 := rfl
+@[simp] theorem lookupL12_15 : candidateL (6, 0) (7, 1) = 0 := rfl
+@[simp] theorem lookupL12_16 : candidateL (6, 0) (8, 0) = 0 := rfl
+@[simp] theorem lookupL12_17 : candidateL (6, 0) (8, 1) = 0 := rfl
+@[simp] theorem lookupL13_0 : candidateL (6, 1) (0, 0) = (13711051 / 571118400) := rfl
+@[simp] theorem lookupL13_1 : candidateL (6, 1) (0, 1) = (222904406985243027 / 761715869333892956) := rfl
+@[simp] theorem lookupL13_2 : candidateL (6, 1) (1, 0) = (2129194882699576061062046751 / 5211951218272953095232951776) := rfl
+@[simp] theorem lookupL13_3 : candidateL (6, 1) (1, 1) = (4467864673726647372879639008748959143053 / 6721449777766978436695925744481937813681) := rfl
+@[simp] theorem lookupL13_4 : candidateL (6, 1) (2, 0) = (-6261805741916191572991013686444099810734563644933 / 22405114928708772199946371440184094053347328821300) := rfl
+@[simp] theorem lookupL13_5 : candidateL (6, 1) (2, 1) = (-32349702554863989006386480533440926090545345071438243716038 / 65869033668542221995646422167171036227469910104492467412231) := rfl
+@[simp] theorem lookupL13_6 : candidateL (6, 1) (3, 0) = (-1490226482100631446193727279062314614467037967815937220626353724667 / 30364689811665642169372553218550660277653264962273357177325526818075) := rfl
+@[simp] theorem lookupL13_7 : candidateL (6, 1) (3, 1) = (-136236410397144513471113448422582112084568242945558609069765856290943841423456 / 279581458580231476302331745855843602728723955661169389009560848511407509731003) := rfl
+@[simp] theorem lookupL13_8 : candidateL (6, 1) (4, 0) = (1968401149449314428774590614737995582290752056976189949165182823942475137386827406359141 / 3952878847589455541939547204610149104358856191096416707898038462968300478772680719158000) := rfl
+@[simp] theorem lookupL13_9 : candidateL (6, 1) (4, 1) = (-854060297231362008525152274230510697851849594486821307511159595598341409680638421832089721280031 / 710088435864716614960757571415822444309392588728592131505541472106356680156594441873220449284984) := rfl
+@[simp] theorem lookupL13_10 : candidateL (6, 1) (5, 0) = (-44916486793306791299356521411911716674103072020227674892959577127149250971144663639260944266248642592851 / 188439200422560746805567638288692837761874829266621059107652450082036024901710951768974851734691326591350) := rfl
+@[simp] theorem lookupL13_11 : candidateL (6, 1) (5, 1) = (-56795305442599700735314956825174194447591777234888313919629779933876111911120214731285462723186362725456342962999 / 55570545143829581623307177578535490201088758693724170703307612500326834978248353847358029735849513324630026642217) := rfl
+@[simp] theorem lookupL13_12 : candidateL (6, 1) (6, 0) = (40701573702065380009261431204718703956468942490827166973385621635900372677515303917956057523035396146846510743871816387583 / 557385345094748654085537531467457663471004297899588614774535164416839519763838224258082526704096247802902821689491771913508) := rfl
+@[simp] theorem lookupL13_13 : candidateL (6, 1) (6, 1) = 1 := rfl
+@[simp] theorem lookupL13_14 : candidateL (6, 1) (7, 0) = 0 := rfl
+@[simp] theorem lookupL13_15 : candidateL (6, 1) (7, 1) = 0 := rfl
+@[simp] theorem lookupL13_16 : candidateL (6, 1) (8, 0) = 0 := rfl
+@[simp] theorem lookupL13_17 : candidateL (6, 1) (8, 1) = 0 := rfl
+@[simp] theorem lookupL14_0 : candidateL (7, 0) (0, 0) = (-2502637 / 7852878) := rfl
+@[simp] theorem lookupL14_1 : candidateL (7, 0) (0, 1) = (-226074711305200200 / 190428967333473239) := rfl
+@[simp] theorem lookupL14_2 : candidateL (7, 0) (1, 0) = (-172487760385770497604924825 / 162873475571029784226029743) := rfl
+@[simp] theorem lookupL14_3 : candidateL (7, 0) (1, 1) = (-5664809211354571063501313227491278364000 / 6721449777766978436695925744481937813681) := rfl
+@[simp] theorem lookupL14_4 : candidateL (7, 0) (2, 0) = (-84571448628755703629547237683434362495540472793 / 149367432858058481332975809601227293688982192142) := rfl
+@[simp] theorem lookupL14_5 : candidateL (7, 0) (2, 1) = (-87243189810913506385287125495940223771753346073789431378700 / 65869033668542221995646422167171036227469910104492467412231) := rfl
+@[simp] theorem lookupL14_6 : candidateL (7, 0) (3, 0) = (-4617808345740090101912606343955242516395573718101305770742301667079 / 4858350369866502747099608514968105644424522393963737148372084290892) := rfl
+@[simp] theorem lookupL14_7 : candidateL (7, 0) (3, 1) = (-2335059512493367249455016077090953953816269012213797011155087241555834503619700 / 838744375740694428906995237567530808186171866983508167028682545534222529193009) := rfl
+@[simp] theorem lookupL14_8 : candidateL (7, 0) (4, 0) = (22849457754899776945101858031630002713964868768705466624143337133677673731988094730593 / 15811515390357822167758188818440596417435424764385666831592153851873201915090722876632) := rfl
+@[simp] theorem lookupL14_9 : candidateL (7, 0) (4, 1) = (1363543171882103330929639426709457872679320894850207959660842366324126347455872359669349093665875 / 355044217932358307480378785707911222154696294364296065752770736053178340078297220936610224642492) := rfl
+@[simp] theorem lookupL14_10 : candidateL (7, 0) (5, 0) = (-2004190120156576845269858817283579921724220278962570008249600131599559366733079225197451917171238742483 / 26381488059158504552779469360416997286662476097326948275071343011485043486239533247656479242856785722789) := rfl
+@[simp] theorem lookupL14_11 : candidateL (7, 0) (5, 1) = (32926853653279183445075652732024858292550542214248035922713806819670891609198310593451016849015380829989352753594 / 55570545143829581623307177578535490201088758693724170703307612500326834978248353847358029735849513324630026642217) := rfl
+@[simp] theorem lookupL14_12 : candidateL (7, 0) (6, 0) = (-412582634250251773409427516729166730207859425495074526657155906057239410274768240851908132269772959506085418204545038020567 / 278692672547374327042768765733728831735502148949794307387267582208419759881919112129041263352048123901451410844745885956754) := rfl
+@[simp] theorem lookupL14_13 : candidateL (7, 0) (6, 1) = (528061731257838640138358824298395037866357963611218903592903273480631777144961975173948108396337144799385883192857041010635147579900 / 4526612405321093295813356636943641788237338895353062156753182098693064229713783418964730609637089091067509677192763418578463413405981) := rfl
+@[simp] theorem lookupL14_14 : candidateL (7, 0) (7, 0) = 1 := rfl
+@[simp] theorem lookupL14_15 : candidateL (7, 0) (7, 1) = 0 := rfl
+@[simp] theorem lookupL14_16 : candidateL (7, 0) (8, 0) = 0 := rfl
+@[simp] theorem lookupL14_17 : candidateL (7, 0) (8, 1) = 0 := rfl
+@[simp] theorem lookupL15_0 : candidateL (7, 1) (0, 0) = (200012567 / 3141151200) := rfl
+@[simp] theorem lookupL15_1 : candidateL (7, 1) (0, 1) = (83537369191700997 / 380857934666946478) := rfl
+@[simp] theorem lookupL15_2 : candidateL (7, 1) (1, 0) = (-10561979292360574575876787 / 153292682890380973389204464) := rfl
+@[simp] theorem lookupL15_3 : candidateL (7, 1) (1, 1) = (721831359009484724688621418378246612782 / 6721449777766978436695925744481937813681) := rfl
+@[simp] theorem lookupL15_4 : candidateL (7, 1) (2, 0) = (3293444885731448271579893841356609344872939843649 / 11202557464354386099973185720092047026673664410650) := rfl
+@[simp] theorem lookupL15_5 : candidateL (7, 1) (2, 1) = (92173515569931112262935190300618104136460139239716064832628 / 65869033668542221995646422167171036227469910104492467412231) := rfl
+@[simp] theorem lookupL15_6 : candidateL (7, 1) (3, 0) = (-56297081079763353254541853708811554652134098312304405755437639704817 / 121458759246662568677490212874202641110613059849093428709302107272300) := rfl
+@[simp] theorem lookupL15_7 : candidateL (7, 1) (3, 1) = (37256334869788487631504361795926879044985426231533121513924886744440061252 / 742909101630375933487152557632888226914235488913647623586078428285405251721) := rfl
+@[simp] theorem lookupL15_8 : candidateL (7, 1) (4, 0) = (-101881653351803980432685160614117128313331045426618126516546549545800691329775269421603 / 988219711897363885484886801152537276089714047774104176974509615742075119693170179789500) := rfl
+@[simp] theorem lookupL15_9 : candidateL (7, 1) (4, 1) = (10764120639085402883687702116837554506275995171042624097079712931080372588769679239496692286558 / 29587018161029858956698232142325935179558024530358005479397561337764861673191435078050852053541) := rfl
+@[simp] theorem lookupL15_10 : candidateL (7, 1) (5, 0) = (30613362711718397245346419537440635417073731463802028011651767259823994738714630691618507926073104955164 / 73281911275440290424387414890047214685173544714797078541864841698569565239554259021267997896824404785525) := rfl
+@[simp] theorem lookupL15_11 : candidateL (7, 1) (5, 1) = (-41169138227813622197463312586143084788484301211370096798208833592142653364377796886080089045624133138514205912956 / 55570545143829581623307177578535490201088758693724170703307612500326834978248353847358029735849513324630026642217) := rfl
+@[simp] theorem lookupL15_12 : candidateL (7, 1) (6, 0) = (-132326499832877464319504532047790500324779664834150651638008144543388035727543360945384103352194030590073155635965191224555 / 557385345094748654085537531467457663471004297899588614774535164416839519763838224258082526704096247802902821689491771913508) := rfl
+@[simp] theorem lookupL15_13 : candidateL (7, 1) (6, 1) = (-3489860267430188918864748431161962658759885170196877014604663220647063203049861153909607772999229210728022455274209418159614638455141 / 4526612405321093295813356636943641788237338895353062156753182098693064229713783418964730609637089091067509677192763418578463413405981) := rfl
+@[simp] theorem lookupL15_14 : candidateL (7, 1) (7, 0) = (3673406774093111478493144174714748339629376276109001224643826272859873045097911679866525136143264867213812209075155969208258813347193421759313 / 13509441115378131503724478109970093793648641077838952075623982409933999561411376603710175394049181215078835116799978329379177892804352556142600) := rfl
+@[simp] theorem lookupL15_15 : candidateL (7, 1) (7, 1) = 1 := rfl
+@[simp] theorem lookupL15_16 : candidateL (7, 1) (8, 0) = 0 := rfl
+@[simp] theorem lookupL15_17 : candidateL (7, 1) (8, 1) = 0 := rfl
+@[simp] theorem lookupL16_0 : candidateL (8, 0) (0, 0) = (769927 / 7852878) := rfl
+@[simp] theorem lookupL16_1 : candidateL (8, 0) (0, 1) = (-228517497335591400 / 190428967333473239) := rfl
+@[simp] theorem lookupL16_2 : candidateL (8, 0) (1, 0) = (-3842782689885182547094775 / 325746951142059568452059486) := rfl
+@[simp] theorem lookupL16_3 : candidateL (8, 0) (1, 1) = (4486550295508377504707125598286238359600 / 6721449777766978436695925744481937813681) := rfl
+@[simp] theorem lookupL16_4 : candidateL (8, 0) (2, 0) = (-6271131144577738547758432530875186758293041386 / 74683716429029240666487904800613646844491096071) := rfl
+@[simp] theorem lookupL16_5 : candidateL (8, 0) (2, 1) = (33033041032842976362859862492224431589388438849680557547200 / 65869033668542221995646422167171036227469910104492467412231) := rfl
+@[simp] theorem lookupL16_6 : candidateL (8, 0) (3, 0) = (-8802900321217246426786067440932075461131215641507943508504442573 / 54588206402994412888759646235596692633983397684985810655866115628) := rfl
+@[simp] theorem lookupL16_7 : candidateL (8, 0) (3, 1) = (63932373620389732011639013366986893447228889297975197484707839929100504154700 / 279581458580231476302331745855843602728723955661169389009560848511407509731003) := rfl
+@[simp] theorem lookupL16_8 : candidateL (8, 0) (4, 0) = (-20078050431529267471248882713866433785814994709613342709067376488085419747605010439847 / 39528788475894555419395472046101491043588561910964167078980384629683004787726807191580) := rfl
+@[simp] theorem lookupL16_9 : candidateL (8, 0) (4, 1) = (40341731314688352542206357572036505647194278213051767699310301001559910091568507830025784440975 / 59174036322059717913396464284651870359116049060716010958795122675529723346382870156101704107082) := rfl
+@[simp] theorem lookupL16_10 : candidateL (8, 0) (5, 0) = (9493941720355804058117523125976125988772070014385615929199479412628356007735756406311711613858778013550 / 26381488059158504552779469360416997286662476097326948275071343011485043486239533247656479242856785722789) := rfl
+@[simp] theorem lookupL16_11 : candidateL (8, 0) (5, 1) = (156386974304962165648909754302317979809666782932218266850184541119393339699915320160071709909634978972297867265434 / 55570545143829581623307177578535490201088758693724170703307612500326834978248353847358029735849513324630026642217) := rfl
+@[simp] theorem lookupL16_12 : candidateL (8, 0) (6, 0) = (13520079116238073616704001107634802045109833013538612441519392380730024929947482277660709893534538835884373911267417935913 / 278692672547374327042768765733728831735502148949794307387267582208419759881919112129041263352048123901451410844745885956754) := rfl
+@[simp] theorem lookupL16_13 : candidateL (8, 0) (6, 1) = (-2333845497795145577373018178193017959412834275649191806471727685010796941344611252246112831670391395238347864500225909755714584007700 / 4526612405321093295813356636943641788237338895353062156753182098693064229713783418964730609637089091067509677192763418578463413405981) := rfl
+@[simp] theorem lookupL16_14 : candidateL (8, 0) (7, 0) = (-118613681488174870669333325631533659128680508023444387674134137187083458092390419563834912287231422985610783395855226165777185821708506360499 / 67547205576890657518622390549850468968243205389194760378119912049669997807056883018550876970245906075394175583999891646895889464021762780713) := rfl
+@[simp] theorem lookupL16_15 : candidateL (8, 0) (7, 1) = (-4045179443843159152656774421861239923374877147414530563421454963340453380264707178555524518188843793997152914089608346400541547150342507399993768584400 / 5735707884960982180998182711248281259477520852656839928601805095470773714985492650267855578836906101965688635782545078586244975389059108845940230728851) := rfl
+@[simp] theorem lookupL16_16 : candidateL (8, 0) (8, 0) = 1 := rfl
+@[simp] theorem lookupL16_17 : candidateL (8, 0) (8, 1) = 0 := rfl
+@[simp] theorem lookupL17_0 : candidateL (8, 1) (0, 0) = (-65210557 / 571118400) := rfl
+@[simp] theorem lookupL17_1 : candidateL (8, 1) (0, 1) = (-245915684815994853 / 761715869333892956) := rfl
+@[simp] theorem lookupL17_2 : candidateL (8, 1) (1, 0) = (686538413619978487234256431 / 5211951218272953095232951776) := rfl
+@[simp] theorem lookupL17_3 : candidateL (8, 1) (1, 1) = (4188655615463067030167138656474859968029 / 6721449777766978436695925744481937813681) := rfl
+@[simp] theorem lookupL17_4 : candidateL (8, 1) (2, 0) = (-2422731553595430068366796970958872031485574221469 / 22405114928708772199946371440184094053347328821300) := rfl
+@[simp] theorem lookupL17_5 : candidateL (8, 1) (2, 1) = (9837564736924190872165028942907705273315122255949421494466 / 65869033668542221995646422167171036227469910104492467412231) := rfl
+@[simp] theorem lookupL17_6 : candidateL (8, 1) (3, 0) = (41808026492349613565092057214333226344433719104868309293798253837551 / 121458759246662568677490212874202641110613059849093428709302107272300) := rfl
+@[simp] theorem lookupL17_7 : candidateL (8, 1) (3, 1) = (1444767128950331566315018426505723024063137465795745480763578585387373518420276 / 838744375740694428906995237567530808186171866983508167028682545534222529193009) := rfl
+@[simp] theorem lookupL17_8 : candidateL (8, 1) (4, 0) = (-2178581884217840893933943658445062253553491537254930981123350019500435256346609471619089 / 3952878847589455541939547204610149104358856191096416707898038462968300478772680719158000) := rfl
+@[simp] theorem lookupL17_9 : candidateL (8, 1) (4, 1) = (45312220597253958902434800781977203661437049194111290500874995398726786293207787348770311766133 / 236696145288238871653585857138607481436464196242864043835180490702118893385531480624406816428328) := rfl
+@[simp] theorem lookupL17_10 : candidateL (8, 1) (5, 0) = (-236074066985196038283078325718198752271594904692995445989222595422218270640797067544026680432122649281531 / 1319074402957925227638973468020849864333123804866347413753567150574252174311976662382823962142839286139450) := rfl
+@[simp] theorem lookupL17_11 : candidateL (8, 1) (5, 1) = (46952643416433822750850206808147405896547393869469823039869141439461021737884042225816654032361978972805900412354 / 55570545143829581623307177578535490201088758693724170703307612500326834978248353847358029735849513324630026642217) := rfl
+@[simp] theorem lookupL17_12 : candidateL (8, 1) (6, 0) = (235609294412113153179687066424784092385750423572789174768010723755104751008409517473337433319709990146356748205482367084343 / 557385345094748654085537531467457663471004297899588614774535164416839519763838224258082526704096247802902821689491771913508) := rfl
+@[simp] theorem lookupL17_13 : candidateL (8, 1) (6, 1) = (-3693880681030803636773866968676328317441421854247156170196767218950518638917018571735365251574597621151453577305266414446269974387127 / 4526612405321093295813356636943641788237338895353062156753182098693064229713783418964730609637089091067509677192763418578463413405981) := rfl
+@[simp] theorem lookupL17_14 : candidateL (8, 1) (7, 0) = (-6603194525994323672483065347606541527468753177801397580359515128904541971192418646925122383527481577471876506625737887346700812129153657113603 / 13509441115378131503724478109970093793648641077838952075623982409933999561411376603710175394049181215078835116799978329379177892804352556142600) := rfl
+@[simp] theorem lookupL17_15 : candidateL (8, 1) (7, 1) = (-2092808675563536506467643749057674097293228759161807760224882778899845177019385914078888977010936952273337289869530889153338530178837745068329414332827 / 1911902628320327393666060903749427086492506950885613309533935031823591238328497550089285192945635367321896211927515026195414991796353036281980076909617) := rfl
+@[simp] theorem lookupL17_16 : candidateL (8, 1) (8, 0) = (-1040371402907064281173884719284611429647712904313540018917148354718447649983411253370019031516951532764455678432553821677656895546058747244758616192017853485 / 140473341187578124119055516314055611792776344499202393807835568149039974788616756137500153558032028216581512154495894038509459314033891781439026481948995915036) := rfl
+@[simp] theorem lookupL17_17 : candidateL (8, 1) (8, 1) = 1 := rfl
+@[simp] theorem lookupD0 : candidateD (0, 0) = (3926439 / 1250000000) := rfl
+@[simp] theorem lookupD1 : candidateD (0, 1) = (190428967333473239 / 282703608000000000000) := rfl
+@[simp] theorem lookupD2 : candidateD (1, 0) = (162873475571029784226029743 / 47607241833368309750000000000) := rfl
+@[simp] theorem lookupD3 : candidateD (1, 1) = (6721449777766978436695925744481937813681 / 9381512192891315571419313196800000000000000) := rfl
+@[simp] theorem lookupD4 : candidateD (2, 0) = (224051149287087721999463714401840940533473288213 / 67214497777669784366959257444819378136810000000000) := rfl
+@[simp] theorem lookupD5 : candidateD (2, 1) = (65869033668542221995646422167171036227469910104492467412231 / 89620459714835088799785485760736376213389315285200000000000000) := rfl
+@[simp] theorem lookupD6 : candidateD (3, 0) = (1214587592466625686774902128742026411106130598490934287093021072723 / 329345168342711109978232110835855181137349550522462337061155000000000) := rfl
+@[simp] theorem lookupD7 : candidateD (3, 1) = (838744375740694428906995237567530808186171866983508167028682545534222529193009 / 971670073973300549419921702993621128884904478792747429674416858178400000000000000) := rfl
+@[simp] theorem lookupD8 : candidateD (4, 0) = (1976439423794727770969773602305074552179428095548208353949019231484150239386340359579 / 419372187870347214453497618783765404093085933491754083514341272767111264596504500000000) := rfl
+@[simp] theorem lookupD9 : candidateD (4, 1) = (88761054483089576870094696426977805538674073591074016438192684013294585019574305234152556160623 / 123527463987170485685610850144067159511214255971763022121813701967759389961646272473687500000000000) := rfl
+@[simp] theorem lookupD10 : candidateD (5, 0) = (26381488059158504552779469360416997286662476097326948275071343011485043486239533247656479242856785722789 / 9467845811529554866143434285544299257458567849714561753407219628084755735421259224976272657133120000000000) := rfl
+@[simp] theorem lookupD11 : candidateD (5, 1) = (55570545143829581623307177578535490201088758693724170703307612500326834978248353847358029735849513324630026642217 / 105525952236634018211117877441667989146649904389307793100285372045940173944958132990625916971427142891156000000000000) := rfl
+@[simp] theorem lookupD12 : candidateD (6, 0) = (139346336273687163521384382866864415867751074474897153693633791104209879940959556064520631676024061950725705422372942978377 / 41677908857872186217480383183901617650816569020293128027480709375245126233686265385518522301887134993472519981662750000000000) := rfl
+@[simp] theorem lookupD13 : candidateD (6, 1) = (4526612405321093295813356636943641788237338895353062156753182098693064229713783418964730609637089091067509677192763418578463413405981 / 13934633627368716352138438286686441586775107447489715369363379110420987994095955606452063167602406195072570542237294297837700000000000000) := rfl
+@[simp] theorem lookupD14 : candidateD (7, 0) = (67547205576890657518622390549850468968243205389194760378119912049669997807056883018550876970245906075394175583999891646895889464021762780713 / 45266124053210932958133566369436417882373388953530621567531820986930642297137834189647306096370890910675096771927634185784634134059810000000000) := rfl
+@[simp] theorem lookupD15 : candidateD (7, 1) = (5735707884960982180998182711248281259477520852656839928601805095470773714985492650267855578836906101965688635782545078586244975389059108845940230728851 / 27018882230756263007448956219940187587297282155677904151247964819867999122822753207420350788098362430157670233599956658758355785608705112285200000000000000) := rfl
+@[simp] theorem lookupD16 : candidateD (8, 0) = (35118335296894531029763879078513902948194086124800598451958892037259993697154189034375038389508007054145378038623973509627364828508472945359756620487248978759 / 57357078849609821809981827112482812594775208526568399286018050954707737149854926502678555788369061019656886357825450785862449753890591088459402307288510000000000) := rfl
+@[simp] theorem lookupD17 : candidateD (8, 1) = (13357145706969086798588897470227139370323088218660754155593090046820833945729089454752609859636457590159028805997542712938433893719694871964574806441825530286315951801 / 70236670593789062059527758157027805896388172249601196903917784074519987394308378068750076779016014108290756077247947019254729657016945890719513240974497957518000000000000) := rfl
+@[simp] theorem finMk1_0 (h : 0 < 1) : (⟨0, h⟩ : Fin 1) = 0 := rfl
+@[simp] theorem finSucc1_0 : Fin.succ (0 : Fin 1) = (1 : Fin 2) := rfl
+@[simp] theorem finMk2_0 (h : 0 < 2) : (⟨0, h⟩ : Fin 2) = 0 := rfl
+@[simp] theorem finSucc2_0 : Fin.succ (0 : Fin 2) = (1 : Fin 3) := rfl
+@[simp] theorem finMk2_1 (h : 1 < 2) : (⟨1, h⟩ : Fin 2) = 1 := rfl
+@[simp] theorem finSucc2_1 : Fin.succ (1 : Fin 2) = (2 : Fin 3) := rfl
+@[simp] theorem finMk3_0 (h : 0 < 3) : (⟨0, h⟩ : Fin 3) = 0 := rfl
+@[simp] theorem finSucc3_0 : Fin.succ (0 : Fin 3) = (1 : Fin 4) := rfl
+@[simp] theorem finMk3_1 (h : 1 < 3) : (⟨1, h⟩ : Fin 3) = 1 := rfl
+@[simp] theorem finSucc3_1 : Fin.succ (1 : Fin 3) = (2 : Fin 4) := rfl
+@[simp] theorem finMk3_2 (h : 2 < 3) : (⟨2, h⟩ : Fin 3) = 2 := rfl
+@[simp] theorem finSucc3_2 : Fin.succ (2 : Fin 3) = (3 : Fin 4) := rfl
+@[simp] theorem finMk4_0 (h : 0 < 4) : (⟨0, h⟩ : Fin 4) = 0 := rfl
+@[simp] theorem finSucc4_0 : Fin.succ (0 : Fin 4) = (1 : Fin 5) := rfl
+@[simp] theorem finMk4_1 (h : 1 < 4) : (⟨1, h⟩ : Fin 4) = 1 := rfl
+@[simp] theorem finSucc4_1 : Fin.succ (1 : Fin 4) = (2 : Fin 5) := rfl
+@[simp] theorem finMk4_2 (h : 2 < 4) : (⟨2, h⟩ : Fin 4) = 2 := rfl
+@[simp] theorem finSucc4_2 : Fin.succ (2 : Fin 4) = (3 : Fin 5) := rfl
+@[simp] theorem finMk4_3 (h : 3 < 4) : (⟨3, h⟩ : Fin 4) = 3 := rfl
+@[simp] theorem finSucc4_3 : Fin.succ (3 : Fin 4) = (4 : Fin 5) := rfl
+@[simp] theorem finMk5_0 (h : 0 < 5) : (⟨0, h⟩ : Fin 5) = 0 := rfl
+@[simp] theorem finSucc5_0 : Fin.succ (0 : Fin 5) = (1 : Fin 6) := rfl
+@[simp] theorem finMk5_1 (h : 1 < 5) : (⟨1, h⟩ : Fin 5) = 1 := rfl
+@[simp] theorem finSucc5_1 : Fin.succ (1 : Fin 5) = (2 : Fin 6) := rfl
+@[simp] theorem finMk5_2 (h : 2 < 5) : (⟨2, h⟩ : Fin 5) = 2 := rfl
+@[simp] theorem finSucc5_2 : Fin.succ (2 : Fin 5) = (3 : Fin 6) := rfl
+@[simp] theorem finMk5_3 (h : 3 < 5) : (⟨3, h⟩ : Fin 5) = 3 := rfl
+@[simp] theorem finSucc5_3 : Fin.succ (3 : Fin 5) = (4 : Fin 6) := rfl
+@[simp] theorem finMk5_4 (h : 4 < 5) : (⟨4, h⟩ : Fin 5) = 4 := rfl
+@[simp] theorem finSucc5_4 : Fin.succ (4 : Fin 5) = (5 : Fin 6) := rfl
+@[simp] theorem finMk6_0 (h : 0 < 6) : (⟨0, h⟩ : Fin 6) = 0 := rfl
+@[simp] theorem finSucc6_0 : Fin.succ (0 : Fin 6) = (1 : Fin 7) := rfl
+@[simp] theorem finMk6_1 (h : 1 < 6) : (⟨1, h⟩ : Fin 6) = 1 := rfl
+@[simp] theorem finSucc6_1 : Fin.succ (1 : Fin 6) = (2 : Fin 7) := rfl
+@[simp] theorem finMk6_2 (h : 2 < 6) : (⟨2, h⟩ : Fin 6) = 2 := rfl
+@[simp] theorem finSucc6_2 : Fin.succ (2 : Fin 6) = (3 : Fin 7) := rfl
+@[simp] theorem finMk6_3 (h : 3 < 6) : (⟨3, h⟩ : Fin 6) = 3 := rfl
+@[simp] theorem finSucc6_3 : Fin.succ (3 : Fin 6) = (4 : Fin 7) := rfl
+@[simp] theorem finMk6_4 (h : 4 < 6) : (⟨4, h⟩ : Fin 6) = 4 := rfl
+@[simp] theorem finSucc6_4 : Fin.succ (4 : Fin 6) = (5 : Fin 7) := rfl
+@[simp] theorem finMk6_5 (h : 5 < 6) : (⟨5, h⟩ : Fin 6) = 5 := rfl
+@[simp] theorem finSucc6_5 : Fin.succ (5 : Fin 6) = (6 : Fin 7) := rfl
+@[simp] theorem finMk7_0 (h : 0 < 7) : (⟨0, h⟩ : Fin 7) = 0 := rfl
+@[simp] theorem finSucc7_0 : Fin.succ (0 : Fin 7) = (1 : Fin 8) := rfl
+@[simp] theorem finMk7_1 (h : 1 < 7) : (⟨1, h⟩ : Fin 7) = 1 := rfl
+@[simp] theorem finSucc7_1 : Fin.succ (1 : Fin 7) = (2 : Fin 8) := rfl
+@[simp] theorem finMk7_2 (h : 2 < 7) : (⟨2, h⟩ : Fin 7) = 2 := rfl
+@[simp] theorem finSucc7_2 : Fin.succ (2 : Fin 7) = (3 : Fin 8) := rfl
+@[simp] theorem finMk7_3 (h : 3 < 7) : (⟨3, h⟩ : Fin 7) = 3 := rfl
+@[simp] theorem finSucc7_3 : Fin.succ (3 : Fin 7) = (4 : Fin 8) := rfl
+@[simp] theorem finMk7_4 (h : 4 < 7) : (⟨4, h⟩ : Fin 7) = 4 := rfl
+@[simp] theorem finSucc7_4 : Fin.succ (4 : Fin 7) = (5 : Fin 8) := rfl
+@[simp] theorem finMk7_5 (h : 5 < 7) : (⟨5, h⟩ : Fin 7) = 5 := rfl
+@[simp] theorem finSucc7_5 : Fin.succ (5 : Fin 7) = (6 : Fin 8) := rfl
+@[simp] theorem finMk7_6 (h : 6 < 7) : (⟨6, h⟩ : Fin 7) = 6 := rfl
+@[simp] theorem finSucc7_6 : Fin.succ (6 : Fin 7) = (7 : Fin 8) := rfl
+@[simp] theorem finMk8_0 (h : 0 < 8) : (⟨0, h⟩ : Fin 8) = 0 := rfl
+@[simp] theorem finSucc8_0 : Fin.succ (0 : Fin 8) = (1 : Fin 9) := rfl
+@[simp] theorem finMk8_1 (h : 1 < 8) : (⟨1, h⟩ : Fin 8) = 1 := rfl
+@[simp] theorem finSucc8_1 : Fin.succ (1 : Fin 8) = (2 : Fin 9) := rfl
+@[simp] theorem finMk8_2 (h : 2 < 8) : (⟨2, h⟩ : Fin 8) = 2 := rfl
+@[simp] theorem finSucc8_2 : Fin.succ (2 : Fin 8) = (3 : Fin 9) := rfl
+@[simp] theorem finMk8_3 (h : 3 < 8) : (⟨3, h⟩ : Fin 8) = 3 := rfl
+@[simp] theorem finSucc8_3 : Fin.succ (3 : Fin 8) = (4 : Fin 9) := rfl
+@[simp] theorem finMk8_4 (h : 4 < 8) : (⟨4, h⟩ : Fin 8) = 4 := rfl
+@[simp] theorem finSucc8_4 : Fin.succ (4 : Fin 8) = (5 : Fin 9) := rfl
+@[simp] theorem finMk8_5 (h : 5 < 8) : (⟨5, h⟩ : Fin 8) = 5 := rfl
+@[simp] theorem finSucc8_5 : Fin.succ (5 : Fin 8) = (6 : Fin 9) := rfl
+@[simp] theorem finMk8_6 (h : 6 < 8) : (⟨6, h⟩ : Fin 8) = 6 := rfl
+@[simp] theorem finSucc8_6 : Fin.succ (6 : Fin 8) = (7 : Fin 9) := rfl
+@[simp] theorem finMk8_7 (h : 7 < 8) : (⟨7, h⟩ : Fin 8) = 7 := rfl
+@[simp] theorem finSucc8_7 : Fin.succ (7 : Fin 8) = (8 : Fin 9) := rfl
+@[simp] theorem finMk9_0 (h : 0 < 9) : (⟨0, h⟩ : Fin 9) = 0 := rfl
+@[simp] theorem finMk9_1 (h : 1 < 9) : (⟨1, h⟩ : Fin 9) = 1 := rfl
+@[simp] theorem finMk9_2 (h : 2 < 9) : (⟨2, h⟩ : Fin 9) = 2 := rfl
+@[simp] theorem finMk9_3 (h : 3 < 9) : (⟨3, h⟩ : Fin 9) = 3 := rfl
+@[simp] theorem finMk9_4 (h : 4 < 9) : (⟨4, h⟩ : Fin 9) = 4 := rfl
+@[simp] theorem finMk9_5 (h : 5 < 9) : (⟨5, h⟩ : Fin 9) = 5 := rfl
+@[simp] theorem finMk9_6 (h : 6 < 9) : (⟨6, h⟩ : Fin 9) = 6 := rfl
+@[simp] theorem finMk9_7 (h : 7 < 9) : (⟨7, h⟩ : Fin 9) = 7 := rfl
+@[simp] theorem finMk9_8 (h : 8 < 9) : (⟨8, h⟩ : Fin 9) = 8 := rfl
+end ADMM.FiniteMemory.Reconstruction.RationalCertificates.CaseThree.Lower.Descent

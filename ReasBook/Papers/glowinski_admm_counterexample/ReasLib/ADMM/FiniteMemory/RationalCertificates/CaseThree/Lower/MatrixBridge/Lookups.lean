@@ -1,0 +1,1265 @@
+module
+
+public import glowinski_admm_counterexample.ReasLib.ADMM.FiniteMemory.RationalCertificates.CaseThree.Lower.MatrixBridge.Data
+
+@[expose] public section
+set_option linter.style.longLine false
+set_option maxRecDepth 4096
+
+namespace ADMM.FiniteMemory.Reconstruction.RationalCertificates.CaseThree.Lower.MatrixBridge
+
+@[simp] theorem lookup_literalQ_0_0 : literalQ (0, 0) (0, 0) = (-1318570641 / 10000000000) := rfl
+@[simp] theorem lookup_literalQ_0_1 : literalQ (0, 0) (0, 1) = (-151687961 / 60000000000) := rfl
+@[simp] theorem lookup_literalQ_0_2 : literalQ (0, 0) (1, 0) = (329642687 / 5000000000) := rfl
+@[simp] theorem lookup_literalQ_0_3 : literalQ (0, 0) (1, 1) = (-353760691003 / 3000000000000) := rfl
+@[simp] theorem lookup_literalQ_0_4 : literalQ (0, 0) (2, 0) = (2115751507 / 20000000000) := rfl
+@[simp] theorem lookup_literalQ_0_5 : literalQ (0, 0) (2, 1) = (-102148626547 / 1000000000000) := rfl
+@[simp] theorem lookup_literalQ_0_6 : literalQ (0, 0) (3, 0) = (-879786787 / 20000000000) := rfl
+@[simp] theorem lookup_literalQ_0_7 : literalQ (0, 0) (3, 1) = (-2831590373 / 2000000000000) := rfl
+@[simp] theorem lookup_literalQ_0_8 : literalQ (0, 0) (4, 0) = (14475517 / 4000000000) := rfl
+@[simp] theorem lookup_literalQ_0_9 : literalQ (0, 0) (4, 1) = (18026141939 / 1000000000000) := rfl
+@[simp] theorem lookup_literalQ_0_10 : literalQ (0, 0) (5, 0) = (-3946811 / 4000000000) := rfl
+@[simp] theorem lookup_literalQ_0_11 : literalQ (0, 0) (5, 1) = (-5173656769 / 1000000000000) := rfl
+@[simp] theorem lookup_literalQ_0_12 : literalQ (0, 0) (6, 0) = (-6718783 / 10000000000) := rfl
+@[simp] theorem lookup_literalQ_0_13 : literalQ (0, 0) (6, 1) = (4265468439 / 2000000000000) := rfl
+@[simp] theorem lookup_literalQ_0_14 : literalQ (0, 0) (7, 0) = (4605209 / 10000000000) := rfl
+@[simp] theorem lookup_literalQ_0_15 : literalQ (0, 0) (7, 1) = (-2795222367 / 1000000000000) := rfl
+@[simp] theorem lookup_literalQ_0_16 : literalQ (0, 0) (8, 0) = (2926571 / 2500000000) := rfl
+@[simp] theorem lookup_literalQ_0_17 : literalQ (0, 0) (8, 1) = (-160919473 / 2000000000000) := rfl
+@[simp] theorem lookup_literalQ_0_18 : literalQ (0, 0) (9, 0) = (-9147513 / 10000000000) := rfl
+@[simp] theorem lookup_literalQ_0_19 : literalQ (0, 0) (9, 1) = (158403463 / 2000000000000) := rfl
+@[simp] theorem lookup_literalQ_1_0 : literalQ (0, 1) (0, 0) = (-151687961 / 60000000000) := rfl
+@[simp] theorem lookup_literalQ_1_1 : literalQ (0, 1) (0, 1) = (-1316570641 / 10000000000) := rfl
+@[simp] theorem lookup_literalQ_1_2 : literalQ (0, 1) (1, 0) = (263709857 / 4000000000) := rfl
+@[simp] theorem lookup_literalQ_1_3 : literalQ (0, 1) (1, 1) = (16741429033 / 2000000000000) := rfl
+@[simp] theorem lookup_literalQ_1_4 : literalQ (0, 1) (2, 0) = (-1325198677 / 60000000000) := rfl
+@[simp] theorem lookup_literalQ_1_5 : literalQ (0, 1) (2, 1) = (8463006461 / 80000000000) := rfl
+@[simp] theorem lookup_literalQ_1_6 : literalQ (0, 1) (3, 0) = (-439893531 / 10000000000) := rfl
+@[simp] theorem lookup_literalQ_1_7 : literalQ (0, 1) (3, 1) = (-2831435519 / 2000000000000) := rfl
+@[simp] theorem lookup_literalQ_1_8 : literalQ (0, 1) (4, 0) = (1130897 / 312500000) := rfl
+@[simp] theorem lookup_literalQ_1_9 : literalQ (0, 1) (4, 1) = (7210485103 / 400000000000) := rfl
+@[simp] theorem lookup_literalQ_1_10 : literalQ (0, 1) (5, 0) = (-9867079 / 10000000000) := rfl
+@[simp] theorem lookup_literalQ_1_11 : literalQ (0, 1) (5, 1) = (-5173475151 / 1000000000000) := rfl
+@[simp] theorem lookup_literalQ_1_12 : literalQ (0, 1) (6, 0) = (-13437647 / 20000000000) := rfl
+@[simp] theorem lookup_literalQ_1_13 : literalQ (0, 1) (6, 1) = (16663563 / 7812500000) := rfl
+@[simp] theorem lookup_literalQ_1_14 : literalQ (0, 1) (7, 0) = (1842069 / 4000000000) := rfl
+@[simp] theorem lookup_literalQ_1_15 : literalQ (0, 1) (7, 1) = (-733903059 / 2000000000000) := rfl
+@[simp] theorem lookup_literalQ_1_16 : literalQ (0, 1) (8, 0) = (23412401 / 20000000000) := rfl
+@[simp] theorem lookup_literalQ_1_17 : literalQ (0, 1) (8, 1) = (4064294333 / 2000000000000) := rfl
+@[simp] theorem lookup_literalQ_1_18 : literalQ (0, 1) (9, 0) = (-9147513 / 10000000000) := rfl
+@[simp] theorem lookup_literalQ_1_19 : literalQ (0, 1) (9, 1) = (79248581 / 1000000000000) := rfl
+@[simp] theorem lookup_literalQ_2_0 : literalQ (1, 0) (0, 0) = (329642687 / 5000000000) := rfl
+@[simp] theorem lookup_literalQ_2_1 : literalQ (1, 0) (0, 1) = (263709857 / 4000000000) := rfl
+@[simp] theorem lookup_literalQ_2_2 : literalQ (1, 0) (1, 0) = (-107 / 10000000000) := rfl
+@[simp] theorem lookup_literalQ_2_3 : literalQ (1, 0) (1, 1) = (1038465828209 / 6000000000000) := rfl
+@[simp] theorem lookup_literalQ_2_4 : literalQ (1, 0) (2, 0) = (-135234443 / 2500000000) := rfl
+@[simp] theorem lookup_literalQ_2_5 : literalQ (1, 0) (2, 1) = (153842411347 / 1000000000000) := rfl
+@[simp] theorem lookup_literalQ_2_6 : literalQ (1, 0) (3, 0) = (-31 / 20000000000) := rfl
+@[simp] theorem lookup_literalQ_2_7 : literalQ (1, 0) (3, 1) = (270468897 / 5000000000) := rfl
+@[simp] theorem lookup_literalQ_2_8 : literalQ (1, 0) (4, 0) = (-11045911 / 1250000000) := rfl
+@[simp] theorem lookup_literalQ_2_9 : literalQ (1, 0) (4, 1) = (-35346909 / 4000000000) := rfl
+@[simp] theorem lookup_literalQ_2_10 : literalQ (1, 0) (5, 0) = (-11 / 4000000000) := rfl
+@[simp] theorem lookup_literalQ_2_11 : literalQ (1, 0) (5, 1) = (176734521 / 20000000000) := rfl
+@[simp] theorem lookup_literalQ_2_12 : literalQ (1, 0) (6, 0) = (-3311327 / 4000000000) := rfl
+@[simp] theorem lookup_literalQ_2_13 : literalQ (1, 0) (6, 1) = (-827829 / 1000000000) := rfl
+@[simp] theorem lookup_literalQ_2_14 : literalQ (1, 0) (7, 0) = (-51 / 10000000000) := rfl
+@[simp] theorem lookup_literalQ_2_15 : literalQ (1, 0) (7, 1) = (16556533 / 20000000000) := rfl
+@[simp] theorem lookup_literalQ_2_16 : literalQ (1, 0) (8, 0) = (-14331701 / 20000000000) := rfl
+@[simp] theorem lookup_literalQ_2_17 : literalQ (1, 0) (8, 1) = (-14331599 / 20000000000) := rfl
+@[simp] theorem lookup_literalQ_2_18 : literalQ (1, 0) (9, 0) = 0 := rfl
+@[simp] theorem lookup_literalQ_2_19 : literalQ (1, 0) (9, 1) = (14331701 / 20000000000) := rfl
+@[simp] theorem lookup_literalQ_3_0 : literalQ (1, 1) (0, 0) = (-353760691003 / 3000000000000) := rfl
+@[simp] theorem lookup_literalQ_3_1 : literalQ (1, 1) (0, 1) = (16741429033 / 2000000000000) := rfl
+@[simp] theorem lookup_literalQ_3_2 : literalQ (1, 1) (1, 0) = (1038465828209 / 6000000000000) := rfl
+@[simp] theorem lookup_literalQ_3_3 : literalQ (1, 1) (1, 1) = (114915633551 / 1000000000000) := rfl
+@[simp] theorem lookup_literalQ_3_4 : literalQ (1, 1) (2, 0) = (-231765545189 / 2000000000000) := rfl
+@[simp] theorem lookup_literalQ_3_5 : literalQ (1, 1) (2, 1) = (-9264425781 / 2000000000000) := rfl
+@[simp] theorem lookup_literalQ_3_6 : literalQ (1, 1) (3, 0) = (21994665143 / 500000000000) := rfl
+@[simp] theorem lookup_literalQ_3_7 : literalQ (1, 1) (3, 1) = (-199479299437 / 2000000000000) := rfl
+@[simp] theorem lookup_literalQ_3_8 : literalQ (1, 1) (4, 0) = (25811591813 / 2000000000000) := rfl
+@[simp] theorem lookup_literalQ_3_9 : literalQ (1, 1) (4, 1) = (-469229 / 312500000) := rfl
+@[simp] theorem lookup_literalQ_3_10 : literalQ (1, 1) (5, 0) = (246675853 / 250000000000) := rfl
+@[simp] theorem lookup_literalQ_3_11 : literalQ (1, 1) (5, 1) = (-181619241 / 16000000000) := rfl
+@[simp] theorem lookup_literalQ_3_12 : literalQ (1, 1) (6, 0) = (2219920149 / 1000000000000) := rfl
+@[simp] theorem lookup_literalQ_3_13 : literalQ (1, 1) (6, 1) = (-292447917 / 500000000000) := rfl
+@[simp] theorem lookup_literalQ_3_14 : literalQ (1, 1) (7, 0) = (-921029077 / 2000000000000) := rfl
+@[simp] theorem lookup_literalQ_3_15 : literalQ (1, 1) (7, 1) = (-590542153 / 500000000000) := rfl
+@[simp] theorem lookup_literalQ_3_16 : literalQ (1, 1) (8, 0) = (169378379 / 1000000000000) := rfl
+@[simp] theorem lookup_literalQ_3_17 : literalQ (1, 1) (8, 1) = (-34607133 / 50000000000) := rfl
+@[simp] theorem lookup_literalQ_3_18 : literalQ (1, 1) (9, 0) = (9147513 / 10000000000) := rfl
+@[simp] theorem lookup_literalQ_3_19 : literalQ (1, 1) (9, 1) = (-2838525249 / 2000000000000) := rfl
+@[simp] theorem lookup_literalQ_4_0 : literalQ (2, 0) (0, 0) = (2115751507 / 20000000000) := rfl
+@[simp] theorem lookup_literalQ_4_1 : literalQ (2, 0) (0, 1) = (-1325198677 / 60000000000) := rfl
+@[simp] theorem lookup_literalQ_4_2 : literalQ (2, 0) (1, 0) = (-135234443 / 2500000000) := rfl
+@[simp] theorem lookup_literalQ_4_3 : literalQ (2, 0) (1, 1) = (-231765545189 / 2000000000000) := rfl
+@[simp] theorem lookup_literalQ_4_4 : literalQ (2, 0) (2, 0) = (-1033875963 / 10000000000) := rfl
+@[simp] theorem lookup_literalQ_4_5 : literalQ (2, 0) (2, 1) = (-2067751659 / 20000000000) := rfl
+@[simp] theorem lookup_literalQ_4_6 : literalQ (2, 0) (3, 0) = (1033875963 / 20000000000) := rfl
+@[simp] theorem lookup_literalQ_4_7 : literalQ (2, 0) (3, 1) = (13440417273 / 2000000000000) := rfl
+@[simp] theorem lookup_literalQ_4_8 : literalQ (2, 0) (4, 0) = 0 := rfl
+@[simp] theorem lookup_literalQ_4_9 : literalQ (2, 0) (4, 1) = 0 := rfl
+@[simp] theorem lookup_literalQ_4_10 : literalQ (2, 0) (5, 0) = 0 := rfl
+@[simp] theorem lookup_literalQ_4_11 : literalQ (2, 0) (5, 1) = 0 := rfl
+@[simp] theorem lookup_literalQ_4_12 : literalQ (2, 0) (6, 0) = 0 := rfl
+@[simp] theorem lookup_literalQ_4_13 : literalQ (2, 0) (6, 1) = 0 := rfl
+@[simp] theorem lookup_literalQ_4_14 : literalQ (2, 0) (7, 0) = 0 := rfl
+@[simp] theorem lookup_literalQ_4_15 : literalQ (2, 0) (7, 1) = 0 := rfl
+@[simp] theorem lookup_literalQ_4_16 : literalQ (2, 0) (8, 0) = 0 := rfl
+@[simp] theorem lookup_literalQ_4_17 : literalQ (2, 0) (8, 1) = 0 := rfl
+@[simp] theorem lookup_literalQ_4_18 : literalQ (2, 0) (9, 0) = 0 := rfl
+@[simp] theorem lookup_literalQ_4_19 : literalQ (2, 0) (9, 1) = 0 := rfl
+@[simp] theorem lookup_literalQ_5_0 : literalQ (2, 1) (0, 0) = (-102148626547 / 1000000000000) := rfl
+@[simp] theorem lookup_literalQ_5_1 : literalQ (2, 1) (0, 1) = (8463006461 / 80000000000) := rfl
+@[simp] theorem lookup_literalQ_5_2 : literalQ (2, 1) (1, 0) = (153842411347 / 1000000000000) := rfl
+@[simp] theorem lookup_literalQ_5_3 : literalQ (2, 1) (1, 1) = (-9264425781 / 2000000000000) := rfl
+@[simp] theorem lookup_literalQ_5_4 : literalQ (2, 1) (2, 0) = (-2067751659 / 20000000000) := rfl
+@[simp] theorem lookup_literalQ_5_5 : literalQ (2, 1) (2, 1) = (-4135503591 / 40000000000) := rfl
+@[simp] theorem lookup_literalQ_5_6 : literalQ (2, 1) (3, 0) = (1033875963 / 20000000000) := rfl
+@[simp] theorem lookup_literalQ_5_7 : literalQ (2, 1) (3, 1) = (13440387519 / 2000000000000) := rfl
+@[simp] theorem lookup_literalQ_5_8 : literalQ (2, 1) (4, 0) = 0 := rfl
+@[simp] theorem lookup_literalQ_5_9 : literalQ (2, 1) (4, 1) = 0 := rfl
+@[simp] theorem lookup_literalQ_5_10 : literalQ (2, 1) (5, 0) = 0 := rfl
+@[simp] theorem lookup_literalQ_5_11 : literalQ (2, 1) (5, 1) = 0 := rfl
+@[simp] theorem lookup_literalQ_5_12 : literalQ (2, 1) (6, 0) = 0 := rfl
+@[simp] theorem lookup_literalQ_5_13 : literalQ (2, 1) (6, 1) = 0 := rfl
+@[simp] theorem lookup_literalQ_5_14 : literalQ (2, 1) (7, 0) = 0 := rfl
+@[simp] theorem lookup_literalQ_5_15 : literalQ (2, 1) (7, 1) = 0 := rfl
+@[simp] theorem lookup_literalQ_5_16 : literalQ (2, 1) (8, 0) = 0 := rfl
+@[simp] theorem lookup_literalQ_5_17 : literalQ (2, 1) (8, 1) = 0 := rfl
+@[simp] theorem lookup_literalQ_5_18 : literalQ (2, 1) (9, 0) = 0 := rfl
+@[simp] theorem lookup_literalQ_5_19 : literalQ (2, 1) (9, 1) = 0 := rfl
+@[simp] theorem lookup_literalQ_6_0 : literalQ (3, 0) (0, 0) = (-879786787 / 20000000000) := rfl
+@[simp] theorem lookup_literalQ_6_1 : literalQ (3, 0) (0, 1) = (-439893531 / 10000000000) := rfl
+@[simp] theorem lookup_literalQ_6_2 : literalQ (3, 0) (1, 0) = (-31 / 20000000000) := rfl
+@[simp] theorem lookup_literalQ_6_3 : literalQ (3, 0) (1, 1) = (21994665143 / 500000000000) := rfl
+@[simp] theorem lookup_literalQ_6_4 : literalQ (3, 0) (2, 0) = (1033875963 / 20000000000) := rfl
+@[simp] theorem lookup_literalQ_6_5 : literalQ (3, 0) (2, 1) = (1033875963 / 20000000000) := rfl
+@[simp] theorem lookup_literalQ_6_6 : literalQ (3, 0) (3, 0) = (-30817829 / 2000000000) := rfl
+@[simp] theorem lookup_literalQ_6_7 : literalQ (3, 0) (3, 1) = (-671026501 / 10000000000) := rfl
+@[simp] theorem lookup_literalQ_6_8 : literalQ (3, 0) (4, 0) = (30817829 / 4000000000) := rfl
+@[simp] theorem lookup_literalQ_6_9 : literalQ (3, 0) (4, 1) = (1001633861 / 1000000000000) := rfl
+@[simp] theorem lookup_literalQ_6_10 : literalQ (3, 0) (5, 0) = 0 := rfl
+@[simp] theorem lookup_literalQ_6_11 : literalQ (3, 0) (5, 1) = 0 := rfl
+@[simp] theorem lookup_literalQ_6_12 : literalQ (3, 0) (6, 0) = 0 := rfl
+@[simp] theorem lookup_literalQ_6_13 : literalQ (3, 0) (6, 1) = 0 := rfl
+@[simp] theorem lookup_literalQ_6_14 : literalQ (3, 0) (7, 0) = 0 := rfl
+@[simp] theorem lookup_literalQ_6_15 : literalQ (3, 0) (7, 1) = 0 := rfl
+@[simp] theorem lookup_literalQ_6_16 : literalQ (3, 0) (8, 0) = 0 := rfl
+@[simp] theorem lookup_literalQ_6_17 : literalQ (3, 0) (8, 1) = 0 := rfl
+@[simp] theorem lookup_literalQ_6_18 : literalQ (3, 0) (9, 0) = 0 := rfl
+@[simp] theorem lookup_literalQ_6_19 : literalQ (3, 0) (9, 1) = 0 := rfl
+@[simp] theorem lookup_literalQ_7_0 : literalQ (3, 1) (0, 0) = (-2831590373 / 2000000000000) := rfl
+@[simp] theorem lookup_literalQ_7_1 : literalQ (3, 1) (0, 1) = (-2831435519 / 2000000000000) := rfl
+@[simp] theorem lookup_literalQ_7_2 : literalQ (3, 1) (1, 0) = (270468897 / 5000000000) := rfl
+@[simp] theorem lookup_literalQ_7_3 : literalQ (3, 1) (1, 1) = (-199479299437 / 2000000000000) := rfl
+@[simp] theorem lookup_literalQ_7_4 : literalQ (3, 1) (2, 0) = (13440417273 / 2000000000000) := rfl
+@[simp] theorem lookup_literalQ_7_5 : literalQ (3, 1) (2, 1) = (13440387519 / 2000000000000) := rfl
+@[simp] theorem lookup_literalQ_7_6 : literalQ (3, 1) (3, 0) = (-671026501 / 10000000000) := rfl
+@[simp] theorem lookup_literalQ_7_7 : literalQ (3, 1) (3, 1) = (74538294281 / 1000000000000) := rfl
+@[simp] theorem lookup_literalQ_7_8 : literalQ (3, 1) (4, 0) = (30817829 / 4000000000) := rfl
+@[simp] theorem lookup_literalQ_7_9 : literalQ (3, 1) (4, 1) = (400631777 / 400000000000) := rfl
+@[simp] theorem lookup_literalQ_7_10 : literalQ (3, 1) (5, 0) = 0 := rfl
+@[simp] theorem lookup_literalQ_7_11 : literalQ (3, 1) (5, 1) = 0 := rfl
+@[simp] theorem lookup_literalQ_7_12 : literalQ (3, 1) (6, 0) = 0 := rfl
+@[simp] theorem lookup_literalQ_7_13 : literalQ (3, 1) (6, 1) = 0 := rfl
+@[simp] theorem lookup_literalQ_7_14 : literalQ (3, 1) (7, 0) = 0 := rfl
+@[simp] theorem lookup_literalQ_7_15 : literalQ (3, 1) (7, 1) = 0 := rfl
+@[simp] theorem lookup_literalQ_7_16 : literalQ (3, 1) (8, 0) = 0 := rfl
+@[simp] theorem lookup_literalQ_7_17 : literalQ (3, 1) (8, 1) = 0 := rfl
+@[simp] theorem lookup_literalQ_7_18 : literalQ (3, 1) (9, 0) = 0 := rfl
+@[simp] theorem lookup_literalQ_7_19 : literalQ (3, 1) (9, 1) = 0 := rfl
+@[simp] theorem lookup_literalQ_8_0 : literalQ (4, 0) (0, 0) = (14475517 / 4000000000) := rfl
+@[simp] theorem lookup_literalQ_8_1 : literalQ (4, 0) (0, 1) = (1130897 / 312500000) := rfl
+@[simp] theorem lookup_literalQ_8_2 : literalQ (4, 0) (1, 0) = (-11045911 / 1250000000) := rfl
+@[simp] theorem lookup_literalQ_8_3 : literalQ (4, 0) (1, 1) = (25811591813 / 2000000000000) := rfl
+@[simp] theorem lookup_literalQ_8_4 : literalQ (4, 0) (2, 0) = 0 := rfl
+@[simp] theorem lookup_literalQ_8_5 : literalQ (4, 0) (2, 1) = 0 := rfl
+@[simp] theorem lookup_literalQ_8_6 : literalQ (4, 0) (3, 0) = (30817829 / 4000000000) := rfl
+@[simp] theorem lookup_literalQ_8_7 : literalQ (4, 0) (3, 1) = (30817829 / 4000000000) := rfl
+@[simp] theorem lookup_literalQ_8_8 : literalQ (4, 0) (4, 0) = (-24866077 / 5000000000) := rfl
+@[simp] theorem lookup_literalQ_8_9 : literalQ (4, 0) (4, 1) = (-81137 / 6400000) := rfl
+@[simp] theorem lookup_literalQ_8_10 : literalQ (4, 0) (5, 0) = (24866077 / 10000000000) := rfl
+@[simp] theorem lookup_literalQ_8_11 : literalQ (4, 0) (5, 1) = (323273269 / 1000000000000) := rfl
+@[simp] theorem lookup_literalQ_8_12 : literalQ (4, 0) (6, 0) = 0 := rfl
+@[simp] theorem lookup_literalQ_8_13 : literalQ (4, 0) (6, 1) = 0 := rfl
+@[simp] theorem lookup_literalQ_8_14 : literalQ (4, 0) (7, 0) = 0 := rfl
+@[simp] theorem lookup_literalQ_8_15 : literalQ (4, 0) (7, 1) = 0 := rfl
+@[simp] theorem lookup_literalQ_8_16 : literalQ (4, 0) (8, 0) = 0 := rfl
+@[simp] theorem lookup_literalQ_8_17 : literalQ (4, 0) (8, 1) = 0 := rfl
+@[simp] theorem lookup_literalQ_8_18 : literalQ (4, 0) (9, 0) = 0 := rfl
+@[simp] theorem lookup_literalQ_8_19 : literalQ (4, 0) (9, 1) = 0 := rfl
+@[simp] theorem lookup_literalQ_9_0 : literalQ (4, 1) (0, 0) = (18026141939 / 1000000000000) := rfl
+@[simp] theorem lookup_literalQ_9_1 : literalQ (4, 1) (0, 1) = (7210485103 / 400000000000) := rfl
+@[simp] theorem lookup_literalQ_9_2 : literalQ (4, 1) (1, 0) = (-35346909 / 4000000000) := rfl
+@[simp] theorem lookup_literalQ_9_3 : literalQ (4, 1) (1, 1) = (-469229 / 312500000) := rfl
+@[simp] theorem lookup_literalQ_9_4 : literalQ (4, 1) (2, 0) = 0 := rfl
+@[simp] theorem lookup_literalQ_9_5 : literalQ (4, 1) (2, 1) = 0 := rfl
+@[simp] theorem lookup_literalQ_9_6 : literalQ (4, 1) (3, 0) = (1001633861 / 1000000000000) := rfl
+@[simp] theorem lookup_literalQ_9_7 : literalQ (4, 1) (3, 1) = (400631777 / 400000000000) := rfl
+@[simp] theorem lookup_literalQ_9_8 : literalQ (4, 1) (4, 0) = (-81137 / 6400000) := rfl
+@[simp] theorem lookup_literalQ_9_9 : literalQ (4, 1) (4, 1) = (1686508043 / 200000000000) := rfl
+@[simp] theorem lookup_literalQ_9_10 : literalQ (4, 1) (5, 0) = (24866077 / 10000000000) := rfl
+@[simp] theorem lookup_literalQ_9_11 : literalQ (4, 1) (5, 1) = (323259001 / 1000000000000) := rfl
+@[simp] theorem lookup_literalQ_9_12 : literalQ (4, 1) (6, 0) = 0 := rfl
+@[simp] theorem lookup_literalQ_9_13 : literalQ (4, 1) (6, 1) = 0 := rfl
+@[simp] theorem lookup_literalQ_9_14 : literalQ (4, 1) (7, 0) = 0 := rfl
+@[simp] theorem lookup_literalQ_9_15 : literalQ (4, 1) (7, 1) = 0 := rfl
+@[simp] theorem lookup_literalQ_9_16 : literalQ (4, 1) (8, 0) = 0 := rfl
+@[simp] theorem lookup_literalQ_9_17 : literalQ (4, 1) (8, 1) = 0 := rfl
+@[simp] theorem lookup_literalQ_9_18 : literalQ (4, 1) (9, 0) = 0 := rfl
+@[simp] theorem lookup_literalQ_9_19 : literalQ (4, 1) (9, 1) = 0 := rfl
+@[simp] theorem lookup_literalQ_10_0 : literalQ (5, 0) (0, 0) = (-3946811 / 4000000000) := rfl
+@[simp] theorem lookup_literalQ_10_1 : literalQ (5, 0) (0, 1) = (-9867079 / 10000000000) := rfl
+@[simp] theorem lookup_literalQ_10_2 : literalQ (5, 0) (1, 0) = (-11 / 4000000000) := rfl
+@[simp] theorem lookup_literalQ_10_3 : literalQ (5, 0) (1, 1) = (246675853 / 250000000000) := rfl
+@[simp] theorem lookup_literalQ_10_4 : literalQ (5, 0) (2, 0) = 0 := rfl
+@[simp] theorem lookup_literalQ_10_5 : literalQ (5, 0) (2, 1) = 0 := rfl
+@[simp] theorem lookup_literalQ_10_6 : literalQ (5, 0) (3, 0) = 0 := rfl
+@[simp] theorem lookup_literalQ_10_7 : literalQ (5, 0) (3, 1) = 0 := rfl
+@[simp] theorem lookup_literalQ_10_8 : literalQ (5, 0) (4, 0) = (24866077 / 10000000000) := rfl
+@[simp] theorem lookup_literalQ_10_9 : literalQ (5, 0) (4, 1) = (24866077 / 10000000000) := rfl
+@[simp] theorem lookup_literalQ_10_10 : literalQ (5, 0) (5, 0) = (-7499511 / 2500000000) := rfl
+@[simp] theorem lookup_literalQ_10_11 : literalQ (5, 0) (5, 1) = (-21944979 / 4000000000) := rfl
+@[simp] theorem lookup_literalQ_10_12 : literalQ (5, 0) (6, 0) = (7499511 / 5000000000) := rfl
+@[simp] theorem lookup_literalQ_10_13 : literalQ (5, 0) (6, 1) = (390265761 / 2000000000000) := rfl
+@[simp] theorem lookup_literalQ_10_14 : literalQ (5, 0) (7, 0) = 0 := rfl
+@[simp] theorem lookup_literalQ_10_15 : literalQ (5, 0) (7, 1) = 0 := rfl
+@[simp] theorem lookup_literalQ_10_16 : literalQ (5, 0) (8, 0) = 0 := rfl
+@[simp] theorem lookup_literalQ_10_17 : literalQ (5, 0) (8, 1) = 0 := rfl
+@[simp] theorem lookup_literalQ_10_18 : literalQ (5, 0) (9, 0) = 0 := rfl
+@[simp] theorem lookup_literalQ_10_19 : literalQ (5, 0) (9, 1) = 0 := rfl
+@[simp] theorem lookup_literalQ_11_0 : literalQ (5, 1) (0, 0) = (-5173656769 / 1000000000000) := rfl
+@[simp] theorem lookup_literalQ_11_1 : literalQ (5, 1) (0, 1) = (-5173475151 / 1000000000000) := rfl
+@[simp] theorem lookup_literalQ_11_2 : literalQ (5, 1) (1, 0) = (176734521 / 20000000000) := rfl
+@[simp] theorem lookup_literalQ_11_3 : literalQ (5, 1) (1, 1) = (-181619241 / 16000000000) := rfl
+@[simp] theorem lookup_literalQ_11_4 : literalQ (5, 1) (2, 0) = 0 := rfl
+@[simp] theorem lookup_literalQ_11_5 : literalQ (5, 1) (2, 1) = 0 := rfl
+@[simp] theorem lookup_literalQ_11_6 : literalQ (5, 1) (3, 0) = 0 := rfl
+@[simp] theorem lookup_literalQ_11_7 : literalQ (5, 1) (3, 1) = 0 := rfl
+@[simp] theorem lookup_literalQ_11_8 : literalQ (5, 1) (4, 0) = (323273269 / 1000000000000) := rfl
+@[simp] theorem lookup_literalQ_11_9 : literalQ (5, 1) (4, 1) = (323259001 / 1000000000000) := rfl
+@[simp] theorem lookup_literalQ_11_10 : literalQ (5, 1) (5, 0) = (-21944979 / 4000000000) := rfl
+@[simp] theorem lookup_literalQ_11_11 : literalQ (5, 1) (5, 1) = (663446499 / 500000000000) := rfl
+@[simp] theorem lookup_literalQ_11_12 : literalQ (5, 1) (6, 0) = (7499511 / 5000000000) := rfl
+@[simp] theorem lookup_literalQ_11_13 : literalQ (5, 1) (6, 1) = (97493643 / 500000000000) := rfl
+@[simp] theorem lookup_literalQ_11_14 : literalQ (5, 1) (7, 0) = 0 := rfl
+@[simp] theorem lookup_literalQ_11_15 : literalQ (5, 1) (7, 1) = 0 := rfl
+@[simp] theorem lookup_literalQ_11_16 : literalQ (5, 1) (8, 0) = 0 := rfl
+@[simp] theorem lookup_literalQ_11_17 : literalQ (5, 1) (8, 1) = 0 := rfl
+@[simp] theorem lookup_literalQ_11_18 : literalQ (5, 1) (9, 0) = 0 := rfl
+@[simp] theorem lookup_literalQ_11_19 : literalQ (5, 1) (9, 1) = 0 := rfl
+@[simp] theorem lookup_literalQ_12_0 : literalQ (6, 0) (0, 0) = (-6718783 / 10000000000) := rfl
+@[simp] theorem lookup_literalQ_12_1 : literalQ (6, 0) (0, 1) = (-13437647 / 20000000000) := rfl
+@[simp] theorem lookup_literalQ_12_2 : literalQ (6, 0) (1, 0) = (-3311327 / 4000000000) := rfl
+@[simp] theorem lookup_literalQ_12_3 : literalQ (6, 0) (1, 1) = (2219920149 / 1000000000000) := rfl
+@[simp] theorem lookup_literalQ_12_4 : literalQ (6, 0) (2, 0) = 0 := rfl
+@[simp] theorem lookup_literalQ_12_5 : literalQ (6, 0) (2, 1) = 0 := rfl
+@[simp] theorem lookup_literalQ_12_6 : literalQ (6, 0) (3, 0) = 0 := rfl
+@[simp] theorem lookup_literalQ_12_7 : literalQ (6, 0) (3, 1) = 0 := rfl
+@[simp] theorem lookup_literalQ_12_8 : literalQ (6, 0) (4, 0) = 0 := rfl
+@[simp] theorem lookup_literalQ_12_9 : literalQ (6, 0) (4, 1) = 0 := rfl
+@[simp] theorem lookup_literalQ_12_10 : literalQ (6, 0) (5, 0) = (7499511 / 5000000000) := rfl
+@[simp] theorem lookup_literalQ_12_11 : literalQ (6, 0) (5, 1) = (7499511 / 5000000000) := rfl
+@[simp] theorem lookup_literalQ_12_12 : literalQ (6, 0) (6, 0) = (-3843 / 10000000000) := rfl
+@[simp] theorem lookup_literalQ_12_13 : literalQ (6, 0) (6, 1) = (-6000921 / 4000000000) := rfl
+@[simp] theorem lookup_literalQ_12_14 : literalQ (6, 0) (7, 0) = (3843 / 20000000000) := rfl
+@[simp] theorem lookup_literalQ_12_15 : literalQ (6, 0) (7, 1) = (73917 / 1000000000000) := rfl
+@[simp] theorem lookup_literalQ_12_16 : literalQ (6, 0) (8, 0) = 0 := rfl
+@[simp] theorem lookup_literalQ_12_17 : literalQ (6, 0) (8, 1) = 0 := rfl
+@[simp] theorem lookup_literalQ_12_18 : literalQ (6, 0) (9, 0) = 0 := rfl
+@[simp] theorem lookup_literalQ_12_19 : literalQ (6, 0) (9, 1) = 0 := rfl
+@[simp] theorem lookup_literalQ_13_0 : literalQ (6, 1) (0, 0) = (4265468439 / 2000000000000) := rfl
+@[simp] theorem lookup_literalQ_13_1 : literalQ (6, 1) (0, 1) = (16663563 / 7812500000) := rfl
+@[simp] theorem lookup_literalQ_13_2 : literalQ (6, 1) (1, 0) = (-827829 / 1000000000) := rfl
+@[simp] theorem lookup_literalQ_13_3 : literalQ (6, 1) (1, 1) = (-292447917 / 500000000000) := rfl
+@[simp] theorem lookup_literalQ_13_4 : literalQ (6, 1) (2, 0) = 0 := rfl
+@[simp] theorem lookup_literalQ_13_5 : literalQ (6, 1) (2, 1) = 0 := rfl
+@[simp] theorem lookup_literalQ_13_6 : literalQ (6, 1) (3, 0) = 0 := rfl
+@[simp] theorem lookup_literalQ_13_7 : literalQ (6, 1) (3, 1) = 0 := rfl
+@[simp] theorem lookup_literalQ_13_8 : literalQ (6, 1) (4, 0) = 0 := rfl
+@[simp] theorem lookup_literalQ_13_9 : literalQ (6, 1) (4, 1) = 0 := rfl
+@[simp] theorem lookup_literalQ_13_10 : literalQ (6, 1) (5, 0) = (390265761 / 2000000000000) := rfl
+@[simp] theorem lookup_literalQ_13_11 : literalQ (6, 1) (5, 1) = (97493643 / 500000000000) := rfl
+@[simp] theorem lookup_literalQ_13_12 : literalQ (6, 1) (6, 0) = (-6000921 / 4000000000) := rfl
+@[simp] theorem lookup_literalQ_13_13 : literalQ (6, 1) (6, 1) = (326180691 / 125000000000) := rfl
+@[simp] theorem lookup_literalQ_13_14 : literalQ (6, 1) (7, 0) = (3843 / 20000000000) := rfl
+@[simp] theorem lookup_literalQ_13_15 : literalQ (6, 1) (7, 1) = (49959 / 2000000000000) := rfl
+@[simp] theorem lookup_literalQ_13_16 : literalQ (6, 1) (8, 0) = 0 := rfl
+@[simp] theorem lookup_literalQ_13_17 : literalQ (6, 1) (8, 1) = 0 := rfl
+@[simp] theorem lookup_literalQ_13_18 : literalQ (6, 1) (9, 0) = 0 := rfl
+@[simp] theorem lookup_literalQ_13_19 : literalQ (6, 1) (9, 1) = 0 := rfl
+@[simp] theorem lookup_literalQ_14_0 : literalQ (7, 0) (0, 0) = (4605209 / 10000000000) := rfl
+@[simp] theorem lookup_literalQ_14_1 : literalQ (7, 0) (0, 1) = (1842069 / 4000000000) := rfl
+@[simp] theorem lookup_literalQ_14_2 : literalQ (7, 0) (1, 0) = (-51 / 10000000000) := rfl
+@[simp] theorem lookup_literalQ_14_3 : literalQ (7, 0) (1, 1) = (-921029077 / 2000000000000) := rfl
+@[simp] theorem lookup_literalQ_14_4 : literalQ (7, 0) (2, 0) = 0 := rfl
+@[simp] theorem lookup_literalQ_14_5 : literalQ (7, 0) (2, 1) = 0 := rfl
+@[simp] theorem lookup_literalQ_14_6 : literalQ (7, 0) (3, 0) = 0 := rfl
+@[simp] theorem lookup_literalQ_14_7 : literalQ (7, 0) (3, 1) = 0 := rfl
+@[simp] theorem lookup_literalQ_14_8 : literalQ (7, 0) (4, 0) = 0 := rfl
+@[simp] theorem lookup_literalQ_14_9 : literalQ (7, 0) (4, 1) = 0 := rfl
+@[simp] theorem lookup_literalQ_14_10 : literalQ (7, 0) (5, 0) = 0 := rfl
+@[simp] theorem lookup_literalQ_14_11 : literalQ (7, 0) (5, 1) = 0 := rfl
+@[simp] theorem lookup_literalQ_14_12 : literalQ (7, 0) (6, 0) = (3843 / 20000000000) := rfl
+@[simp] theorem lookup_literalQ_14_13 : literalQ (7, 0) (6, 1) = (3843 / 20000000000) := rfl
+@[simp] theorem lookup_literalQ_14_14 : literalQ (7, 0) (7, 0) = (-9214159 / 10000000000) := rfl
+@[simp] theorem lookup_literalQ_14_15 : literalQ (7, 0) (7, 1) = (30132277 / 20000000000) := rfl
+@[simp] theorem lookup_literalQ_14_16 : literalQ (7, 0) (8, 0) = (9214159 / 20000000000) := rfl
+@[simp] theorem lookup_literalQ_14_17 : literalQ (7, 0) (8, 1) = (4344890173 / 2000000000000) := rfl
+@[simp] theorem lookup_literalQ_14_18 : literalQ (7, 0) (9, 0) = 0 := rfl
+@[simp] theorem lookup_literalQ_14_19 : literalQ (7, 0) (9, 1) = 0 := rfl
+@[simp] theorem lookup_literalQ_15_0 : literalQ (7, 1) (0, 0) = (-2795222367 / 1000000000000) := rfl
+@[simp] theorem lookup_literalQ_15_1 : literalQ (7, 1) (0, 1) = (-733903059 / 2000000000000) := rfl
+@[simp] theorem lookup_literalQ_15_2 : literalQ (7, 1) (1, 0) = (16556533 / 20000000000) := rfl
+@[simp] theorem lookup_literalQ_15_3 : literalQ (7, 1) (1, 1) = (-590542153 / 500000000000) := rfl
+@[simp] theorem lookup_literalQ_15_4 : literalQ (7, 1) (2, 0) = 0 := rfl
+@[simp] theorem lookup_literalQ_15_5 : literalQ (7, 1) (2, 1) = 0 := rfl
+@[simp] theorem lookup_literalQ_15_6 : literalQ (7, 1) (3, 0) = 0 := rfl
+@[simp] theorem lookup_literalQ_15_7 : literalQ (7, 1) (3, 1) = 0 := rfl
+@[simp] theorem lookup_literalQ_15_8 : literalQ (7, 1) (4, 0) = 0 := rfl
+@[simp] theorem lookup_literalQ_15_9 : literalQ (7, 1) (4, 1) = 0 := rfl
+@[simp] theorem lookup_literalQ_15_10 : literalQ (7, 1) (5, 0) = 0 := rfl
+@[simp] theorem lookup_literalQ_15_11 : literalQ (7, 1) (5, 1) = 0 := rfl
+@[simp] theorem lookup_literalQ_15_12 : literalQ (7, 1) (6, 0) = (73917 / 1000000000000) := rfl
+@[simp] theorem lookup_literalQ_15_13 : literalQ (7, 1) (6, 1) = (49959 / 2000000000000) := rfl
+@[simp] theorem lookup_literalQ_15_14 : literalQ (7, 1) (7, 0) = (30132277 / 20000000000) := rfl
+@[simp] theorem lookup_literalQ_15_15 : literalQ (7, 1) (7, 1) = (-921081559 / 1000000000000) := rfl
+@[simp] theorem lookup_literalQ_15_16 : literalQ (7, 1) (8, 0) = (9214159 / 20000000000) := rfl
+@[simp] theorem lookup_literalQ_15_17 : literalQ (7, 1) (8, 1) = (119784067 / 2000000000000) := rfl
+@[simp] theorem lookup_literalQ_15_18 : literalQ (7, 1) (9, 0) = 0 := rfl
+@[simp] theorem lookup_literalQ_15_19 : literalQ (7, 1) (9, 1) = 0 := rfl
+@[simp] theorem lookup_literalQ_16_0 : literalQ (8, 0) (0, 0) = (2926571 / 2500000000) := rfl
+@[simp] theorem lookup_literalQ_16_1 : literalQ (8, 0) (0, 1) = (23412401 / 20000000000) := rfl
+@[simp] theorem lookup_literalQ_16_2 : literalQ (8, 0) (1, 0) = (-14331701 / 20000000000) := rfl
+@[simp] theorem lookup_literalQ_16_3 : literalQ (8, 0) (1, 1) = (169378379 / 1000000000000) := rfl
+@[simp] theorem lookup_literalQ_16_4 : literalQ (8, 0) (2, 0) = 0 := rfl
+@[simp] theorem lookup_literalQ_16_5 : literalQ (8, 0) (2, 1) = 0 := rfl
+@[simp] theorem lookup_literalQ_16_6 : literalQ (8, 0) (3, 0) = 0 := rfl
+@[simp] theorem lookup_literalQ_16_7 : literalQ (8, 0) (3, 1) = 0 := rfl
+@[simp] theorem lookup_literalQ_16_8 : literalQ (8, 0) (4, 0) = 0 := rfl
+@[simp] theorem lookup_literalQ_16_9 : literalQ (8, 0) (4, 1) = 0 := rfl
+@[simp] theorem lookup_literalQ_16_10 : literalQ (8, 0) (5, 0) = 0 := rfl
+@[simp] theorem lookup_literalQ_16_11 : literalQ (8, 0) (5, 1) = 0 := rfl
+@[simp] theorem lookup_literalQ_16_12 : literalQ (8, 0) (6, 0) = 0 := rfl
+@[simp] theorem lookup_literalQ_16_13 : literalQ (8, 0) (6, 1) = 0 := rfl
+@[simp] theorem lookup_literalQ_16_14 : literalQ (8, 0) (7, 0) = (9214159 / 20000000000) := rfl
+@[simp] theorem lookup_literalQ_16_15 : literalQ (8, 0) (7, 1) = (9214159 / 20000000000) := rfl
+@[simp] theorem lookup_literalQ_16_16 : literalQ (8, 0) (8, 0) = (-9147513 / 5000000000) := rfl
+@[simp] theorem lookup_literalQ_16_17 : literalQ (8, 0) (8, 1) = (-22901567 / 10000000000) := rfl
+@[simp] theorem lookup_literalQ_16_18 : literalQ (8, 0) (9, 0) = (9147513 / 10000000000) := rfl
+@[simp] theorem lookup_literalQ_16_19 : literalQ (8, 0) (9, 1) = (237929037 / 2000000000000) := rfl
+@[simp] theorem lookup_literalQ_17_0 : literalQ (8, 1) (0, 0) = (-160919473 / 2000000000000) := rfl
+@[simp] theorem lookup_literalQ_17_1 : literalQ (8, 1) (0, 1) = (4064294333 / 2000000000000) := rfl
+@[simp] theorem lookup_literalQ_17_2 : literalQ (8, 1) (1, 0) = (-14331599 / 20000000000) := rfl
+@[simp] theorem lookup_literalQ_17_3 : literalQ (8, 1) (1, 1) = (-34607133 / 50000000000) := rfl
+@[simp] theorem lookup_literalQ_17_4 : literalQ (8, 1) (2, 0) = 0 := rfl
+@[simp] theorem lookup_literalQ_17_5 : literalQ (8, 1) (2, 1) = 0 := rfl
+@[simp] theorem lookup_literalQ_17_6 : literalQ (8, 1) (3, 0) = 0 := rfl
+@[simp] theorem lookup_literalQ_17_7 : literalQ (8, 1) (3, 1) = 0 := rfl
+@[simp] theorem lookup_literalQ_17_8 : literalQ (8, 1) (4, 0) = 0 := rfl
+@[simp] theorem lookup_literalQ_17_9 : literalQ (8, 1) (4, 1) = 0 := rfl
+@[simp] theorem lookup_literalQ_17_10 : literalQ (8, 1) (5, 0) = 0 := rfl
+@[simp] theorem lookup_literalQ_17_11 : literalQ (8, 1) (5, 1) = 0 := rfl
+@[simp] theorem lookup_literalQ_17_12 : literalQ (8, 1) (6, 0) = 0 := rfl
+@[simp] theorem lookup_literalQ_17_13 : literalQ (8, 1) (6, 1) = 0 := rfl
+@[simp] theorem lookup_literalQ_17_14 : literalQ (8, 1) (7, 0) = (4344890173 / 2000000000000) := rfl
+@[simp] theorem lookup_literalQ_17_15 : literalQ (8, 1) (7, 1) = (119784067 / 2000000000000) := rfl
+@[simp] theorem lookup_literalQ_17_16 : literalQ (8, 1) (8, 0) = (-22901567 / 10000000000) := rfl
+@[simp] theorem lookup_literalQ_17_17 : literalQ (8, 1) (8, 1) = (-1027870767 / 1000000000000) := rfl
+@[simp] theorem lookup_literalQ_17_18 : literalQ (8, 1) (9, 0) = (9147513 / 10000000000) := rfl
+@[simp] theorem lookup_literalQ_17_19 : literalQ (8, 1) (9, 1) = (118917669 / 1000000000000) := rfl
+@[simp] theorem lookup_literalQ_18_0 : literalQ (9, 0) (0, 0) = (-9147513 / 10000000000) := rfl
+@[simp] theorem lookup_literalQ_18_1 : literalQ (9, 0) (0, 1) = (-9147513 / 10000000000) := rfl
+@[simp] theorem lookup_literalQ_18_2 : literalQ (9, 0) (1, 0) = 0 := rfl
+@[simp] theorem lookup_literalQ_18_3 : literalQ (9, 0) (1, 1) = (9147513 / 10000000000) := rfl
+@[simp] theorem lookup_literalQ_18_4 : literalQ (9, 0) (2, 0) = 0 := rfl
+@[simp] theorem lookup_literalQ_18_5 : literalQ (9, 0) (2, 1) = 0 := rfl
+@[simp] theorem lookup_literalQ_18_6 : literalQ (9, 0) (3, 0) = 0 := rfl
+@[simp] theorem lookup_literalQ_18_7 : literalQ (9, 0) (3, 1) = 0 := rfl
+@[simp] theorem lookup_literalQ_18_8 : literalQ (9, 0) (4, 0) = 0 := rfl
+@[simp] theorem lookup_literalQ_18_9 : literalQ (9, 0) (4, 1) = 0 := rfl
+@[simp] theorem lookup_literalQ_18_10 : literalQ (9, 0) (5, 0) = 0 := rfl
+@[simp] theorem lookup_literalQ_18_11 : literalQ (9, 0) (5, 1) = 0 := rfl
+@[simp] theorem lookup_literalQ_18_12 : literalQ (9, 0) (6, 0) = 0 := rfl
+@[simp] theorem lookup_literalQ_18_13 : literalQ (9, 0) (6, 1) = 0 := rfl
+@[simp] theorem lookup_literalQ_18_14 : literalQ (9, 0) (7, 0) = 0 := rfl
+@[simp] theorem lookup_literalQ_18_15 : literalQ (9, 0) (7, 1) = 0 := rfl
+@[simp] theorem lookup_literalQ_18_16 : literalQ (9, 0) (8, 0) = (9147513 / 10000000000) := rfl
+@[simp] theorem lookup_literalQ_18_17 : literalQ (9, 0) (8, 1) = (9147513 / 10000000000) := rfl
+@[simp] theorem lookup_literalQ_18_18 : literalQ (9, 0) (9, 0) = 0 := rfl
+@[simp] theorem lookup_literalQ_18_19 : literalQ (9, 0) (9, 1) = (-9147513 / 10000000000) := rfl
+@[simp] theorem lookup_literalQ_19_0 : literalQ (9, 1) (0, 0) = (158403463 / 2000000000000) := rfl
+@[simp] theorem lookup_literalQ_19_1 : literalQ (9, 1) (0, 1) = (79248581 / 1000000000000) := rfl
+@[simp] theorem lookup_literalQ_19_2 : literalQ (9, 1) (1, 0) = (14331701 / 20000000000) := rfl
+@[simp] theorem lookup_literalQ_19_3 : literalQ (9, 1) (1, 1) = (-2838525249 / 2000000000000) := rfl
+@[simp] theorem lookup_literalQ_19_4 : literalQ (9, 1) (2, 0) = 0 := rfl
+@[simp] theorem lookup_literalQ_19_5 : literalQ (9, 1) (2, 1) = 0 := rfl
+@[simp] theorem lookup_literalQ_19_6 : literalQ (9, 1) (3, 0) = 0 := rfl
+@[simp] theorem lookup_literalQ_19_7 : literalQ (9, 1) (3, 1) = 0 := rfl
+@[simp] theorem lookup_literalQ_19_8 : literalQ (9, 1) (4, 0) = 0 := rfl
+@[simp] theorem lookup_literalQ_19_9 : literalQ (9, 1) (4, 1) = 0 := rfl
+@[simp] theorem lookup_literalQ_19_10 : literalQ (9, 1) (5, 0) = 0 := rfl
+@[simp] theorem lookup_literalQ_19_11 : literalQ (9, 1) (5, 1) = 0 := rfl
+@[simp] theorem lookup_literalQ_19_12 : literalQ (9, 1) (6, 0) = 0 := rfl
+@[simp] theorem lookup_literalQ_19_13 : literalQ (9, 1) (6, 1) = 0 := rfl
+@[simp] theorem lookup_literalQ_19_14 : literalQ (9, 1) (7, 0) = 0 := rfl
+@[simp] theorem lookup_literalQ_19_15 : literalQ (9, 1) (7, 1) = 0 := rfl
+@[simp] theorem lookup_literalQ_19_16 : literalQ (9, 1) (8, 0) = (237929037 / 2000000000000) := rfl
+@[simp] theorem lookup_literalQ_19_17 : literalQ (9, 1) (8, 1) = (118917669 / 1000000000000) := rfl
+@[simp] theorem lookup_literalQ_19_18 : literalQ (9, 1) (9, 0) = (-9147513 / 10000000000) := rfl
+@[simp] theorem lookup_literalQ_19_19 : literalQ (9, 1) (9, 1) = (795833631 / 500000000000) := rfl
+@[simp] theorem lookup_literalAction_0_0 : literalAction (0, 0) 0 = (-2907189 / 2000000000) := rfl
+@[simp] theorem lookup_literalAction_0_1 : literalAction (0, 0) 1 = (-635472137201 / 3000000000000) := rfl
+@[simp] theorem lookup_literalAction_1_0 : literalAction (0, 1) 0 = 0 := rfl
+@[simp] theorem lookup_literalAction_1_1 : literalAction (0, 1) 1 = (-546092173 / 250000000000) := rfl
+@[simp] theorem lookup_literalAction_2_0 : literalAction (1, 0) 0 = (2907189 / 2000000000) := rfl
+@[simp] theorem lookup_literalAction_2_1 : literalAction (1, 0) 1 = (2681647767491 / 6000000000000) := rfl
+@[simp] theorem lookup_literalAction_3_0 : literalAction (1, 1) 0 = 0 := rfl
+@[simp] theorem lookup_literalAction_3_1 : literalAction (1, 1) 1 = (4368729343 / 2000000000000) := rfl
+@[simp] theorem lookup_literalAction_4_0 : literalAction (2, 0) 0 = 0 := rfl
+@[simp] theorem lookup_literalAction_4_1 : literalAction (2, 0) 1 = (-351955187287 / 1500000000000) := rfl
+@[simp] theorem lookup_literalAction_5_0 : literalAction (2, 1) 0 = 0 := rfl
+@[simp] theorem lookup_literalAction_5_1 : literalAction (2, 1) 1 = (8975943713 / 2000000000000) := rfl
+@[simp] theorem lookup_literalAction_6_0 : literalAction (3, 0) 0 = 0 := rfl
+@[simp] theorem lookup_literalAction_6_1 : literalAction (3, 0) 1 = (-14407240903 / 1000000000000) := rfl
+@[simp] theorem lookup_literalAction_7_0 : literalAction (3, 1) 0 = 0 := rfl
+@[simp] theorem lookup_literalAction_7_1 : literalAction (3, 1) 1 = (-3779059999 / 200000000000) := rfl
+@[simp] theorem lookup_literalAction_8_0 : literalAction (4, 0) 0 = 0 := rfl
+@[simp] theorem lookup_literalAction_8_1 : literalAction (4, 0) 1 = (23749481151 / 2000000000000) := rfl
+@[simp] theorem lookup_literalAction_9_0 : literalAction (4, 1) 0 = 0 := rfl
+@[simp] theorem lookup_literalAction_9_1 : literalAction (4, 1) 1 = (3285257327 / 125000000000) := rfl
+@[simp] theorem lookup_literalAction_10_0 : literalAction (5, 0) 0 = 0 := rfl
+@[simp] theorem lookup_literalAction_10_1 : literalAction (5, 0) 1 = (-1121803463 / 400000000000) := rfl
+@[simp] theorem lookup_literalAction_11_0 : literalAction (5, 1) 0 = 0 := rfl
+@[simp] theorem lookup_literalAction_11_1 : literalAction (5, 1) 1 = (-29359076857 / 2000000000000) := rfl
+@[simp] theorem lookup_literalAction_12_0 : literalAction (6, 0) 0 = 0 := rfl
+@[simp] theorem lookup_literalAction_12_1 : literalAction (6, 0) 1 = (773891833 / 500000000000) := rfl
+@[simp] theorem lookup_literalAction_13_0 : literalAction (6, 1) 0 = 0 := rfl
+@[simp] theorem lookup_literalAction_13_1 : literalAction (6, 1) 1 = (8704996047 / 2000000000000) := rfl
+@[simp] theorem lookup_literalAction_14_0 : literalAction (7, 0) 0 = 0 := rfl
+@[simp] theorem lookup_literalAction_14_1 : literalAction (7, 0) 1 = (1839626899 / 500000000000) := rfl
+@[simp] theorem lookup_literalAction_15_0 : literalAction (7, 1) 0 = 0 := rfl
+@[simp] theorem lookup_literalAction_15_1 : literalAction (7, 1) 1 = (-4818400763 / 2000000000000) := rfl
+@[simp] theorem lookup_literalAction_16_0 : literalAction (8, 0) 0 = 0 := rfl
+@[simp] theorem lookup_literalAction_16_1 : literalAction (8, 0) 1 = (-148194321 / 400000000000) := rfl
+@[simp] theorem lookup_literalAction_17_0 : literalAction (8, 1) 0 = 0 := rfl
+@[simp] theorem lookup_literalAction_17_1 : literalAction (8, 1) 1 = (245471721 / 500000000000) := rfl
+@[simp] theorem lookup_literalAction_18_0 : literalAction (9, 0) 0 = 0 := rfl
+@[simp] theorem lookup_literalAction_18_1 : literalAction (9, 0) 1 = 0 := rfl
+@[simp] theorem lookup_literalAction_19_0 : literalAction (9, 1) 0 = 0 := rfl
+@[simp] theorem lookup_literalAction_19_1 : literalAction (9, 1) 1 = (29645671 / 80000000000) := rfl
+@[simp] theorem lookup_literalPrefix_0_0 : literalPrefix (0, 0) 0 = (2907189 / 2000000000) := rfl
+@[simp] theorem lookup_literalPrefix_0_1 : literalPrefix (0, 0) 1 = (635472137201 / 3000000000000) := rfl
+@[simp] theorem lookup_literalPrefix_1_0 : literalPrefix (0, 1) 0 = 0 := rfl
+@[simp] theorem lookup_literalPrefix_1_1 : literalPrefix (0, 1) 1 = (546092173 / 250000000000) := rfl
+@[simp] theorem lookup_literalPrefix_2_0 : literalPrefix (1, 0) 0 = 0 := rfl
+@[simp] theorem lookup_literalPrefix_2_1 : literalPrefix (1, 0) 1 = (-1410703493089 / 6000000000000) := rfl
+@[simp] theorem lookup_literalPrefix_3_0 : literalPrefix (1, 1) 0 = 0 := rfl
+@[simp] theorem lookup_literalPrefix_3_1 : literalPrefix (1, 1) 1 = (8041 / 2000000000000) := rfl
+@[simp] theorem lookup_literalPrefix_4_0 : literalPrefix (2, 0) 0 = 0 := rfl
+@[simp] theorem lookup_literalPrefix_4_1 : literalPrefix (2, 0) 1 = (-960914647 / 2000000000000) := rfl
+@[simp] theorem lookup_literalPrefix_5_0 : literalPrefix (2, 1) 0 = 0 := rfl
+@[simp] theorem lookup_literalPrefix_5_1 : literalPrefix (2, 1) 1 = (-1121991959 / 250000000000) := rfl
+@[simp] theorem lookup_literalPrefix_6_0 : literalPrefix (3, 0) 0 = 0 := rfl
+@[simp] theorem lookup_literalPrefix_6_1 : literalPrefix (3, 0) 1 = (27853567159 / 2000000000000) := rfl
+@[simp] theorem lookup_literalPrefix_7_0 : literalPrefix (3, 1) 0 = 0 := rfl
+@[simp] theorem lookup_literalPrefix_7_1 : literalPrefix (3, 1) 1 = (14407332159 / 1000000000000) := rfl
+@[simp] theorem lookup_literalPrefix_8_0 : literalPrefix (4, 0) 0 = 0 := rfl
+@[simp] theorem lookup_literalPrefix_8_1 : literalPrefix (4, 0) 1 = (513010751 / 250000000000) := rfl
+@[simp] theorem lookup_literalPrefix_9_0 : literalPrefix (4, 1) 0 = 0 := rfl
+@[simp] theorem lookup_literalPrefix_9_1 : literalPrefix (4, 1) 1 = (-11874726457 / 1000000000000) := rfl
+@[simp] theorem lookup_literalPrefix_10_0 : literalPrefix (5, 0) 0 = 0 := rfl
+@[simp] theorem lookup_literalPrefix_10_1 : literalPrefix (5, 0) 1 = (9713103323 / 2000000000000) := rfl
+@[simp] theorem lookup_literalPrefix_11_0 : literalPrefix (5, 1) 0 = 0 := rfl
+@[simp] theorem lookup_literalPrefix_11_1 : literalPrefix (5, 1) 1 = (5609623943 / 2000000000000) := rfl
+@[simp] theorem lookup_literalPrefix_12_0 : literalPrefix (6, 0) 0 = 0 := rfl
+@[simp] theorem lookup_literalPrefix_12_1 : literalPrefix (6, 0) 1 = (6617535991 / 2000000000000) := rfl
+@[simp] theorem lookup_literalPrefix_13_0 : literalPrefix (6, 1) 0 = 0 := rfl
+@[simp] theorem lookup_literalPrefix_13_1 : literalPrefix (6, 1) 1 = (-386921513 / 250000000000) := rfl
+@[simp] theorem lookup_literalPrefix_14_0 : literalPrefix (7, 0) 0 = 0 := rfl
+@[simp] theorem lookup_literalPrefix_14_1 : literalPrefix (7, 0) 1 = (-148194321 / 400000000000) := rfl
+@[simp] theorem lookup_literalPrefix_15_0 : literalPrefix (7, 1) 0 = 0 := rfl
+@[simp] theorem lookup_literalPrefix_15_1 : literalPrefix (7, 1) 1 = (1723028659 / 2000000000000) := rfl
+@[simp] theorem lookup_literalPrefix_16_0 : literalPrefix (8, 0) 0 = 0 := rfl
+@[simp] theorem lookup_literalPrefix_16_1 : literalPrefix (8, 0) 1 = 0 := rfl
+@[simp] theorem lookup_literalPrefix_17_0 : literalPrefix (8, 1) 0 = 0 := rfl
+@[simp] theorem lookup_literalPrefix_17_1 : literalPrefix (8, 1) 1 = (29645671 / 80000000000) := rfl
+@[simp] theorem lookup_literalA_0_0 : literalA (0, 0) (0, 0) = (1287159129 / 10000000000) := rfl
+@[simp] theorem lookup_literalA_0_1 : literalA (0, 0) (0, 1) = (21157731 / 10000000000) := rfl
+@[simp] theorem lookup_literalA_0_2 : literalA (0, 0) (1, 0) = (-605009279 / 10000000000) := rfl
+@[simp] theorem lookup_literalA_0_3 : literalA (0, 0) (1, 1) = (142915161443 / 1200000000000) := rfl
+@[simp] theorem lookup_literalA_0_4 : literalA (0, 0) (2, 0) = (-1055978157 / 10000000000) := rfl
+@[simp] theorem lookup_literalA_0_5 : literalA (0, 0) (2, 1) = (201585060529 / 2000000000000) := rfl
+@[simp] theorem lookup_literalA_0_6 : literalA (0, 0) (3, 0) = (98406243 / 2500000000) := rfl
+@[simp] theorem lookup_literalA_0_7 : literalA (0, 0) (3, 1) = (1233703 / 625000000) := rfl
+@[simp] theorem lookup_literalA_0_8 : literalA (0, 0) (4, 0) = (-11460221 / 5000000000) := rfl
+@[simp] theorem lookup_literalA_0_9 : literalA (0, 0) (4, 1) = (-168148297 / 10000000000) := rfl
+@[simp] theorem lookup_literalA_0_10 : literalA (0, 0) (5, 0) = (1534173 / 2000000000) := rfl
+@[simp] theorem lookup_literalA_0_11 : literalA (0, 0) (5, 1) = (4793121 / 1250000000) := rfl
+@[simp] theorem lookup_literalA_0_12 : literalA (0, 0) (6, 0) = (1936951 / 1000000000) := rfl
+@[simp] theorem lookup_literalA_0_13 : literalA (0, 0) (6, 1) = (-441629 / 200000000) := rfl
+@[simp] theorem lookup_literalA_0_14 : literalA (0, 0) (7, 0) = (5405339 / 10000000000) := rfl
+@[simp] theorem lookup_literalA_0_15 : literalA (0, 0) (7, 1) = (12976049 / 5000000000) := rfl
+@[simp] theorem lookup_literalA_1_0 : literalA (0, 1) (0, 0) = (21157731 / 10000000000) := rfl
+@[simp] theorem lookup_literalA_1_1 : literalA (0, 1) (0, 1) = (16366166449 / 125000000000) := rfl
+@[simp] theorem lookup_literalA_1_2 : literalA (0, 1) (1, 0) = (-127516415167 / 2000000000000) := rfl
+@[simp] theorem lookup_literalA_1_3 : literalA (0, 1) (1, 1) = (-77113287 / 10000000000) := rfl
+@[simp] theorem lookup_literalA_1_4 : literalA (0, 1) (2, 0) = (27284063 / 1250000000) := rfl
+@[simp] theorem lookup_literalA_1_5 : literalA (0, 1) (2, 1) = (-1055298453 / 10000000000) := rfl
+@[simp] theorem lookup_literalA_1_6 : literalA (0, 1) (3, 0) = (81506679767 / 2000000000000) := rfl
+@[simp] theorem lookup_literalA_1_7 : literalA (0, 1) (3, 1) = (7706081 / 5000000000) := rfl
+@[simp] theorem lookup_literalA_1_8 : literalA (0, 1) (4, 0) = (-6459289 / 2500000000) := rfl
+@[simp] theorem lookup_literalA_1_9 : literalA (0, 1) (4, 1) = (-43824029 / 2500000000) := rfl
+@[simp] theorem lookup_literalA_1_10 : literalA (0, 1) (5, 0) = (2524381 / 2500000000) := rfl
+@[simp] theorem lookup_literalA_1_11 : literalA (0, 1) (5, 1) = (21996047 / 5000000000) := rfl
+@[simp] theorem lookup_literalA_1_12 : literalA (0, 1) (6, 0) = (283971 / 500000000) := rfl
+@[simp] theorem lookup_literalA_1_13 : literalA (0, 1) (6, 1) = (-11699771 / 5000000000) := rfl
+@[simp] theorem lookup_literalA_1_14 : literalA (0, 1) (7, 0) = (4705859 / 10000000000) := rfl
+@[simp] theorem lookup_literalA_1_15 : literalA (0, 1) (7, 1) = (1929473 / 10000000000) := rfl
+@[simp] theorem lookup_literalA_2_0 : literalA (1, 0) (0, 0) = (-605009279 / 10000000000) := rfl
+@[simp] theorem lookup_literalA_2_1 : literalA (1, 0) (0, 1) = (-127516415167 / 2000000000000) := rfl
+@[simp] theorem lookup_literalA_2_2 : literalA (1, 0) (1, 0) = (1127659707 / 10000000000) := rfl
+@[simp] theorem lookup_literalA_2_3 : literalA (1, 0) (1, 1) = (-209314491443 / 1200000000000) := rfl
+@[simp] theorem lookup_literalA_2_4 : literalA (1, 0) (2, 0) = (-610833 / 1250000000) := rfl
+@[simp] theorem lookup_literalA_2_5 : literalA (1, 0) (2, 1) = (-160712407 / 5000000000) := rfl
+@[simp] theorem lookup_literalA_2_6 : literalA (1, 0) (3, 0) = (-458492607 / 5000000000) := rfl
+@[simp] theorem lookup_literalA_2_7 : literalA (1, 0) (3, 1) = (88068465209 / 2000000000000) := rfl
+@[simp] theorem lookup_literalA_2_8 : literalA (1, 0) (4, 0) = (399565111 / 10000000000) := rfl
+@[simp] theorem lookup_literalA_2_9 : literalA (1, 0) (4, 1) = (352747 / 40000000) := rfl
+@[simp] theorem lookup_literalA_2_10 : literalA (1, 0) (5, 0) = (-17626927 / 10000000000) := rfl
+@[simp] theorem lookup_literalA_2_11 : literalA (1, 0) (5, 1) = (-42195999 / 2000000000) := rfl
+@[simp] theorem lookup_literalA_2_12 : literalA (1, 0) (6, 0) = (-227069 / 500000000) := rfl
+@[simp] theorem lookup_literalA_2_13 : literalA (1, 0) (6, 1) = (38212899 / 10000000000) := rfl
+@[simp] theorem lookup_literalA_2_14 : literalA (1, 0) (7, 0) = (2626187 / 1250000000) := rfl
+@[simp] theorem lookup_literalA_2_15 : literalA (1, 0) (7, 1) = (-10675627 / 5000000000) := rfl
+@[simp] theorem lookup_literalA_3_0 : literalA (1, 1) (0, 0) = (142915161443 / 1200000000000) := rfl
+@[simp] theorem lookup_literalA_3_1 : literalA (1, 1) (0, 1) = (-77113287 / 10000000000) := rfl
+@[simp] theorem lookup_literalA_3_2 : literalA (1, 1) (1, 0) = (-209314491443 / 1200000000000) := rfl
+@[simp] theorem lookup_literalA_3_3 : literalA (1, 1) (1, 1) = (28888183441 / 2000000000000) := rfl
+@[simp] theorem lookup_literalA_3_4 : literalA (1, 1) (2, 0) = (5463039 / 100000000) := rfl
+@[simp] theorem lookup_literalA_3_5 : literalA (1, 1) (2, 1) = (-11598299 / 5000000000) := rfl
+@[simp] theorem lookup_literalA_3_6 : literalA (1, 1) (3, 0) = (-37476543 / 2000000000) := rfl
+@[simp] theorem lookup_literalA_3_7 : literalA (1, 1) (3, 1) = (-365509 / 62500000) := rfl
+@[simp] theorem lookup_literalA_3_8 : literalA (1, 1) (4, 0) = (5918697 / 250000000) := rfl
+@[simp] theorem lookup_literalA_3_9 : literalA (1, 1) (4, 1) = (26909993 / 10000000000) := rfl
+@[simp] theorem lookup_literalA_3_10 : literalA (1, 1) (5, 0) = (-16110353 / 5000000000) := rfl
+@[simp] theorem lookup_literalA_3_11 : literalA (1, 1) (5, 1) = (-24346287 / 5000000000) := rfl
+@[simp] theorem lookup_literalA_3_12 : literalA (1, 1) (6, 0) = (-2739353 / 2000000000) := rfl
+@[simp] theorem lookup_literalA_3_13 : literalA (1, 1) (6, 1) = (45437147 / 10000000000) := rfl
+@[simp] theorem lookup_literalA_3_14 : literalA (1, 1) (7, 0) = (5106869 / 5000000000) := rfl
+@[simp] theorem lookup_literalA_3_15 : literalA (1, 1) (7, 1) = (-10265311 / 10000000000) := rfl
+@[simp] theorem lookup_literalA_4_0 : literalA (2, 0) (0, 0) = (-1055978157 / 10000000000) := rfl
+@[simp] theorem lookup_literalA_4_1 : literalA (2, 0) (0, 1) = (27284063 / 1250000000) := rfl
+@[simp] theorem lookup_literalA_4_2 : literalA (2, 0) (1, 0) = (-610833 / 1250000000) := rfl
+@[simp] theorem lookup_literalA_4_3 : literalA (2, 0) (1, 1) = (5463039 / 100000000) := rfl
+@[simp] theorem lookup_literalA_4_4 : literalA (2, 0) (2, 0) = (1989020577 / 10000000000) := rfl
+@[simp] theorem lookup_literalA_4_5 : literalA (2, 0) (2, 1) = (-37092764313 / 500000000000) := rfl
+@[simp] theorem lookup_literalA_4_6 : literalA (2, 0) (3, 0) = (-14758101 / 312500000) := rfl
+@[simp] theorem lookup_literalA_4_7 : literalA (2, 0) (3, 1) = (-11227663 / 312500000) := rfl
+@[simp] theorem lookup_literalA_4_8 : literalA (2, 0) (4, 0) = (-194874581 / 2500000000) := rfl
+@[simp] theorem lookup_literalA_4_9 : literalA (2, 0) (4, 1) = (16237585121 / 400000000000) := rfl
+@[simp] theorem lookup_literalA_4_10 : literalA (2, 0) (5, 0) = (338409243 / 10000000000) := rfl
+@[simp] theorem lookup_literalA_4_11 : literalA (2, 0) (5, 1) = (65761553 / 10000000000) := rfl
+@[simp] theorem lookup_literalA_4_12 : literalA (2, 0) (6, 0) = (129407 / 312500000) := rfl
+@[simp] theorem lookup_literalA_4_13 : literalA (2, 0) (6, 1) = (-16748659 / 1000000000) := rfl
+@[simp] theorem lookup_literalA_4_14 : literalA (2, 0) (7, 0) = (-28849027 / 5000000000) := rfl
+@[simp] theorem lookup_literalA_4_15 : literalA (2, 0) (7, 1) = (25962053 / 10000000000) := rfl
+@[simp] theorem lookup_literalA_5_0 : literalA (2, 1) (0, 0) = (201585060529 / 2000000000000) := rfl
+@[simp] theorem lookup_literalA_5_1 : literalA (2, 1) (0, 1) = (-1055298453 / 10000000000) := rfl
+@[simp] theorem lookup_literalA_5_2 : literalA (2, 1) (1, 0) = (-160712407 / 5000000000) := rfl
+@[simp] theorem lookup_literalA_5_3 : literalA (2, 1) (1, 1) = (-11598299 / 5000000000) := rfl
+@[simp] theorem lookup_literalA_5_4 : literalA (2, 1) (2, 0) = (-37092764313 / 500000000000) := rfl
+@[simp] theorem lookup_literalA_5_5 : literalA (2, 1) (2, 1) = (3609063927 / 31250000000) := rfl
+@[simp] theorem lookup_literalA_5_6 : literalA (2, 1) (3, 0) = (50282747 / 10000000000) := rfl
+@[simp] theorem lookup_literalA_5_7 : literalA (2, 1) (3, 1) = (-79278607 / 10000000000) := rfl
+@[simp] theorem lookup_literalA_5_8 : literalA (2, 1) (4, 0) = (-79157107 / 5000000000) := rfl
+@[simp] theorem lookup_literalA_5_9 : literalA (2, 1) (4, 1) = (-55865313 / 10000000000) := rfl
+@[simp] theorem lookup_literalA_5_10 : literalA (2, 1) (5, 0) = (38478366323 / 2000000000000) := rfl
+@[simp] theorem lookup_literalA_5_11 : literalA (2, 1) (5, 1) = (4329327 / 2000000000) := rfl
+@[simp] theorem lookup_literalA_5_12 : literalA (2, 1) (6, 0) = (-6147657 / 5000000000) := rfl
+@[simp] theorem lookup_literalA_5_13 : literalA (2, 1) (6, 1) = (-35391833 / 10000000000) := rfl
+@[simp] theorem lookup_literalA_5_14 : literalA (2, 1) (7, 0) = (-19829153 / 10000000000) := rfl
+@[simp] theorem lookup_literalA_5_15 : literalA (2, 1) (7, 1) = (34084219 / 10000000000) := rfl
+@[simp] theorem lookup_literalA_6_0 : literalA (3, 0) (0, 0) = (98406243 / 2500000000) := rfl
+@[simp] theorem lookup_literalA_6_1 : literalA (3, 0) (0, 1) = (81506679767 / 2000000000000) := rfl
+@[simp] theorem lookup_literalA_6_2 : literalA (3, 0) (1, 0) = (-458492607 / 5000000000) := rfl
+@[simp] theorem lookup_literalA_6_3 : literalA (3, 0) (1, 1) = (-37476543 / 2000000000) := rfl
+@[simp] theorem lookup_literalA_6_4 : literalA (3, 0) (2, 0) = (-14758101 / 312500000) := rfl
+@[simp] theorem lookup_literalA_6_5 : literalA (3, 0) (2, 1) = (50282747 / 10000000000) := rfl
+@[simp] theorem lookup_literalA_6_6 : literalA (3, 0) (3, 0) = (90087279 / 500000000) := rfl
+@[simp] theorem lookup_literalA_6_7 : literalA (3, 0) (3, 1) = (-93090529 / 10000000000) := rfl
+@[simp] theorem lookup_literalA_6_8 : literalA (3, 0) (4, 0) = (-439718213 / 10000000000) := rfl
+@[simp] theorem lookup_literalA_6_9 : literalA (3, 0) (4, 1) = (-62752687 / 2000000000) := rfl
+@[simp] theorem lookup_literalA_6_10 : literalA (3, 0) (5, 0) = (-609143249 / 10000000000) := rfl
+@[simp] theorem lookup_literalA_6_11 : literalA (3, 0) (5, 1) = (8448587999 / 250000000000) := rfl
+@[simp] theorem lookup_literalA_6_12 : literalA (3, 0) (6, 0) = (117103307 / 5000000000) := rfl
+@[simp] theorem lookup_literalA_6_13 : literalA (3, 0) (6, 1) = (33652543 / 10000000000) := rfl
+@[simp] theorem lookup_literalA_6_14 : literalA (3, 0) (7, 0) = (30704333 / 10000000000) := rfl
+@[simp] theorem lookup_literalA_6_15 : literalA (3, 0) (7, 1) = (-118246931 / 10000000000) := rfl
+@[simp] theorem lookup_literalA_7_0 : literalA (3, 1) (0, 0) = (1233703 / 625000000) := rfl
+@[simp] theorem lookup_literalA_7_1 : literalA (3, 1) (0, 1) = (7706081 / 5000000000) := rfl
+@[simp] theorem lookup_literalA_7_2 : literalA (3, 1) (1, 0) = (88068465209 / 2000000000000) := rfl
+@[simp] theorem lookup_literalA_7_3 : literalA (3, 1) (1, 1) = (-365509 / 62500000) := rfl
+@[simp] theorem lookup_literalA_7_4 : literalA (3, 1) (2, 0) = (-11227663 / 312500000) := rfl
+@[simp] theorem lookup_literalA_7_5 : literalA (3, 1) (2, 1) = (-79278607 / 10000000000) := rfl
+@[simp] theorem lookup_literalA_7_6 : literalA (3, 1) (3, 0) = (-93090529 / 10000000000) := rfl
+@[simp] theorem lookup_literalA_7_7 : literalA (3, 1) (3, 1) = (38301231359 / 1000000000000) := rfl
+@[simp] theorem lookup_literalA_7_8 : literalA (3, 1) (4, 0) = (-131361 / 250000000) := rfl
+@[simp] theorem lookup_literalA_7_9 : literalA (3, 1) (4, 1) = (-788183 / 100000000) := rfl
+@[simp] theorem lookup_literalA_7_10 : literalA (3, 1) (5, 0) = (-130623357 / 10000000000) := rfl
+@[simp] theorem lookup_literalA_7_11 : literalA (3, 1) (5, 1) = (-9764677 / 2000000000) := rfl
+@[simp] theorem lookup_literalA_7_12 : literalA (3, 1) (6, 0) = (26360031391 / 2000000000000) := rfl
+@[simp] theorem lookup_literalA_7_13 : literalA (3, 1) (6, 1) = (1648333 / 1000000000) := rfl
+@[simp] theorem lookup_literalA_7_14 : literalA (3, 1) (7, 0) = (3446567 / 2500000000) := rfl
+@[simp] theorem lookup_literalA_7_15 : literalA (3, 1) (7, 1) = (-22001127 / 10000000000) := rfl
+@[simp] theorem lookup_literalA_8_0 : literalA (4, 0) (0, 0) = (-11460221 / 5000000000) := rfl
+@[simp] theorem lookup_literalA_8_1 : literalA (4, 0) (0, 1) = (-6459289 / 2500000000) := rfl
+@[simp] theorem lookup_literalA_8_2 : literalA (4, 0) (1, 0) = (399565111 / 10000000000) := rfl
+@[simp] theorem lookup_literalA_8_3 : literalA (4, 0) (1, 1) = (5918697 / 250000000) := rfl
+@[simp] theorem lookup_literalA_8_4 : literalA (4, 0) (2, 0) = (-194874581 / 2500000000) := rfl
+@[simp] theorem lookup_literalA_8_5 : literalA (4, 0) (2, 1) = (-79157107 / 5000000000) := rfl
+@[simp] theorem lookup_literalA_8_6 : literalA (4, 0) (3, 0) = (-439718213 / 10000000000) := rfl
+@[simp] theorem lookup_literalA_8_7 : literalA (4, 0) (3, 1) = (-131361 / 250000000) := rfl
+@[simp] theorem lookup_literalA_8_8 : literalA (4, 0) (4, 0) = (369017661 / 2500000000) := rfl
+@[simp] theorem lookup_literalA_8_9 : literalA (4, 0) (4, 1) = (-1540631 / 10000000000) := rfl
+@[simp] theorem lookup_literalA_8_10 : literalA (4, 0) (5, 0) = (-348156633 / 10000000000) := rfl
+@[simp] theorem lookup_literalA_8_11 : literalA (4, 0) (5, 1) = (-776668953 / 31250000000) := rfl
+@[simp] theorem lookup_literalA_8_12 : literalA (4, 0) (6, 0) = (-403669997 / 10000000000) := rfl
+@[simp] theorem lookup_literalA_8_13 : literalA (4, 0) (6, 1) = (269483597 / 10000000000) := rfl
+@[simp] theorem lookup_literalA_8_14 : literalA (4, 0) (7, 0) = (95605639 / 10000000000) := rfl
+@[simp] theorem lookup_literalA_8_15 : literalA (4, 0) (7, 1) = (5536639 / 5000000000) := rfl
+@[simp] theorem lookup_literalA_9_0 : literalA (4, 1) (0, 0) = (-168148297 / 10000000000) := rfl
+@[simp] theorem lookup_literalA_9_1 : literalA (4, 1) (0, 1) = (-43824029 / 2500000000) := rfl
+@[simp] theorem lookup_literalA_9_2 : literalA (4, 1) (1, 0) = (352747 / 40000000) := rfl
+@[simp] theorem lookup_literalA_9_3 : literalA (4, 1) (1, 1) = (26909993 / 10000000000) := rfl
+@[simp] theorem lookup_literalA_9_4 : literalA (4, 1) (2, 0) = (16237585121 / 400000000000) := rfl
+@[simp] theorem lookup_literalA_9_5 : literalA (4, 1) (2, 1) = (-55865313 / 10000000000) := rfl
+@[simp] theorem lookup_literalA_9_6 : literalA (4, 1) (3, 0) = (-62752687 / 2000000000) := rfl
+@[simp] theorem lookup_literalA_9_7 : literalA (4, 1) (3, 1) = (-788183 / 100000000) := rfl
+@[simp] theorem lookup_literalA_9_8 : literalA (4, 1) (4, 0) = (-1540631 / 10000000000) := rfl
+@[simp] theorem lookup_literalA_9_9 : literalA (4, 1) (4, 1) = (25992959943 / 1000000000000) := rfl
+@[simp] theorem lookup_literalA_9_10 : literalA (4, 1) (5, 0) = (540019 / 1250000000) := rfl
+@[simp] theorem lookup_literalA_9_11 : literalA (4, 1) (5, 1) = (-34390347 / 5000000000) := rfl
+@[simp] theorem lookup_literalA_9_12 : literalA (4, 1) (6, 0) = (-74063499 / 10000000000) := rfl
+@[simp] theorem lookup_literalA_9_13 : literalA (4, 1) (6, 1) = (-9830827 / 2500000000) := rfl
+@[simp] theorem lookup_literalA_9_14 : literalA (4, 1) (7, 0) = (1801208839 / 400000000000) := rfl
+@[simp] theorem lookup_literalA_9_15 : literalA (4, 1) (7, 1) = (12993681 / 10000000000) := rfl
+@[simp] theorem lookup_literalA_10_0 : literalA (5, 0) (0, 0) = (1534173 / 2000000000) := rfl
+@[simp] theorem lookup_literalA_10_1 : literalA (5, 0) (0, 1) = (2524381 / 2500000000) := rfl
+@[simp] theorem lookup_literalA_10_2 : literalA (5, 0) (1, 0) = (-17626927 / 10000000000) := rfl
+@[simp] theorem lookup_literalA_10_3 : literalA (5, 0) (1, 1) = (-16110353 / 5000000000) := rfl
+@[simp] theorem lookup_literalA_10_4 : literalA (5, 0) (2, 0) = (338409243 / 10000000000) := rfl
+@[simp] theorem lookup_literalA_10_5 : literalA (5, 0) (2, 1) = (38478366323 / 2000000000000) := rfl
+@[simp] theorem lookup_literalA_10_6 : literalA (5, 0) (3, 0) = (-609143249 / 10000000000) := rfl
+@[simp] theorem lookup_literalA_10_7 : literalA (5, 0) (3, 1) = (-130623357 / 10000000000) := rfl
+@[simp] theorem lookup_literalA_10_8 : literalA (5, 0) (4, 0) = (-348156633 / 10000000000) := rfl
+@[simp] theorem lookup_literalA_10_9 : literalA (5, 0) (4, 1) = (540019 / 1250000000) := rfl
+@[simp] theorem lookup_literalA_10_10 : literalA (5, 0) (5, 0) = (534772043 / 5000000000) := rfl
+@[simp] theorem lookup_literalA_10_11 : literalA (5, 0) (5, 1) = (38648767 / 10000000000) := rfl
+@[simp] theorem lookup_literalA_10_12 : literalA (5, 0) (6, 0) = (-334145587 / 10000000000) := rfl
+@[simp] theorem lookup_literalA_10_13 : literalA (5, 0) (6, 1) = (-177506937 / 10000000000) := rfl
+@[simp] theorem lookup_literalA_10_14 : literalA (5, 0) (7, 0) = (-72617521 / 5000000000) := rfl
+@[simp] theorem lookup_literalA_10_15 : literalA (5, 0) (7, 1) = (94011041 / 5000000000) := rfl
+@[simp] theorem lookup_literalA_11_0 : literalA (5, 1) (0, 0) = (4793121 / 1250000000) := rfl
+@[simp] theorem lookup_literalA_11_1 : literalA (5, 1) (0, 1) = (21996047 / 5000000000) := rfl
+@[simp] theorem lookup_literalA_11_2 : literalA (5, 1) (1, 0) = (-42195999 / 2000000000) := rfl
+@[simp] theorem lookup_literalA_11_3 : literalA (5, 1) (1, 1) = (-24346287 / 5000000000) := rfl
+@[simp] theorem lookup_literalA_11_4 : literalA (5, 1) (2, 0) = (65761553 / 10000000000) := rfl
+@[simp] theorem lookup_literalA_11_5 : literalA (5, 1) (2, 1) = (4329327 / 2000000000) := rfl
+@[simp] theorem lookup_literalA_11_6 : literalA (5, 1) (3, 0) = (8448587999 / 250000000000) := rfl
+@[simp] theorem lookup_literalA_11_7 : literalA (5, 1) (3, 1) = (-9764677 / 2000000000) := rfl
+@[simp] theorem lookup_literalA_11_8 : literalA (5, 1) (4, 0) = (-776668953 / 31250000000) := rfl
+@[simp] theorem lookup_literalA_11_9 : literalA (5, 1) (4, 1) = (-34390347 / 5000000000) := rfl
+@[simp] theorem lookup_literalA_11_10 : literalA (5, 1) (5, 0) = (38648767 / 10000000000) := rfl
+@[simp] theorem lookup_literalA_11_11 : literalA (5, 1) (5, 1) = (41513320343 / 2000000000000) := rfl
+@[simp] theorem lookup_literalA_11_12 : literalA (5, 1) (6, 0) = (-17990087 / 10000000000) := rfl
+@[simp] theorem lookup_literalA_11_13 : literalA (5, 1) (6, 1) = (-61285967 / 10000000000) := rfl
+@[simp] theorem lookup_literalA_11_14 : literalA (5, 1) (7, 0) = (-40429617 / 10000000000) := rfl
+@[simp] theorem lookup_literalA_11_15 : literalA (5, 1) (7, 1) = (-27054137 / 10000000000) := rfl
+@[simp] theorem lookup_literalA_12_0 : literalA (6, 0) (0, 0) = (1936951 / 1000000000) := rfl
+@[simp] theorem lookup_literalA_12_1 : literalA (6, 0) (0, 1) = (283971 / 500000000) := rfl
+@[simp] theorem lookup_literalA_12_2 : literalA (6, 0) (1, 0) = (-227069 / 500000000) := rfl
+@[simp] theorem lookup_literalA_12_3 : literalA (6, 0) (1, 1) = (-2739353 / 2000000000) := rfl
+@[simp] theorem lookup_literalA_12_4 : literalA (6, 0) (2, 0) = (129407 / 312500000) := rfl
+@[simp] theorem lookup_literalA_12_5 : literalA (6, 0) (2, 1) = (-6147657 / 5000000000) := rfl
+@[simp] theorem lookup_literalA_12_6 : literalA (6, 0) (3, 0) = (117103307 / 5000000000) := rfl
+@[simp] theorem lookup_literalA_12_7 : literalA (6, 0) (3, 1) = (26360031391 / 2000000000000) := rfl
+@[simp] theorem lookup_literalA_12_8 : literalA (6, 0) (4, 0) = (-403669997 / 10000000000) := rfl
+@[simp] theorem lookup_literalA_12_9 : literalA (6, 0) (4, 1) = (-74063499 / 10000000000) := rfl
+@[simp] theorem lookup_literalA_12_10 : literalA (6, 0) (5, 0) = (-334145587 / 10000000000) := rfl
+@[simp] theorem lookup_literalA_12_11 : literalA (6, 0) (5, 1) = (-17990087 / 10000000000) := rfl
+@[simp] theorem lookup_literalA_12_12 : literalA (6, 0) (6, 0) = (174515517 / 2500000000) := rfl
+@[simp] theorem lookup_literalA_12_13 : literalA (6, 0) (6, 1) = (2697569 / 625000000) := rfl
+@[simp] theorem lookup_literalA_12_14 : literalA (6, 0) (7, 0) = (-21255117 / 2000000000) := rfl
+@[simp] theorem lookup_literalA_12_15 : literalA (6, 0) (7, 1) = (-113447819 / 10000000000) := rfl
+@[simp] theorem lookup_literalA_13_0 : literalA (6, 1) (0, 0) = (-441629 / 200000000) := rfl
+@[simp] theorem lookup_literalA_13_1 : literalA (6, 1) (0, 1) = (-11699771 / 5000000000) := rfl
+@[simp] theorem lookup_literalA_13_2 : literalA (6, 1) (1, 0) = (38212899 / 10000000000) := rfl
+@[simp] theorem lookup_literalA_13_3 : literalA (6, 1) (1, 1) = (45437147 / 10000000000) := rfl
+@[simp] theorem lookup_literalA_13_4 : literalA (6, 1) (2, 0) = (-16748659 / 1000000000) := rfl
+@[simp] theorem lookup_literalA_13_5 : literalA (6, 1) (2, 1) = (-35391833 / 10000000000) := rfl
+@[simp] theorem lookup_literalA_13_6 : literalA (6, 1) (3, 0) = (33652543 / 10000000000) := rfl
+@[simp] theorem lookup_literalA_13_7 : literalA (6, 1) (3, 1) = (1648333 / 1000000000) := rfl
+@[simp] theorem lookup_literalA_13_8 : literalA (6, 1) (4, 0) = (269483597 / 10000000000) := rfl
+@[simp] theorem lookup_literalA_13_9 : literalA (6, 1) (4, 1) = (-9830827 / 2500000000) := rfl
+@[simp] theorem lookup_literalA_13_10 : literalA (6, 1) (5, 0) = (-177506937 / 10000000000) := rfl
+@[simp] theorem lookup_literalA_13_11 : literalA (6, 1) (5, 1) = (-61285967 / 10000000000) := rfl
+@[simp] theorem lookup_literalA_13_12 : literalA (6, 1) (6, 0) = (2697569 / 625000000) := rfl
+@[simp] theorem lookup_literalA_13_13 : literalA (6, 1) (6, 1) = (3322380087 / 250000000000) := rfl
+@[simp] theorem lookup_literalA_13_14 : literalA (6, 1) (7, 0) = (-14886319 / 10000000000) := rfl
+@[simp] theorem lookup_literalA_13_15 : literalA (6, 1) (7, 1) = (-23359003 / 5000000000) := rfl
+@[simp] theorem lookup_literalA_14_0 : literalA (7, 0) (0, 0) = (5405339 / 10000000000) := rfl
+@[simp] theorem lookup_literalA_14_1 : literalA (7, 0) (0, 1) = (4705859 / 10000000000) := rfl
+@[simp] theorem lookup_literalA_14_2 : literalA (7, 0) (1, 0) = (2626187 / 1250000000) := rfl
+@[simp] theorem lookup_literalA_14_3 : literalA (7, 0) (1, 1) = (5106869 / 5000000000) := rfl
+@[simp] theorem lookup_literalA_14_4 : literalA (7, 0) (2, 0) = (-28849027 / 5000000000) := rfl
+@[simp] theorem lookup_literalA_14_5 : literalA (7, 0) (2, 1) = (-19829153 / 10000000000) := rfl
+@[simp] theorem lookup_literalA_14_6 : literalA (7, 0) (3, 0) = (30704333 / 10000000000) := rfl
+@[simp] theorem lookup_literalA_14_7 : literalA (7, 0) (3, 1) = (3446567 / 2500000000) := rfl
+@[simp] theorem lookup_literalA_14_8 : literalA (7, 0) (4, 0) = (95605639 / 10000000000) := rfl
+@[simp] theorem lookup_literalA_14_9 : literalA (7, 0) (4, 1) = (1801208839 / 400000000000) := rfl
+@[simp] theorem lookup_literalA_14_10 : literalA (7, 0) (5, 0) = (-72617521 / 5000000000) := rfl
+@[simp] theorem lookup_literalA_14_11 : literalA (7, 0) (5, 1) = (-40429617 / 10000000000) := rfl
+@[simp] theorem lookup_literalA_14_12 : literalA (7, 0) (6, 0) = (-21255117 / 2000000000) := rfl
+@[simp] theorem lookup_literalA_14_13 : literalA (7, 0) (6, 1) = (-14886319 / 10000000000) := rfl
+@[simp] theorem lookup_literalA_14_14 : literalA (7, 0) (7, 0) = (116338777 / 5000000000) := rfl
+@[simp] theorem lookup_literalA_14_15 : literalA (7, 0) (7, 1) = (8714367 / 5000000000) := rfl
+@[simp] theorem lookup_literalA_15_0 : literalA (7, 1) (0, 0) = (12976049 / 5000000000) := rfl
+@[simp] theorem lookup_literalA_15_1 : literalA (7, 1) (0, 1) = (1929473 / 10000000000) := rfl
+@[simp] theorem lookup_literalA_15_2 : literalA (7, 1) (1, 0) = (-10675627 / 5000000000) := rfl
+@[simp] theorem lookup_literalA_15_3 : literalA (7, 1) (1, 1) = (-10265311 / 10000000000) := rfl
+@[simp] theorem lookup_literalA_15_4 : literalA (7, 1) (2, 0) = (25962053 / 10000000000) := rfl
+@[simp] theorem lookup_literalA_15_5 : literalA (7, 1) (2, 1) = (34084219 / 10000000000) := rfl
+@[simp] theorem lookup_literalA_15_6 : literalA (7, 1) (3, 0) = (-118246931 / 10000000000) := rfl
+@[simp] theorem lookup_literalA_15_7 : literalA (7, 1) (3, 1) = (-22001127 / 10000000000) := rfl
+@[simp] theorem lookup_literalA_15_8 : literalA (7, 1) (4, 0) = (5536639 / 5000000000) := rfl
+@[simp] theorem lookup_literalA_15_9 : literalA (7, 1) (4, 1) = (12993681 / 10000000000) := rfl
+@[simp] theorem lookup_literalA_15_10 : literalA (7, 1) (5, 0) = (94011041 / 5000000000) := rfl
+@[simp] theorem lookup_literalA_15_11 : literalA (7, 1) (5, 1) = (-27054137 / 10000000000) := rfl
+@[simp] theorem lookup_literalA_15_12 : literalA (7, 1) (6, 0) = (-113447819 / 10000000000) := rfl
+@[simp] theorem lookup_literalA_15_13 : literalA (7, 1) (6, 1) = (-23359003 / 5000000000) := rfl
+@[simp] theorem lookup_literalA_15_14 : literalA (7, 1) (7, 0) = (8714367 / 5000000000) := rfl
+@[simp] theorem lookup_literalA_15_15 : literalA (7, 1) (7, 1) = (19989060459 / 2000000000000) := rfl
+@[simp] theorem lookup_literalT_0_0 : literalT (0, 0) 0 = (-1848249 / 1250000000) := rfl
+@[simp] theorem lookup_literalT_0_1 : literalT (0, 0) 1 = (2195589 / 5000000000) := rfl
+@[simp] theorem lookup_literalT_1_0 : literalT (0, 1) 0 = (-805441 / 2000000000) := rfl
+@[simp] theorem lookup_literalT_1_1 : literalT (0, 1) 1 = (-441899 / 250000000) := rfl
+@[simp] theorem lookup_literalT_2_0 : literalT (1, 0) 0 = (16303 / 200000000) := rfl
+@[simp] theorem lookup_literalT_2_1 : literalT (1, 0) 1 = (17296 / 9765625) := rfl
+@[simp] theorem lookup_literalT_3_0 : literalT (1, 1) 0 = (-3318791 / 5000000000) := rfl
+@[simp] theorem lookup_literalT_3_1 : literalT (1, 1) 1 = (961193 / 10000000000) := rfl
+@[simp] theorem lookup_literalT_4_0 : literalT (2, 0) 0 = (38749587 / 10000000000) := rfl
+@[simp] theorem lookup_literalT_4_1 : literalT (2, 0) 1 = (1582881 / 10000000000) := rfl
+@[simp] theorem lookup_literalT_5_0 : literalT (2, 1) 0 = (31189 / 100000000) := rfl
+@[simp] theorem lookup_literalT_5_1 : literalT (2, 1) 1 = (-1296037 / 2000000000) := rfl
+@[simp] theorem lookup_literalT_6_0 : literalT (3, 0) 0 = (-22175591 / 10000000000) := rfl
+@[simp] theorem lookup_literalT_6_1 : literalT (3, 0) 1 = (22339237 / 10000000000) := rfl
+@[simp] theorem lookup_literalT_7_0 : literalT (3, 1) 0 = (-17414457 / 10000000000) := rfl
+@[simp] theorem lookup_literalT_7_1 : literalT (3, 1) 1 = (132547 / 80000000) := rfl
+@[simp] theorem lookup_literalT_8_0 : literalT (4, 0) 0 = (4544443 / 2000000000) := rfl
+@[simp] theorem lookup_literalT_8_1 : literalT (4, 0) 1 = (-57303819 / 10000000000) := rfl
+@[simp] theorem lookup_literalT_9_0 : literalT (4, 1) 0 = (14039111 / 10000000000) := rfl
+@[simp] theorem lookup_literalT_9_1 : literalT (4, 1) 1 = (-496807 / 10000000000) := rfl
+@[simp] theorem lookup_literalT_10_0 : literalT (5, 0) 0 = (9670811 / 2500000000) := rfl
+@[simp] theorem lookup_literalT_10_1 : literalT (5, 0) 1 = (-69631 / 15625000) := rfl
+@[simp] theorem lookup_literalT_11_0 : literalT (5, 1) 0 = (9308739 / 2500000000) := rfl
+@[simp] theorem lookup_literalT_11_1 : literalT (5, 1) 1 = (4739773 / 5000000000) := rfl
+@[simp] theorem lookup_literalT_12_0 : literalT (6, 0) 0 = (-107146667 / 10000000000) := rfl
+@[simp] theorem lookup_literalT_12_1 : literalT (6, 0) 1 = (83940483 / 10000000000) := rfl
+@[simp] theorem lookup_literalT_13_0 : literalT (6, 1) 0 = (-2548847 / 10000000000) := rfl
+@[simp] theorem lookup_literalT_13_1 : literalT (6, 1) 1 = (-834777 / 2000000000) := rfl
+@[simp] theorem lookup_literalT_14_0 : literalT (7, 0) 0 = (-952421 / 125000000) := rfl
+@[simp] theorem lookup_literalT_14_1 : literalT (7, 0) 1 = (-19724589 / 10000000000) := rfl
+@[simp] theorem lookup_literalT_15_0 : literalT (7, 1) 0 = (-15392241 / 10000000000) := rfl
+@[simp] theorem lookup_literalT_15_1 : literalT (7, 1) 1 = (-34298951 / 10000000000) := rfl
+@[simp] theorem lookup_literalW_0_0 : literalW 0 0 = (59665867 / 5000000000) := rfl
+@[simp] theorem lookup_literalW_0_1 : literalW 0 1 = (-1674527 / 2000000000) := rfl
+@[simp] theorem lookup_literalW_1_0 : literalW 1 0 = (-1674527 / 2000000000) := rfl
+@[simp] theorem lookup_literalW_1_1 : literalW 1 1 = (318579063 / 80000000000) := rfl
+@[simp] theorem lookup_literalP_0_0 : literalP (0, 0) (0, 0) = (1287159129 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_0_1 : literalP (0, 0) (0, 1) = (21157731 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_0_2 : literalP (0, 0) (1, 0) = (-605009279 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_0_3 : literalP (0, 0) (1, 1) = (142915161443 / 1200000000000) := rfl
+@[simp] theorem lookup_literalP_0_4 : literalP (0, 0) (2, 0) = (-1055978157 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_0_5 : literalP (0, 0) (2, 1) = (201585060529 / 2000000000000) := rfl
+@[simp] theorem lookup_literalP_0_6 : literalP (0, 0) (3, 0) = (98406243 / 2500000000) := rfl
+@[simp] theorem lookup_literalP_0_7 : literalP (0, 0) (3, 1) = (1233703 / 625000000) := rfl
+@[simp] theorem lookup_literalP_0_8 : literalP (0, 0) (4, 0) = (-11460221 / 5000000000) := rfl
+@[simp] theorem lookup_literalP_0_9 : literalP (0, 0) (4, 1) = (-168148297 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_0_10 : literalP (0, 0) (5, 0) = (1534173 / 2000000000) := rfl
+@[simp] theorem lookup_literalP_0_11 : literalP (0, 0) (5, 1) = (4793121 / 1250000000) := rfl
+@[simp] theorem lookup_literalP_0_12 : literalP (0, 0) (6, 0) = (1936951 / 1000000000) := rfl
+@[simp] theorem lookup_literalP_0_13 : literalP (0, 0) (6, 1) = (-441629 / 200000000) := rfl
+@[simp] theorem lookup_literalP_0_14 : literalP (0, 0) (7, 0) = (5405339 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_0_15 : literalP (0, 0) (7, 1) = (12976049 / 5000000000) := rfl
+@[simp] theorem lookup_literalP_0_16 : literalP (0, 0) (8, 0) = (-1848249 / 1250000000) := rfl
+@[simp] theorem lookup_literalP_0_17 : literalP (0, 0) (8, 1) = (2195589 / 5000000000) := rfl
+@[simp] theorem lookup_literalP_1_0 : literalP (0, 1) (0, 0) = (21157731 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_1_1 : literalP (0, 1) (0, 1) = (16366166449 / 125000000000) := rfl
+@[simp] theorem lookup_literalP_1_2 : literalP (0, 1) (1, 0) = (-127516415167 / 2000000000000) := rfl
+@[simp] theorem lookup_literalP_1_3 : literalP (0, 1) (1, 1) = (-77113287 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_1_4 : literalP (0, 1) (2, 0) = (27284063 / 1250000000) := rfl
+@[simp] theorem lookup_literalP_1_5 : literalP (0, 1) (2, 1) = (-1055298453 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_1_6 : literalP (0, 1) (3, 0) = (81506679767 / 2000000000000) := rfl
+@[simp] theorem lookup_literalP_1_7 : literalP (0, 1) (3, 1) = (7706081 / 5000000000) := rfl
+@[simp] theorem lookup_literalP_1_8 : literalP (0, 1) (4, 0) = (-6459289 / 2500000000) := rfl
+@[simp] theorem lookup_literalP_1_9 : literalP (0, 1) (4, 1) = (-43824029 / 2500000000) := rfl
+@[simp] theorem lookup_literalP_1_10 : literalP (0, 1) (5, 0) = (2524381 / 2500000000) := rfl
+@[simp] theorem lookup_literalP_1_11 : literalP (0, 1) (5, 1) = (21996047 / 5000000000) := rfl
+@[simp] theorem lookup_literalP_1_12 : literalP (0, 1) (6, 0) = (283971 / 500000000) := rfl
+@[simp] theorem lookup_literalP_1_13 : literalP (0, 1) (6, 1) = (-11699771 / 5000000000) := rfl
+@[simp] theorem lookup_literalP_1_14 : literalP (0, 1) (7, 0) = (4705859 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_1_15 : literalP (0, 1) (7, 1) = (1929473 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_1_16 : literalP (0, 1) (8, 0) = (-805441 / 2000000000) := rfl
+@[simp] theorem lookup_literalP_1_17 : literalP (0, 1) (8, 1) = (-441899 / 250000000) := rfl
+@[simp] theorem lookup_literalP_2_0 : literalP (1, 0) (0, 0) = (-605009279 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_2_1 : literalP (1, 0) (0, 1) = (-127516415167 / 2000000000000) := rfl
+@[simp] theorem lookup_literalP_2_2 : literalP (1, 0) (1, 0) = (1127659707 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_2_3 : literalP (1, 0) (1, 1) = (-209314491443 / 1200000000000) := rfl
+@[simp] theorem lookup_literalP_2_4 : literalP (1, 0) (2, 0) = (-610833 / 1250000000) := rfl
+@[simp] theorem lookup_literalP_2_5 : literalP (1, 0) (2, 1) = (-160712407 / 5000000000) := rfl
+@[simp] theorem lookup_literalP_2_6 : literalP (1, 0) (3, 0) = (-458492607 / 5000000000) := rfl
+@[simp] theorem lookup_literalP_2_7 : literalP (1, 0) (3, 1) = (88068465209 / 2000000000000) := rfl
+@[simp] theorem lookup_literalP_2_8 : literalP (1, 0) (4, 0) = (399565111 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_2_9 : literalP (1, 0) (4, 1) = (352747 / 40000000) := rfl
+@[simp] theorem lookup_literalP_2_10 : literalP (1, 0) (5, 0) = (-17626927 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_2_11 : literalP (1, 0) (5, 1) = (-42195999 / 2000000000) := rfl
+@[simp] theorem lookup_literalP_2_12 : literalP (1, 0) (6, 0) = (-227069 / 500000000) := rfl
+@[simp] theorem lookup_literalP_2_13 : literalP (1, 0) (6, 1) = (38212899 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_2_14 : literalP (1, 0) (7, 0) = (2626187 / 1250000000) := rfl
+@[simp] theorem lookup_literalP_2_15 : literalP (1, 0) (7, 1) = (-10675627 / 5000000000) := rfl
+@[simp] theorem lookup_literalP_2_16 : literalP (1, 0) (8, 0) = (16303 / 200000000) := rfl
+@[simp] theorem lookup_literalP_2_17 : literalP (1, 0) (8, 1) = (17296 / 9765625) := rfl
+@[simp] theorem lookup_literalP_3_0 : literalP (1, 1) (0, 0) = (142915161443 / 1200000000000) := rfl
+@[simp] theorem lookup_literalP_3_1 : literalP (1, 1) (0, 1) = (-77113287 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_3_2 : literalP (1, 1) (1, 0) = (-209314491443 / 1200000000000) := rfl
+@[simp] theorem lookup_literalP_3_3 : literalP (1, 1) (1, 1) = (28888183441 / 2000000000000) := rfl
+@[simp] theorem lookup_literalP_3_4 : literalP (1, 1) (2, 0) = (5463039 / 100000000) := rfl
+@[simp] theorem lookup_literalP_3_5 : literalP (1, 1) (2, 1) = (-11598299 / 5000000000) := rfl
+@[simp] theorem lookup_literalP_3_6 : literalP (1, 1) (3, 0) = (-37476543 / 2000000000) := rfl
+@[simp] theorem lookup_literalP_3_7 : literalP (1, 1) (3, 1) = (-365509 / 62500000) := rfl
+@[simp] theorem lookup_literalP_3_8 : literalP (1, 1) (4, 0) = (5918697 / 250000000) := rfl
+@[simp] theorem lookup_literalP_3_9 : literalP (1, 1) (4, 1) = (26909993 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_3_10 : literalP (1, 1) (5, 0) = (-16110353 / 5000000000) := rfl
+@[simp] theorem lookup_literalP_3_11 : literalP (1, 1) (5, 1) = (-24346287 / 5000000000) := rfl
+@[simp] theorem lookup_literalP_3_12 : literalP (1, 1) (6, 0) = (-2739353 / 2000000000) := rfl
+@[simp] theorem lookup_literalP_3_13 : literalP (1, 1) (6, 1) = (45437147 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_3_14 : literalP (1, 1) (7, 0) = (5106869 / 5000000000) := rfl
+@[simp] theorem lookup_literalP_3_15 : literalP (1, 1) (7, 1) = (-10265311 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_3_16 : literalP (1, 1) (8, 0) = (-3318791 / 5000000000) := rfl
+@[simp] theorem lookup_literalP_3_17 : literalP (1, 1) (8, 1) = (961193 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_4_0 : literalP (2, 0) (0, 0) = (-1055978157 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_4_1 : literalP (2, 0) (0, 1) = (27284063 / 1250000000) := rfl
+@[simp] theorem lookup_literalP_4_2 : literalP (2, 0) (1, 0) = (-610833 / 1250000000) := rfl
+@[simp] theorem lookup_literalP_4_3 : literalP (2, 0) (1, 1) = (5463039 / 100000000) := rfl
+@[simp] theorem lookup_literalP_4_4 : literalP (2, 0) (2, 0) = (1989020577 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_4_5 : literalP (2, 0) (2, 1) = (-37092764313 / 500000000000) := rfl
+@[simp] theorem lookup_literalP_4_6 : literalP (2, 0) (3, 0) = (-14758101 / 312500000) := rfl
+@[simp] theorem lookup_literalP_4_7 : literalP (2, 0) (3, 1) = (-11227663 / 312500000) := rfl
+@[simp] theorem lookup_literalP_4_8 : literalP (2, 0) (4, 0) = (-194874581 / 2500000000) := rfl
+@[simp] theorem lookup_literalP_4_9 : literalP (2, 0) (4, 1) = (16237585121 / 400000000000) := rfl
+@[simp] theorem lookup_literalP_4_10 : literalP (2, 0) (5, 0) = (338409243 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_4_11 : literalP (2, 0) (5, 1) = (65761553 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_4_12 : literalP (2, 0) (6, 0) = (129407 / 312500000) := rfl
+@[simp] theorem lookup_literalP_4_13 : literalP (2, 0) (6, 1) = (-16748659 / 1000000000) := rfl
+@[simp] theorem lookup_literalP_4_14 : literalP (2, 0) (7, 0) = (-28849027 / 5000000000) := rfl
+@[simp] theorem lookup_literalP_4_15 : literalP (2, 0) (7, 1) = (25962053 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_4_16 : literalP (2, 0) (8, 0) = (38749587 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_4_17 : literalP (2, 0) (8, 1) = (1582881 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_5_0 : literalP (2, 1) (0, 0) = (201585060529 / 2000000000000) := rfl
+@[simp] theorem lookup_literalP_5_1 : literalP (2, 1) (0, 1) = (-1055298453 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_5_2 : literalP (2, 1) (1, 0) = (-160712407 / 5000000000) := rfl
+@[simp] theorem lookup_literalP_5_3 : literalP (2, 1) (1, 1) = (-11598299 / 5000000000) := rfl
+@[simp] theorem lookup_literalP_5_4 : literalP (2, 1) (2, 0) = (-37092764313 / 500000000000) := rfl
+@[simp] theorem lookup_literalP_5_5 : literalP (2, 1) (2, 1) = (3609063927 / 31250000000) := rfl
+@[simp] theorem lookup_literalP_5_6 : literalP (2, 1) (3, 0) = (50282747 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_5_7 : literalP (2, 1) (3, 1) = (-79278607 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_5_8 : literalP (2, 1) (4, 0) = (-79157107 / 5000000000) := rfl
+@[simp] theorem lookup_literalP_5_9 : literalP (2, 1) (4, 1) = (-55865313 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_5_10 : literalP (2, 1) (5, 0) = (38478366323 / 2000000000000) := rfl
+@[simp] theorem lookup_literalP_5_11 : literalP (2, 1) (5, 1) = (4329327 / 2000000000) := rfl
+@[simp] theorem lookup_literalP_5_12 : literalP (2, 1) (6, 0) = (-6147657 / 5000000000) := rfl
+@[simp] theorem lookup_literalP_5_13 : literalP (2, 1) (6, 1) = (-35391833 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_5_14 : literalP (2, 1) (7, 0) = (-19829153 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_5_15 : literalP (2, 1) (7, 1) = (34084219 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_5_16 : literalP (2, 1) (8, 0) = (31189 / 100000000) := rfl
+@[simp] theorem lookup_literalP_5_17 : literalP (2, 1) (8, 1) = (-1296037 / 2000000000) := rfl
+@[simp] theorem lookup_literalP_6_0 : literalP (3, 0) (0, 0) = (98406243 / 2500000000) := rfl
+@[simp] theorem lookup_literalP_6_1 : literalP (3, 0) (0, 1) = (81506679767 / 2000000000000) := rfl
+@[simp] theorem lookup_literalP_6_2 : literalP (3, 0) (1, 0) = (-458492607 / 5000000000) := rfl
+@[simp] theorem lookup_literalP_6_3 : literalP (3, 0) (1, 1) = (-37476543 / 2000000000) := rfl
+@[simp] theorem lookup_literalP_6_4 : literalP (3, 0) (2, 0) = (-14758101 / 312500000) := rfl
+@[simp] theorem lookup_literalP_6_5 : literalP (3, 0) (2, 1) = (50282747 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_6_6 : literalP (3, 0) (3, 0) = (90087279 / 500000000) := rfl
+@[simp] theorem lookup_literalP_6_7 : literalP (3, 0) (3, 1) = (-93090529 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_6_8 : literalP (3, 0) (4, 0) = (-439718213 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_6_9 : literalP (3, 0) (4, 1) = (-62752687 / 2000000000) := rfl
+@[simp] theorem lookup_literalP_6_10 : literalP (3, 0) (5, 0) = (-609143249 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_6_11 : literalP (3, 0) (5, 1) = (8448587999 / 250000000000) := rfl
+@[simp] theorem lookup_literalP_6_12 : literalP (3, 0) (6, 0) = (117103307 / 5000000000) := rfl
+@[simp] theorem lookup_literalP_6_13 : literalP (3, 0) (6, 1) = (33652543 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_6_14 : literalP (3, 0) (7, 0) = (30704333 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_6_15 : literalP (3, 0) (7, 1) = (-118246931 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_6_16 : literalP (3, 0) (8, 0) = (-22175591 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_6_17 : literalP (3, 0) (8, 1) = (22339237 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_7_0 : literalP (3, 1) (0, 0) = (1233703 / 625000000) := rfl
+@[simp] theorem lookup_literalP_7_1 : literalP (3, 1) (0, 1) = (7706081 / 5000000000) := rfl
+@[simp] theorem lookup_literalP_7_2 : literalP (3, 1) (1, 0) = (88068465209 / 2000000000000) := rfl
+@[simp] theorem lookup_literalP_7_3 : literalP (3, 1) (1, 1) = (-365509 / 62500000) := rfl
+@[simp] theorem lookup_literalP_7_4 : literalP (3, 1) (2, 0) = (-11227663 / 312500000) := rfl
+@[simp] theorem lookup_literalP_7_5 : literalP (3, 1) (2, 1) = (-79278607 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_7_6 : literalP (3, 1) (3, 0) = (-93090529 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_7_7 : literalP (3, 1) (3, 1) = (38301231359 / 1000000000000) := rfl
+@[simp] theorem lookup_literalP_7_8 : literalP (3, 1) (4, 0) = (-131361 / 250000000) := rfl
+@[simp] theorem lookup_literalP_7_9 : literalP (3, 1) (4, 1) = (-788183 / 100000000) := rfl
+@[simp] theorem lookup_literalP_7_10 : literalP (3, 1) (5, 0) = (-130623357 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_7_11 : literalP (3, 1) (5, 1) = (-9764677 / 2000000000) := rfl
+@[simp] theorem lookup_literalP_7_12 : literalP (3, 1) (6, 0) = (26360031391 / 2000000000000) := rfl
+@[simp] theorem lookup_literalP_7_13 : literalP (3, 1) (6, 1) = (1648333 / 1000000000) := rfl
+@[simp] theorem lookup_literalP_7_14 : literalP (3, 1) (7, 0) = (3446567 / 2500000000) := rfl
+@[simp] theorem lookup_literalP_7_15 : literalP (3, 1) (7, 1) = (-22001127 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_7_16 : literalP (3, 1) (8, 0) = (-17414457 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_7_17 : literalP (3, 1) (8, 1) = (132547 / 80000000) := rfl
+@[simp] theorem lookup_literalP_8_0 : literalP (4, 0) (0, 0) = (-11460221 / 5000000000) := rfl
+@[simp] theorem lookup_literalP_8_1 : literalP (4, 0) (0, 1) = (-6459289 / 2500000000) := rfl
+@[simp] theorem lookup_literalP_8_2 : literalP (4, 0) (1, 0) = (399565111 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_8_3 : literalP (4, 0) (1, 1) = (5918697 / 250000000) := rfl
+@[simp] theorem lookup_literalP_8_4 : literalP (4, 0) (2, 0) = (-194874581 / 2500000000) := rfl
+@[simp] theorem lookup_literalP_8_5 : literalP (4, 0) (2, 1) = (-79157107 / 5000000000) := rfl
+@[simp] theorem lookup_literalP_8_6 : literalP (4, 0) (3, 0) = (-439718213 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_8_7 : literalP (4, 0) (3, 1) = (-131361 / 250000000) := rfl
+@[simp] theorem lookup_literalP_8_8 : literalP (4, 0) (4, 0) = (369017661 / 2500000000) := rfl
+@[simp] theorem lookup_literalP_8_9 : literalP (4, 0) (4, 1) = (-1540631 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_8_10 : literalP (4, 0) (5, 0) = (-348156633 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_8_11 : literalP (4, 0) (5, 1) = (-776668953 / 31250000000) := rfl
+@[simp] theorem lookup_literalP_8_12 : literalP (4, 0) (6, 0) = (-403669997 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_8_13 : literalP (4, 0) (6, 1) = (269483597 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_8_14 : literalP (4, 0) (7, 0) = (95605639 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_8_15 : literalP (4, 0) (7, 1) = (5536639 / 5000000000) := rfl
+@[simp] theorem lookup_literalP_8_16 : literalP (4, 0) (8, 0) = (4544443 / 2000000000) := rfl
+@[simp] theorem lookup_literalP_8_17 : literalP (4, 0) (8, 1) = (-57303819 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_9_0 : literalP (4, 1) (0, 0) = (-168148297 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_9_1 : literalP (4, 1) (0, 1) = (-43824029 / 2500000000) := rfl
+@[simp] theorem lookup_literalP_9_2 : literalP (4, 1) (1, 0) = (352747 / 40000000) := rfl
+@[simp] theorem lookup_literalP_9_3 : literalP (4, 1) (1, 1) = (26909993 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_9_4 : literalP (4, 1) (2, 0) = (16237585121 / 400000000000) := rfl
+@[simp] theorem lookup_literalP_9_5 : literalP (4, 1) (2, 1) = (-55865313 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_9_6 : literalP (4, 1) (3, 0) = (-62752687 / 2000000000) := rfl
+@[simp] theorem lookup_literalP_9_7 : literalP (4, 1) (3, 1) = (-788183 / 100000000) := rfl
+@[simp] theorem lookup_literalP_9_8 : literalP (4, 1) (4, 0) = (-1540631 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_9_9 : literalP (4, 1) (4, 1) = (25992959943 / 1000000000000) := rfl
+@[simp] theorem lookup_literalP_9_10 : literalP (4, 1) (5, 0) = (540019 / 1250000000) := rfl
+@[simp] theorem lookup_literalP_9_11 : literalP (4, 1) (5, 1) = (-34390347 / 5000000000) := rfl
+@[simp] theorem lookup_literalP_9_12 : literalP (4, 1) (6, 0) = (-74063499 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_9_13 : literalP (4, 1) (6, 1) = (-9830827 / 2500000000) := rfl
+@[simp] theorem lookup_literalP_9_14 : literalP (4, 1) (7, 0) = (1801208839 / 400000000000) := rfl
+@[simp] theorem lookup_literalP_9_15 : literalP (4, 1) (7, 1) = (12993681 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_9_16 : literalP (4, 1) (8, 0) = (14039111 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_9_17 : literalP (4, 1) (8, 1) = (-496807 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_10_0 : literalP (5, 0) (0, 0) = (1534173 / 2000000000) := rfl
+@[simp] theorem lookup_literalP_10_1 : literalP (5, 0) (0, 1) = (2524381 / 2500000000) := rfl
+@[simp] theorem lookup_literalP_10_2 : literalP (5, 0) (1, 0) = (-17626927 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_10_3 : literalP (5, 0) (1, 1) = (-16110353 / 5000000000) := rfl
+@[simp] theorem lookup_literalP_10_4 : literalP (5, 0) (2, 0) = (338409243 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_10_5 : literalP (5, 0) (2, 1) = (38478366323 / 2000000000000) := rfl
+@[simp] theorem lookup_literalP_10_6 : literalP (5, 0) (3, 0) = (-609143249 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_10_7 : literalP (5, 0) (3, 1) = (-130623357 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_10_8 : literalP (5, 0) (4, 0) = (-348156633 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_10_9 : literalP (5, 0) (4, 1) = (540019 / 1250000000) := rfl
+@[simp] theorem lookup_literalP_10_10 : literalP (5, 0) (5, 0) = (534772043 / 5000000000) := rfl
+@[simp] theorem lookup_literalP_10_11 : literalP (5, 0) (5, 1) = (38648767 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_10_12 : literalP (5, 0) (6, 0) = (-334145587 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_10_13 : literalP (5, 0) (6, 1) = (-177506937 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_10_14 : literalP (5, 0) (7, 0) = (-72617521 / 5000000000) := rfl
+@[simp] theorem lookup_literalP_10_15 : literalP (5, 0) (7, 1) = (94011041 / 5000000000) := rfl
+@[simp] theorem lookup_literalP_10_16 : literalP (5, 0) (8, 0) = (9670811 / 2500000000) := rfl
+@[simp] theorem lookup_literalP_10_17 : literalP (5, 0) (8, 1) = (-69631 / 15625000) := rfl
+@[simp] theorem lookup_literalP_11_0 : literalP (5, 1) (0, 0) = (4793121 / 1250000000) := rfl
+@[simp] theorem lookup_literalP_11_1 : literalP (5, 1) (0, 1) = (21996047 / 5000000000) := rfl
+@[simp] theorem lookup_literalP_11_2 : literalP (5, 1) (1, 0) = (-42195999 / 2000000000) := rfl
+@[simp] theorem lookup_literalP_11_3 : literalP (5, 1) (1, 1) = (-24346287 / 5000000000) := rfl
+@[simp] theorem lookup_literalP_11_4 : literalP (5, 1) (2, 0) = (65761553 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_11_5 : literalP (5, 1) (2, 1) = (4329327 / 2000000000) := rfl
+@[simp] theorem lookup_literalP_11_6 : literalP (5, 1) (3, 0) = (8448587999 / 250000000000) := rfl
+@[simp] theorem lookup_literalP_11_7 : literalP (5, 1) (3, 1) = (-9764677 / 2000000000) := rfl
+@[simp] theorem lookup_literalP_11_8 : literalP (5, 1) (4, 0) = (-776668953 / 31250000000) := rfl
+@[simp] theorem lookup_literalP_11_9 : literalP (5, 1) (4, 1) = (-34390347 / 5000000000) := rfl
+@[simp] theorem lookup_literalP_11_10 : literalP (5, 1) (5, 0) = (38648767 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_11_11 : literalP (5, 1) (5, 1) = (41513320343 / 2000000000000) := rfl
+@[simp] theorem lookup_literalP_11_12 : literalP (5, 1) (6, 0) = (-17990087 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_11_13 : literalP (5, 1) (6, 1) = (-61285967 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_11_14 : literalP (5, 1) (7, 0) = (-40429617 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_11_15 : literalP (5, 1) (7, 1) = (-27054137 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_11_16 : literalP (5, 1) (8, 0) = (9308739 / 2500000000) := rfl
+@[simp] theorem lookup_literalP_11_17 : literalP (5, 1) (8, 1) = (4739773 / 5000000000) := rfl
+@[simp] theorem lookup_literalP_12_0 : literalP (6, 0) (0, 0) = (1936951 / 1000000000) := rfl
+@[simp] theorem lookup_literalP_12_1 : literalP (6, 0) (0, 1) = (283971 / 500000000) := rfl
+@[simp] theorem lookup_literalP_12_2 : literalP (6, 0) (1, 0) = (-227069 / 500000000) := rfl
+@[simp] theorem lookup_literalP_12_3 : literalP (6, 0) (1, 1) = (-2739353 / 2000000000) := rfl
+@[simp] theorem lookup_literalP_12_4 : literalP (6, 0) (2, 0) = (129407 / 312500000) := rfl
+@[simp] theorem lookup_literalP_12_5 : literalP (6, 0) (2, 1) = (-6147657 / 5000000000) := rfl
+@[simp] theorem lookup_literalP_12_6 : literalP (6, 0) (3, 0) = (117103307 / 5000000000) := rfl
+@[simp] theorem lookup_literalP_12_7 : literalP (6, 0) (3, 1) = (26360031391 / 2000000000000) := rfl
+@[simp] theorem lookup_literalP_12_8 : literalP (6, 0) (4, 0) = (-403669997 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_12_9 : literalP (6, 0) (4, 1) = (-74063499 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_12_10 : literalP (6, 0) (5, 0) = (-334145587 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_12_11 : literalP (6, 0) (5, 1) = (-17990087 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_12_12 : literalP (6, 0) (6, 0) = (174515517 / 2500000000) := rfl
+@[simp] theorem lookup_literalP_12_13 : literalP (6, 0) (6, 1) = (2697569 / 625000000) := rfl
+@[simp] theorem lookup_literalP_12_14 : literalP (6, 0) (7, 0) = (-21255117 / 2000000000) := rfl
+@[simp] theorem lookup_literalP_12_15 : literalP (6, 0) (7, 1) = (-113447819 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_12_16 : literalP (6, 0) (8, 0) = (-107146667 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_12_17 : literalP (6, 0) (8, 1) = (83940483 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_13_0 : literalP (6, 1) (0, 0) = (-441629 / 200000000) := rfl
+@[simp] theorem lookup_literalP_13_1 : literalP (6, 1) (0, 1) = (-11699771 / 5000000000) := rfl
+@[simp] theorem lookup_literalP_13_2 : literalP (6, 1) (1, 0) = (38212899 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_13_3 : literalP (6, 1) (1, 1) = (45437147 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_13_4 : literalP (6, 1) (2, 0) = (-16748659 / 1000000000) := rfl
+@[simp] theorem lookup_literalP_13_5 : literalP (6, 1) (2, 1) = (-35391833 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_13_6 : literalP (6, 1) (3, 0) = (33652543 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_13_7 : literalP (6, 1) (3, 1) = (1648333 / 1000000000) := rfl
+@[simp] theorem lookup_literalP_13_8 : literalP (6, 1) (4, 0) = (269483597 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_13_9 : literalP (6, 1) (4, 1) = (-9830827 / 2500000000) := rfl
+@[simp] theorem lookup_literalP_13_10 : literalP (6, 1) (5, 0) = (-177506937 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_13_11 : literalP (6, 1) (5, 1) = (-61285967 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_13_12 : literalP (6, 1) (6, 0) = (2697569 / 625000000) := rfl
+@[simp] theorem lookup_literalP_13_13 : literalP (6, 1) (6, 1) = (3322380087 / 250000000000) := rfl
+@[simp] theorem lookup_literalP_13_14 : literalP (6, 1) (7, 0) = (-14886319 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_13_15 : literalP (6, 1) (7, 1) = (-23359003 / 5000000000) := rfl
+@[simp] theorem lookup_literalP_13_16 : literalP (6, 1) (8, 0) = (-2548847 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_13_17 : literalP (6, 1) (8, 1) = (-834777 / 2000000000) := rfl
+@[simp] theorem lookup_literalP_14_0 : literalP (7, 0) (0, 0) = (5405339 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_14_1 : literalP (7, 0) (0, 1) = (4705859 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_14_2 : literalP (7, 0) (1, 0) = (2626187 / 1250000000) := rfl
+@[simp] theorem lookup_literalP_14_3 : literalP (7, 0) (1, 1) = (5106869 / 5000000000) := rfl
+@[simp] theorem lookup_literalP_14_4 : literalP (7, 0) (2, 0) = (-28849027 / 5000000000) := rfl
+@[simp] theorem lookup_literalP_14_5 : literalP (7, 0) (2, 1) = (-19829153 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_14_6 : literalP (7, 0) (3, 0) = (30704333 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_14_7 : literalP (7, 0) (3, 1) = (3446567 / 2500000000) := rfl
+@[simp] theorem lookup_literalP_14_8 : literalP (7, 0) (4, 0) = (95605639 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_14_9 : literalP (7, 0) (4, 1) = (1801208839 / 400000000000) := rfl
+@[simp] theorem lookup_literalP_14_10 : literalP (7, 0) (5, 0) = (-72617521 / 5000000000) := rfl
+@[simp] theorem lookup_literalP_14_11 : literalP (7, 0) (5, 1) = (-40429617 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_14_12 : literalP (7, 0) (6, 0) = (-21255117 / 2000000000) := rfl
+@[simp] theorem lookup_literalP_14_13 : literalP (7, 0) (6, 1) = (-14886319 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_14_14 : literalP (7, 0) (7, 0) = (116338777 / 5000000000) := rfl
+@[simp] theorem lookup_literalP_14_15 : literalP (7, 0) (7, 1) = (8714367 / 5000000000) := rfl
+@[simp] theorem lookup_literalP_14_16 : literalP (7, 0) (8, 0) = (-952421 / 125000000) := rfl
+@[simp] theorem lookup_literalP_14_17 : literalP (7, 0) (8, 1) = (-19724589 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_15_0 : literalP (7, 1) (0, 0) = (12976049 / 5000000000) := rfl
+@[simp] theorem lookup_literalP_15_1 : literalP (7, 1) (0, 1) = (1929473 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_15_2 : literalP (7, 1) (1, 0) = (-10675627 / 5000000000) := rfl
+@[simp] theorem lookup_literalP_15_3 : literalP (7, 1) (1, 1) = (-10265311 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_15_4 : literalP (7, 1) (2, 0) = (25962053 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_15_5 : literalP (7, 1) (2, 1) = (34084219 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_15_6 : literalP (7, 1) (3, 0) = (-118246931 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_15_7 : literalP (7, 1) (3, 1) = (-22001127 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_15_8 : literalP (7, 1) (4, 0) = (5536639 / 5000000000) := rfl
+@[simp] theorem lookup_literalP_15_9 : literalP (7, 1) (4, 1) = (12993681 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_15_10 : literalP (7, 1) (5, 0) = (94011041 / 5000000000) := rfl
+@[simp] theorem lookup_literalP_15_11 : literalP (7, 1) (5, 1) = (-27054137 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_15_12 : literalP (7, 1) (6, 0) = (-113447819 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_15_13 : literalP (7, 1) (6, 1) = (-23359003 / 5000000000) := rfl
+@[simp] theorem lookup_literalP_15_14 : literalP (7, 1) (7, 0) = (8714367 / 5000000000) := rfl
+@[simp] theorem lookup_literalP_15_15 : literalP (7, 1) (7, 1) = (19989060459 / 2000000000000) := rfl
+@[simp] theorem lookup_literalP_15_16 : literalP (7, 1) (8, 0) = (-15392241 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_15_17 : literalP (7, 1) (8, 1) = (-34298951 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_16_0 : literalP (8, 0) (0, 0) = (-1848249 / 1250000000) := rfl
+@[simp] theorem lookup_literalP_16_1 : literalP (8, 0) (0, 1) = (-805441 / 2000000000) := rfl
+@[simp] theorem lookup_literalP_16_2 : literalP (8, 0) (1, 0) = (16303 / 200000000) := rfl
+@[simp] theorem lookup_literalP_16_3 : literalP (8, 0) (1, 1) = (-3318791 / 5000000000) := rfl
+@[simp] theorem lookup_literalP_16_4 : literalP (8, 0) (2, 0) = (38749587 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_16_5 : literalP (8, 0) (2, 1) = (31189 / 100000000) := rfl
+@[simp] theorem lookup_literalP_16_6 : literalP (8, 0) (3, 0) = (-22175591 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_16_7 : literalP (8, 0) (3, 1) = (-17414457 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_16_8 : literalP (8, 0) (4, 0) = (4544443 / 2000000000) := rfl
+@[simp] theorem lookup_literalP_16_9 : literalP (8, 0) (4, 1) = (14039111 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_16_10 : literalP (8, 0) (5, 0) = (9670811 / 2500000000) := rfl
+@[simp] theorem lookup_literalP_16_11 : literalP (8, 0) (5, 1) = (9308739 / 2500000000) := rfl
+@[simp] theorem lookup_literalP_16_12 : literalP (8, 0) (6, 0) = (-107146667 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_16_13 : literalP (8, 0) (6, 1) = (-2548847 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_16_14 : literalP (8, 0) (7, 0) = (-952421 / 125000000) := rfl
+@[simp] theorem lookup_literalP_16_15 : literalP (8, 0) (7, 1) = (-15392241 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_16_16 : literalP (8, 0) (8, 0) = (59665867 / 5000000000) := rfl
+@[simp] theorem lookup_literalP_16_17 : literalP (8, 0) (8, 1) = (-1674527 / 2000000000) := rfl
+@[simp] theorem lookup_literalP_17_0 : literalP (8, 1) (0, 0) = (2195589 / 5000000000) := rfl
+@[simp] theorem lookup_literalP_17_1 : literalP (8, 1) (0, 1) = (-441899 / 250000000) := rfl
+@[simp] theorem lookup_literalP_17_2 : literalP (8, 1) (1, 0) = (17296 / 9765625) := rfl
+@[simp] theorem lookup_literalP_17_3 : literalP (8, 1) (1, 1) = (961193 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_17_4 : literalP (8, 1) (2, 0) = (1582881 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_17_5 : literalP (8, 1) (2, 1) = (-1296037 / 2000000000) := rfl
+@[simp] theorem lookup_literalP_17_6 : literalP (8, 1) (3, 0) = (22339237 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_17_7 : literalP (8, 1) (3, 1) = (132547 / 80000000) := rfl
+@[simp] theorem lookup_literalP_17_8 : literalP (8, 1) (4, 0) = (-57303819 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_17_9 : literalP (8, 1) (4, 1) = (-496807 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_17_10 : literalP (8, 1) (5, 0) = (-69631 / 15625000) := rfl
+@[simp] theorem lookup_literalP_17_11 : literalP (8, 1) (5, 1) = (4739773 / 5000000000) := rfl
+@[simp] theorem lookup_literalP_17_12 : literalP (8, 1) (6, 0) = (83940483 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_17_13 : literalP (8, 1) (6, 1) = (-834777 / 2000000000) := rfl
+@[simp] theorem lookup_literalP_17_14 : literalP (8, 1) (7, 0) = (-19724589 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_17_15 : literalP (8, 1) (7, 1) = (-34298951 / 10000000000) := rfl
+@[simp] theorem lookup_literalP_17_16 : literalP (8, 1) (8, 0) = (-1674527 / 2000000000) := rfl
+@[simp] theorem lookup_literalP_17_17 : literalP (8, 1) (8, 1) = (318579063 / 80000000000) := rfl
+@[simp] theorem lookup_literalMuF_0_0 : literalMu .F none none = 0 := rfl
+@[simp] theorem lookup_literalMuF_0_1 : literalMu .F none (some 0) = (76768613 / 10000000000) := rfl
+@[simp] theorem lookup_literalMuF_0_2 : literalMu .F none (some 1) = (10232231 / 1000000000) := rfl
+@[simp] theorem lookup_literalMuF_0_3 : literalMu .F none (some 2) = (2526763 / 625000000) := rfl
+@[simp] theorem lookup_literalMuF_0_4 : literalMu .F none (some 3) = (20808777 / 10000000000) := rfl
+@[simp] theorem lookup_literalMuF_0_5 : literalMu .F none (some 4) = (10101021 / 10000000000) := rfl
+@[simp] theorem lookup_literalMuF_0_6 : literalMu .F none (some 5) = (3916309 / 10000000000) := rfl
+@[simp] theorem lookup_literalMuF_0_7 : literalMu .F none (some 6) = (3021699 / 10000000000) := rfl
+@[simp] theorem lookup_literalMuF_0_8 : literalMu .F none (some 7) = (1510153 / 5000000000) := rfl
+@[simp] theorem lookup_literalMuF_1_0 : literalMu .F (some 0) none = (105005401 / 10000000000) := rfl
+@[simp] theorem lookup_literalMuF_1_1 : literalMu .F (some 0) (some 0) = 0 := rfl
+@[simp] theorem lookup_literalMuF_1_2 : literalMu .F (some 0) (some 1) = (23169389 / 1000000000) := rfl
+@[simp] theorem lookup_literalMuF_1_3 : literalMu .F (some 0) (some 2) = (242211 / 62500000) := rfl
+@[simp] theorem lookup_literalMuF_1_4 : literalMu .F (some 0) (some 3) = (9204501 / 10000000000) := rfl
+@[simp] theorem lookup_literalMuF_1_5 : literalMu .F (some 0) (some 4) = (7413091 / 10000000000) := rfl
+@[simp] theorem lookup_literalMuF_1_6 : literalMu .F (some 0) (some 5) = (2159969 / 10000000000) := rfl
+@[simp] theorem lookup_literalMuF_1_7 : literalMu .F (some 0) (some 6) = (573931 / 2500000000) := rfl
+@[simp] theorem lookup_literalMuF_1_8 : literalMu .F (some 0) (some 7) = (1293719 / 10000000000) := rfl
+@[simp] theorem lookup_literalMuF_2_0 : literalMu .F (some 1) none = (5699909 / 625000000) := rfl
+@[simp] theorem lookup_literalMuF_2_1 : literalMu .F (some 1) (some 0) = (32761939 / 2000000000) := rfl
+@[simp] theorem lookup_literalMuF_2_2 : literalMu .F (some 1) (some 1) = 0 := rfl
+@[simp] theorem lookup_literalMuF_2_3 : literalMu .F (some 1) (some 2) = (88466103 / 5000000000) := rfl
+@[simp] theorem lookup_literalMuF_2_4 : literalMu .F (some 1) (some 3) = (54530779 / 10000000000) := rfl
+@[simp] theorem lookup_literalMuF_2_5 : literalMu .F (some 1) (some 4) = (2106727 / 1250000000) := rfl
+@[simp] theorem lookup_literalMuF_2_6 : literalMu .F (some 1) (some 5) = (6502209 / 10000000000) := rfl
+@[simp] theorem lookup_literalMuF_2_7 : literalMu .F (some 1) (some 6) = (3150297 / 10000000000) := rfl
+@[simp] theorem lookup_literalMuF_2_8 : literalMu .F (some 1) (some 7) = (4829589 / 10000000000) := rfl
+@[simp] theorem lookup_literalMuF_3_0 : literalMu .F (some 2) none = (22923001 / 10000000000) := rfl
+@[simp] theorem lookup_literalMuF_3_1 : literalMu .F (some 2) (some 0) = (59793277 / 5000000000) := rfl
+@[simp] theorem lookup_literalMuF_3_2 : literalMu .F (some 2) (some 1) = (5460939 / 2500000000) := rfl
+@[simp] theorem lookup_literalMuF_3_3 : literalMu .F (some 2) (some 2) = 0 := rfl
+@[simp] theorem lookup_literalMuF_3_4 : literalMu .F (some 2) (some 3) = (5229403 / 2500000000) := rfl
+@[simp] theorem lookup_literalMuF_3_5 : literalMu .F (some 2) (some 4) = (27388417 / 10000000000) := rfl
+@[simp] theorem lookup_literalMuF_3_6 : literalMu .F (some 2) (some 5) = (4115043 / 10000000000) := rfl
+@[simp] theorem lookup_literalMuF_3_7 : literalMu .F (some 2) (some 6) = (698727 / 2500000000) := rfl
+@[simp] theorem lookup_literalMuF_3_8 : literalMu .F (some 2) (some 7) = (842743 / 5000000000) := rfl
+@[simp] theorem lookup_literalMuF_4_0 : literalMu .F (some 3) none = (18999147 / 10000000000) := rfl
+@[simp] theorem lookup_literalMuF_4_1 : literalMu .F (some 3) (some 0) = (23848857 / 10000000000) := rfl
+@[simp] theorem lookup_literalMuF_4_2 : literalMu .F (some 3) (some 1) = (18518129 / 1250000000) := rfl
+@[simp] theorem lookup_literalMuF_4_3 : literalMu .F (some 3) (some 2) = (433873 / 1250000000) := rfl
+@[simp] theorem lookup_literalMuF_4_4 : literalMu .F (some 3) (some 3) = 0 := rfl
+@[simp] theorem lookup_literalMuF_4_5 : literalMu .F (some 3) (some 4) = (888253 / 2500000000) := rfl
+@[simp] theorem lookup_literalMuF_4_6 : literalMu .F (some 3) (some 5) = (13131617 / 10000000000) := rfl
+@[simp] theorem lookup_literalMuF_4_7 : literalMu .F (some 3) (some 6) = (1474381 / 2000000000) := rfl
+@[simp] theorem lookup_literalMuF_4_8 : literalMu .F (some 3) (some 7) = (2487537 / 10000000000) := rfl
+@[simp] theorem lookup_literalMuF_5_0 : literalMu .F (some 4) none = (6181801 / 10000000000) := rfl
+@[simp] theorem lookup_literalMuF_5_1 : literalMu .F (some 4) (some 0) = (7793377 / 10000000000) := rfl
+@[simp] theorem lookup_literalMuF_5_2 : literalMu .F (some 4) (some 1) = (503167 / 1000000000) := rfl
+@[simp] theorem lookup_literalMuF_5_3 : literalMu .F (some 4) (some 2) = (102953 / 100000000) := rfl
+@[simp] theorem lookup_literalMuF_5_4 : literalMu .F (some 4) (some 3) = (312651 / 2000000000) := rfl
+@[simp] theorem lookup_literalMuF_5_5 : literalMu .F (some 4) (some 4) = 0 := rfl
+@[simp] theorem lookup_literalMuF_5_6 : literalMu .F (some 4) (some 5) = (1516317 / 10000000000) := rfl
+@[simp] theorem lookup_literalMuF_5_7 : literalMu .F (some 4) (some 6) = (213407 / 200000000) := rfl
+@[simp] theorem lookup_literalMuF_5_8 : literalMu .F (some 4) (some 7) = (468387 / 2500000000) := rfl
+@[simp] theorem lookup_literalMuF_6_0 : literalMu .F (some 5) none = (5709449 / 10000000000) := rfl
+@[simp] theorem lookup_literalMuF_6_1 : literalMu .F (some 5) (some 0) = (7176697 / 10000000000) := rfl
+@[simp] theorem lookup_literalMuF_6_2 : literalMu .F (some 5) (some 1) = (9815001 / 10000000000) := rfl
+@[simp] theorem lookup_literalMuF_6_3 : literalMu .F (some 5) (some 2) = (89 / 625000) := rfl
+@[simp] theorem lookup_literalMuF_6_4 : literalMu .F (some 5) (some 3) = (10805409 / 10000000000) := rfl
+@[simp] theorem lookup_literalMuF_6_5 : literalMu .F (some 5) (some 4) = (345639 / 5000000000) := rfl
+@[simp] theorem lookup_literalMuF_6_6 : literalMu .F (some 5) (some 5) = 0 := rfl
+@[simp] theorem lookup_literalMuF_6_7 : literalMu .F (some 5) (some 6) = (101599 / 1250000000) := rfl
+@[simp] theorem lookup_literalMuF_6_8 : literalMu .F (some 5) (some 7) = (2957297 / 10000000000) := rfl
+@[simp] theorem lookup_literalMuF_7_0 : literalMu .F (some 6) none = (379209 / 1250000000) := rfl
+@[simp] theorem lookup_literalMuF_7_1 : literalMu .F (some 6) (some 0) = (580553 / 2500000000) := rfl
+@[simp] theorem lookup_literalMuF_7_2 : literalMu .F (some 6) (some 1) = (2722623 / 10000000000) := rfl
+@[simp] theorem lookup_literalMuF_7_3 : literalMu .F (some 6) (some 2) = (311281 / 1250000000) := rfl
+@[simp] theorem lookup_literalMuF_7_4 : literalMu .F (some 6) (some 3) = (742051 / 10000000000) := rfl
+@[simp] theorem lookup_literalMuF_7_5 : literalMu .F (some 6) (some 4) = (322171 / 625000000) := rfl
+@[simp] theorem lookup_literalMuF_7_6 : literalMu .F (some 6) (some 5) = (75843 / 2000000000) := rfl
+@[simp] theorem lookup_literalMuF_7_7 : literalMu .F (some 6) (some 6) = 0 := rfl
+@[simp] theorem lookup_literalMuF_7_8 : literalMu .F (some 6) (some 7) = (356899 / 10000000000) := rfl
+@[simp] theorem lookup_literalMuF_8_0 : literalMu .F (some 7) none = (2199651 / 10000000000) := rfl
+@[simp] theorem lookup_literalMuF_8_1 : literalMu .F (some 7) (some 0) = (555927 / 2500000000) := rfl
+@[simp] theorem lookup_literalMuF_8_2 : literalMu .F (some 7) (some 1) = (485617 / 2500000000) := rfl
+@[simp] theorem lookup_literalMuF_8_3 : literalMu .F (some 7) (some 2) = (584671 / 5000000000) := rfl
+@[simp] theorem lookup_literalMuF_8_4 : literalMu .F (some 7) (some 3) = (256983 / 1250000000) := rfl
+@[simp] theorem lookup_literalMuF_8_5 : literalMu .F (some 7) (some 4) = (196413 / 5000000000) := rfl
+@[simp] theorem lookup_literalMuF_8_6 : literalMu .F (some 7) (some 5) = (2147917 / 5000000000) := rfl
+@[simp] theorem lookup_literalMuF_8_7 : literalMu .F (some 7) (some 6) = (261363 / 10000000000) := rfl
+@[simp] theorem lookup_literalMuF_8_8 : literalMu .F (some 7) (some 7) = 0 := rfl
+@[simp] theorem lookup_literalMuJ_0_0 : literalMu .J none none = 0 := rfl
+@[simp] theorem lookup_literalMuJ_0_1 : literalMu .J none (some 0) = (181088147 / 10000000000) := rfl
+@[simp] theorem lookup_literalMuJ_0_2 : literalMu .J none (some 1) = (19760679 / 5000000000) := rfl
+@[simp] theorem lookup_literalMuJ_0_3 : literalMu .J none (some 2) = (3403649 / 2000000000) := rfl
+@[simp] theorem lookup_literalMuJ_0_4 : literalMu .J none (some 3) = (1310667 / 1250000000) := rfl
+@[simp] theorem lookup_literalMuJ_0_5 : literalMu .J none (some 4) = (7157477 / 10000000000) := rfl
+@[simp] theorem lookup_literalMuJ_0_6 : literalMu .J none (some 5) = (1070289 / 2000000000) := rfl
+@[simp] theorem lookup_literalMuJ_0_7 : literalMu .J none (some 6) = (1884797 / 5000000000) := rfl
+@[simp] theorem lookup_literalMuJ_0_8 : literalMu .J none (some 7) = (878713 / 10000000000) := rfl
+@[simp] theorem lookup_literalMuJ_1_0 : literalMu .J (some 0) none = (78495581 / 5000000000) := rfl
+@[simp] theorem lookup_literalMuJ_1_1 : literalMu .J (some 0) (some 0) = 0 := rfl
+@[simp] theorem lookup_literalMuJ_1_2 : literalMu .J (some 0) (some 1) = (47102027 / 5000000000) := rfl
+@[simp] theorem lookup_literalMuJ_1_3 : literalMu .J (some 0) (some 2) = (43384997 / 10000000000) := rfl
+@[simp] theorem lookup_literalMuJ_1_4 : literalMu .J (some 0) (some 3) = (10289209 / 5000000000) := rfl
+@[simp] theorem lookup_literalMuJ_1_5 : literalMu .J (some 0) (some 4) = (11032487 / 10000000000) := rfl
+@[simp] theorem lookup_literalMuJ_1_6 : literalMu .J (some 0) (some 5) = (8574799 / 10000000000) := rfl
+@[simp] theorem lookup_literalMuJ_1_7 : literalMu .J (some 0) (some 6) = (5517779 / 10000000000) := rfl
+@[simp] theorem lookup_literalMuJ_1_8 : literalMu .J (some 0) (some 7) = (130089 / 1250000000) := rfl
+@[simp] theorem lookup_literalMuJ_2_0 : literalMu .J (some 1) none = (41894129 / 5000000000) := rfl
+@[simp] theorem lookup_literalMuJ_2_1 : literalMu .J (some 1) (some 0) = (7215811393 / 30000000000) := rfl
+@[simp] theorem lookup_literalMuJ_2_2 : literalMu .J (some 1) (some 1) = 0 := rfl
+@[simp] theorem lookup_literalMuJ_2_3 : literalMu .J (some 1) (some 2) = (57582303 / 5000000000) := rfl
+@[simp] theorem lookup_literalMuJ_2_4 : literalMu .J (some 1) (some 3) = (35475149 / 10000000000) := rfl
+@[simp] theorem lookup_literalMuJ_2_5 : literalMu .J (some 1) (some 4) = (15897243 / 10000000000) := rfl
+@[simp] theorem lookup_literalMuJ_2_6 : literalMu .J (some 1) (some 5) = (1182189 / 1250000000) := rfl
+@[simp] theorem lookup_literalMuJ_2_7 : literalMu .J (some 1) (some 6) = (3890951 / 5000000000) := rfl
+@[simp] theorem lookup_literalMuJ_2_8 : literalMu .J (some 1) (some 7) = (1127977 / 10000000000) := rfl
+@[simp] theorem lookup_literalMuJ_3_0 : literalMu .J (some 2) none = (4970899 / 5000000000) := rfl
+@[simp] theorem lookup_literalMuJ_3_1 : literalMu .J (some 2) (some 0) = (3619507 / 2500000000) := rfl
+@[simp] theorem lookup_literalMuJ_3_2 : literalMu .J (some 2) (some 1) = (18206181 / 10000000000) := rfl
+@[simp] theorem lookup_literalMuJ_3_3 : literalMu .J (some 2) (some 2) = 0 := rfl
+@[simp] theorem lookup_literalMuJ_3_4 : literalMu .J (some 2) (some 3) = (6585663 / 1250000000) := rfl
+@[simp] theorem lookup_literalMuJ_3_5 : literalMu .J (some 2) (some 4) = (6268689 / 2000000000) := rfl
+@[simp] theorem lookup_literalMuJ_3_6 : literalMu .J (some 2) (some 5) = (7523557 / 5000000000) := rfl
+@[simp] theorem lookup_literalMuJ_3_7 : literalMu .J (some 2) (some 6) = (1742899 / 2500000000) := rfl
+@[simp] theorem lookup_literalMuJ_3_8 : literalMu .J (some 2) (some 7) = (637551 / 5000000000) := rfl
+@[simp] theorem lookup_literalMuJ_4_0 : literalMu .J (some 3) none = (1253821 / 2500000000) := rfl
+@[simp] theorem lookup_literalMuJ_4_1 : literalMu .J (some 3) (some 0) = (3327591 / 5000000000) := rfl
+@[simp] theorem lookup_literalMuJ_4_2 : literalMu .J (some 3) (some 1) = (7683879 / 10000000000) := rfl
+@[simp] theorem lookup_literalMuJ_4_3 : literalMu .J (some 3) (some 2) = (2873453 / 2000000000) := rfl
+@[simp] theorem lookup_literalMuJ_4_4 : literalMu .J (some 3) (some 3) = 0 := rfl
+@[simp] theorem lookup_literalMuJ_4_5 : literalMu .J (some 3) (some 4) = (11412823 / 5000000000) := rfl
+@[simp] theorem lookup_literalMuJ_4_6 : literalMu .J (some 3) (some 5) = (608621 / 400000000) := rfl
+@[simp] theorem lookup_literalMuJ_4_7 : literalMu .J (some 3) (some 6) = (10055521 / 10000000000) := rfl
+@[simp] theorem lookup_literalMuJ_4_8 : literalMu .J (some 3) (some 7) = (257699 / 2000000000) := rfl
+@[simp] theorem lookup_literalMuJ_5_0 : literalMu .J (some 4) none = (2049317 / 10000000000) := rfl
+@[simp] theorem lookup_literalMuJ_5_1 : literalMu .J (some 4) (some 0) = (2393681 / 10000000000) := rfl
+@[simp] theorem lookup_literalMuJ_5_2 : literalMu .J (some 4) (some 1) = (269183 / 1000000000) := rfl
+@[simp] theorem lookup_literalMuJ_5_3 : literalMu .J (some 4) (some 2) = (1013963 / 2000000000) := rfl
+@[simp] theorem lookup_literalMuJ_5_4 : literalMu .J (some 4) (some 3) = (697981 / 1000000000) := rfl
+@[simp] theorem lookup_literalMuJ_5_5 : literalMu .J (some 4) (some 4) = 0 := rfl
+@[simp] theorem lookup_literalMuJ_5_6 : literalMu .J (some 4) (some 5) = (15958847 / 10000000000) := rfl
+@[simp] theorem lookup_literalMuJ_5_7 : literalMu .J (some 4) (some 6) = (5645671 / 5000000000) := rfl
+@[simp] theorem lookup_literalMuJ_5_8 : literalMu .J (some 4) (some 7) = (1735709 / 10000000000) := rfl
+@[simp] theorem lookup_literalMuJ_6_0 : literalMu .J (some 5) none = (587757 / 5000000000) := rfl
+@[simp] theorem lookup_literalMuJ_6_1 : literalMu .J (some 5) (some 0) = (1347161 / 10000000000) := rfl
+@[simp] theorem lookup_literalMuJ_6_2 : literalMu .J (some 5) (some 1) = (1400941 / 10000000000) := rfl
+@[simp] theorem lookup_literalMuJ_6_3 : literalMu .J (some 5) (some 2) = (934813 / 5000000000) := rfl
+@[simp] theorem lookup_literalMuJ_6_4 : literalMu .J (some 5) (some 3) = (421609 / 1250000000) := rfl
+@[simp] theorem lookup_literalMuJ_6_5 : literalMu .J (some 5) (some 4) = (532317 / 1250000000) := rfl
+@[simp] theorem lookup_literalMuJ_6_6 : literalMu .J (some 5) (some 5) = 0 := rfl
+@[simp] theorem lookup_literalMuJ_6_7 : literalMu .J (some 5) (some 6) = (2547257 / 2000000000) := rfl
+@[simp] theorem lookup_literalMuJ_6_8 : literalMu .J (some 5) (some 7) = (975219 / 5000000000) := rfl
+@[simp] theorem lookup_literalMuJ_7_0 : literalMu .J (some 6) none = (74951 / 1000000000) := rfl
+@[simp] theorem lookup_literalMuJ_7_1 : literalMu .J (some 6) (some 0) = (83473 / 1000000000) := rfl
+@[simp] theorem lookup_literalMuJ_7_2 : literalMu .J (some 6) (some 1) = (87131 / 1000000000) := rfl
+@[simp] theorem lookup_literalMuJ_7_3 : literalMu .J (some 6) (some 2) = (1095443 / 10000000000) := rfl
+@[simp] theorem lookup_literalMuJ_7_4 : literalMu .J (some 6) (some 3) = (701429 / 5000000000) := rfl
+@[simp] theorem lookup_literalMuJ_7_5 : literalMu .J (some 6) (some 4) = (821387 / 2500000000) := rfl
+@[simp] theorem lookup_literalMuJ_7_6 : literalMu .J (some 6) (some 5) = (3794283 / 10000000000) := rfl
+@[simp] theorem lookup_literalMuJ_7_7 : literalMu .J (some 6) (some 6) = 0 := rfl
+@[simp] theorem lookup_literalMuJ_7_8 : literalMu .J (some 6) (some 7) = (2041181 / 10000000000) := rfl
+@[simp] theorem lookup_literalMuJ_8_0 : literalMu .J (some 7) none = (84579 / 2000000000) := rfl
+@[simp] theorem lookup_literalMuJ_8_1 : literalMu .J (some 7) (some 0) = (58061 / 1250000000) := rfl
+@[simp] theorem lookup_literalMuJ_8_2 : literalMu .J (some 7) (some 1) = (470191 / 10000000000) := rfl
+@[simp] theorem lookup_literalMuJ_8_3 : literalMu .J (some 7) (some 2) = (549261 / 10000000000) := rfl
+@[simp] theorem lookup_literalMuJ_8_4 : literalMu .J (some 7) (some 3) = (174191 / 2500000000) := rfl
+@[simp] theorem lookup_literalMuJ_8_5 : literalMu .J (some 7) (some 4) = (234883 / 2500000000) := rfl
+@[simp] theorem lookup_literalMuJ_8_6 : literalMu .J (some 7) (some 5) = (3278167 / 10000000000) := rfl
+@[simp] theorem lookup_literalMuJ_8_7 : literalMu .J (some 7) (some 6) = (4516119 / 10000000000) := rfl
+@[simp] theorem lookup_literalMuJ_8_8 : literalMu .J (some 7) (some 7) = 0 := rfl
+end ADMM.FiniteMemory.Reconstruction.RationalCertificates.CaseThree.Lower.MatrixBridge

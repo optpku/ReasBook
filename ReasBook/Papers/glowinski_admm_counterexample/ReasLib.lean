@@ -1,0 +1,12 @@
+module
+
+public import glowinski_admm_counterexample.ReasLib.Optimization.ADMM.Convergence
+public import glowinski_admm_counterexample.ReasLib.Optimization.ADMM.ProjectionCycleStrictification
+public import glowinski_admm_counterexample.ReasLib.Optimization.ADMM.EndpointLower
+public import glowinski_admm_counterexample.ReasLib.Optimization.ADMM.Convergence.ProofSupport.CertificateUniform
+public import glowinski_admm_counterexample.ReasLib.ConsensusADMM.SmoothRealization
+public import glowinski_admm_counterexample.ReasLib.ConsensusADMM.GeometricGrowth
+public import glowinski_admm_counterexample.ReasLib.ConsensusADMM.FiniteObjectivesAndGrowth
+public import glowinski_admm_counterexample.ReasLib.ConsensusADMM.Period48.Counterexamples
+
+/-! Reusable convergence, certificate, and counterexample theorems. -/

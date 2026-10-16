@@ -54,6 +54,13 @@ lean_lib «RockafellarSum_2026» where
   roots := #[`RockafellarSum_2026.Paper]
   globs := #[.submodules `RockafellarSum_2026]
 
+/-- Glowinski ADMM results, with project-prefixed modules to coexist with DFP. -/
+lean_lib «glowinski_admm_counterexample» where
+  srcDir := "Papers"
+  roots := #[`glowinski_admm_counterexample.Paper]
+  globs := #[.submodules `glowinski_admm_counterexample]
+  weakLeanArgs := #["-j1", "-M4096"]
+
 lean_exe "literate-extract" where
   root := `LiterateExtract
   supportInterpreter := true
