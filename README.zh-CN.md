@@ -15,7 +15,7 @@
 
 | 分支 | Lean/mathlib | 注册状态 | 书籍/论文 |
 | --- | --- | --- | ---: |
-| `v4.32.0` | `v4.32.0` | 空 | 1 / 2 |
+| `v4.32.0` | `v4.32.0` | 空 | 1 / 3 |
 | `v4.32.2` | `v4.32.2` | 活跃 | 0 / 2 |
 | `v4.30.0` | `v4.30.0` | 活跃 | 9 / 2 |
 | `v4.26.0` | `v4.26.0` | 活跃 | 4 / 2 |
@@ -144,6 +144,7 @@ GitHub Pages 继续发布静态站点，公众评论需要运行 reviewer 后端
 | **[A Fixed-Penalty Linearized Augmented Lagrangian Method with Classical Multiplier Updates](ReasBook/Papers/TR_LALM_theory/)**<br><sub>Benqi Liu、Kangkang Deng、Zichen Wang 与 Zaiwen Wen</sub> | [`v4.32.2`](https://github.com/optpku/ReasBook/tree/v4.32.2/ReasBook/Papers/TR_LALM_theory/) | Zichen Wang, Zaiwen Wen | [文档](https://optpku.github.io/ReasBook/docs/ReasBook/Papers/TR_LALM_theory/Paper.html) &#124; [Verso](https://optpku.github.io/ReasBook/sites/tr_lalm_theory/pages/) &#124; [定理依赖图](https://optpku.github.io/ReasBook/theorem-maps/papers/tr_lalm_theory/) |
 | **[The Minimum Q-Order of BFGS with Exact Line Search Is One](ReasBook/Papers/BFGSMinimumQOrder_Liu_2026/)**<br><sub>Benqi Liu、Chenyi Li 与 Zaiwen Wen (2026)</sub> | [`v4.32.2`](https://github.com/optpku/ReasBook/tree/v4.32.2/ReasBook/Papers/BFGSMinimumQOrder_Liu_2026/) | Chenyi Li | 仅源代码（文档待发布） |
 | **[Technical note: a counterexample to the Rockafellar sum conjecture on c₀](ReasBook/Papers/RockafellarSum_2026/)**<br><sub>Junyu Zhang, Jinbiao Chen, Zichen Wang, Benqi Liu, and Zaiwen Wen (2026)</sub> | [`v4.32.0`](https://github.com/optpku/ReasBook/tree/v4.32.0/ReasBook/Papers/RockafellarSum_2026/) | Zichen Wang | [Note PDF](https://github.com/optpku/ReasBook/blob/v4.32.0/ReasBook/Papers/RockafellarSum_2026/note/rockafellar_sum_technical_note.pdf) · [LaTeX](https://github.com/optpku/ReasBook/blob/v4.32.0/ReasBook/Papers/RockafellarSum_2026/note/rockafellar_sum_technical_note.tex) |
+| **[The multiplier step size of two-block ADMM: convergence and counterexamples](ReasBook/Papers/glowinski_admm_counterexample/)**<br><sub>2026</sub> | [`v4.32.0`](https://github.com/optpku/ReasBook/tree/v4.32.0/ReasBook/Papers/glowinski_admm_counterexample/) | Qiming Dai | [文档](https://optpku.github.io/ReasBook/docs/ReasBook/Papers/glowinski_admm_counterexample/Paper.html) &#124; [Verso](https://optpku.github.io/ReasBook/sites/glowinski_admm_counterexample/pages/) &#124; [定理依赖图](https://optpku.github.io/ReasBook/theorem-maps/papers/glowinski_admm_counterexample/) |
 
 ### 其他已形式化论文
 
