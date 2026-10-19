@@ -11,7 +11,6 @@ import argparse
 from bisect import bisect_left
 import hashlib
 import json
-import os
 from pathlib import Path
 import re
 import subprocess
@@ -31,6 +30,7 @@ def main():
     parser.add_argument('--sdk-root', type=Path, required=True)
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--evidence', type=Path, required=True)
+    parser.add_argument('--reuse-evidence', type=Path, help='Reuse checksum-verified export for identical committed sources')
     args = parser.parse_args()
     paper = Path(__file__).resolve().parents[1]
     repo = paper.parents[2]
@@ -84,11 +84,22 @@ def main():
         return result
 
     project = Project('papers', 'Papers', 'Paper', 'DFP_wolfe_local', paper, 'DFPWolfe.V21')
-    with tempfile.TemporaryDirectory(prefix='dfp-v21-extract-') as temporary:
-        extractor = Path(temporary) / 'Extract.lean'
-        extractor.write_text(text)
-        raw = LeanEnvironmentExtractor(extractor, runner=bounded_runner,
-            timeout_seconds=1800).extract_project(repo, project)[project.project_id]
+    if args.reuse_evidence:
+        saved_root = args.reuse_evidence.resolve()
+        saved = json.loads((saved_root / 'provenance.json').read_text())
+        source_identity = [dict(file=path.relative_to(paper).as_posix(), sha256=digest(path))
+                           for path in files]
+        if (saved['sourceCommit'] != commit or saved['sources'] != source_identity or
+                saved['extractorSha256'] != digest(original) or
+                saved['rawSha256'] != digest(saved_root / 'raw.json')):
+            raise RuntimeError('Cached export source, extractor or checksum mismatch')
+        raw = json.loads((saved_root / 'raw.json').read_text())
+    else:
+        with tempfile.TemporaryDirectory(prefix='dfp-v21-extract-') as temporary:
+            extractor = Path(temporary) / 'Extract.lean'
+            extractor.write_text(text)
+            raw = LeanEnvironmentExtractor(extractor, runner=bounded_runner,
+                timeout_seconds=1800).extract_project(repo, project)[project.project_id]
     (evidence / 'raw.json').write_text(json.dumps(raw, ensure_ascii=False))
     heads = {}
     pattern = re.compile(r'^[ \t]*(?:@\[[\s\S]*?\]\s*)*'
@@ -190,7 +201,11 @@ def main():
     ]
     for item, bundle, names in zip(overview['items'], bundles, samples):
         item['statement'] = bundle['mapping']
-        item['leanCode'] = '\n\n'.join(by_name[name]['leanCode'] for name in names)
+        primary = by_name[names[0]]
+        item.update({key: primary[key] for key in ('declaration', 'file', 'line', 'endLine')})
+        item['leanCode'] = primary['leanCode']
+        item['leanExcerpts'] = [{key: by_name[name][key] for key in
+            ('declaration', 'file', 'line', 'leanCode')} for name in names]
         item['type'] = 'Equation' if item['id'] == 'v21-two-cycle' else 'Section'
     (output / 'overview-data.json').write_text(json.dumps(overview, indent=2, ensure_ascii=False) + '\n')
     # Only the v21 viewer gains a source panel; the original map is preserved.
@@ -200,11 +215,20 @@ def main():
     panel = '''    if (item.leanCode) {
       var codeHeading = document.createElement("h3");
       codeHeading.textContent = "Corresponding Lean code";
-      var code = document.createElement("pre");
-      code.className = "v21-lean-code";
-      code.textContent = item.leanCode;
       statementSection.appendChild(codeHeading);
-      statementSection.appendChild(code);
+      (item.leanExcerpts || [item]).forEach(function (excerpt) {
+        var sourceLink = document.createElement("a");
+        sourceLink.className = "detail-source-link";
+        sourceLink.textContent = excerpt.declaration;
+        sourceLink.href = sourceUrl(excerpt);
+        sourceLink.target = "_blank";
+        sourceLink.rel = "noreferrer";
+        var code = document.createElement("pre");
+        code.className = "v21-lean-code";
+        code.textContent = excerpt.leanCode;
+        statementSection.appendChild(sourceLink);
+        statementSection.appendChild(code);
+      });
     }
 
 '''
@@ -218,7 +242,8 @@ def main():
     app.write_text(javascript)
     css = output / 'styles.css'
     css.write_text(css.read_text() + '\n.v21-lean-code { white-space: pre; overflow-x: auto; '
-        'max-width: 100%; padding: 1rem; background: #f6f8fa; border-radius: 6px; }\n'
+        'max-width: 100%; padding: 1rem; background: #f6f8fa; border-radius: 6px; '
+        'font-family: ui-monospace, monospace; }\n.detail-scroll { grid-column: 2; }\n'
         '.version-links { padding: .5rem 1rem; background: #f6f8fa; }\n')
     index = output / 'index.html'
     index.write_text(index.read_text().replace('<body>', '<body>\n<nav class="version-links">'

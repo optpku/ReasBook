@@ -67,6 +67,12 @@ class V21ResourceTests(unittest.TestCase):
         for row in self.overview['items']:
             self.assertTrue(row['relatedDeclarations'])
             self.assertTrue(row['leanCode'])
+            primary = row['leanExcerpts'][0]
+            self.assertEqual(row['file'], primary['file'])
+            self.assertEqual(row['line'], primary['line'])
+            for excerpt in row['leanExcerpts']:
+                lines = (self.paper / excerpt['file']).read_text().splitlines(keepends=True)
+                self.assertTrue(''.join(lines[excerpt['line'] - 1:]).startswith(excerpt['leanCode']))
 
 
 if __name__ == '__main__':

@@ -1,0 +1,12 @@
+{
+  "project": {
+    "branch": "v4.32.0",
+    "commit": "0b896a150c0dd5be99294c4620c9f1300f67d76a",
+    "id": "DFP_wolfe_local",
+    "kind": "papers",
+    "repository": "https://github.com/optpku/ReasBook",
+    "sourceRoot": "ReasBook/Papers/DFP_wolfe_local/",
+    "title": "DFP v21: polar foundations (partial proof)"
+  },
+  "schemaVersion": 1
+}

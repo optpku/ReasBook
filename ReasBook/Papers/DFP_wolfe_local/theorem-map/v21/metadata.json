@@ -1,0 +1,28 @@
+{
+  "edges": 321,
+  "generation": {
+    "compiledItemCount": 154,
+    "dependencyCoverage": "complete",
+    "dependencyModel": "statement-and-proof-v1",
+    "extractorSha256": "289fb0f2033a900ed29169e757b3d19b4a38532d5d43c9279f1f0c4764b2daca",
+    "mergedItemCount": 154,
+    "mode": "lean-environment",
+    "rootModule": "DFPWolfe.V21",
+    "scope": "v21 polar foundations only; full v21 counterexample not yet proved",
+    "sourceInventoryItemCount": 154,
+    "sourceOnlyItemCount": 0,
+    "sourceSha256": "917b372227198207e448704bd3f54f57057f632af280b39c49ad1c920430c580",
+    "sourceSnapshot": "c788aa3dabd6cac78f4ec8b2c9c1e897cbc1188f"
+  },
+  "nodes": 154,
+  "project": {
+    "branch": "v4.32.0",
+    "commit": "0b896a150c0dd5be99294c4620c9f1300f67d76a",
+    "id": "DFP_wolfe_local",
+    "kind": "papers",
+    "repository": "https://github.com/optpku/ReasBook",
+    "sourceRoot": "ReasBook/Papers/DFP_wolfe_local/",
+    "title": "DFP v21: polar foundations (partial proof)"
+  },
+  "schemaVersion": 1
+}

@@ -46,6 +46,28 @@ python3.11 ReasBook/Papers/DFP_wolfe_local/tools/generate_v21_graph.py \
   --output /workspace/dfp-v21-map --evidence /workspace/dfp-v21-evidence
 ```
 
+The compiled v21 graph contains 154 public theorems/lemmas and 321 dependency
+edges, with zero source-only nodes. The three-node overview uses Section 3.1,
+Section 3.2 and `eq:polar-two-cycle` as source locators, with compiled witness
+paths for its edges. Each detail panel places the declaration description or
+coverage note above exact Lean code sliced using compiler-provided ranges.
+Source links are pinned to ReasBook commit `0b896a150c0dd5be99294c4620c9f1300f67d76a`.
+These descriptions are declaration docstrings or coverage notes, not verbatim
+quotations of the complete v21 manuscript.
+
+Focused validation on the ReasBook layout passed the three v21 navigation
+modules, the independent `DFPWolfe.V21` entry and the combined
+`DFP_wolfe_local.Paper` entry. An ephemeral `#print axioms` audit covered all
+154 public v21 theorems/lemmas and three original principal results (157 total):
+only `propext`, `Classical.choice` and `Quot.sound` occur. All 14 resource tests
+passed, including source-range hashes and compiled overview-edge witnesses.
+Desktop/mobile browser checks cover both graph versions and the v21 source
+panels. No comparator rerun or full Docs/Verso render is claimed for this addition.
+
+The Docs source plan contains 460 reachable modules, including the original
+proof and all nine Polar proof modules. Run the existing Docs adapter with
+`--plan-only` to inspect this closure without generating the site.
+
 The existing Docs builder follows the combined import root automatically.
 The Verso manifest now lists eleven routes: the eight original routes and
 three new `v21-*` routes. The source PR prepares both resources; merging it

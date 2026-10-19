@@ -1,0 +1,971 @@
+{
+  "schemaVersion": 2,
+  "project": {
+    "id": "DFP_wolfe_local",
+    "title": "DFP v21: polar foundations (partial proof)",
+    "kind": "papers",
+    "branch": "v4.32.0",
+    "commit": "0b896a150c0dd5be99294c4620c9f1300f67d76a",
+    "repository": "https://github.com/optpku/ReasBook",
+    "sourceRoot": "ReasBook/Papers/DFP_wolfe_local/"
+  },
+  "items": [
+    {
+      "id": "v21-polar-data",
+      "label": "Section 3.1",
+      "title": "Prescribed polar data",
+      "type": "Section",
+      "section": "construction",
+      "file": "ReasLib/Optimization/DFP/Polar/Recurrence.lean",
+      "line": 472,
+      "declaration": "DFP.Polar.Parameters.matrix_succ",
+      "statement": "Definitions and exact recurrence identities only; radius-product convergence is not asserted.",
+      "dependencyEvidence": "compiled",
+      "leanCode": "theorem matrix_succ (p : Parameters) (k : ℕ) :\n    p.matrix (k + 1) =\n      matrixStep (p.matrix k) (p.angleIncrement k) (p.zeta k) (p.zeta (k + 1)) := by\n  -- Split the flattened sequence into the first and second stages of each cycle.\n  rcases Nat.even_or_odd' k with ⟨j, rfl | rfl⟩\n  · -- At an even index, the successor is exactly the prescribed first stage.\n    rw [matrix_odd, matrix_even, angleIncrement_def, angle_odd, angle_even,\n      zeta_even, zeta_odd, oddMatrix_def, firstStageMatrix_def]\n  · -- At an odd index, normalize the successor to the next cycle boundary.\n    have hnext : 2 * j + 1 + 1 = 2 * (j + 1) := by\n      omega\n    rw [angleIncrement_def, hnext, matrix_even, evenMatrix_succ, nextEvenMatrix_def,\n      matrix_odd, oddMatrix_def, firstStageMatrix_def, angle_even, angle_odd,\n      zeta_even, zeta_odd]",
+      "endLine": 485,
+      "sourceSha256": "4fcff3f438bcca4bb4a71e23e5f3348cf2ba4e76718d7545c7d4a9cee7d815c4",
+      "statementDependencies": [],
+      "proofDependencies": [],
+      "dependencies": [],
+      "paperMapping": "Definitions and exact recurrence identities only; radius-product convergence is not asserted.",
+      "texLabel": "eq:polar-matrix-map",
+      "relatedDeclarations": [
+        {
+          "declaration": "DFP.Polar.baseAngle_def",
+          "file": "ReasLib/Optimization/DFP/Polar/CycleFamily.lean",
+          "line": 16
+        },
+        {
+          "declaration": "DFP.Polar.cycleZ_def",
+          "file": "ReasLib/Optimization/DFP/Polar/CycleFamily.lean",
+          "line": 26
+        },
+        {
+          "declaration": "DFP.Polar.cycleW_def",
+          "file": "ReasLib/Optimization/DFP/Polar/CycleFamily.lean",
+          "line": 36
+        },
+        {
+          "declaration": "DFP.Polar.cycleK_def",
+          "file": "ReasLib/Optimization/DFP/Polar/CycleFamily.lean",
+          "line": 46
+        },
+        {
+          "declaration": "DFP.Polar.matrixStep_isHermitian",
+          "file": "ReasLib/Optimization/DFP/Polar/Hermitian.lean",
+          "line": 34
+        },
+        {
+          "declaration": "DFP.Polar.Parameters.evenMatrix_isHermitian",
+          "file": "ReasLib/Optimization/DFP/Polar/Hermitian.lean",
+          "line": 71
+        },
+        {
+          "declaration": "DFP.Polar.Parameters.evenRadius_def",
+          "file": "ReasLib/Optimization/DFP/Polar/Realization.lean",
+          "line": 20
+        },
+        {
+          "declaration": "DFP.Polar.Parameters.oddRadius_def",
+          "file": "ReasLib/Optimization/DFP/Polar/Realization.lean",
+          "line": 31
+        },
+        {
+          "declaration": "DFP.Polar.Parameters.radius_even",
+          "file": "ReasLib/Optimization/DFP/Polar/Realization.lean",
+          "line": 42
+        },
+        {
+          "declaration": "DFP.Polar.Parameters.radius_odd",
+          "file": "ReasLib/Optimization/DFP/Polar/Realization.lean",
+          "line": 49
+        },
+        {
+          "declaration": "DFP.Polar.Parameters.point_def",
+          "file": "ReasLib/Optimization/DFP/Polar/Realization.lean",
+          "line": 59
+        },
+        {
+          "declaration": "DFP.Polar.Parameters.gradient_def",
+          "file": "ReasLib/Optimization/DFP/Polar/Realization.lean",
+          "line": 69
+        },
+        {
+          "declaration": "DFP.Polar.Parameters.inverseHessian_def",
+          "file": "ReasLib/Optimization/DFP/Polar/Realization.lean",
+          "line": 81
+        },
+        {
+          "declaration": "DFP.Polar.Parameters.of_startIndex",
+          "file": "ReasLib/Optimization/DFP/Polar/Recurrence.lean",
+          "line": 31
+        },
+        {
+          "declaration": "DFP.Polar.Parameters.of_cycleParameter",
+          "file": "ReasLib/Optimization/DFP/Polar/Recurrence.lean",
+          "line": 38
+        },
+        {
+          "declaration": "DFP.Polar.polarUnit_apply_zero",
+          "file": "ReasLib/Optimization/DFP/Polar/Recurrence.lean",
+          "line": 51
+        },
+        {
+          "declaration": "DFP.Polar.polarUnit_apply_one",
+          "file": "ReasLib/Optimization/DFP/Polar/Recurrence.lean",
+          "line": 58
+        },
+        {
+          "declaration": "DFP.Polar.rotationMatrix_def",
+          "file": "ReasLib/Optimization/DFP/Polar/Recurrence.lean",
+          "line": 68
+        },
+        {
+          "declaration": "DFP.Polar.rotationMatrix_eq_euclideanPlane",
+          "file": "ReasLib/Optimization/DFP/Polar/Recurrence.lean",
+          "line": 75
+        },
+        {
+          "declaration": "DFP.Polar.Parameters.scale_def",
+          "file": "ReasLib/Optimization/DFP/Polar/Recurrence.lean",
+          "line": 100
+        },
+        {
+          "declaration": "DFP.Polar.Parameters.evenAngle_def",
+          "file": "ReasLib/Optimization/DFP/Polar/Recurrence.lean",
+          "line": 110
+        },
+        {
+          "declaration": "DFP.Polar.Parameters.oddAngle_def",
+          "file": "ReasLib/Optimization/DFP/Polar/Recurrence.lean",
+          "line": 121
+        },
+        {
+          "declaration": "DFP.Polar.Parameters.angle_even",
+          "file": "ReasLib/Optimization/DFP/Polar/Recurrence.lean",
+          "line": 132
+        },
+        {
+          "declaration": "DFP.Polar.Parameters.angle_odd",
+          "file": "ReasLib/Optimization/DFP/Polar/Recurrence.lean",
+          "line": 139
+        },
+        {
+          "declaration": "DFP.Polar.Parameters.kStar_def",
+          "file": "ReasLib/Optimization/DFP/Polar/Recurrence.lean",
+          "line": 149
+        },
+        {
+          "declaration": "DFP.Polar.Parameters.wStar_def",
+          "file": "ReasLib/Optimization/DFP/Polar/Recurrence.lean",
+          "line": 159
+        },
+        {
+          "declaration": "DFP.Polar.Parameters.feedbackRate_def",
+          "file": "ReasLib/Optimization/DFP/Polar/Recurrence.lean",
+          "line": 169
+        },
+        {
+          "declaration": "DFP.Polar.Parameters.initialMatrix_def",
+          "file": "ReasLib/Optimization/DFP/Polar/Recurrence.lean",
+          "line": 180
+        },
+        {
+          "declaration": "DFP.Polar.omegaOf_def",
+          "file": "ReasLib/Optimization/DFP/Polar/Recurrence.lean",
+          "line": 194
+        },
+        {
+          "declaration": "DFP.Polar.radiusRatioOf_def",
+          "file": "ReasLib/Optimization/DFP/Polar/Recurrence.lean",
+          "line": 204
+        },
+        {
+          "declaration": "DFP.Polar.stepVOf_def",
+          "file": "ReasLib/Optimization/DFP/Polar/Recurrence.lean",
+          "line": 214
+        },
+        {
+          "declaration": "DFP.Polar.stepWOf_def",
+          "file": "ReasLib/Optimization/DFP/Polar/Recurrence.lean",
+          "line": 224
+        },
+        {
+          "declaration": "DFP.Polar.sigmaOf_def",
+          "file": "ReasLib/Optimization/DFP/Polar/Recurrence.lean",
+          "line": 235
+        },
+        {
+          "declaration": "DFP.Polar.matrixStep_def",
+          "file": "ReasLib/Optimization/DFP/Polar/Recurrence.lean",
+          "line": 252
+        },
+        {
+          "declaration": "DFP.Polar.Parameters.amplitudeOf_def",
+          "file": "ReasLib/Optimization/DFP/Polar/Recurrence.lean",
+          "line": 271
+        },
+        {
+          "declaration": "DFP.Polar.Parameters.oddMultiplierOf_def",
+          "file": "ReasLib/Optimization/DFP/Polar/Recurrence.lean",
+          "line": 283
+        },
+        {
+          "declaration": "DFP.Polar.Parameters.firstStageMatrix_def",
+          "file": "ReasLib/Optimization/DFP/Polar/Recurrence.lean",
+          "line": 297
+        },
+        {
+          "declaration": "DFP.Polar.Parameters.nextEvenMatrix_def",
+          "file": "ReasLib/Optimization/DFP/Polar/Recurrence.lean",
+          "line": 312
+        },
+        {
+          "declaration": "DFP.Polar.Parameters.evenMatrix_zero",
+          "file": "ReasLib/Optimization/DFP/Polar/Recurrence.lean",
+          "line": 328
+        },
+        {
+          "declaration": "DFP.Polar.Parameters.evenMatrix_succ",
+          "file": "ReasLib/Optimization/DFP/Polar/Recurrence.lean",
+          "line": 334
+        },
+        {
+          "declaration": "DFP.Polar.Parameters.oddMatrix_def",
+          "file": "ReasLib/Optimization/DFP/Polar/Recurrence.lean",
+          "line": 344
+        },
+        {
+          "declaration": "DFP.Polar.Parameters.matrix_zero",
+          "file": "ReasLib/Optimization/DFP/Polar/Recurrence.lean",
+          "line": 355
+        },
+        {
+          "declaration": "DFP.Polar.Parameters.matrix_even",
+          "file": "ReasLib/Optimization/DFP/Polar/Recurrence.lean",
+          "line": 367
+        },
+        {
+          "declaration": "DFP.Polar.Parameters.matrix_odd",
+          "file": "ReasLib/Optimization/DFP/Polar/Recurrence.lean",
+          "line": 374
+        },
+        {
+          "declaration": "DFP.Polar.Parameters.amplitude_def",
+          "file": "ReasLib/Optimization/DFP/Polar/Recurrence.lean",
+          "line": 384
+        },
+        {
+          "declaration": "DFP.Polar.Parameters.zeta_even",
+          "file": "ReasLib/Optimization/DFP/Polar/Recurrence.lean",
+          "line": 395
+        },
+        {
+          "declaration": "DFP.Polar.Parameters.zeta_odd",
+          "file": "ReasLib/Optimization/DFP/Polar/Recurrence.lean",
+          "line": 403
+        },
+        {
+          "declaration": "DFP.Polar.Parameters.angleIncrement_def",
+          "file": "ReasLib/Optimization/DFP/Polar/Recurrence.lean",
+          "line": 414
+        },
+        {
+          "declaration": "DFP.Polar.Parameters.omega_def",
+          "file": "ReasLib/Optimization/DFP/Polar/Recurrence.lean",
+          "line": 424
+        },
+        {
+          "declaration": "DFP.Polar.Parameters.radiusRatio_def",
+          "file": "ReasLib/Optimization/DFP/Polar/Recurrence.lean",
+          "line": 434
+        },
+        {
+          "declaration": "DFP.Polar.Parameters.stepV_def",
+          "file": "ReasLib/Optimization/DFP/Polar/Recurrence.lean",
+          "line": 444
+        },
+        {
+          "declaration": "DFP.Polar.Parameters.stepW_def",
+          "file": "ReasLib/Optimization/DFP/Polar/Recurrence.lean",
+          "line": 454
+        },
+        {
+          "declaration": "DFP.Polar.Parameters.sigma_def",
+          "file": "ReasLib/Optimization/DFP/Polar/Recurrence.lean",
+          "line": 465
+        },
+        {
+          "declaration": "DFP.Polar.Parameters.matrix_succ",
+          "file": "ReasLib/Optimization/DFP/Polar/Recurrence.lean",
+          "line": 472
+        }
+      ],
+      "leanExcerpts": [
+        {
+          "declaration": "DFP.Polar.Parameters.matrix_succ",
+          "file": "ReasLib/Optimization/DFP/Polar/Recurrence.lean",
+          "line": 472,
+          "leanCode": "theorem matrix_succ (p : Parameters) (k : ℕ) :\n    p.matrix (k + 1) =\n      matrixStep (p.matrix k) (p.angleIncrement k) (p.zeta k) (p.zeta (k + 1)) := by\n  -- Split the flattened sequence into the first and second stages of each cycle.\n  rcases Nat.even_or_odd' k with ⟨j, rfl | rfl⟩\n  · -- At an even index, the successor is exactly the prescribed first stage.\n    rw [matrix_odd, matrix_even, angleIncrement_def, angle_odd, angle_even,\n      zeta_even, zeta_odd, oddMatrix_def, firstStageMatrix_def]\n  · -- At an odd index, normalize the successor to the next cycle boundary.\n    have hnext : 2 * j + 1 + 1 = 2 * (j + 1) := by\n      omega\n    rw [angleIncrement_def, hnext, matrix_even, evenMatrix_succ, nextEvenMatrix_def,\n      matrix_odd, oddMatrix_def, firstStageMatrix_def, angle_even, angle_odd,\n      zeta_even, zeta_odd]"
+        }
+      ]
+    },
+    {
+      "id": "v21-normalized-map",
+      "label": "Section 3.2",
+      "title": "Normalized map and regularity",
+      "type": "Section",
+      "section": "construction",
+      "file": "ReasLib/Optimization/DFP/Polar/Normalized/Recurrence.lean",
+      "line": 303,
+      "declaration": "DFP.Polar.Parameters.normalizedEvenState_succ",
+      "statement": "Exact normalized recurrence, analytic canceled map and compact-uniform Taylor interface. Restoring drift and the invariant tube are not asserted.",
+      "dependencyEvidence": "compiled",
+      "leanCode": "theorem normalizedEvenState_succ (p : Parameters) (j : ℕ)\n    (hstart : 0 < p.startIndex) :\n    p.normalizedEvenState (j + 1) =\n      Normalized.map p.feedbackRate p.kStar (p.scale j) (p.normalizedEvenState j) := by\n  -- The successor boundary is obtained by the raw two-stage recurrence first.\n  have ht : 0 < p.scale j := by\n    have hN : 0 < ((p.startIndex + j : ℕ) : ℝ) := by\n      exact_mod_cast Nat.add_pos_left hstart j\n    rw [DFP.Polar.Parameters.scale_def]\n    exact Real.rpow_pos_of_pos hN _\n  have hscale := Normalized.nextScale_scale p j hstart\n  have htwo := twoStepCoordinates p j (p.evenMatrix j)\n    (DFP.Polar.Parameters.evenMatrix_isHermitian p j) hstart\n  have hrescale := Normalized.rescaleCoordinates (p.scale j)\n    (p.nextEvenMatrix j (p.evenMatrix j)) ht\n  calc\n    p.normalizedEvenState (j + 1) =\n        Normalized.coordinates (p.scale (j + 1)) (p.evenMatrix (j + 1)) := by\n      rfl\n    _ = Normalized.coordinates (Normalized.nextScale (p.scale j))\n          (p.nextEvenMatrix j (p.evenMatrix j)) := by\n      rw [DFP.Polar.Parameters.evenMatrix_succ, hscale]\n    _ = Normalized.rescale (p.scale j)\n          (Normalized.coordinates (p.scale j)\n            (p.nextEvenMatrix j (p.evenMatrix j))) := by\n      exact hrescale.symm\n    _ = Normalized.rescale (p.scale j)\n          (Normalized.twoStep p.feedbackRate p.kStar (p.scale j)\n            (Normalized.coordinates (p.scale j) (p.evenMatrix j))) := by\n      rw [htwo]\n    _ = Normalized.map p.feedbackRate p.kStar (p.scale j)\n          (p.normalizedEvenState j) := by\n      rw [Normalized.map_def]\n      rfl",
+      "endLine": 336,
+      "sourceSha256": "624a62bf6d2b2bdf4223ee511a813af4e64757c66183f721b6351975f6d15d20",
+      "statementDependencies": [],
+      "proofDependencies": [
+        "v21-polar-data"
+      ],
+      "dependencies": [
+        "v21-polar-data"
+      ],
+      "paperMapping": "Exact normalized recurrence, analytic canceled map and compact-uniform Taylor interface. Restoring drift and the invariant tube are not asserted.",
+      "texLabel": "eq:polar-leading-map",
+      "relatedDeclarations": [
+        {
+          "declaration": "DFP.Polar.Normalized.scaleMatrix_def",
+          "file": "ReasLib/Optimization/DFP/Polar/Normalized/Dynamics.lean",
+          "line": 20
+        },
+        {
+          "declaration": "DFP.Polar.Normalized.invScaleMatrix_def",
+          "file": "ReasLib/Optimization/DFP/Polar/Normalized/Dynamics.lean",
+          "line": 30
+        },
+        {
+          "declaration": "DFP.Polar.Normalized.coordinates_apply",
+          "file": "ReasLib/Optimization/DFP/Polar/Normalized/Dynamics.lean",
+          "line": 72
+        },
+        {
+          "declaration": "DFP.Polar.Normalized.slope_def",
+          "file": "ReasLib/Optimization/DFP/Polar/Normalized/Dynamics.lean",
+          "line": 82
+        },
+        {
+          "declaration": "DFP.Polar.Normalized.stepV_def",
+          "file": "ReasLib/Optimization/DFP/Polar/Normalized/Dynamics.lean",
+          "line": 92
+        },
+        {
+          "declaration": "DFP.Polar.Normalized.stepW_def",
+          "file": "ReasLib/Optimization/DFP/Polar/Normalized/Dynamics.lean",
+          "line": 103
+        },
+        {
+          "declaration": "DFP.Polar.Normalized.rotation_def",
+          "file": "ReasLib/Optimization/DFP/Polar/Normalized/Dynamics.lean",
+          "line": 115
+        },
+        {
+          "declaration": "DFP.Polar.Normalized.stageSigma_def",
+          "file": "ReasLib/Optimization/DFP/Polar/Normalized/Dynamics.lean",
+          "line": 127
+        },
+        {
+          "declaration": "DFP.Polar.Normalized.stageMatrix_def",
+          "file": "ReasLib/Optimization/DFP/Polar/Normalized/Dynamics.lean",
+          "line": 147
+        },
+        {
+          "declaration": "DFP.Polar.Normalized.stageMatrix_isHermitian",
+          "file": "ReasLib/Optimization/DFP/Polar/Normalized/Dynamics.lean",
+          "line": 269
+        },
+        {
+          "declaration": "DFP.Polar.Normalized.stage_apply",
+          "file": "ReasLib/Optimization/DFP/Polar/Normalized/Dynamics.lean",
+          "line": 295
+        },
+        {
+          "declaration": "DFP.Polar.Normalized.feedback_def",
+          "file": "ReasLib/Optimization/DFP/Polar/Normalized/Dynamics.lean",
+          "line": 307
+        },
+        {
+          "declaration": "DFP.Polar.Normalized.cycleStage_apply",
+          "file": "ReasLib/Optimization/DFP/Polar/Normalized/Dynamics.lean",
+          "line": 319
+        },
+        {
+          "declaration": "DFP.Polar.Normalized.twoStep_def",
+          "file": "ReasLib/Optimization/DFP/Polar/Normalized/Dynamics.lean",
+          "line": 333
+        },
+        {
+          "declaration": "DFP.Polar.Normalized.rescale_apply",
+          "file": "ReasLib/Optimization/DFP/Polar/Normalized/Dynamics.lean",
+          "line": 345
+        },
+        {
+          "declaration": "DFP.Polar.Normalized.map_def",
+          "file": "ReasLib/Optimization/DFP/Polar/Normalized/Dynamics.lean",
+          "line": 356
+        },
+        {
+          "declaration": "DFP.Polar.Normalized.leadingStage_apply",
+          "file": "ReasLib/Optimization/DFP/Polar/Normalized/Dynamics.lean",
+          "line": 366
+        },
+        {
+          "declaration": "DFP.Polar.Normalized.coordinates_eq_scaleMatrix_mul",
+          "file": "ReasLib/Optimization/DFP/Polar/Normalized/Dynamics.lean",
+          "line": 374
+        },
+        {
+          "declaration": "DFP.Polar.Normalized.stepV_eq_invScaleMatrix_mulVec",
+          "file": "ReasLib/Optimization/DFP/Polar/Normalized/Dynamics.lean",
+          "line": 392
+        },
+        {
+          "declaration": "DFP.Polar.Normalized.stepW_eq_scaleMatrix_mulVec",
+          "file": "ReasLib/Optimization/DFP/Polar/Normalized/Dynamics.lean",
+          "line": 410
+        },
+        {
+          "declaration": "DFP.Polar.Normalized.rotation_eq_scaleMatrix_mul",
+          "file": "ReasLib/Optimization/DFP/Polar/Normalized/Dynamics.lean",
+          "line": 443
+        },
+        {
+          "declaration": "DFP.Polar.Normalized.stageMatrix_eq_scaleMatrix_mul",
+          "file": "ReasLib/Optimization/DFP/Polar/Normalized/Dynamics.lean",
+          "line": 499
+        },
+        {
+          "declaration": "DFP.Polar.Normalized.cycleStage_zero",
+          "file": "ReasLib/Optimization/DFP/Polar/Normalized/Dynamics.lean",
+          "line": 577
+        },
+        {
+          "declaration": "DFP.Polar.Normalized.nextScale_scale",
+          "file": "ReasLib/Optimization/DFP/Polar/Normalized/Recurrence.lean",
+          "line": 14
+        },
+        {
+          "declaration": "DFP.Polar.Normalized.evenAngleReciprocalScale",
+          "file": "ReasLib/Optimization/DFP/Polar/Normalized/Recurrence.lean",
+          "line": 52
+        },
+        {
+          "declaration": "DFP.Polar.Normalized.stageAngle_scale",
+          "file": "ReasLib/Optimization/DFP/Polar/Normalized/Recurrence.lean",
+          "line": 65
+        },
+        {
+          "declaration": "DFP.Polar.Normalized.stageCoordinates",
+          "file": "ReasLib/Optimization/DFP/Polar/Normalized/Recurrence.lean",
+          "line": 131
+        },
+        {
+          "declaration": "DFP.Polar.Normalized.rescaleCoordinates",
+          "file": "ReasLib/Optimization/DFP/Polar/Normalized/Recurrence.lean",
+          "line": 167
+        },
+        {
+          "declaration": "DFP.Polar.Parameters.normalizedEvenState_apply",
+          "file": "ReasLib/Optimization/DFP/Polar/Normalized/Recurrence.lean",
+          "line": 189
+        },
+        {
+          "declaration": "DFP.Polar.Parameters.normalizedEvenState_matrix",
+          "file": "ReasLib/Optimization/DFP/Polar/Normalized/Recurrence.lean",
+          "line": 199
+        },
+        {
+          "declaration": "DFP.Polar.Parameters.twoStepCoordinates",
+          "file": "ReasLib/Optimization/DFP/Polar/Normalized/Recurrence.lean",
+          "line": 210
+        },
+        {
+          "declaration": "DFP.Polar.Parameters.normalizedEvenState_succ",
+          "file": "ReasLib/Optimization/DFP/Polar/Normalized/Recurrence.lean",
+          "line": 303
+        },
+        {
+          "declaration": "DFP.Polar.Normalized.denominators_apply",
+          "file": "ReasLib/Optimization/DFP/Polar/Normalized/Regularity.lean",
+          "line": 26
+        },
+        {
+          "declaration": "DFP.Polar.Normalized.denominators_uniformOn",
+          "file": "ReasLib/Optimization/DFP/Polar/Normalized/Regularity.lean",
+          "line": 384
+        },
+        {
+          "declaration": "DFP.Polar.Normalized.map_analyticAt_zero",
+          "file": "ReasLib/Optimization/DFP/Polar/Normalized/Regularity.lean",
+          "line": 454
+        },
+        {
+          "declaration": "DFP.Polar.Normalized.map_uniformJets",
+          "file": "ReasLib/Optimization/DFP/Polar/Normalized/Regularity.lean",
+          "line": 477
+        },
+        {
+          "declaration": "DFP.Polar.Normalized.cycleStage_analyticAt_zero",
+          "file": "ReasLib/Optimization/DFP/Polar/Normalized/Regularity.lean",
+          "line": 506
+        },
+        {
+          "declaration": "DFP.Polar.Normalized.cycleStage_firstIteratedFDeriv_eq_zero",
+          "file": "ReasLib/Optimization/DFP/Polar/Normalized/Regularity.lean",
+          "line": 835
+        },
+        {
+          "declaration": "DFP.Polar.Normalized.cycleStage_secondIteratedFDeriv_eq_zero",
+          "file": "ReasLib/Optimization/DFP/Polar/Normalized/Regularity.lean",
+          "line": 842
+        },
+        {
+          "declaration": "DFP.Polar.Normalized.unitRoot_def",
+          "file": "ReasLib/Optimization/DFP/Polar/Normalized/Regularization.lean",
+          "line": 22
+        },
+        {
+          "declaration": "DFP.Polar.Normalized.nextScale_def",
+          "file": "ReasLib/Optimization/DFP/Polar/Normalized/Regularization.lean",
+          "line": 70
+        },
+        {
+          "declaration": "DFP.Polar.Normalized.angleFactor_def",
+          "file": "ReasLib/Optimization/DFP/Polar/Normalized/Regularization.lean",
+          "line": 80
+        },
+        {
+          "declaration": "DFP.Polar.Normalized.stageWeight_zero",
+          "file": "ReasLib/Optimization/DFP/Polar/Normalized/Regularization.lean",
+          "line": 100
+        },
+        {
+          "declaration": "DFP.Polar.Normalized.stageWeight_one",
+          "file": "ReasLib/Optimization/DFP/Polar/Normalized/Regularization.lean",
+          "line": 106
+        },
+        {
+          "declaration": "DFP.Polar.Normalized.limitAngle_zero",
+          "file": "ReasLib/Optimization/DFP/Polar/Normalized/Regularization.lean",
+          "line": 116
+        },
+        {
+          "declaration": "DFP.Polar.Normalized.limitAngle_one",
+          "file": "ReasLib/Optimization/DFP/Polar/Normalized/Regularization.lean",
+          "line": 123
+        },
+        {
+          "declaration": "DFP.Polar.Normalized.stageAngleFactor_def",
+          "file": "ReasLib/Optimization/DFP/Polar/Normalized/Regularization.lean",
+          "line": 134
+        },
+        {
+          "declaration": "DFP.Polar.Normalized.stageAngle_def",
+          "file": "ReasLib/Optimization/DFP/Polar/Normalized/Regularization.lean",
+          "line": 168
+        },
+        {
+          "declaration": "DFP.Polar.Normalized.sinFactor_def",
+          "file": "ReasLib/Optimization/DFP/Polar/Normalized/Regularization.lean",
+          "line": 178
+        },
+        {
+          "declaration": "DFP.Polar.Normalized.cotFactor_def",
+          "file": "ReasLib/Optimization/DFP/Polar/Normalized/Regularization.lean",
+          "line": 188
+        },
+        {
+          "declaration": "DFP.Polar.Normalized.rescaleFactor_def",
+          "file": "ReasLib/Optimization/DFP/Polar/Normalized/Regularization.lean",
+          "line": 198
+        },
+        {
+          "declaration": "DFP.Polar.Normalized.nextScale_eq_rpow",
+          "file": "ReasLib/Optimization/DFP/Polar/Normalized/Regularization.lean",
+          "line": 204
+        },
+        {
+          "declaration": "DFP.Polar.Normalized.stageAngle_eq_rpow",
+          "file": "ReasLib/Optimization/DFP/Polar/Normalized/Regularization.lean",
+          "line": 219
+        },
+        {
+          "declaration": "DFP.Polar.Normalized.nextScale_analyticAt",
+          "file": "ReasLib/Optimization/DFP/Polar/Normalized/Regularization.lean",
+          "line": 239
+        },
+        {
+          "declaration": "DFP.Polar.Normalized.stageAngle_analyticAt",
+          "file": "ReasLib/Optimization/DFP/Polar/Normalized/Regularization.lean",
+          "line": 248
+        },
+        {
+          "declaration": "DFP.Polar.Normalized.sinFactor_eq_sin_div",
+          "file": "ReasLib/Optimization/DFP/Polar/Normalized/Regularization.lean",
+          "line": 282
+        },
+        {
+          "declaration": "DFP.Polar.Normalized.cotFactor_eq_mul_cot",
+          "file": "ReasLib/Optimization/DFP/Polar/Normalized/Regularization.lean",
+          "line": 293
+        },
+        {
+          "declaration": "DFP.Polar.Normalized.rescaleFactor_eq_div_sq",
+          "file": "ReasLib/Optimization/DFP/Polar/Normalized/Regularization.lean",
+          "line": 307
+        },
+        {
+          "declaration": "DFP.Polar.Normalized.sinFactor_analyticAt",
+          "file": "ReasLib/Optimization/DFP/Polar/Normalized/Regularization.lean",
+          "line": 315
+        },
+        {
+          "declaration": "DFP.Polar.Normalized.cotFactor_analyticAt",
+          "file": "ReasLib/Optimization/DFP/Polar/Normalized/Regularization.lean",
+          "line": 327
+        },
+        {
+          "declaration": "DFP.Polar.Normalized.nextScale_expansion",
+          "file": "ReasLib/Optimization/DFP/Polar/Normalized/Regularization.lean",
+          "line": 391
+        },
+        {
+          "declaration": "DFP.Polar.Normalized.stageAngle_expansion",
+          "file": "ReasLib/Optimization/DFP/Polar/Normalized/Regularization.lean",
+          "line": 429
+        },
+        {
+          "declaration": "DFP.Polar.Normalized.rescaleFactor_analyticAt",
+          "file": "ReasLib/Optimization/DFP/Polar/Normalized/Regularization.lean",
+          "line": 464
+        },
+        {
+          "declaration": "DFP.Polar.Normalized.rescaleFactor_firstIteratedFDeriv_eq_zero",
+          "file": "ReasLib/Optimization/DFP/Polar/Normalized/Regularization.lean",
+          "line": 537
+        },
+        {
+          "declaration": "DFP.Polar.Normalized.rescaleFactor_secondIteratedFDeriv_eq_zero",
+          "file": "ReasLib/Optimization/DFP/Polar/Normalized/Regularization.lean",
+          "line": 543
+        }
+      ],
+      "leanExcerpts": [
+        {
+          "declaration": "DFP.Polar.Parameters.normalizedEvenState_succ",
+          "file": "ReasLib/Optimization/DFP/Polar/Normalized/Recurrence.lean",
+          "line": 303,
+          "leanCode": "theorem normalizedEvenState_succ (p : Parameters) (j : ℕ)\n    (hstart : 0 < p.startIndex) :\n    p.normalizedEvenState (j + 1) =\n      Normalized.map p.feedbackRate p.kStar (p.scale j) (p.normalizedEvenState j) := by\n  -- The successor boundary is obtained by the raw two-stage recurrence first.\n  have ht : 0 < p.scale j := by\n    have hN : 0 < ((p.startIndex + j : ℕ) : ℝ) := by\n      exact_mod_cast Nat.add_pos_left hstart j\n    rw [DFP.Polar.Parameters.scale_def]\n    exact Real.rpow_pos_of_pos hN _\n  have hscale := Normalized.nextScale_scale p j hstart\n  have htwo := twoStepCoordinates p j (p.evenMatrix j)\n    (DFP.Polar.Parameters.evenMatrix_isHermitian p j) hstart\n  have hrescale := Normalized.rescaleCoordinates (p.scale j)\n    (p.nextEvenMatrix j (p.evenMatrix j)) ht\n  calc\n    p.normalizedEvenState (j + 1) =\n        Normalized.coordinates (p.scale (j + 1)) (p.evenMatrix (j + 1)) := by\n      rfl\n    _ = Normalized.coordinates (Normalized.nextScale (p.scale j))\n          (p.nextEvenMatrix j (p.evenMatrix j)) := by\n      rw [DFP.Polar.Parameters.evenMatrix_succ, hscale]\n    _ = Normalized.rescale (p.scale j)\n          (Normalized.coordinates (p.scale j)\n            (p.nextEvenMatrix j (p.evenMatrix j))) := by\n      exact hrescale.symm\n    _ = Normalized.rescale (p.scale j)\n          (Normalized.twoStep p.feedbackRate p.kStar (p.scale j)\n            (Normalized.coordinates (p.scale j) (p.evenMatrix j))) := by\n      rw [htwo]\n    _ = Normalized.map p.feedbackRate p.kStar (p.scale j)\n          (p.normalizedEvenState j) := by\n      rw [Normalized.map_def]\n      rfl"
+        },
+        {
+          "declaration": "DFP.Polar.Normalized.map_uniformJets",
+          "file": "ReasLib/Optimization/DFP/Polar/Normalized/Regularity.lean",
+          "line": 477,
+          "leanCode": "theorem map_uniformJets (L κ : ℝ) (m : ℕ) (𝒦 : Set (ℝ × ℝ × ℝ))\n    (h𝒦 : IsCompact 𝒦)\n    (hA : ∀ x ∈ 𝒦, 0 < x.1)\n    (hC : ∀ x ∈ 𝒦, 0 < x.2.1)\n    (hC₁ : ∀ x ∈ 𝒦, 0 < (leadingStage (limitAngle 0) x).2.1) :\n    FiniteTaylorJet.IsUniformOn\n      (fun x : ℝ × ℝ × ℝ ↦ fun t : ℝ ↦ map L κ t x)\n      (fun x ↦ FiniteTaylorJet.ofFunction ℝ m (fun t ↦ map L κ t x) 0)\n      0 𝒦 := by\n  -- Compact-fiber Taylor uniformity applies after swapping parameter and scale coordinates.\n  refine FiniteTaylorJet.isUniformOn_of_contDiffAt m\n    (fun x : ℝ × ℝ × ℝ ↦ fun t : ℝ ↦ map L κ t x) 0 𝒦 h𝒦 ?_\n  intro x hx\n  have hm := map_analyticAt_zero L κ x (hA x hx) (hC x hx) (hC₁ x hx)\n  have hswap : AnalyticAt ℝ\n      (fun y : (ℝ × ℝ × ℝ) × ℝ ↦ (y.2, y.1)) (x, 0) := by\n    exact (analyticAt_snd : AnalyticAt ℝ\n      (fun y : (ℝ × ℝ × ℝ) × ℝ ↦ y.2) (x, 0)).prod\n      (analyticAt_fst : AnalyticAt ℝ\n        (fun y : (ℝ × ℝ × ℝ) × ℝ ↦ y.1) (x, 0))\n  have hswap0 : (fun y : (ℝ × ℝ × ℝ) × ℝ ↦ (y.2, y.1)) (x, 0) = (0, x) := rfl\n  have hcomp := hm.comp_of_eq hswap hswap0\n  have htarget : AnalyticAt ℝ\n      (Function.uncurry (fun x : ℝ × ℝ × ℝ ↦ fun t : ℝ ↦ map L κ t x)) (x, 0) := by\n    change AnalyticAt ℝ (fun y : (ℝ × ℝ × ℝ) × ℝ ↦ map L κ y.2 y.1) (x, 0)\n    exact hcomp\n  exact htarget.contDiffAt"
+        }
+      ]
+    },
+    {
+      "id": "v21-two-cycle",
+      "label": "Two-cycle equation",
+      "title": "Limiting two-cycle family",
+      "type": "Equation",
+      "section": "construction",
+      "file": "ReasLib/Optimization/DFP/Polar/TwoCycle.lean",
+      "line": 368,
+      "declaration": "DFP.Polar.TwoCycle.evenToOdd",
+      "statement": "The rational limiting two-cycle, its local inverse and reference data; this does not prove continuation of the perturbed orbit.",
+      "dependencyEvidence": "compiled",
+      "leanCode": "theorem evenToOdd (K : ℝ) (hK : K ∈ normalizationSet) :\n    Normalized.leadingStage (2 * baseAngle) (evenState K) = oddState K := by\n  -- Subtracting the even-stage coefficient leaves the z coordinate.\n  rw [Normalized.leadingStage_apply, ← Normalized.slope_def, slope_evenState K hK]\n  simp only [add_sub_cancel_right, evenState_apply, oddState_apply]",
+      "endLine": 372,
+      "sourceSha256": "52b50b8c6c07fc4da565c770d94a30d29e66a01b50a0ae7731e9410b8b14bab5",
+      "statementDependencies": [],
+      "proofDependencies": [
+        "v21-normalized-map",
+        "v21-polar-data"
+      ],
+      "dependencies": [
+        "v21-normalized-map",
+        "v21-polar-data"
+      ],
+      "paperMapping": "The rational limiting two-cycle, its local inverse and reference data; this does not prove continuation of the perturbed orbit.",
+      "texLabel": "eq:polar-two-cycle",
+      "relatedDeclarations": [
+        {
+          "declaration": "DFP.Polar.TwoCycle.parameterSet_def",
+          "file": "ReasLib/Optimization/DFP/Polar/TwoCycle.lean",
+          "line": 22
+        },
+        {
+          "declaration": "DFP.Polar.TwoCycle.normalizationSet_def",
+          "file": "ReasLib/Optimization/DFP/Polar/TwoCycle.lean",
+          "line": 32
+        },
+        {
+          "declaration": "DFP.Polar.TwoCycle.kZero_def",
+          "file": "ReasLib/Optimization/DFP/Polar/TwoCycle.lean",
+          "line": 42
+        },
+        {
+          "declaration": "DFP.Polar.TwoCycle.evenState_apply",
+          "file": "ReasLib/Optimization/DFP/Polar/TwoCycle.lean",
+          "line": 57
+        },
+        {
+          "declaration": "DFP.Polar.TwoCycle.oddState_apply",
+          "file": "ReasLib/Optimization/DFP/Polar/TwoCycle.lean",
+          "line": 70
+        },
+        {
+          "declaration": "DFP.Polar.TwoCycle.evenReference_def",
+          "file": "ReasLib/Optimization/DFP/Polar/TwoCycle.lean",
+          "line": 82
+        },
+        {
+          "declaration": "DFP.Polar.TwoCycle.oddReference_def",
+          "file": "ReasLib/Optimization/DFP/Polar/TwoCycle.lean",
+          "line": 92
+        },
+        {
+          "declaration": "DFP.Polar.TwoCycle.cycleW_sub_cycleZ",
+          "file": "ReasLib/Optimization/DFP/Polar/TwoCycle.lean",
+          "line": 127
+        },
+        {
+          "declaration": "DFP.Polar.TwoCycle.one_div_cycleK_mul_cycleZ",
+          "file": "ReasLib/Optimization/DFP/Polar/TwoCycle.lean",
+          "line": 138
+        },
+        {
+          "declaration": "DFP.Polar.TwoCycle.one_div_cycleK_mul_cycleW",
+          "file": "ReasLib/Optimization/DFP/Polar/TwoCycle.lean",
+          "line": 147
+        },
+        {
+          "declaration": "DFP.Polar.TwoCycle.kZero_eq",
+          "file": "ReasLib/Optimization/DFP/Polar/TwoCycle.lean",
+          "line": 155
+        },
+        {
+          "declaration": "DFP.Polar.TwoCycle.hasDerivAt_cycleK_baseAngle",
+          "file": "ReasLib/Optimization/DFP/Polar/TwoCycle.lean",
+          "line": 193
+        },
+        {
+          "declaration": "DFP.Polar.TwoCycle.hasStrictDerivAt_cycleK_baseAngle",
+          "file": "ReasLib/Optimization/DFP/Polar/TwoCycle.lean",
+          "line": 213
+        },
+        {
+          "declaration": "DFP.Polar.TwoCycle.cycleK_derivCoefficient_pos",
+          "file": "ReasLib/Optimization/DFP/Polar/TwoCycle.lean",
+          "line": 225
+        },
+        {
+          "declaration": "DFP.Polar.TwoCycle.parameterSet_mem_nhds",
+          "file": "ReasLib/Optimization/DFP/Polar/TwoCycle.lean",
+          "line": 232
+        },
+        {
+          "declaration": "DFP.Polar.TwoCycle.cycleK_bijOn_parameterSet",
+          "file": "ReasLib/Optimization/DFP/Polar/TwoCycle.lean",
+          "line": 282
+        },
+        {
+          "declaration": "DFP.Polar.TwoCycle.normalizationSet_mem_nhds",
+          "file": "ReasLib/Optimization/DFP/Polar/TwoCycle.lean",
+          "line": 289
+        },
+        {
+          "declaration": "DFP.Polar.TwoCycle.inverseParameter_mapsTo",
+          "file": "ReasLib/Optimization/DFP/Polar/TwoCycle.lean",
+          "line": 297
+        },
+        {
+          "declaration": "DFP.Polar.TwoCycle.inverseParameter_invOn",
+          "file": "ReasLib/Optimization/DFP/Polar/TwoCycle.lean",
+          "line": 304
+        },
+        {
+          "declaration": "DFP.Polar.TwoCycle.cycleFamily_mapsTo_positive",
+          "file": "ReasLib/Optimization/DFP/Polar/TwoCycle.lean",
+          "line": 311
+        },
+        {
+          "declaration": "DFP.Polar.TwoCycle.slope_evenState",
+          "file": "ReasLib/Optimization/DFP/Polar/TwoCycle.lean",
+          "line": 340
+        },
+        {
+          "declaration": "DFP.Polar.TwoCycle.slope_oddState",
+          "file": "ReasLib/Optimization/DFP/Polar/TwoCycle.lean",
+          "line": 354
+        },
+        {
+          "declaration": "DFP.Polar.TwoCycle.evenToOdd",
+          "file": "ReasLib/Optimization/DFP/Polar/TwoCycle.lean",
+          "line": 368
+        },
+        {
+          "declaration": "DFP.Polar.TwoCycle.oddToEven",
+          "file": "ReasLib/Optimization/DFP/Polar/TwoCycle.lean",
+          "line": 376
+        },
+        {
+          "declaration": "DFP.Polar.TwoCycle.evenState_det",
+          "file": "ReasLib/Optimization/DFP/Polar/TwoCycle.lean",
+          "line": 384
+        },
+        {
+          "declaration": "DFP.Polar.TwoCycle.oddState_det",
+          "file": "ReasLib/Optimization/DFP/Polar/TwoCycle.lean",
+          "line": 397
+        },
+        {
+          "declaration": "DFP.Polar.TwoCycle.evenState_mapsTo_positive",
+          "file": "ReasLib/Optimization/DFP/Polar/TwoCycle.lean",
+          "line": 410
+        },
+        {
+          "declaration": "DFP.Polar.TwoCycle.oddState_mapsTo_positive",
+          "file": "ReasLib/Optimization/DFP/Polar/TwoCycle.lean",
+          "line": 420
+        },
+        {
+          "declaration": "DFP.Polar.TwoCycle.inverseParameter_kZero",
+          "file": "ReasLib/Optimization/DFP/Polar/TwoCycle.lean",
+          "line": 429
+        },
+        {
+          "declaration": "DFP.Polar.TwoCycle.cycleZ_inverseParameter_kZero",
+          "file": "ReasLib/Optimization/DFP/Polar/TwoCycle.lean",
+          "line": 440
+        },
+        {
+          "declaration": "DFP.Polar.TwoCycle.cycleW_inverseParameter_kZero",
+          "file": "ReasLib/Optimization/DFP/Polar/TwoCycle.lean",
+          "line": 447
+        },
+        {
+          "declaration": "DFP.Polar.TwoCycle.evenState_kZero",
+          "file": "ReasLib/Optimization/DFP/Polar/TwoCycle.lean",
+          "line": 455
+        },
+        {
+          "declaration": "DFP.Polar.TwoCycle.oddState_kZero",
+          "file": "ReasLib/Optimization/DFP/Polar/TwoCycle.lean",
+          "line": 467
+        },
+        {
+          "declaration": "DFP.Polar.TwoCycle.slope_evenReference",
+          "file": "ReasLib/Optimization/DFP/Polar/TwoCycle.lean",
+          "line": 479
+        },
+        {
+          "declaration": "DFP.Polar.TwoCycle.slope_oddReference",
+          "file": "ReasLib/Optimization/DFP/Polar/TwoCycle.lean",
+          "line": 487
+        }
+      ],
+      "leanExcerpts": [
+        {
+          "declaration": "DFP.Polar.TwoCycle.evenToOdd",
+          "file": "ReasLib/Optimization/DFP/Polar/TwoCycle.lean",
+          "line": 368,
+          "leanCode": "theorem evenToOdd (K : ℝ) (hK : K ∈ normalizationSet) :\n    Normalized.leadingStage (2 * baseAngle) (evenState K) = oddState K := by\n  -- Subtracting the even-stage coefficient leaves the z coordinate.\n  rw [Normalized.leadingStage_apply, ← Normalized.slope_def, slope_evenState K hK]\n  simp only [add_sub_cancel_right, evenState_apply, oddState_apply]"
+        },
+        {
+          "declaration": "DFP.Polar.TwoCycle.oddToEven",
+          "file": "ReasLib/Optimization/DFP/Polar/TwoCycle.lean",
+          "line": 376,
+          "leanCode": "theorem oddToEven (K : ℝ) (hK : K ∈ normalizationSet) :\n    Normalized.leadingStage baseAngle (oddState K) = evenState K := by\n  -- Subtracting the odd-stage coefficient leaves the w coordinate.\n  rw [Normalized.leadingStage_apply, ← Normalized.slope_def, slope_oddState K hK]\n  simp only [add_sub_cancel_right, evenState_apply, oddState_apply]"
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "id": "main",
+      "label": "Main results",
+      "short": "Main results",
+      "color": "#315fb5",
+      "wash": "#e9effa"
+    },
+    {
+      "id": "construction",
+      "label": "Counterexample construction",
+      "short": "Construction",
+      "color": "#23745d",
+      "wash": "#e4f2ed"
+    },
+    {
+      "id": "convergence",
+      "label": "Convergence argument",
+      "short": "Convergence",
+      "color": "#7654a6",
+      "wash": "#eee8f8"
+    }
+  ],
+  "generation": {
+    "mode": "lean-environment",
+    "rootModule": "DFPWolfe.V21",
+    "compiledItemCount": 3,
+    "sourceInventoryItemCount": 3,
+    "sourceOnlyItemCount": 0,
+    "mergedItemCount": 3,
+    "dependencyCoverage": "compiled-component-projection",
+    "dependencyModel": "compiled-paths-between-paper-components",
+    "sourceSha256": "917b372227198207e448704bd3f54f57057f632af280b39c49ad1c920430c580",
+    "extractorSha256": "289fb0f2033a900ed29169e757b3d19b4a38532d5d43c9279f1f0c4764b2daca",
+    "scope": "v21 polar foundations only; full v21 counterexample not yet proved",
+    "sourceSnapshot": "c788aa3dabd6cac78f4ec8b2c9c1e897cbc1188f",
+    "view": "paper-numbered",
+    "baseGraphItemCount": 154,
+    "baseGraphCompiledItemCount": 154,
+    "inventoryMode": "reviewed-paper-components",
+    "selection": "Reviewed manuscript-result bundles; unassigned nodes are contracted",
+    "paperItemCount": 3,
+    "mappingScope": "Nodes identify paper results. Linked declarations include full statements and supporting proof components as described individually.",
+    "numbering": "Source section/equation locators, not newly completed numbered theorems.",
+    "manuscript": "October 9, 2026 v21 submission"
+  },
+  "edgeWitnesses": [
+    {
+      "consumer": "v21-normalized-map",
+      "prerequisite": "v21-polar-data",
+      "kind": "proofDependencies",
+      "declarationPath": [
+        "DFP.Polar.Normalized.stepV_eq_invScaleMatrix_mulVec",
+        "DFP.Polar.omegaOf_def"
+      ]
+    },
+    {
+      "consumer": "v21-two-cycle",
+      "prerequisite": "v21-normalized-map",
+      "kind": "proofDependencies",
+      "declarationPath": [
+        "DFP.Polar.TwoCycle.slope_evenState",
+        "DFP.Polar.Normalized.slope_def"
+      ]
+    },
+    {
+      "consumer": "v21-two-cycle",
+      "prerequisite": "v21-polar-data",
+      "kind": "proofDependencies",
+      "declarationPath": [
+        "DFP.Polar.TwoCycle.cycleW_sub_cycleZ",
+        "DFP.Polar.baseAngle_def"
+      ]
+    }
+  ]
+}
