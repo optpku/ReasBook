@@ -1235,7 +1235,9 @@ class RepositoryScriptTests(unittest.TestCase):
             manifest = json.loads((web_root / ".literate-modules.json").read_text())
             modules = set(manifest["modules"])
             self.assertIn("DFPWolfe.Main", modules)
+            self.assertIn("DFP_wolfe_local.Paper", modules)
             self.assertNotIn("DFP_wolfe_local.DFPWolfe.Main", modules)
+            self.assertNotIn("Paper", modules)
 
     def test_gen_sections_links_project_docs_by_lake_root(self) -> None:
         generator = ROOT / "ReasBookWeb" / "scripts" / "gen_sections.py"

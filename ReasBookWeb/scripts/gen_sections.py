@@ -740,37 +740,45 @@ def paper_title(paper: str) -> str:
 
 
 @lru_cache(maxsize=None)
-def _lake_source_directories(source_root: Path) -> tuple[tuple[str, ...], ...]:
-    """Read per-library ``srcDir`` roots for logical module resolution.
-
-    A repository may register both ``Papers`` and a nested project source
-    directory. The longest matching source directory owns a file, so
-    ``Papers/DFP_wolfe_local/DFPWolfe/Main.lean`` resolves to
-    ``DFPWolfe.Main`` rather than ``DFP_wolfe_local.DFPWolfe.Main``.
-    """
+def _lake_source_layout(source_root: Path) -> tuple[dict[tuple[str, ...], str], tuple[tuple[str, ...], ...]]:
+    """Read explicit roots and per-library source directories from Lake."""
     lakefile = source_root / "lakefile.lean"
     if not lakefile.is_file():
-        return ()
+        return {}, ()
     lines = lakefile.read_text(encoding="utf-8", errors="replace").splitlines()
+    explicit: dict[tuple[str, ...], str] = {}
     directories: set[tuple[str, ...]] = set()
     for index, line in enumerate(lines):
-        if not re.match(r"^[ \t]*lean_lib[ \t]+", line.split("--", 1)[0]):
+        library = re.match(r"^[ \t]*lean_lib[ \t]+", line.split("--", 1)[0])
+        if not library:
             continue
+        source_directory: tuple[str, ...] = ()
+        roots: list[str] = []
         cursor = index + 1
         while cursor < len(lines):
             candidate = lines[cursor]
             if candidate.strip() and not candidate[0].isspace():
                 break
-            match = re.match(r'^[ \t]*srcDir[ \t]*:=[ \t]*"([^"]+)"', candidate)
-            if match:
-                directories.add(tuple(Path(match.group(1)).parts))
+            source_match = re.match(r'^[ \t]*srcDir[ \t]*:=[ \t]*"([^"]+)"', candidate)
+            if source_match:
+                source_directory = tuple(Path(source_match.group(1)).parts)
+                directories.add(source_directory)
+            roots_match = re.match(r"^[ \t]*roots[ \t]*:=[ \t*#]*([^]]+)", candidate)
+            if roots_match:
+                roots.extend(re.findall(r"[A-Za-z_][A-Za-z0-9_'.]*", roots_match.group(1)))
             cursor += 1
-    return tuple(sorted(directories, key=lambda value: (-len(value), value)))
+        for root in roots:
+            root_path = tuple(Path(*root.split(".")).with_suffix(".lean").parts)
+            explicit[source_directory + root_path] = root
+    return explicit, tuple(sorted(directories, key=lambda value: (-len(value), value)))
 
 
 def to_module(source_root: Path, path: Path) -> str:
     rel = path.relative_to(source_root)
-    for source_directory in _lake_source_directories(source_root):
+    explicit, source_directories = _lake_source_layout(source_root)
+    if rel.parts in explicit:
+        return explicit[rel.parts]
+    for source_directory in source_directories:
         prefix = tuple(rel.parts[:len(source_directory)])
         if prefix == source_directory and len(rel.parts) > len(source_directory):
             return ".".join(rel.with_suffix("").parts[len(source_directory):])
