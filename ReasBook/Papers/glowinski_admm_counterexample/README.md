@@ -43,17 +43,14 @@ full coverage details.
 
 ## Documentation
 
-[Docs](https://optpku.github.io/ReasBook/docs/ReasBook/Papers/glowinski_admm_counterexample/Paper.html) ·
-[Verso](https://optpku.github.io/ReasBook/sites/glowinski_admm_counterexample/pages/) ·
-[Theorem map](https://optpku.github.io/ReasBook/theorem-maps/papers/glowinski_admm_counterexample/)
+The public Docs, Verso and theorem-map pages are **pending publication**.
+The current GitHub Pages release does not include this project. Use the
+[Lean source](https://github.com/optpku/ReasBook/tree/v4.32.0/ReasBook/Papers/glowinski_admm_counterexample/)
+and [coverage and validation](https://github.com/optpku/ReasBook/blob/v4.32.0/ReasBook/Papers/glowinski_admm_counterexample/README.md)
+until a documentation release adds these resources.
 
-The ReasBook SDKs generated API documentation for all 480 reachable public
-modules, native Verso reading pages for 26 reviewed manuscript items in 25
-source modules, and a theorem map with 26 nodes and 74 dependencies. These
-resources describe the merged `v4.32.0` source from PR #69.
-
-The API documentation covers the complete module closure imported by the
-public paper entry point. Verso presents the corresponding Lean source and
-proofs; the theorem map offers statement and proof dependency views, with
-source links pinned to the merged commit. An arXiv link will be added when the
-manuscript is publicly available.
+A documentation bundle was validated locally for the merged source from PR #69:
+480 reachable public API modules, native Verso pages for 26 reviewed manuscript
+items in 25 source modules, and a theorem map with 26 nodes and 74 dependencies.
+Local bundle validation does not make those pages available on GitHub Pages.
+An arXiv link will be added when the manuscript is publicly available.
