@@ -1203,6 +1203,40 @@ class RepositoryScriptTests(unittest.TestCase):
             self.assertIn("Verso (TBD)", readme)
             self.assertNotIn("Documentation](https://", readme)
 
+    def test_gen_sections_uses_nested_lake_source_directories_for_modules(self) -> None:
+        generator = ROOT / "ReasBookWeb" / "scripts" / "gen_sections.py"
+        with tempfile.TemporaryDirectory() as temp:
+            repo = Path(temp) / "checkout"
+            lean_root = repo / "ReasBook"
+            web_root = repo / "ReasBookWeb"
+            project = lean_root / "Papers" / "DFP_wolfe_local"
+            (project / "DFPWolfe").mkdir(parents=True)
+            (project / "ReasLib").mkdir()
+            (lean_root / "Papers").mkdir(exist_ok=True)
+            (lean_root / "Books").mkdir(exist_ok=True)
+            (web_root / "ReasBookSite").mkdir(parents=True)
+            (lean_root / "lakefile.lean").write_text(
+                "import Lake\nopen Lake DSL\n"
+                'lean_lib DFP_wolfe_ReasLib where\n  srcDir := "Papers/DFP_wolfe_local"\n  roots := #[`ReasLib]\n'
+                'lean_lib DFP_wolfe_DFPWolfe where\n  srcDir := "Papers/DFP_wolfe_local"\n  roots := #[`DFPWolfe]\n'
+                'lean_lib DFP_wolfe_local where\n  srcDir := "Papers"\n  roots := #[`DFP_wolfe_local.Paper]\n',
+                encoding="utf-8",
+            )
+            (project / "Paper.lean").write_text("import DFPWolfe.Paper\n", encoding="utf-8")
+            (project / "DFPWolfe" / "Main.lean").write_text("", encoding="utf-8")
+            (project / "DFPWolfe" / "Paper.lean").write_text("", encoding="utf-8")
+            (project / "ReasLib" / "Core.lean").write_text("", encoding="utf-8")
+            result = subprocess.run(
+                [sys.executable, str(generator), "--repo-root", str(repo)],
+                cwd=repo, env={**os.environ, "REASBOOK_INCLUDE_PROJECTS": "papers/DFP_wolfe_local"},
+                capture_output=True, text=True, check=False,
+            )
+            self.assertEqual(result.returncode, 0, result.stderr)
+            manifest = json.loads((web_root / ".literate-modules.json").read_text())
+            modules = set(manifest["modules"])
+            self.assertIn("DFPWolfe.Main", modules)
+            self.assertNotIn("DFP_wolfe_local.DFPWolfe.Main", modules)
+
     def test_gen_sections_links_project_docs_by_lake_root(self) -> None:
         generator = ROOT / "ReasBookWeb" / "scripts" / "gen_sections.py"
         layouts = {

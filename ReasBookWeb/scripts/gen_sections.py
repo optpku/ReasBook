@@ -739,11 +739,44 @@ def paper_title(paper: str) -> str:
     return humanize_identifier(paper)
 
 
+@lru_cache(maxsize=None)
+def _lake_source_directories(source_root: Path) -> tuple[tuple[str, ...], ...]:
+    """Read per-library ``srcDir`` roots for logical module resolution.
+
+    A repository may register both ``Papers`` and a nested project source
+    directory. The longest matching source directory owns a file, so
+    ``Papers/DFP_wolfe_local/DFPWolfe/Main.lean`` resolves to
+    ``DFPWolfe.Main`` rather than ``DFP_wolfe_local.DFPWolfe.Main``.
+    """
+    lakefile = source_root / "lakefile.lean"
+    if not lakefile.is_file():
+        return ()
+    lines = lakefile.read_text(encoding="utf-8", errors="replace").splitlines()
+    directories: set[tuple[str, ...]] = set()
+    for index, line in enumerate(lines):
+        if not re.match(r"^[ \t]*lean_lib[ \t]+", line.split("--", 1)[0]):
+            continue
+        cursor = index + 1
+        while cursor < len(lines):
+            candidate = lines[cursor]
+            if candidate.strip() and not candidate[0].isspace():
+                break
+            match = re.match(r'^[ \t]*srcDir[ \t]*:=[ \t]*"([^"]+)"', candidate)
+            if match:
+                directories.add(tuple(Path(match.group(1)).parts))
+            cursor += 1
+    return tuple(sorted(directories, key=lambda value: (-len(value), value)))
+
+
 def to_module(source_root: Path, path: Path) -> str:
     rel = path.relative_to(source_root)
+    for source_directory in _lake_source_directories(source_root):
+        prefix = tuple(rel.parts[:len(source_directory)])
+        if prefix == source_directory and len(rel.parts) > len(source_directory):
+            return ".".join(rel.with_suffix("").parts[len(source_directory):])
     parts = list(rel.with_suffix("").parts)
-    # For flat layout (lean_lib BookName where srcDir:="Books"),
-    # strip the Books/ or Papers/ prefix from the module path.
+    # For aggregate layout (lean_lib Books/Papers), retain the public prefix.
+    # For flat layout without explicit per-library srcDir, strip it.
     if len(parts) >= 2 and parts[0] in ("Books", "Papers"):
         if _layout_prefix(source_root, parts[0].lower()) == "":
             parts = parts[1:]
