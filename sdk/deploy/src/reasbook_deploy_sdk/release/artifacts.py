@@ -30,7 +30,7 @@ from .results import (
     ReleaseSetManifest,
 )
 from .store import ReleaseLayout, ReleaseStore
-from .static_assets import deduplicate_verso_assets
+from .static_assets import compact_verso_metadata, deduplicate_verso_assets
 
 
 _SHARED_DOC_DIRECTORIES = {"declarations", "find", "src"}
@@ -169,6 +169,7 @@ class PagesSiteProjector:
             self._write_catalog_redirects(spec, staged, canonical_routes)
             self._write_historical_reading_redirects(spec, full_site, staged, canonical_routes)
             deduplicate_verso_assets(staged, spec.base_path)
+            compact_verso_metadata(staged, spec.base_path)
             self._close_internal_references(
                 spec,
                 full_site,

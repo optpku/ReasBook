@@ -40,6 +40,11 @@ Both retain the `/ReasBook/` public base path. `release-set.json` binds their
 bundle hashes, site-tree hashes, sizes, and projection-policy hash to one
 `ReleaseSpec`.
 
+The Pages projection shares repeated Verso head assets and compacts opaque
+syntax-highlighting handles. Highlighting groups, prose, source text, links,
+and every retained API page remain unchanged. The production profile reserves
+10 MB below GitHub's 1 GB site limit.
+
 ## Configuration
 
 - `config/deploy/github-pages.yml` defines release, artifact, and publisher

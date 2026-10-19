@@ -807,7 +807,7 @@ class ReleasePlanningTests(unittest.TestCase):
         )
         self.assertEqual(
             profile_value.artifact("pages").max_site_bytes,
-            920_000_000,
+            990_000_000,
         )
         self.assertEqual(
             profile_value.artifact("full").max_archive_members,
