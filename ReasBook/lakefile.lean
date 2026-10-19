@@ -59,7 +59,7 @@ lean_lib «glowinski_admm_counterexample» where
   srcDir := "Papers"
   roots := #[`glowinski_admm_counterexample.Paper]
   globs := #[.submodules `glowinski_admm_counterexample]
-  weakLeanArgs := #["-j1", "-M4096"]
+  weakLeanArgs := #["-j1", "-M16384"]
 
 lean_exe "literate-extract" where
   root := `LiterateExtract
