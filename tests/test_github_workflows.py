@@ -48,7 +48,8 @@ class GitHubWorkflowPolicyTests(unittest.TestCase):
             "GitHub publication requires a clean commit-derived tooling revision",
             text,
         )
-        self.assertIn("920_000_000", text)
+        self.assertIn('yaml.safe_load(Path("config/deploy/github-pages.yml").read_text())', text)
+        self.assertIn('pages_policy["max_site_bytes"]', text)
         self.assertIn("1_000_000_000", text)
         self.assertIn("SHA256SUMS", text)
         self.assertIn("cmp .release/release-manifest.json", text)
