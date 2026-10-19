@@ -1186,6 +1186,7 @@ class RepositoryScriptTests(unittest.TestCase):
             web_root = repo / "ReasBookWeb"
             vogel = lean_root / "Books" / "ComputationalMethodsInverseProblems_Vogel_2002"
             vogel.mkdir(parents=True)
+            (lean_root / "Papers").mkdir()
             (vogel / "Book.lean").write_text("import Mathlib\n", encoding="utf-8")
             (lean_root / "lakefile.lean").write_text(
                 "import Lake\nopen Lake DSL\nlean_lib Books where\n",
