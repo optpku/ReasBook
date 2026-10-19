@@ -2576,6 +2576,20 @@ def write_work_pages(
             [e for e in p_entries if (e.section_num > 0 and e.part_num == 0)],
             key=lambda e: (e.section_num, e.stem),
         )
+        entry_points = sorted(
+            [
+                e
+                for e in p_entries
+                if e.section_num == 0
+                and e.part_num == 0
+                and len(e.module.split(".")) <= 2
+                and not (
+                    len(e.module.split(".")) >= 2
+                    and e.module.split(".")[-2].casefold() == paper.casefold()
+                )
+            ],
+            key=lambda e: (e.module.casefold(), e.stem),
+        )
         module_name = lean_module_name(paper)
         page_file = papers_root / f"{module_name}.lean"
 
@@ -2609,6 +2623,13 @@ def write_work_pages(
                 label = readme_label(e)
                 if not label:
                     continue
+                lines.append(f"- [{label}]({portable_site_link(e.route)})")
+            lines.append("")
+        elif entry_points:
+            lines.append("Formalization entry points:")
+            lines.append("")
+            for e in entry_points:
+                label = e.module
                 lines.append(f"- [{label}]({portable_site_link(e.route)})")
             lines.append("")
         elif item_reader is None:
