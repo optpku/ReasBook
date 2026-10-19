@@ -252,6 +252,34 @@ class RepositoryScriptTests(unittest.TestCase):
         self.assertIn("尚未发布 Verso", chinese_resource)
         self.assertNotIn("TBD", chinese_resource)
 
+    def test_unpublished_admm_resources_stay_pending_on_regeneration(self) -> None:
+        project = {
+            "kind": "papers",
+            "name": "glowinski_admm_counterexample",
+            "slug": "glowinski_admm_counterexample",
+        }
+        projects = {("papers", project["name"]): project}
+        for language, pending in (("en", "pending publication"), ("zh-CN", "待发布")):
+            with self.subTest(language=language), tempfile.TemporaryDirectory() as temp:
+                resources = update_readme.resource_cell(project, language=language)
+                self.assertIn(pending, resources)
+                self.assertNotIn("https://", resources)
+                readme = Path(temp) / "README.md"
+                source = "https://github.com/optpku/ReasBook/tree/v4.32.0/ReasBook/Papers/glowinski_admm_counterexample/"
+                readme.write_text(
+                    "| **[ADMM](ReasBook/Papers/glowinski_admm_counterexample/)** | "
+                    f"[v4.32.0]({source}) | Qiming Dai | [Docs](https://invalid.example/) |\n"
+                )
+                self.assertEqual(update_readme.update_resource_cells(
+                    readme, projects, language=language), 1)
+                repaired = readme.read_text()
+                self.assertIn(source, repaired)
+                self.assertIn("Qiming Dai", repaired)
+                self.assertIn(pending, repaired)
+                self.assertNotIn("invalid.example", repaired)
+                self.assertEqual(update_readme.update_resource_cells(
+                    readme, projects, language=language), 0)
+
     def test_public_readmes_keep_build_details_out_of_homepage(self) -> None:
         english = (ROOT / "README.md").read_text(encoding="utf-8")
         chinese = (ROOT / "README.zh-CN.md").read_text(encoding="utf-8")

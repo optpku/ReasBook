@@ -23,6 +23,9 @@ from project_catalog import (
 SITE_BASE = "https://optpku.github.io/ReasBook"
 # Only link graphs already published at stable per-project URLs.
 PUBLISHED_THEOREM_MAPS = {("papers", "DFP_wolfe_local"), ("papers", "TR_LALM_theory")}
+# Source and locally generated bundles may precede a public Pages release.
+# Remove a project only after its live Docs, Verso and map entry points work.
+UNPUBLISHED_DOCUMENTATION = {("papers", "glowinski_admm_counterexample")}
 README_LANGUAGES = {
     "README.md": "en",
     "README.zh-CN.md": "zh-CN",
@@ -33,12 +36,14 @@ RESOURCE_LABELS = {
         "theorem_map": "Theorem map",
         "source_only": "Source only (excluded from the current release profile)",
         "verso_unpublished": "Verso not published",
+        "documentation_pending": "Source available; Docs, Verso and theorem map pending publication",
     },
     "zh-CN": {
         "docs": "文档",
         "theorem_map": "定理依赖图",
         "source_only": "仅源代码（不包含在当前发布配置中）",
         "verso_unpublished": "尚未发布 Verso",
+        "documentation_pending": "源代码可用；Docs、Verso 和定理依赖图待发布",
     },
 }
 
@@ -51,6 +56,9 @@ def resource_cell(project: dict[str, str], *, language: str = "en") -> str:
 
     if name in EXCLUDED_PROJECTS:
         return labels["source_only"]
+
+    if (kind, name) in UNPUBLISHED_DOCUMENTATION:
+        return labels["documentation_pending"]
 
     if kind == "books":
         docs_href = f"{SITE_BASE}/docs/ReasBook/Books/{name}/Book.html"
