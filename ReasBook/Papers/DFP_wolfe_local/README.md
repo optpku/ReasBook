@@ -8,6 +8,72 @@
 - **Source development:** [imathwy/DFP_wolfe_local](https://github.com/imathwy/DFP_wolfe_local)
 - **Source snapshot:** [`c60a034d0e45d46596941b3f3ab967ed9491f1f0`](https://github.com/imathwy/DFP_wolfe_local/commit/c60a034d0e45d46596941b3f3ab967ed9491f1f0)
 
+## Proof versions
+
+The two constructions coexist under one project ID and toolchain. The new
+polar route is added without replacing the earlier center-manifold proof.
+
+| Version | Public entry | Coverage | Dependency map |
+| --- | --- | --- | --- |
+| September 2026, center-manifold construction | [`DFPWolfe`](DFPWolfe.lean) | Complete counterexample, sharp Hölder regularity, identity initialization and planar convergence | [Original map and paper-numbered view](theorem-map/index.html?view=paper) |
+| October 9, 2026, v21 polar construction | [`DFPWolfe.V21`](DFPWolfe/V21.lean) | Verified polar data, normalized-map regularity and limiting two-cycle; full v21 counterexample proof remains incomplete | [Independent v21 foundation graph](theorem-map/v21/index.html) |
+
+See the [v21 correspondence and scope](DFPWolfe/V21/README.md). Its source is
+[`imathwy/DFP_wolfe_local@c788aa3`](https://github.com/imathwy/DFP_wolfe_local/commit/c788aa3dabd6cac78f4ec8b2c9c1e897cbc1188f).
+The original source snapshot above and its graph data remain unchanged.
+The project root `Paper.lean` imports both entries. The empty generated
+`Book.lean` and redundant compatibility checks from the development runner are
+not part of this source contribution.
+
+The combined tree has **461 Lean files, 118,077 physical lines and 4,008
+declaration heads** (3,018 theorems, 358 lemmas, 572 definitions, 3 abbreviations,
+52 structures and 5 instances). The 13 new v21 files contain 4,127 lines and
+301 declarations, including private declarations. All 3,376 theorem/lemma
+declarations are free of source placeholders; `sorry`: 0, `admit`: 0,
+`sorryAx`: 0, custom axioms: 0. This describes the checked-in declarations,
+not completion of every v21 manuscript obligation.
+
+The sole shared proof change is a statement-preserving `Finset.sum_congr`
+repair in `FiniteTaylorJet.CompositionBounds`. The original numbered navigation
+files, center-manifold proof modules, graph and quoted statements are retained.
+
+To regenerate only the v21 graph, with the source committed and its modules
+compiled, use persistent output directories outside this repository:
+
+```bash
+python3.11 ReasBook/Papers/DFP_wolfe_local/tools/generate_v21_graph.py \
+  --sdk-root /path/to/ReasBook/sdk/theorem_graph \
+  --output /workspace/dfp-v21-map --evidence /workspace/dfp-v21-evidence
+```
+
+The compiled v21 graph contains 154 public theorems/lemmas and 321 dependency
+edges, with zero source-only nodes. The three-node overview uses Section 3.1,
+Section 3.2 and `eq:polar-two-cycle` as source locators, with compiled witness
+paths for its edges. Each detail panel places the declaration description or
+coverage note above exact Lean code sliced using compiler-provided ranges.
+Source links are pinned to ReasBook commit `0b896a150c0dd5be99294c4620c9f1300f67d76a`.
+These descriptions are declaration docstrings or coverage notes, not verbatim
+quotations of the complete v21 manuscript.
+
+Focused validation on the ReasBook layout passed the three v21 navigation
+modules, the independent `DFPWolfe.V21` entry and the combined
+`DFP_wolfe_local.Paper` entry. An ephemeral `#print axioms` audit covered all
+154 public v21 theorems/lemmas and three original principal results (157 total):
+only `propext`, `Classical.choice` and `Quot.sound` occur. All 14 resource tests
+passed, including source-range hashes and compiled overview-edge witnesses.
+Desktop/mobile browser checks cover both graph versions and the v21 source
+panels. No comparator rerun or full Docs/Verso render is claimed for this addition.
+
+The Docs source plan contains 460 reachable modules, including the original
+proof and all nine Polar proof modules. Run the existing Docs adapter with
+`--plan-only` to inspect this closure without generating the site.
+
+The existing Docs builder follows the combined import root automatically.
+The Verso manifest now lists eleven routes: the eight original routes and
+three new `v21-*` routes. The source PR prepares both resources; merging it
+does not publish a website. The existing published site remains usable until
+a merged-commit release rebuilds Docs, Verso and the versioned graph together.
+
 ## Contributor
 
 - Zichen Wang ([@imathwy](https://github.com/imathwy))
@@ -46,9 +112,10 @@ tracked in either Lean source repository.
 The implementation roots remain under this project directory while dedicated
 Lake libraries preserve their public `DFPWolfe` and `ReasLib` module names.
 
-## Statistics
+## Original proof statistics
 
-The counts below cover the project's tracked Lean source files, including the
+The historical counts below describe the original proof snapshot, before the
+v21 addition documented above. They include the
 `DFPWolfe` and `ReasLib` implementation roots, their aggregate roots, and the
 `Paper.lean` wrapper.
 

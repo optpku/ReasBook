@@ -8,6 +8,7 @@ adapter never invokes lake build or updates dependencies.
 from __future__ import annotations
 
 import argparse
+import json
 from dataclasses import replace
 from pathlib import Path
 import subprocess
@@ -19,6 +20,8 @@ def main():
     parser.add_argument('--sdk-root', type=Path, required=True,
                         help='ReasBook/sdk (containing build/ and common/)')
     parser.add_argument('--output', type=Path, required=True)
+    parser.add_argument('--plan-only', action='store_true',
+                        help='List source modules without generating documentation')
     args = parser.parse_args()
     paper = Path(__file__).resolve().parents[1]
     lean_root = paper.parents[1]
@@ -67,11 +70,14 @@ def main():
     if dirty:
         raise RuntimeError('Commit the Lean source before generating immutable source links')
     executable = lean_root / '.lake/packages/doc-gen4/.lake/build/bin/doc-gen4'
-    if not executable.is_file():
+    if not args.plan_only and not executable.is_file():
         raise RuntimeError('Install a compatible prebuilt doc-gen4 executable first')
     builder = DFPDocumentationBuilder(BoundedRunner())
     plan = builder.plan_reachable_modules(lean_root, ['DFP_wolfe_local.Paper'])
     print(f'Reachable DFP modules: {len(plan.entries)}; revision: {revision}', flush=True)
+    if args.plan_only:
+        print(json.dumps(dict(revision=revision, modules=[entry.name for entry in plan.entries]), indent=2))
+        return
     result = builder.build(lean_root, ['DFP_wolfe_local.Paper'], output,
         repository='https://github.com/optpku/ReasBook', revision=revision)
     print({'output': str(output), 'revision': revision, 'pages': len(result.pages),

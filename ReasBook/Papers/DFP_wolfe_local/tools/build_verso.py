@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Render the eight DFP Verso routes from freshly extracted Lean source.
+"""Render the DFP Verso routes from freshly extracted Lean source.
 
 The source project must have been checked and committed. A disposable web
 workspace uses version-matched, prebuilt package caches copied from --web-cache.
@@ -156,9 +156,10 @@ def main():
         '#doc (Page) "Classical DFP under Wolfe conditions" =>', '',
         'The formalization covers a strong Wolfe nonconvergence counterexample, its sharp one-half Hölder Hessian regularity, and planar convergence under a locally Lipschitz Hessian.', '',
         '[API documentation](/ReasBook/sites/dfp_wolfe_local/docs/) · '
-        '[Theorem dependency map](/ReasBook/theorem-maps/papers/dfp_wolfe_local/) · '
+        '[Original dependency map](/ReasBook/theorem-maps/papers/dfp_wolfe_local/) · '
+        '[v21 dependency map](/ReasBook/theorem-maps/papers/dfp_wolfe_local/v21/) · '
         f'[Lean source](https://github.com/optpku/ReasBook/tree/{revision}/ReasBook/Papers/DFP_wolfe_local/)', '',
-        'The numbered theorem map quotes the original paper statements above their corresponding Lean proofs. These reading pages show the complete source of eight central modules.', '',
+        'The original eight routes retain the center-manifold proof and convergence results. Three v21 routes show the independent polar foundations; the v21 counterexample proof is still incomplete.', '',
         '# Reading guide', '']
     for row in modules:
         lines.append(f"- [{row['title']}](/ReasBook/versions/v4.32.0/papers/dfp_wolfe_local/sections/{row['slug']}/)")
@@ -193,7 +194,7 @@ def main():
     prepare_presentation(web)
     print('Checking generated Verso entrypoint', flush=True)
     run(['lake', 'lean', 'ReasBookSite.lean', '--', '-j1', '-M8192'], web, 'verso-check.log')
-    print('Rendering eight Verso routes', flush=True)
+    print(f'Rendering {len(modules)} Verso routes', flush=True)
     run(['lake', 'env', 'lean', '-j1', '-M8192', '--run', 'ReasBookSite.lean',
          '--output', str(workspace / 'site')], web, 'verso-render.log')
     manifest = dict(schemaVersion=1, sourceCommit=revision, modules=sources,
