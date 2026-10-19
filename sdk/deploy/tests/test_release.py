@@ -305,6 +305,19 @@ def profile(root: Path, *, historical: bool = True) -> DeploymentProfile:
 
 
 class ReleasePlanningTests(unittest.TestCase):
+    def test_reference_cache_preserves_trailing_slash_validation(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            site = Path(temp)
+            (site / "style.css").write_text("body {}")
+            cache = set()
+            resolve = PagesSiteProjector._resolve_missing_reference
+            self.assertIsNone(resolve("https://reasbook.invalid", "/ReasBook/",
+                "https://reasbook.invalid/ReasBook/index.html", "style.css", site, cache))
+            missing = resolve("https://reasbook.invalid", "/ReasBook/",
+                "https://reasbook.invalid/ReasBook/index.html", "style.css/", site, cache)
+            self.assertIsNotNone(missing)
+            self.assertEqual(missing[0], Path("style.css/index.html"))
+
     def test_project_docs_follow_owned_explicit_library_imports(self) -> None:
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
@@ -807,7 +820,7 @@ class ReleasePlanningTests(unittest.TestCase):
         )
         self.assertEqual(
             profile_value.artifact("pages").max_site_bytes,
-            990_000_000,
+            970_000_000,
         )
         self.assertEqual(
             profile_value.artifact("full").max_archive_members,

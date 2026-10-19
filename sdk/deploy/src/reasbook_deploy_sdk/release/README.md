@@ -43,7 +43,7 @@ bundle hashes, site-tree hashes, sizes, and projection-policy hash to one
 The Pages projection shares repeated Verso head assets and compacts opaque
 syntax-highlighting handles. Highlighting groups, prose, source text, links,
 and every retained API page remain unchanged. The production profile reserves
-10 MB below GitHub's 1 GB site limit.
+30 MB below GitHub's 1 GB site limit.
 
 ## Configuration
 
