@@ -20,7 +20,7 @@ in Lean. M2F and Quokka have complementary roles:
 
 | Branch | Lean/mathlib | Registry status | Books/Papers |
 | --- | --- | --- | ---: |
-| `v4.32.0` | `v4.32.0` | Empty | 1 / 3 |
+| `v4.32.0` | `v4.32.0` | Active | 1 / 3 |
 | `v4.32.2` | `v4.32.2` | Active | 0 / 2 |
 | `v4.30.0` | `v4.30.0` | Active | 9 / 2 |
 | `v4.26.0` | `v4.26.0` | Active | 4 / 2 |

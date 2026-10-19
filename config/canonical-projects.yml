@@ -8,3 +8,6 @@ books:
 papers:
   OnSomeLocalRings_Maassaran_2025: v4.30.0
   SmoothMinimization_Nesterov_2004: v4.30.0
+
+  DFP_wolfe_local: v4.32.0
+  glowinski_admm_counterexample: v4.32.0
