@@ -135,7 +135,12 @@ target genLib (pkg) : Unit := do
 
     let origName := "/".intercalate (module.components.map (·.toString)) ++ ".lean"
     let origLeanFile : System.FilePath := pkg.dir / reasbookRoot / origName
-    addTrace (← computeTrace <| TextFilePath.mk origLeanFile)
+    -- Explicit project roots can place a module below `Papers/<project>` or
+    -- `Books/<project>`, so its logical module path need not be a source path
+    -- relative to `ReasBook`.  The literate JSON is the authoritative input;
+    -- retain the source trace when the legacy flat path exists.
+    if ← origLeanFile.pathExists then
+      addTrace (← computeTrace <| TextFilePath.mk origLeanFile)
 
     let jsonName := "/".intercalate (module.components.map (·.toString)) ++ ".json"
     let jsonFile : System.FilePath := pkg.dir / reasbookRoot / ".lake" / "build" / "literate" / jsonName
