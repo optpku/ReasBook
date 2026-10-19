@@ -1818,11 +1818,25 @@ def emit_route_table(
             return f"ReasBookSite.WorkPages.Books.{e.book_or_paper}"
         return f"ReasBookSite.WorkPages.Papers.{e.book_or_paper}"
 
+    def is_primary_paper_root(e: Entry) -> bool:
+        """Only the project-owned Paper.lean gets the canonical paper route.
+
+        A paper may also contain nested compatibility modules such as
+        `DFPWolfe/Paper.lean`; those modules remain literate inputs but must not
+        claim the project's landing route a second time.
+        """
+        parts = e.module.split(".")
+        return (
+            e.category == "papers"
+            and e.stem in {"paper", "main"}
+            and len(parts) >= 2
+            and parts[-2].casefold() == e.book_or_paper.casefold()
+        )
+
     work_page_imports = {
         work_page_module(e)
         for e in entries
-        if (e.category == "books" and e.stem == "book")
-        or (e.category == "papers" and e.stem in {"paper", "main"})
+        if (e.category == "books" and e.stem == "book") or is_primary_paper_root(e)
     }
     work_page_imports.update(reader_chapter_module(reader) for reader in readers)
     work_page_imports.update(
@@ -1847,7 +1861,7 @@ def emit_route_table(
             bindings.append((f"books/{entry.book_or_paper.lower()}/", target))
             bindings.append((entry.route, target))
             continue
-        if entry.category == "papers" and entry.stem in {"paper", "main"}:
+        if is_primary_paper_root(entry):
             target = work_page_module(entry)
             bindings.append((f"papers/{entry.book_or_paper.lower()}/", target))
             bindings.append((entry.route, target))

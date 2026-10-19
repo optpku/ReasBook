@@ -1218,6 +1218,11 @@ class RepositoryScriptTests(unittest.TestCase):
                         "import DemoTheory.Paper\n",
                         encoding="utf-8",
                     )
+                    # Nested compatibility wrappers must not claim the
+                    # project's canonical landing route a second time.
+                    nested = paper_root / "DFPWolfe"
+                    nested.mkdir()
+                    (nested / "Paper.lean").write_text("import DemoTheory.Paper\n", encoding="utf-8")
 
                 result = subprocess.run(
                     [sys.executable, str(generator), "--repo-root", str(repo)],
