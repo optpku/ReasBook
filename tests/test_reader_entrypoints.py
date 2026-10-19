@@ -62,7 +62,7 @@ class ReaderEntrypointsTests(unittest.TestCase):
                         path,
                         r"^(?:docs/ReasBook/(?:Books|Papers)/[^/]+/(?:Book|Paper)\.html"
                         r"|sites/[^/]+/(?:pages|docs)/"
-                        r"|theorem-maps/(?:books|papers)/[^/]+/)$",
+                        r"|theorem-maps/(?:books|papers)/[^/]+/(?:v[0-9]+/)?)$",
                     )
             self.assertNotIn("https://optpku.github.io/ReasBook/)", text)
 
