@@ -25,6 +25,7 @@ from .command import Command, CommandResult
 from .errors import BuildFailed, ConfigurationError
 from .executor import SubprocessRunner
 from .project import discover_project
+from .targets import parse_library_declarations
 
 
 _MODULE_RE = re.compile(r"^[A-Za-z_][A-Za-z0-9_']*(?:[.][A-Za-z_][A-Za-z0-9_']*)*$")
@@ -1197,7 +1198,12 @@ class ProjectDocumentationBuilder:
             candidates.extend(
                 (project_root / kind / relative for kind in ("Books", "Papers"))
             )
-        return tuple(candidates)
+        lakefile = project_root / "lakefile.lean"
+        if lakefile.is_file():
+            for source_dir in parse_library_declarations(lakefile).values():
+                if source_dir:
+                    candidates.append(project_root / source_dir / relative)
+        return tuple(dict.fromkeys(candidates))
 
     @classmethod
     def _module_source(cls, project_root: Path, module: str) -> Path:
@@ -1229,6 +1235,12 @@ class ProjectDocumentationBuilder:
         """
 
         candidates: dict[str, set[Path]] = {}
+        lakefile = project_root / "lakefile.lean"
+        source_dirs = tuple(
+            Path(value).parts
+            for value in dict.fromkeys(parse_library_declarations(lakefile).values())
+            if value
+        ) if lakefile.is_file() else ()
 
         def register(module: str, source: Path) -> None:
             if _MODULE_RE.fullmatch(module):
@@ -1257,6 +1269,9 @@ class ProjectDocumentationBuilder:
                 register(".".join(relative.parts), source)
                 if relative.parts[0] in {"Books", "Papers"} and len(relative.parts) > 1:
                     register(".".join(relative.parts[1:]), source)
+                for source_dir in source_dirs:
+                    if relative.parts[:len(source_dir)] == source_dir:
+                        register(".".join(relative.parts[len(source_dir):]), source)
 
         # Preserve the historical single-component fallback and fail early for
         # an invalid selected root. The global index supplies cross-project

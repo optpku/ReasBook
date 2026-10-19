@@ -39,7 +39,6 @@ _EXTERNAL_DOC_NAMESPACES = {
     "Aesop",
     "Batteries",
     "Cli",
-    "DFPWolfe",
     "ImportGraph",
     "Init",
     "Lake",
@@ -490,6 +489,39 @@ class PagesSiteProjector:
         # entry establishes ownership, retain every ProjectSpec-derived shape.
         for relative in candidates:
             self._copy_if_present(source, destination, relative)
+        # Explicit Lake roots can own API pages outside the project's named
+        # namespace. Retain those real pages by their immutable source link.
+        source_prefix = f"/ReasBook/{kind_title}/{project_id}/"
+        pending = list(entry_candidates)
+        visited: set[Path] = set()
+        while pending:
+            relative = pending.pop()
+            if relative in visited:
+                continue
+            visited.add(relative)
+            page = source / relative
+            if page.is_symlink():
+                raise DeployExecutionError(f"release site contains a symlink: {page}")
+            if not page.is_file():
+                continue
+            parser = _ReferenceParser()
+            parser.feed(page.read_text(encoding="utf-8", errors="replace"))
+            owned = relative in entry_candidates or any(
+                re.search(r"/blob/[0-9a-f]{40}" + re.escape(source_prefix),
+                          unquote(urlsplit(value).path))
+                for tag, attribute, value in parser.references
+                if tag == "a" and attribute == "href"
+            )
+            if not owned:
+                continue
+            self._copy_if_present(source, destination, relative)
+            for _, _, value in parser.references:
+                url = urlsplit(urljoin("https://reasbook.invalid/" + relative.as_posix(), value))
+                linked = Path(unquote(url.path).lstrip("/"))
+                if (url.netloc == "reasbook.invalid" and linked.parts
+                        and linked.parts[0] == "docs" and ".." not in linked.parts
+                        and linked.suffix == ".html"):
+                    pending.append(linked)
         return entry_candidates[0]
 
     def _validate_capacity(self, total_bytes: int) -> None:
