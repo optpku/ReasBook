@@ -388,6 +388,7 @@ class TheoremGraphSdkTests(unittest.TestCase):
             def runner(command, **_kwargs):
                 config = json.loads(Path(command[-2]).read_text(encoding="utf-8"))
                 project_specs = config["projects"]
+                self.assertEqual(project_specs[0]["rootModules"], [])
                 seen_projects.append([item["id"] for item in project_specs])
                 Path(command[-1]).write_text(
                     json.dumps(

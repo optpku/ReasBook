@@ -110,7 +110,8 @@ class LeanEnvironmentExtractor:
         if not project.root_module:
             return {}
         config = {
-            "projects": [{"id": project.project_id, "rootModule": project.root_module}]
+            "projects": [{"id": project.project_id, "rootModule": project.root_module,
+                          "rootModules": []}]
         }
         repo_root = Path(repo_root).expanduser().resolve()
         working_dir = repo_root / "ReasBook"

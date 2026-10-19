@@ -30,7 +30,7 @@ from .results import (
     ReleaseSetManifest,
 )
 from .store import ReleaseLayout, ReleaseStore
-from .static_assets import deduplicate_verso_assets
+from .static_assets import compact_verso_metadata, deduplicate_verso_assets
 
 
 _SHARED_DOC_DIRECTORIES = {"declarations", "find", "src"}
@@ -169,6 +169,7 @@ class PagesSiteProjector:
             self._write_catalog_redirects(spec, staged, canonical_routes)
             self._write_historical_reading_redirects(spec, full_site, staged, canonical_routes)
             deduplicate_verso_assets(staged, spec.base_path)
+            compact_verso_metadata(staged, spec.base_path)
             self._close_internal_references(
                 spec,
                 full_site,
@@ -658,6 +659,7 @@ class PagesSiteProjector:
         origin = "https://reasbook.invalid"
         base_path = spec.base_path
         errors: list[str] = []
+        known_present: set[tuple[Path, bool]] = set()
         documents = sorted(pages_site.rglob("*.html"))
         for document in documents:
             parser = _ReferenceParser()
@@ -676,6 +678,7 @@ class PagesSiteProjector:
                     document_base,
                     value,
                     pages_site,
+                    known_present,
                 )
                 if missing is None:
                     continue
@@ -746,6 +749,7 @@ class PagesSiteProjector:
         document_base: str,
         value: str,
         pages_site: Path,
+        known_present: set[tuple[Path, bool]] | None = None,
     ) -> tuple[Path, Path] | None:
         reference = value.strip()
         if not reference or reference.startswith(
@@ -779,6 +783,11 @@ class PagesSiteProjector:
             raise DeployExecutionError(
                 f"Pages link escapes configured base path {base_path}: {value}"
             )
+        cache_key = (relative, path.endswith("/") and not root_request)
+        # Link closure only adds regular files to a private staging tree.
+        # Reuse positive containment/existence checks for repeated API links.
+        if known_present is not None and cache_key in known_present:
+            return None
         target = pages_site / relative
         if pages_site not in target.resolve(strict=False).parents:
             raise DeployExecutionError(
@@ -788,6 +797,8 @@ class PagesSiteProjector:
             target = target / "index.html"
             relative = relative / "index.html"
         if target.is_file():
+            if known_present is not None:
+                known_present.add(cache_key)
             return None
         return relative, target
 

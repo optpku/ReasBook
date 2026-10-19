@@ -2653,7 +2653,8 @@ def write_work_pages(
             lines.append("Formalization entry points:")
             lines.append("")
             for e in entry_points:
-                label = e.module
+                stem = re.sub(r"(?<=\d)_(?=\d)", ".", e.module.rsplit(".", 1)[-1])
+                label = humanize_identifier(stem)
                 lines.append(f"- [{label}]({portable_site_link(e.route)})")
             lines.append("")
         elif item_reader is None:

@@ -49,5 +49,5 @@ full coverage details.
 
 The documentation covers the 480 reachable public API modules. The Verso guide
 links the public manuscript interfaces, and the theorem map provides 26 nodes
-and 74 dependencies. An arXiv link will be added when the manuscript is publicly
-available.
+and 92 dependencies among the 30 overlapping public interfaces. An arXiv link
+will be added when the manuscript is publicly available.

@@ -3,6 +3,7 @@ from __future__ import annotations
 
 from collections import Counter
 import hashlib
+import html
 from html.parser import HTMLParser
 from pathlib import Path
 import re
@@ -134,3 +135,80 @@ def deduplicate_verso_assets(site: Path, base_path: str) -> dict[str, int]:
             # Native highlighted Lean, prose, anchors and body scripts are untouched.
             path.write_bytes(text.encode() + original[len(head_bytes):])
     return {"assets": assets, "replaced_blocks": replaced, "saved_bytes": saved}
+
+
+def compact_verso_metadata(site: Path, base_path: str) -> dict[str, int]:
+    """Shorten opaque syntax-highlighting handles without changing source text.
+
+    Binding handles are used only for equality within a page. Intern them,
+    shorten their HTML dataset key, and update the shared highlighting scripts.
+    Keep the original scripts for any unmodified consumers. API pages are
+    excluded, and scripts/styles are protected from HTML attribute rewriting.
+    """
+    root = Path(site)
+    replacements: dict[str, str] = {}
+    for script in sorted(root.glob("static/shared-verso/*.js")):
+        content = script.read_text(encoding="utf-8")
+        if "data-binding" not in content and "dataset.binding" not in content:
+            continue
+        updated = re.sub(r"\bdataset\.binding\b", "dataset.b", content.replace("data-binding", "data-b"))
+        digest = hashlib.sha256(updated.encode()).hexdigest()
+        target = root / "static/shared-verso" / f"{digest}.js"
+        if target.exists() and target.read_text() != updated:
+            raise ValueError("shared highlighting asset collision")
+        if not target.exists():
+            atomic_write_text(target, updated)
+        replacements[base_path + script.relative_to(root).as_posix()] = (
+            base_path + target.relative_to(root).as_posix()
+        )
+    protected = re.compile(r"(<(?:script|style|textarea|template|noscript)\b.*?</(?:script|style|textarea|template|noscript)\s*>)", re.I | re.S)
+    tags = re.compile(r"<[A-Za-z][^>]*>")
+    binding = re.compile(r'(?<=\s)data-binding="([^"]*)"')
+    quotes = re.compile(r'(?<=\s)(data-b|data-verso-hover|data-lean-context|class)="([A-Za-z0-9_.:-]+)"')
+    saved = changed = 0
+    for path in sorted(root.rglob("*.html")):
+        if "docs" in path.relative_to(root).parts:
+            continue
+        original = path.read_text(encoding="utf-8")
+        if "__versoSiteRoot" not in original or "data-binding=" not in original:
+            continue
+        parts = protected.split(original)
+        values = dict.fromkeys(
+            html.unescape(match.group(1))
+            for part in parts[::2] for tag in tags.finditer(part)
+            for match in binding.finditer(tag.group())
+        )
+        occupied = set(values)
+        handles = {}
+        index = 0
+        for value in values:
+            if not value:
+                continue
+            while f"b{index:x}" in occupied:
+                index += 1
+            candidate = f"b{index:x}"
+            if len(candidate) < len(value):
+                handles[value] = candidate
+                occupied.add(candidate)
+                index += 1
+
+        def rewrite_tag(match):
+            tag = match.group()
+            tag = binding.sub(lambda m: 'data-b="' + handles.get(html.unescape(m.group(1)), m.group(1)) + '"', tag)
+            return quotes.sub(lambda m: m.group(1) + "=" + m.group(2), tag)
+
+        for index, part in enumerate(parts):
+            if index % 2:
+                if re.match(r"<script\s*>", part, re.I):
+                    part = re.sub(r"\bdataset\.binding\b", "dataset.b", part.replace("data-binding", "data-b"))
+                for old, new in replacements.items():
+                    part = part.replace(old, new)
+            else:
+                part = tags.sub(rewrite_tag, part)
+            parts[index] = part
+        updated = "".join(parts)
+        if updated != original:
+            path.write_text(updated, encoding="utf-8")
+            saved += len(original.encode()) - len(updated.encode())
+            changed += 1
+    return {"pages": changed, "saved_bytes": saved, "scripts": len(replacements)}

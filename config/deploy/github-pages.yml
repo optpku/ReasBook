@@ -43,7 +43,7 @@ artifacts:
     history_mode: canonical
     dependency_docs: stubs
     max_site_files: 60000
-    max_site_bytes: 920000000
+    max_site_bytes: 970000000
     max_archive_members: 180000
     max_bundle_bytes: 950000000
 
