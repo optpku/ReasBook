@@ -296,6 +296,12 @@ class PagesSiteProjector:
             candidates = (
                 Path(project.kind) / project.slug,
                 Path(project.slug),
+            ) + (
+                # DFPWolfe is an explicit paper library root whose Verso
+                # pages live beside the catalog project route.
+                (Path("dfpwolfe"),)
+                if project.project_id == "DFP_wolfe_local"
+                else ()
             )
             chosen: Path | None = None
             chosen_score = (-1, -1, -1)
