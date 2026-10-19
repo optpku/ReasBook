@@ -76,3 +76,31 @@ of the source contribution.
 The dedicated library build and the direct `Paper.lean` check passed on the
 branch-pinned toolchain. A fresh whole-library audit checked 47,248 declarations and found only
 `propext`, `Classical.choice`, and `Quot.sound`.
+
+## Reading resources
+
+[Docs](https://optpku.github.io/ReasBook/sites/glowinski_admm_counterexample/docs/) ·
+[Verso](https://optpku.github.io/ReasBook/sites/glowinski_admm_counterexample/pages/) ·
+[Theorem map](https://optpku.github.io/ReasBook/theorem-maps/papers/glowinski_admm_counterexample/)
+
+The map groups the 30 imported public interface modules into 26 nodes. Interfaces
+that expose the same primary compiled constant share a node; their alternative
+labels and source files remain recorded in `data.json`. The 92 dependency edges
+come from the compiled statement/proof dependencies of all checked constants,
+with intermediate helper declarations and numeric certificates contracted.
+This is a map of the public interfaces, rather than a count of distinct paper
+theorems. The natural-language statements are copied from the interface source
+comments.
+
+To regenerate the checked map, export `glowinski_admm_counterexample.Paper`
+with the theorem-graph SDK's `resources/Extract.lean` (set `rootModules` to `[]`
+in its project JSON), then run:
+
+```bash
+python tools/generate_theorem_map.py --raw /path/to/export.json \
+  --commit SOURCE_COMMIT --output theorem-map
+```
+
+Run the script from the project directory with `sdk/theorem_graph/src` and
+`sdk/common/src` on `PYTHONPATH`. The export contains 45,505 declarations and is
+kept outside the source repository. The map records its SHA-256 digest.
