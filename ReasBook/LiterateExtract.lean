@@ -162,7 +162,7 @@ def spanToString (fm : FileMap) (span : Syntax.Range) : String :=
 def commandPreview (stx : Syntax) : String :=
   let txt := toString stx
   if txt.length > 120 then
-    txt.take 120 ++ "..."
+    (txt.take 120).toString ++ "..."
   else
     txt
 
