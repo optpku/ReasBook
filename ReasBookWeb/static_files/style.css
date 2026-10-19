@@ -188,3 +188,8 @@ div.declaration {
 .hl.lean .has-info.error :not(.tactic-state):not(.tactic-state *) {
     text-decoration: none !important;
 }
+
+/* Keep highlighted paper sources readable within narrow viewports. */
+div.main, div.wrap, article { min-width: 0; }
+code.hl.lean.block, pre { display: block; max-width: 100%; overflow-x: auto; }
+p code, li code { overflow-wrap: anywhere; }
