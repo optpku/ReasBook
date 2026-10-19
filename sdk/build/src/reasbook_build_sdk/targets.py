@@ -102,7 +102,10 @@ def target_from_declarations(
     kind_dir, leaf = _kind_parts(kind)
     if declarations.get(project) == kind_dir:
         if roots and roots.get(project):
-            return project
+            # An explicit root is the documentation/build entry point. The
+            # library name may differ from that module (for example a project
+            # library `DFP_wolfe_local` rooted at `DFP_wolfe_local.Paper`).
+            return roots[project][0]
         return f"{project}.{leaf}"
     if kind_dir in declarations and declarations[kind_dir] is None:
         return f"{kind_dir}.{project}.{leaf}"
