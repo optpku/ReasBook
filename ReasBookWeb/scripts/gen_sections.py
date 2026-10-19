@@ -1354,7 +1354,19 @@ def collect_entries(
         if paper_inventory_uses_item_reader(inventory)
     )
     configured_papers: set[str] = set()
+    facade_sources: set[Path] = set()
     for paper_dir in sorted(papers_root.iterdir()) if papers_root.is_dir() else ():
+        if not paper_dir.is_dir() or not project_enabled("papers", paper_dir.name):
+            continue
+        for facade in paper_dir.glob("*.lean"):
+            directory = paper_dir / facade.stem
+            if not directory.is_dir():
+                continue
+            imports = set(re.findall(r"^(?:public\s+)?import\s+([A-Za-z0-9_'.]+)",
+                facade.read_text(encoding="utf-8"), re.MULTILINE))
+            for path in directory.glob("*.lean"):
+                if to_module(source_root, path) in imports:
+                    facade_sources.add(path)
         manifest = paper_dir / "tools" / "verso_modules.json"
         if not paper_dir.is_dir() or not project_enabled("papers", paper_dir.name) or not manifest.is_file():
             continue
@@ -1409,7 +1421,7 @@ def collect_entries(
         )
 
     for path in sorted(papers_root.rglob("*.lean")):
-        if not should_include_paper(path, paper_reader_source_directories):
+        if not should_include_paper(path, paper_reader_source_directories) and path not in facade_sources:
             continue
         module = to_module(source_root, path)
         if module in SKIP_MODULES:
@@ -2599,7 +2611,6 @@ def write_work_pages(
                 for e in p_entries
                 if e.section_num == 0
                 and e.part_num == 0
-                and len(e.module.split(".")) <= 2
             ],
             key=lambda e: (e.module.casefold(), e.stem),
         )
