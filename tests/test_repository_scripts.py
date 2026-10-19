@@ -1271,7 +1271,7 @@ class RepositoryScriptTests(unittest.TestCase):
             self.assertNotIn("Demo.Results.theorem_9_9_9", manifest["modules"])
             landing = (repo / "ReasBookWeb/ReasBookSite/WorkPages/Papers/Demo.lean").read_text()
             self.assertNotIn("No separate reading sections", landing)
-            self.assertIn("Demo.Results.theorem_2_1_4", landing)
+            self.assertIn("Theorem 2.1.4", landing)
 
     def test_gen_sections_links_project_docs_by_lake_root(self) -> None:
         generator = ROOT / "ReasBookWeb" / "scripts" / "gen_sections.py"
