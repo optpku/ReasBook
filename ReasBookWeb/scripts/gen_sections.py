@@ -290,7 +290,7 @@ PAPER_SECTION_TITLES = {
     },
 }
 
-TBD_BOOKS = {"IntegerProgramming_Conforti_2014"}
+TBD_BOOKS = {"IntegerProgramming_Conforti_2014", "ComputationalMethodsInverseProblems_Vogel_2002"}
 
 SKIP_STEMS = {"utils", "tactics", "scratch", "internal", "helper", "helpers"}
 

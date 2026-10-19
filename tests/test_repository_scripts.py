@@ -1178,6 +1178,30 @@ class RepositoryScriptTests(unittest.TestCase):
             self.assertIn("IncompleteImports.section02_part1", manifest)
             self.assertIn("IncompleteImports.section02_part2", manifest)
 
+    def test_gen_sections_keeps_excluded_vogel_book_source_only(self) -> None:
+        generator = ROOT / "ReasBookWeb" / "scripts" / "gen_sections.py"
+        with tempfile.TemporaryDirectory() as temp:
+            repo = Path(temp) / "checkout"
+            lean_root = repo / "ReasBook"
+            web_root = repo / "ReasBookWeb"
+            vogel = lean_root / "Books" / "ComputationalMethodsInverseProblems_Vogel_2002"
+            vogel.mkdir(parents=True)
+            (vogel / "Book.lean").write_text("import Mathlib\n", encoding="utf-8")
+            (lean_root / "lakefile.lean").write_text(
+                "import Lake\nopen Lake DSL\nlean_lib Books where\n",
+                encoding="utf-8",
+            )
+            (web_root / "ReasBookSite").mkdir(parents=True)
+            result = subprocess.run(
+                [sys.executable, str(generator), "--repo-root", str(repo)],
+                cwd=repo, env={**os.environ, "REASBOOK_INCLUDE_PROJECTS": "books/ComputationalMethodsInverseProblems_Vogel_2002"},
+                capture_output=True, text=True, check=False,
+            )
+            self.assertEqual(result.returncode, 0, result.stderr)
+            readme = (vogel / "README.md").read_text(encoding="utf-8")
+            self.assertIn("Verso (TBD)", readme)
+            self.assertNotIn("Documentation](https://", readme)
+
     def test_gen_sections_links_project_docs_by_lake_root(self) -> None:
         generator = ROOT / "ReasBookWeb" / "scripts" / "gen_sections.py"
         layouts = {
