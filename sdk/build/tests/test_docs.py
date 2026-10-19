@@ -396,6 +396,23 @@ class ProjectDocumentationTests(unittest.TestCase):
                 ("Theory", "Theory.Current"),
             )
 
+    def test_reachable_plan_follows_nested_library_roots(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            project = self._project(Path(temp), modern=True)
+            (project / "lakefile.lean").write_text(
+                'import Lake\nopen Lake DSL\nlean_lib Demo where\n'
+                '  srcDir := "Papers"\n  roots := #[`Demo.Paper]\n'
+                'lean_lib Core where\n  srcDir := "Papers/Demo"\n'
+                '  roots := #[`Theory]\n', encoding="utf-8")
+            paper = project / "Papers/Demo"
+            (paper / "Theory").mkdir(parents=True)
+            (paper / "Paper.lean").write_text("import Theory.Result\n")
+            (paper / "Theory/Result.lean").write_text("import Mathlib\n")
+            (paper / "Theory/Unused.lean").write_text("import Mathlib\n")
+            plan = plan_reachable_project_modules(project, ("Demo.Paper",))
+            self.assertEqual(tuple(entry.name for entry in plan.entries),
+                             ("Demo.Paper", "Theory.Result"))
+
     def test_reachable_plan_deduplicates_shared_modules_and_records_owners(
         self,
     ) -> None:

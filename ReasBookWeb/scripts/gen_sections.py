@@ -1353,6 +1353,21 @@ def collect_entries(
         for inventory in paper_inventories
         if paper_inventory_uses_item_reader(inventory)
     )
+    configured_papers: set[str] = set()
+    for paper_dir in sorted(papers_root.iterdir()) if papers_root.is_dir() else ():
+        manifest = paper_dir / "tools" / "verso_modules.json"
+        if not paper_dir.is_dir() or not project_enabled("papers", paper_dir.name) or not manifest.is_file():
+            continue
+        plan = json.loads(manifest.read_text(encoding="utf-8"))
+        sources = {to_module(source_root, path): path for path in paper_dir.rglob("*.lean")}
+        for number, row in enumerate(plan["modules"], start=1):
+            module, slug = row["module"], row["slug"]
+            if module not in sources or re.fullmatch(r"[a-z0-9][a-z0-9-]*", slug) is None:
+                raise ValueError(f"invalid Verso reading module for {paper_dir.name}: {row}")
+            entries.append(Entry("papers", module, row["title"],
+                f"papers/{paper_dir.name.lower()}/sections/{slug}/", paper_dir.name,
+                0, number, 0, slug))
+        configured_papers.add(paper_dir.name)
 
     for path in sorted(books_root.rglob("*.lean")):
         if not should_include_book(path, reader_source_directories):
@@ -1402,6 +1417,8 @@ def collect_entries(
         rel = path.relative_to(papers_root)
         paper = rel.parts[0]
         if not project_enabled("papers", paper):
+            continue
+        if paper in configured_papers and path != papers_root / paper / "Paper.lean":
             continue
         sec_title = module_doc_title(path) or section_title_from_stem(path.stem)
         sec_num, part_num = parse_section_part(path.stem)
@@ -1905,7 +1922,7 @@ def emit_route_table(
         if is_primary_paper_root(entry):
             target = work_page_module(entry)
             bindings.append((f"papers/{entry.book_or_paper.lower()}/", target))
-            bindings.append((entry.route, target))
+            bindings.append((entry.route, f"Book.{entry.module}"))
             continue
         if entry.module in section_index_by_module:
             # Imports-only section aggregators retain their literate/API input,
@@ -2583,10 +2600,6 @@ def write_work_pages(
                 if e.section_num == 0
                 and e.part_num == 0
                 and len(e.module.split(".")) <= 2
-                and not (
-                    len(e.module.split(".")) >= 2
-                    and e.module.split(".")[-2].casefold() == paper.casefold()
-                )
             ],
             key=lambda e: (e.module.casefold(), e.stem),
         )

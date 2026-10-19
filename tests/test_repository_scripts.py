@@ -1226,6 +1226,11 @@ class RepositoryScriptTests(unittest.TestCase):
             (project / "DFPWolfe" / "Main.lean").write_text("", encoding="utf-8")
             (project / "DFPWolfe" / "Paper.lean").write_text("", encoding="utf-8")
             (project / "ReasLib" / "Core.lean").write_text("", encoding="utf-8")
+            (project / "tools").mkdir()
+            (project / "tools/verso_modules.json").write_text(json.dumps({"modules": [
+                {"module": "DFPWolfe.Main", "title": "Main theorems", "slug": "main-theorems"},
+                {"module": "ReasLib.Core", "title": "Polar foundations", "slug": "polar-foundations"},
+            ]}))
             result = subprocess.run(
                 [sys.executable, str(generator), "--repo-root", str(repo)],
                 cwd=repo, env={**os.environ, "REASBOOK_INCLUDE_PROJECTS": "papers/DFP_wolfe_local"},
@@ -1238,6 +1243,11 @@ class RepositoryScriptTests(unittest.TestCase):
             self.assertIn("DFP_wolfe_local.Paper", modules)
             self.assertNotIn("DFP_wolfe_local.DFPWolfe.Main", modules)
             self.assertNotIn("Paper", modules)
+            routes = (web_root / "ReasBookSite/RouteTable.lean").read_text()
+            self.assertIn('"papers/dfp_wolfe_local/sections/main-theorems/" Book.DFPWolfe.Main', routes)
+            self.assertIn('"papers/dfp_wolfe_local/sections/polar-foundations/" Book.ReasLib.Core', routes)
+            landing = (web_root / "ReasBookSite/WorkPages/Papers/DFP_wolfe_local.lean").read_text()
+            self.assertNotIn("No separate reading sections", landing)
 
     def test_gen_sections_links_project_docs_by_lake_root(self) -> None:
         generator = ROOT / "ReasBookWeb" / "scripts" / "gen_sections.py"
