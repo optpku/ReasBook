@@ -2177,6 +2177,8 @@ def write_root_readme(repo_root: Path, source_root: Path) -> None:
     for book in sorted(
         [p.name for p in (source_root / "Books").iterdir() if p.is_dir()]
     ):
+        if book in TBD_BOOKS:
+            continue
         book_ref_re = re.compile(rf"/Books/{re.escape(book)}/?\)")
         book_repo_link = repo_relative_link(f"ReasBook/Books/{book}/")
         book_verso = published_verso_link(f"books/{book.lower()}/")
