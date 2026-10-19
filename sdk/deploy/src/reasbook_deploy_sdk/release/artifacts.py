@@ -39,6 +39,7 @@ _EXTERNAL_DOC_NAMESPACES = {
     "Aesop",
     "Batteries",
     "Cli",
+    "DFPWolfe",
     "ImportGraph",
     "Init",
     "Lake",
