@@ -14,14 +14,12 @@ completed center-manifold proof and the separate v21 polar foundations.
 [Verso reading pages](https://optpku.github.io/ReasBook/sites/dfp_wolfe_local/pages/) ·
 [Theorem dependency map](https://optpku.github.io/ReasBook/theorem-maps/papers/dfp_wolfe_local/)
 
-The published API documentation and Verso guide describe the earlier proof
-snapshot. The guide presents the main results and eight source-backed
-reading sections, including planar convergence, sharp Hölder regularity, and
+The API documentation covers both proof versions. The guide presents the main
+results and eleven source-backed reading sections, including planar convergence, sharp Hölder regularity, and
 general secant degeneration. The dependency map offers paper-numbered and Lean
 declaration views. Each numbered result displays the original paper statement
 above its corresponding Lean declarations and proofs, with links to their
-source locations. Documentation releases update these resources together after
-source changes are merged.
+source locations. The three additional reading sections cover the v21 polar foundations.
 
 ## Proof versions
 
@@ -35,8 +33,8 @@ retaining the original proof. The [v21 graph source](https://github.com/optpku/R
 contains 154 compiled public theorems/lemmas and 321 dependency edges, with a
 three-node source-section overview and corresponding Lean code.
 
-The public Docs, Verso and theorem map linked above still describe the earlier
-release. The merged source prepares a combined Docs closure of 460 modules and
-11 Verso reading routes (the original eight plus three v21 routes). Publishing
-these additions requires a subsequent documentation release; the existing
-published proof remains available.
+The combined Docs closure contains 460 modules. The 11 Verso reading routes
+retain the original eight sections and add three independent v21 sections.
+The [v21 dependency map](https://optpku.github.io/ReasBook/theorem-maps/papers/dfp_wolfe_local/v21/)
+provides a separate view of the polar foundations; the original map continues
+to describe the completed center-manifold proof.

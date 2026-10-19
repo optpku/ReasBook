@@ -1249,6 +1249,30 @@ class RepositoryScriptTests(unittest.TestCase):
             landing = (web_root / "ReasBookSite/WorkPages/Papers/DFP_wolfe_local.lean").read_text()
             self.assertNotIn("No separate reading sections", landing)
 
+    def test_gen_sections_discovers_imported_nested_paper_facades(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            repo = Path(temp)
+            project = repo / "ReasBook/Papers/Demo"
+            (project / "Results").mkdir(parents=True)
+            (repo / "ReasBook/Books").mkdir()
+            (repo / "ReasBook/lakefile.lean").write_text(
+                'import Lake\nlean_lib Demo where\n  srcDir := "Papers"\n')
+            (project / "Paper.lean").write_text('import Demo.Results\n')
+            (project / "Results.lean").write_text('public import Demo.Results.theorem_2_1_4\n')
+            (project / "Results/theorem_2_1_4.lean").write_text('import Mathlib\n')
+            (project / "Results/theorem_9_9_9.lean").write_text('import Mathlib\n')
+            result = subprocess.run(
+                [sys.executable, str(ROOT / "ReasBookWeb/scripts/gen_sections.py"), "--repo-root", str(repo)],
+                env={**os.environ, "REASBOOK_INCLUDE_PROJECTS": "papers/Demo"},
+                capture_output=True, text=True)
+            self.assertEqual(result.returncode, 0, result.stderr)
+            manifest = json.loads((repo / "ReasBookWeb/.literate-modules.json").read_text())
+            self.assertIn("Demo.Results.theorem_2_1_4", manifest["modules"])
+            self.assertNotIn("Demo.Results.theorem_9_9_9", manifest["modules"])
+            landing = (repo / "ReasBookWeb/ReasBookSite/WorkPages/Papers/Demo.lean").read_text()
+            self.assertNotIn("No separate reading sections", landing)
+            self.assertIn("Demo.Results.theorem_2_1_4", landing)
+
     def test_gen_sections_links_project_docs_by_lake_root(self) -> None:
         generator = ROOT / "ReasBookWeb" / "scripts" / "gen_sections.py"
         layouts = {
