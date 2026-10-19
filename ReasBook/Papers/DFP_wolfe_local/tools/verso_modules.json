@@ -39,8 +39,23 @@
       "module": "ReasLib.Analysis.Calculus.Gradient.HessianHolder",
       "title": "Hessian Hölder calculus",
       "slug": "hessian-holder"
+    },
+    {
+      "module": "ReasLib.Optimization.DFP.Polar.Recurrence",
+      "title": "v21 Section 3.1: prescribed polar recurrence",
+      "slug": "v21-polar-data"
+    },
+    {
+      "module": "ReasLib.Optimization.DFP.Polar.Normalized.Regularity",
+      "title": "v21 Section 3.2: analytic normalized map and uniform jets",
+      "slug": "v21-normalized-map"
+    },
+    {
+      "module": "ReasLib.Optimization.DFP.Polar.TwoCycle",
+      "title": "v21: limiting two-cycle family",
+      "slug": "v21-limiting-two-cycle"
     }
   ],
   "schemaVersion": 1,
-  "description": "Source-backed Verso reading routes. Resolve all modules against the same source snapshot as docs and the theorem graph."
+  "description": "The original eight center-manifold/convergence routes plus three independent v21 polar-foundation routes. Build all routes from one immutable source snapshot."
 }

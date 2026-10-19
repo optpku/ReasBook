@@ -69,8 +69,8 @@ lemma eval_comp_eq_partialSum_comp {G : Type w} [NormedAddCommGroup G]
         (m + 1) h := by
   -- Both sides are the same sum over degrees zero through `m`.
   rw [eval_eq_sum, FormalMultilinearSeries.partialSum, ← Fin.sum_univ_eq_sum_range]
-  congr with n
-  rw [coeff_comp]
+  exact Finset.sum_congr rfl
+    (fun n _ ↦ congrArg (fun A ↦ A (fun _ ↦ h)) (coeff_comp Q P n))
 
 /-- The discrepancy between nested jet evaluation and truncated composition is
 the finite sum of composition terms whose total degree exceeds the cutoff. -/
