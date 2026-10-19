@@ -1,0 +1,12 @@
+{
+  "project": {
+    "branch": "v4.32.0",
+    "commit": "14bc30298cd39f63898a3e88c75b2977235fefe6",
+    "id": "glowinski_admm_counterexample",
+    "kind": "papers",
+    "repository": "https://github.com/optpku/ReasBook",
+    "sourceRoot": "ReasBook/Papers/glowinski_admm_counterexample/",
+    "title": "The multiplier step size of two-block ADMM: convergence and counterexamples"
+  },
+  "schemaVersion": 1
+}

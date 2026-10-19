@@ -1,0 +1,26 @@
+{
+  "edges": 92,
+  "generation": {
+    "compiledItemCount": 26,
+    "dependencyCoverage": "complete",
+    "dependencyModel": "checked-public-interface-contraction-v1",
+    "grouping": "Interfaces with the same primary compiled constant share a node; all aliases are listed.",
+    "interfaceCount": 30,
+    "mode": "lean-environment",
+    "rawDeclarationCount": 45505,
+    "rawSha256": "3b3cf6e48ac78ad3d2e3d4dff4b59168db8fa239870bbb04600b4b01c8d0e6bd",
+    "rootModule": "glowinski_admm_counterexample.Paper",
+    "sourceOnlyItemCount": 0
+  },
+  "nodes": 26,
+  "project": {
+    "branch": "v4.32.0",
+    "commit": "14bc30298cd39f63898a3e88c75b2977235fefe6",
+    "id": "glowinski_admm_counterexample",
+    "kind": "papers",
+    "repository": "https://github.com/optpku/ReasBook",
+    "sourceRoot": "ReasBook/Papers/glowinski_admm_counterexample/",
+    "title": "The multiplier step size of two-block ADMM: convergence and counterexamples"
+  },
+  "schemaVersion": 1
+}
