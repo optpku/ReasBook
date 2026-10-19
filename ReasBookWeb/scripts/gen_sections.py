@@ -290,7 +290,7 @@ PAPER_SECTION_TITLES = {
     },
 }
 
-TBD_BOOKS = {"IntegerProgramming_Conforti_2014"}
+TBD_BOOKS = {"IntegerProgramming_Conforti_2014", "ComputationalMethodsInverseProblems_Vogel_2002"}
 
 SKIP_STEMS = {"utils", "tactics", "scratch", "internal", "helper", "helpers"}
 
@@ -739,11 +739,52 @@ def paper_title(paper: str) -> str:
     return humanize_identifier(paper)
 
 
+@lru_cache(maxsize=None)
+def _lake_source_layout(source_root: Path) -> tuple[dict[tuple[str, ...], str], tuple[tuple[str, ...], ...]]:
+    """Read explicit roots and per-library source directories from Lake."""
+    lakefile = source_root / "lakefile.lean"
+    if not lakefile.is_file():
+        return {}, ()
+    lines = lakefile.read_text(encoding="utf-8", errors="replace").splitlines()
+    explicit: dict[tuple[str, ...], str] = {}
+    directories: set[tuple[str, ...]] = set()
+    for index, line in enumerate(lines):
+        library = re.match(r"^[ \t]*lean_lib[ \t]+", line.split("--", 1)[0])
+        if not library:
+            continue
+        source_directory: tuple[str, ...] = ()
+        roots: list[str] = []
+        cursor = index + 1
+        while cursor < len(lines):
+            candidate = lines[cursor]
+            if candidate.strip() and not candidate[0].isspace():
+                break
+            source_match = re.match(r'^[ \t]*srcDir[ \t]*:=[ \t]*"([^"]+)"', candidate)
+            if source_match:
+                source_directory = tuple(Path(source_match.group(1)).parts)
+                directories.add(source_directory)
+            roots_match = re.match(r"^[ \t]*roots[ \t]*:=[ \t*#]*([^]]+)", candidate)
+            if roots_match:
+                roots.extend(re.findall(r"[A-Za-z_][A-Za-z0-9_'.]*", roots_match.group(1)))
+            cursor += 1
+        for root in roots:
+            root_path = tuple(Path(*root.split(".")).with_suffix(".lean").parts)
+            explicit[source_directory + root_path] = root
+    return explicit, tuple(sorted(directories, key=lambda value: (-len(value), value)))
+
+
 def to_module(source_root: Path, path: Path) -> str:
     rel = path.relative_to(source_root)
+    explicit, source_directories = _lake_source_layout(source_root)
+    if rel.parts in explicit:
+        return explicit[rel.parts]
+    for source_directory in source_directories:
+        prefix = tuple(rel.parts[:len(source_directory)])
+        if prefix == source_directory and len(rel.parts) > len(source_directory):
+            return ".".join(rel.with_suffix("").parts[len(source_directory):])
     parts = list(rel.with_suffix("").parts)
-    # For flat layout (lean_lib BookName where srcDir:="Books"),
-    # strip the Books/ or Papers/ prefix from the module path.
+    # For aggregate layout (lean_lib Books/Papers), retain the public prefix.
+    # For flat layout without explicit per-library srcDir, strip it.
     if len(parts) >= 2 and parts[0] in ("Books", "Papers"):
         if _layout_prefix(source_root, parts[0].lower()) == "":
             parts = parts[1:]
@@ -1818,11 +1859,25 @@ def emit_route_table(
             return f"ReasBookSite.WorkPages.Books.{e.book_or_paper}"
         return f"ReasBookSite.WorkPages.Papers.{e.book_or_paper}"
 
+    def is_primary_paper_root(e: Entry) -> bool:
+        """Only the project-owned Paper.lean gets the canonical paper route.
+
+        A paper may also contain nested compatibility modules such as
+        `DFPWolfe/Paper.lean`; those modules remain literate inputs but must not
+        claim the project's landing route a second time.
+        """
+        parts = e.module.split(".")
+        return (
+            e.category == "papers"
+            and e.stem in {"paper", "main"}
+            and len(parts) >= 2
+            and parts[-2].casefold() == e.book_or_paper.casefold()
+        )
+
     work_page_imports = {
         work_page_module(e)
         for e in entries
-        if (e.category == "books" and e.stem == "book")
-        or (e.category == "papers" and e.stem in {"paper", "main"})
+        if (e.category == "books" and e.stem == "book") or is_primary_paper_root(e)
     }
     work_page_imports.update(reader_chapter_module(reader) for reader in readers)
     work_page_imports.update(
@@ -1847,7 +1902,7 @@ def emit_route_table(
             bindings.append((f"books/{entry.book_or_paper.lower()}/", target))
             bindings.append((entry.route, target))
             continue
-        if entry.category == "papers" and entry.stem in {"paper", "main"}:
+        if is_primary_paper_root(entry):
             target = work_page_module(entry)
             bindings.append((f"papers/{entry.book_or_paper.lower()}/", target))
             bindings.append((entry.route, target))
@@ -2163,6 +2218,8 @@ def write_root_readme(repo_root: Path, source_root: Path) -> None:
     for book in sorted(
         [p.name for p in (source_root / "Books").iterdir() if p.is_dir()]
     ):
+        if book in TBD_BOOKS:
+            continue
         book_ref_re = re.compile(rf"/Books/{re.escape(book)}/?\)")
         book_repo_link = repo_relative_link(f"ReasBook/Books/{book}/")
         book_verso = published_verso_link(f"books/{book.lower()}/")

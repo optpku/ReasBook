@@ -91,6 +91,20 @@ class ProjectTargetTests(unittest.TestCase):
             ),
             "TR_LALM_theory",
         )
+        nested = parse_library_declarations_text(
+            "lean_lib DFP_wolfe_local where\n"
+            '  srcDir := "Papers"\n'
+            "  roots := #[`DFP_wolfe_local.Paper]\n"
+        )
+        nested_roots = parse_library_roots_text(
+            "lean_lib DFP_wolfe_local where\n"
+            '  srcDir := "Papers"\n'
+            "  roots := #[`DFP_wolfe_local.Paper]\n"
+        )
+        self.assertEqual(
+            target_from_declarations(nested, "DFP_wolfe_local", "paper", roots=nested_roots),
+            "DFP_wolfe_local.Paper",
+        )
 
 
 if __name__ == "__main__":
