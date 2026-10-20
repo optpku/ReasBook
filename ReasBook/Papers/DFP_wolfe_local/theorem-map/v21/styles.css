@@ -1102,7 +1102,6 @@ select:focus-visible,
 .graph-scope-heading > .segmented { flex-shrink: 0; }
 .toolbar-actions > .graph-depth-control, .toolbar-actions > .zoom-controls { flex-shrink: 0; }
 
-.v21-lean-code { white-space: pre; overflow-x: auto; max-width: 100%; padding: 1rem; background: #f6f8fa; border-radius: 6px; font-family: ui-monospace, monospace; }
 .detail-scroll { grid-column: 2; }
 .version-links { padding: .5rem 1rem; background: #f6f8fa; }
 

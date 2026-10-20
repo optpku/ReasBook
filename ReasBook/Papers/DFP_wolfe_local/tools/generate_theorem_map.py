@@ -320,6 +320,7 @@ def main() -> None:
     (output / "paper-lean.json").write_text(
         json.dumps(code_data, ensure_ascii=False, indent=2) + "\n")
     shutil.copy2(assets / "lean-code.js", output / "lean-code.js")
+    shutil.copy2(assets / "lean-code.css", output / "lean-code.css")
     print(json.dumps(dict(output=str(output), sourceCommit=commit, nodes=len(items),
                           edges=sum(len(x["dependencies"]) for x in items)), indent=2))
 

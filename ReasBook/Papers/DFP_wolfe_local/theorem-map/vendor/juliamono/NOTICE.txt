@@ -1,0 +1,6 @@
+JuliaMono Regular v0.63.2, by Cormullion.
+SIL Open Font License 1.1; see LICENSE.
+Redistributed unmodified.
+Source: https://github.com/cormullion/juliamono/tree/v0.63.2
+Font: https://raw.githubusercontent.com/cormullion/juliamono/v0.63.2/webfonts/JuliaMono-Regular.woff2
+SHA-256: cd371c92e94978a6888b71e89a4b57f443604ad63595150511ceb7d5c354b857
