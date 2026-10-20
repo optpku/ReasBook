@@ -159,7 +159,7 @@ def main():
         '[Original dependency map](/ReasBook/theorem-maps/papers/dfp_wolfe_local/) · '
         '[v21 dependency map](/ReasBook/theorem-maps/papers/dfp_wolfe_local/v21/) · '
         f'[Lean source](https://github.com/optpku/ReasBook/tree/{revision}/ReasBook/Papers/DFP_wolfe_local/)', '',
-        'The original eight routes retain the center-manifold proof and convergence results. Three v21 routes show the independent polar foundations; the v21 counterexample proof is still incomplete.', '',
+        'The original eight routes retain the center-manifold proof and convergence results. The v21 routes cover the complete polar proof, numbered results 1–8, quantitative identity initialization and comparisons on the same Wolfe witness. The independent Section 6 interpolation retains the manuscript’s disjoint-open-ball premise and eventual support-radius orders.', '',
         '# Reading guide', '']
     for row in modules:
         lines.append(f"- [{row['title']}](/ReasBook/versions/v4.32.0/papers/dfp_wolfe_local/sections/{row['slug']}/)")
