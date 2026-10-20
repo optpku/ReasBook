@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build a separate compiled graph for the v21 polar foundations.
+"""Build a separate compiled graph for the complete v21 proof and its reused infrastructure.
 
 The SDK contracts private helpers and definitions. Edges are extracted from
 Lean types and proof terms, never inferred from manuscript prose. The earlier
@@ -11,6 +11,7 @@ import argparse
 from bisect import bisect_left
 import hashlib
 import json
+import os
 from pathlib import Path
 import re
 import subprocess
@@ -29,6 +30,8 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--sdk-root', type=Path, required=True)
     parser.add_argument('--output', type=Path, required=True)
+    parser.add_argument('--lean-root', type=Path, help='Byte-identical compiled standalone checkout')
+    parser.add_argument('--lake-bin', default='lake', help='Authorized lake lean wrapper')
     parser.add_argument('--evidence', type=Path, required=True)
     parser.add_argument('--reuse-evidence', type=Path, help='Reuse checksum-verified export for identical committed sources')
     args = parser.parse_args()
@@ -40,15 +43,31 @@ def main():
         parser.error('output and evidence must be new directories')
     if repo == evidence or repo in evidence.parents:
         parser.error('keep evidence outside the source repository')
-    files = sorted((paper / 'ReasLib/Optimization/DFP/Polar').rglob('*.lean'))
-    files += sorted((paper / 'DFPWolfe/V21').rglob('*.lean'))
-    files += [paper / 'DFPWolfe/V21.lean']
+    lean_root = (args.lean_root or repo / 'ReasBook').resolve()
+    all_sources = {path.relative_to(paper).with_suffix('').as_posix().replace('/', '.'): path
+                   for directory in ('ReasLib', 'DFPWolfe')
+                   for path in (paper / directory).rglob('*.lean')}
+    for name in ('DFPWolfe', 'ReasLib'):
+        all_sources[name] = paper / (name + '.lean')
+    owned = set()
+    def visit(module):
+        if module in owned or module not in all_sources:
+            return
+        owned.add(module)
+        for dep in re.findall(r'^(?:(?:public|private)\s+)?import\s+(?:all\s+)?([\w.]+)',
+                              mask_comments(all_sources[module].read_text()), re.MULTILINE):
+            visit(dep)
+    visit('DFPWolfe.V21.Paper')
+    files = sorted(all_sources[module] for module in owned)
     commit = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=repo, text=True).strip()
     for path in files:
         relative = path.relative_to(repo).as_posix()
         committed = subprocess.check_output(['git', 'show', f'{commit}:{relative}'], cwd=repo)
         if committed != path.read_bytes():
             raise RuntimeError('Commit the Lean source before extraction: ' + relative)
+        compiled_source = lean_root / path.relative_to(paper) if args.lean_root else path
+        if compiled_source.read_bytes() != committed:
+            raise RuntimeError('Compiled workspace source differs: ' + relative)
     sys.path[:0] = [str(sdk / 'src'), str(sdk.parent / 'common/src')]
     from theorem_graph_sdk.analysis import DECL_RE, PALETTE, contract_dependencies
     from theorem_graph_sdk.extractor import LeanEnvironmentExtractor
@@ -61,14 +80,22 @@ def main():
     if text.count(predicate) != 1:
         raise RuntimeError('Review changed SDK ownership predicate before regenerating')
     text = text.replace(predicate,
-        'moduleName.toString.startsWith "ReasLib.Optimization.DFP.Polar." ||\n'
-        '  moduleName.toString.startsWith "DFPWolfe.V21"')
+        'moduleName.toString.startsWith "ReasLib." ||\n'
+        '  moduleName.toString.startsWith "DFPWolfe."')
     # Retain compiler declaration ranges for exact source excerpts below each statement.
     text = text.replace('  line : Nat\n', '  line : Nat\n  endLine : Nat\n  endColumn : Nat\n', 1)
     text = text.replace('    line\n    kind :=',
         '    line\n    endLine := ranges?.map (·.range.endPos.line) |>.getD line\n'
         '    endColumn := ranges?.map (·.range.endPos.column) |>.getD 0\n    kind :=', 1)
+    # Import private proof bodies as well as public interfaces. Missing theorem or
+    # opaque bodies must fail extraction rather than silently erase graph edges.
+    text = text.replace('roots.map fun root => { module := root.toName }',
+                        'roots.map fun root => { module := root.toName, importAll := true }')
+    guard = '  let docString := (← findDocString? env name (includeBuiltin := false)).getD ""'
+    text = text.replace(guard, '  if (match info with | .thmInfo _ => true | .opaqueInfo _ => true | _ => false) && (info.value? (allowOpaque := true)).isNone then\n    throwError "Missing project proof body for {name}"\n' + guard)
     evidence.mkdir(parents=True)
+    # Keep the SDK's temporary protocol files on the same persistent volume.
+    tempfile.tempdir = str(evidence)
 
     def bounded_runner(command, **kwargs):
         command = list(command)
@@ -77,13 +104,24 @@ def main():
         for spec in config['projects']:
             spec.setdefault('rootModules', [])
         config_path.write_text(json.dumps(config))
-        i = command.index('lean') + 1
-        command[i:i] = ['-j1', '-M8192']
+        config['projects'][0]['rootModules'] = ['DFPWolfe.Paper', 'DFPWolfe.V21.Paper']
+        config_path.write_text(json.dumps(config))
+        # The proof workspace authorizes `lake lean <file>`, rather than
+        # `lake env lean --run`. Execute the SDK's IO exporter via a temporary
+        # top-level #eval, retaining exactly the same config and output protocol.
+        exporter = Path(command[command.index('--run') + 1])
+        evaluation = evidence / 'ExtractEnvironment.lean'
+        evaluation.write_text(exporter.read_text() + '\n#eval main ' +
+            json.dumps([str(config_path), str(command[-1])]) + '\n')
+        environment = dict(os.environ, LEAN_NUM_THREADS='1')
+        command = [args.lake_bin, 'lean', str(evaluation)]
+        kwargs['cwd'] = lean_root
+        kwargs['env'] = environment
         result = subprocess.run(command, **kwargs)
         (evidence / 'extraction.log').write_text(result.stdout + result.stderr)
         return result
 
-    project = Project('papers', 'Papers', 'Paper', 'DFP_wolfe_local', paper, 'DFPWolfe.V21')
+    project = Project('papers', 'Papers', 'Paper', 'DFP_wolfe_local', paper, 'DFPWolfe.V21.Paper')
     if args.reuse_evidence:
         saved_root = args.reuse_evidence.resolve()
         saved = json.loads((saved_root / 'provenance.json').read_text())
@@ -91,6 +129,7 @@ def main():
                            for path in files]
         if (saved['sourceCommit'] != commit or saved['sources'] != source_identity or
                 saved['extractorSha256'] != digest(original) or
+                saved.get('adaptedExtractorSha256') != hashlib.sha256(text.encode()).hexdigest() or
                 saved['rawSha256'] != digest(saved_root / 'raw.json')):
             raise RuntimeError('Cached export source, extractor or checksum mismatch')
         raw = json.loads((saved_root / 'raw.json').read_text())
@@ -101,6 +140,8 @@ def main():
             raw = LeanEnvironmentExtractor(extractor, runner=bounded_runner,
                 timeout_seconds=1800).extract_project(repo, project)[project.project_id]
     (evidence / 'raw.json').write_text(json.dumps(raw, ensure_ascii=False))
+    source_identity = [dict(file=path.relative_to(paper).as_posix(), sha256=digest(path)) for path in files]
+    (evidence / 'provenance.json').write_text(json.dumps(dict(sourceCommit=commit, sources=source_identity, extractorSha256=digest(original), adaptedExtractorSha256=hashlib.sha256(text.encode()).hexdigest(), rawSha256=digest(evidence / 'raw.json')), indent=2) + '\n')
     heads = {}
     pattern = re.compile(r'^[ \t]*(?:@\[[\s\S]*?\]\s*)*'
         r'(?P<modifiers>(?:(?:private|protected|public|noncomputable)\s+)*)'
@@ -113,6 +154,7 @@ def main():
         for m in pattern.finditer(mask_comments(source)):
             records.append(dict(name=m['name'].strip('«»'),
                 line=source.count('\n', 0, m.start('kind')) + 1,
+                column=m.start('kind') - source.rfind('\n', 0, m.start('kind')) - 1,
                 private='private' in m['modifiers'], doc=docs.get(m.start('name'), '')))
         heads[path.relative_to(paper).as_posix()] = records
         sources.append(dict(file=path.relative_to(paper).as_posix(), sha256=digest(path)))
@@ -155,7 +197,8 @@ def main():
         begin, end, column = item['line'], item['endLine'], item['endColumn']
         if not 1 <= begin <= end <= len(lines):
             raise RuntimeError('Invalid compiler declaration range: ' + item['name'])
-        code = ''.join(lines[begin - 1:end - 1]) + lines[end - 1][:column]
+        start_column = next(r['column'] for r in heads[item['file']] if r['line'] == begin and not r['private'])
+        code = (''.join(lines[begin - 1:end - 1]) + lines[end - 1][:column])[start_column:]
         if not re.match(r'\s*(?:theorem|lemma)\s+', code):
             raise RuntimeError('Source excerpt does not begin at a declaration')
         items.append(dict(id=item['name'], label=label, title=label, type='Theorem',
@@ -165,49 +208,36 @@ def main():
             sourceSha256=digest(paper / item['file']), **dependencies))
     source_hash = hashlib.sha256(json.dumps(sources, sort_keys=True).encode()).hexdigest()
     data = dict(schemaVersion=2, project=dict(id=project.project_id,
-        title='DFP v21: polar foundations (partial proof)', kind='papers', branch='v4.32.0',
+        title='DFP v21: complete polar proof and source refinements', kind='papers', branch='v4.32.0',
         commit=commit, repository='https://github.com/optpku/ReasBook',
         sourceRoot=project.source_root), sections=sections, items=items,
         generation=dict(mode='lean-environment', rootModule=project.root_module,
             compiledItemCount=len(items), sourceInventoryItemCount=expected,
             sourceOnlyItemCount=0, mergedItemCount=len(items), dependencyCoverage='complete',
             dependencyModel='statement-and-proof-v1', sourceSha256=source_hash,
-            extractorSha256=digest(original), scope='v21 polar foundations only; full v21 counterexample not yet proved',
-            sourceSnapshot='c788aa3dabd6cac78f4ec8b2c9c1e897cbc1188f'))
+            extractorSha256=digest(original), scope='Complete v21 numbered results 1–8 and source refinements; Section 6 interpolation retains its explicit disjoint-ball premise. Includes reused infrastructure in the v21 import closure.',
+            sourceSnapshot='28f062c4d545c579a794a50593cf144b31c51cd5', rawDeclarationCount=len(raw),
+            sourceModuleCount=len(files)))
     copy_generic_map(sdk / 'src/theorem_graph_sdk/resources/assets', output, data)
-    bundles = [
-        dict(id='v21-polar-data', label='Section 3.1', title='Prescribed polar data',
-            section='construction', texLabel='eq:polar-matrix-map',
-            mapping='Definitions and exact recurrence identities only; radius-product convergence is not asserted.',
-            declarations=[item['declaration'] for item in items if '/Normalized/' not in item['file']
-                and not item['file'].endswith('/TwoCycle.lean')]),
-        dict(id='v21-normalized-map', label='Section 3.2', title='Normalized map and regularity',
-            section='construction', texLabel='eq:polar-leading-map',
-            mapping='Exact normalized recurrence, analytic canceled map and compact-uniform Taylor interface. Restoring drift and the invariant tube are not asserted.',
-            declarations=[item['declaration'] for item in items if '/Normalized/' in item['file']]),
-        dict(id='v21-two-cycle', label='Two-cycle equation', title='Limiting two-cycle family',
-            section='construction', texLabel='eq:polar-two-cycle',
-            mapping='The rational limiting two-cycle, its local inverse and reference data; this does not prove continuation of the perturbed orbit.',
-            declarations=[item['declaration'] for item in items if item['file'].endswith('/TwoCycle.lean')]),
-    ]
-    overview = project_graph(data, dict(items=bundles, manuscript='October 9, 2026 v21 submission',
-        numbering='Source section/equation locators, not newly completed numbered theorems.'))
+    mapping = json.loads(Path(__file__).with_name('v21_results.json').read_text())
+    bundles = mapping['items']
+    overview = project_graph(data, mapping)
     verify(data, overview)
+    from generate_paper_graph import attach_statements
+    excerpts = json.loads((paper / 'theorem-map/v21/paper-statements.json').read_text())
+    attach_statements(overview, excerpts)
     by_name = {item['declaration']: item for item in items}
-    samples = [
-        ['DFP.Polar.Parameters.matrix_succ'],
-        ['DFP.Polar.Parameters.normalizedEvenState_succ', 'DFP.Polar.Normalized.map_uniformJets'],
-        ['DFP.Polar.TwoCycle.evenToOdd', 'DFP.Polar.TwoCycle.oddToEven'],
-    ]
-    for item, bundle, names in zip(overview['items'], bundles, samples):
-        item['statement'] = bundle['mapping']
+    for item, bundle in zip(overview['items'], bundles):
+        names = bundle['declarations']
         primary = by_name[names[0]]
         item.update({key: primary[key] for key in ('declaration', 'file', 'line', 'endLine')})
         item['leanCode'] = primary['leanCode']
         item['leanExcerpts'] = [{key: by_name[name][key] for key in
             ('declaration', 'file', 'line', 'leanCode')} for name in names]
-        item['type'] = 'Equation' if item['id'] == 'v21-two-cycle' else 'Section'
+        item['statementHtml'] = next(row['statementHtml'] for row in excerpts['items']
+                                     if row['id'] == item['id'])
     (output / 'overview-data.json').write_text(json.dumps(overview, indent=2, ensure_ascii=False) + '\n')
+    (output / 'paper-statements.json').write_text(json.dumps(excerpts, ensure_ascii=False, indent=2) + '\n')
     # Only the v21 viewer gains a source panel; the original map is preserved.
     app = output / 'app.js'
     javascript = app.read_text()
@@ -238,21 +268,26 @@ def main():
     javascript = javascript.replace('fetch("./data.json",',
         'fetch(new URLSearchParams(window.location.search).get("view") === "lean" ? "./data.json" : "./overview-data.json",')
     javascript = javascript.replace('statementHeading.textContent = "Natural-language statement";',
-        'statementHeading.textContent = item.paperMapping ? "Source correspondence and scope" : "Declaration description";')
+        'statementHeading.textContent = item.paperMapping ? "Original paper statement" : "Declaration description";')
     app.write_text(javascript)
     css = output / 'styles.css'
     css.write_text(css.read_text() + '\n.v21-lean-code { white-space: pre; overflow-x: auto; '
         'max-width: 100%; padding: 1rem; background: #f6f8fa; border-radius: 6px; '
         'font-family: ui-monospace, monospace; }\n.detail-scroll { grid-column: 2; }\n'
-        '.version-links { padding: .5rem 1rem; background: #f6f8fa; }\n')
+        '.version-links { padding: .5rem 1rem; background: #f6f8fa; }\n'
+        '.statement .katex { font-size: 1em; }\n'
+        '.statement .katex-display { max-width: 100%; overflow-x: auto; overflow-y: hidden; padding: 8px 0; }\n'
+        '.statement .katex-display > .katex { width: max-content; min-width: 100%; }\n'
+        '.statement .katex-display .katex-html { display: inline-flex; align-items: baseline; justify-content: center; min-width: max-content; width: 100%; }\n'
+        '.statement .katex-display .katex-html > .tag { position: static; margin-left: 1em; }\n')
     index = output / 'index.html'
-    index.write_text(index.read_text().replace('<body>', '<body>\n<nav class="version-links">'
+    index.write_text(index.read_text().replace('</head>', '<link rel="stylesheet" href="../vendor/katex/katex.min.css"></head>').replace('<body>', '<body>\n<nav class="version-links">'
         '<a href="../index.html?view=paper">Original center-manifold proof</a> · '
-        '<strong>v21 polar foundations — partial proof</strong> · '
-        '<a href="?view=paper">Source sections</a> · <a href="?view=lean">Lean declarations</a></nav>', 1))
+        '<strong>v21 complete polar proof</strong> · '
+        '<a href="?view=paper">Paper theorem numbers</a> · <a href="?view=lean">Lean declarations</a></nav>', 1))
     (evidence / 'provenance.json').write_text(json.dumps(dict(sourceCommit=commit,
         sources=sources, sourceSha256=source_hash, extractorSha256=digest(original),
-        rawSha256=digest(evidence / 'raw.json')), indent=2) + '\n')
+        adaptedExtractorSha256=hashlib.sha256(text.encode()).hexdigest(), rawSha256=digest(evidence / 'raw.json')), indent=2) + '\n')
     print(json.dumps(dict(output=str(output), nodes=len(items),
         edges=sum(len(item['dependencies']) for item in items), sourceCommit=commit), indent=2))
 

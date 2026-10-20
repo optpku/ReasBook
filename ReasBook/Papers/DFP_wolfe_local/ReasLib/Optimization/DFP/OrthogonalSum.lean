@@ -98,6 +98,27 @@ def matrix {ι : Type u} {κ : Type v} [DecidableEq κ]
     (H : Matrix ι ι ℝ) : Matrix (ι ⊕ κ) (ι ⊕ κ) ℝ :=
   EuclideanSpace.OrthogonalSum.extendMatrix H
 
+/-- Helper for cor:identity-initialization: adjoining an identity block to the
+identity matrix gives the identity on the full orthogonal sum. -/
+theorem matrix_one {ι : Type u} {κ : Type v} [DecidableEq ι] [DecidableEq κ] :
+    (matrix (1 : Matrix ι ι ℝ) : Matrix (ι ⊕ κ) (ι ⊕ κ) ℝ) = 1 := by
+  ext i j
+  cases i with
+  | inl i =>
+      cases j with
+      | inl j =>
+          simp [matrix, EuclideanSpace.OrthogonalSum.extendMatrix_apply_inl_inl,
+            Matrix.one_apply]
+      | inr j =>
+          simp [matrix, EuclideanSpace.OrthogonalSum.extendMatrix_apply_inl_inr]
+  | inr i =>
+      cases j with
+      | inl j =>
+          simp [matrix, EuclideanSpace.OrthogonalSum.extendMatrix_apply_inr_inl]
+      | inr j =>
+          simp [matrix, EuclideanSpace.OrthogonalSum.extendMatrix_apply_inr_inr,
+            Matrix.one_apply]
+
 /-- The identity-block extension acts on an embedded vector by the embedded original
 matrix action. -/
 theorem matrix_mulVec_embed {ι : Type u} {κ : Type v}

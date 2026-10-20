@@ -11,8 +11,8 @@ class ReadingResourceTests(unittest.TestCase):
     def test_all_reading_modules_exist_after_refactor(self):
         root = Path(__file__).resolve().parents[1]
         plan = json.loads((root / 'tools/verso_modules.json').read_text())
-        self.assertEqual(len(plan['modules']), 11)
-        self.assertEqual(len({row['slug'] for row in plan['modules']}), 11)
+        self.assertEqual(len(plan['modules']), 21)
+        self.assertEqual(len({row['slug'] for row in plan['modules']}), 21)
         self.assertEqual(plan['modules'][0]['module'], 'DFPWolfe.Main')
         for row in plan['modules']:
             self.assertTrue((root / Path(*row['module'].split('.')).with_suffix('.lean')).is_file())

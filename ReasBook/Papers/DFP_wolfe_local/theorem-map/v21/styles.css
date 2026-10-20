@@ -1105,3 +1105,9 @@ select:focus-visible,
 .v21-lean-code { white-space: pre; overflow-x: auto; max-width: 100%; padding: 1rem; background: #f6f8fa; border-radius: 6px; font-family: ui-monospace, monospace; }
 .detail-scroll { grid-column: 2; }
 .version-links { padding: .5rem 1rem; background: #f6f8fa; }
+
+.statement .katex { font-size: 1em; }
+.statement .katex-display { max-width: 100%; overflow-x: auto; overflow-y: hidden; padding: 8px 0; }
+.statement .katex-display > .katex { width: max-content; min-width: 100%; }
+.statement .katex-display .katex-html { display: inline-flex; align-items: baseline; justify-content: center; min-width: max-content; width: 100%; }
+.statement .katex-display .katex-html > .tag { position: static; margin-left: 1em; }

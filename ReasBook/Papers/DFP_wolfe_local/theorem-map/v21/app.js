@@ -1116,7 +1116,7 @@
     var statementSection = document.createElement("section");
     statementSection.className = "detail-section";
     var statementHeading = document.createElement("h3");
-    statementHeading.textContent = item.paperMapping ? "Source correspondence and scope" : "Declaration description";
+    statementHeading.textContent = item.paperMapping ? "Original paper statement" : "Declaration description";
     var statement = document.createElement("article");
     statement.className = "statement";
     renderStatement(statement, item);
