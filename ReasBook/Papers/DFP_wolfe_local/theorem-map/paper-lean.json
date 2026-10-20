@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "sourceCommit": "2d35734871c7f1dc028c4f1c376e17fcfe062443",
+  "sourceCommit": "cbb72b50777d56c4664fe44b816aeafa36260207",
   "toolchain": "leanprover/lean4:v4.32.0",
   "extraction": "Verified doc-gen4 declaration ranges; original source text",
   "declarations": {
