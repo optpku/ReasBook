@@ -1124,9 +1124,11 @@
     statementSection.appendChild(statement);
 
     if (item.leanCode) {
+      var codeSection = document.createElement("section");
+      codeSection.className = "detail-section lean-code-section";
       var codeHeading = document.createElement("h3");
       codeHeading.textContent = "Corresponding Lean code";
-      statementSection.appendChild(codeHeading);
+      codeSection.appendChild(codeHeading);
       (item.leanExcerpts || [item]).forEach(function (excerpt) {
         var sourceLink = document.createElement("a");
         sourceLink.className = "detail-source-link";
@@ -1134,11 +1136,15 @@
         sourceLink.href = sourceUrl(excerpt);
         sourceLink.target = "_blank";
         sourceLink.rel = "noreferrer";
-        var code = document.createElement("pre");
-        code.className = "v21-lean-code";
-        code.textContent = excerpt.leanCode;
-        statementSection.appendChild(sourceLink);
-        statementSection.appendChild(code);
+        var pre = document.createElement("pre");
+        pre.className = "lean-code-block";
+        pre.tabIndex = 0;
+        pre.setAttribute("aria-label", "Original Lean declaration and proof");
+        var code = document.createElement("code");
+        code.innerHTML = window.DFPLeanCode.highlight(excerpt.leanCode);
+        pre.appendChild(code);
+        codeSection.appendChild(sourceLink);
+        codeSection.appendChild(pre);
       });
     }
 
@@ -1185,7 +1191,9 @@
     factRow(facts, "Snapshot", String(project.commit || "").slice(0, 10));
     leanSection.appendChild(leanHeading);
     leanSection.appendChild(facts);
-    refs.detailContent.replaceChildren(header, statementSection, relationSection, leanSection);
+    refs.detailContent.replaceChildren(header, statementSection);
+    if (item.leanCode) refs.detailContent.appendChild(codeSection);
+    refs.detailContent.append(relationSection, leanSection);
     refs.detailContent.parentElement.scrollTop = 0;
   }
 

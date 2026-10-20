@@ -243,9 +243,11 @@ def main():
     javascript = app.read_text()
     marker = '    var relationSection = document.createElement("section");'
     panel = '''    if (item.leanCode) {
+      var codeSection = document.createElement("section");
+      codeSection.className = "detail-section lean-code-section";
       var codeHeading = document.createElement("h3");
       codeHeading.textContent = "Corresponding Lean code";
-      statementSection.appendChild(codeHeading);
+      codeSection.appendChild(codeHeading);
       (item.leanExcerpts || [item]).forEach(function (excerpt) {
         var sourceLink = document.createElement("a");
         sourceLink.className = "detail-source-link";
@@ -253,11 +255,15 @@ def main():
         sourceLink.href = sourceUrl(excerpt);
         sourceLink.target = "_blank";
         sourceLink.rel = "noreferrer";
-        var code = document.createElement("pre");
-        code.className = "v21-lean-code";
-        code.textContent = excerpt.leanCode;
-        statementSection.appendChild(sourceLink);
-        statementSection.appendChild(code);
+        var pre = document.createElement("pre");
+        pre.className = "lean-code-block";
+        pre.tabIndex = 0;
+        pre.setAttribute("aria-label", "Original Lean declaration and proof");
+        var code = document.createElement("code");
+        code.innerHTML = window.DFPLeanCode.highlight(excerpt.leanCode);
+        pre.appendChild(code);
+        codeSection.appendChild(sourceLink);
+        codeSection.appendChild(pre);
       });
     }
 
@@ -265,15 +271,18 @@ def main():
     if javascript.count(marker) != 1:
         raise RuntimeError('Review changed SDK detail renderer before regenerating')
     javascript = javascript.replace(marker, panel + marker)
+    javascript = javascript.replace(
+        '    refs.detailContent.replaceChildren(header, statementSection, relationSection, leanSection);',
+        '    refs.detailContent.replaceChildren(header, statementSection);\n'
+        '    if (item.leanCode) refs.detailContent.appendChild(codeSection);\n'
+        '    refs.detailContent.append(relationSection, leanSection);')
     javascript = javascript.replace('fetch("./data.json",',
         'fetch(new URLSearchParams(window.location.search).get("view") === "lean" ? "./data.json" : "./overview-data.json",')
     javascript = javascript.replace('statementHeading.textContent = "Natural-language statement";',
         'statementHeading.textContent = item.paperMapping ? "Original paper statement" : "Declaration description";')
     app.write_text(javascript)
     css = output / 'styles.css'
-    css.write_text(css.read_text() + '\n.v21-lean-code { white-space: pre; overflow-x: auto; '
-        'max-width: 100%; padding: 1rem; background: #f6f8fa; border-radius: 6px; '
-        'font-family: ui-monospace, monospace; }\n.detail-scroll { grid-column: 2; }\n'
+    css.write_text(css.read_text() + '\n.detail-scroll { grid-column: 2; }\n'
         '.version-links { padding: .5rem 1rem; background: #f6f8fa; }\n'
         '.statement .katex { font-size: 1em; }\n'
         '.statement .katex-display { max-width: 100%; overflow-x: auto; overflow-y: hidden; padding: 8px 0; }\n'
@@ -281,7 +290,7 @@ def main():
         '.statement .katex-display .katex-html { display: inline-flex; align-items: baseline; justify-content: center; min-width: max-content; width: 100%; }\n'
         '.statement .katex-display .katex-html > .tag { position: static; margin-left: 1em; }\n')
     index = output / 'index.html'
-    index.write_text(index.read_text().replace('</head>', '<link rel="stylesheet" href="../vendor/katex/katex.min.css"></head>').replace('<body>', '<body>\n<nav class="version-links">'
+    index.write_text(index.read_text().replace('</head>', '<link rel="stylesheet" href="../vendor/katex/katex.min.css">\n<link rel="stylesheet" href="../lean-code.css"></head>').replace('<script src="./app.js">', '<script src="../lean-code.js"></script>\n<script src="./app.js">').replace('<body>', '<body class="v21-view">\n<nav class="version-links">'
         '<a href="../index.html?view=paper">Original center-manifold proof</a> · '
         '<strong>v21 complete polar proof</strong> · '
         '<a href="?view=paper">Paper theorem numbers</a> · <a href="?view=lean">Lean declarations</a></nav>', 1))
