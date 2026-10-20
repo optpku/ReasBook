@@ -73,9 +73,15 @@ The Docs source plan contains **498 reachable modules**. The Verso manifest
 contains **21 routes**, retaining all original eight routes and the three v21
 foundation URLs, and adding ten routes for the complete v21 results and
 refinements. The existing Docs builder follows the combined import root.
-This source update prepares Docs, Verso and the graph for a merged-commit
-website release; committing or merging it does not itself update the live site.
-A full Docs/Verso rebuild is not claimed for this source update.
+The rebuilt [Docs](https://optpku.github.io/ReasBook/sites/dfp_wolfe_local/docs/),
+[Verso reading pages](https://optpku.github.io/ReasBook/sites/dfp_wolfe_local/pages/),
+[original map](https://optpku.github.io/ReasBook/theorem-maps/papers/dfp_wolfe_local/)
+and [v21 map](https://optpku.github.io/ReasBook/theorem-maps/papers/dfp_wolfe_local/v21/)
+are published in
+[site-20261020T152000Z-64fdfbc54b6b](https://github.com/optpku/ReasBook/releases/tag/reasbook-site-20261020T152000Z-64fdfbc54b6b).
+The release uses the immutable source snapshot
+[`5f2648b6`](https://github.com/optpku/ReasBook/commit/5f2648b67408c025ff266d7263a3693e67ce4435)
+and retains the other fifteen published projects.
 
 ## Contributor
 
