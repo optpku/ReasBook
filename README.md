@@ -167,16 +167,6 @@ questions.
 | **[Technical note: a counterexample to the Rockafellar sum conjecture on c₀](ReasBook/Papers/RockafellarSum_2026/)**<br><sub>Junyu Zhang, Jinbiao Chen, Zichen Wang, Benqi Liu, and Zaiwen Wen (2026)</sub> | [`v4.32.0`](https://github.com/optpku/ReasBook/tree/v4.32.0/ReasBook/Papers/RockafellarSum_2026/) | Zichen Wang | [Note PDF](https://github.com/optpku/ReasBook/blob/v4.32.0/ReasBook/Papers/RockafellarSum_2026/note/rockafellar_sum_technical_note.pdf) · [LaTeX](https://github.com/optpku/ReasBook/blob/v4.32.0/ReasBook/Papers/RockafellarSum_2026/note/rockafellar_sum_technical_note.tex) |
 | **[The multiplier step size of two-block ADMM: convergence and counterexamples](ReasBook/Papers/glowinski_admm_counterexample/)**<br><sub>2026</sub> | [`v4.32.0`](https://github.com/optpku/ReasBook/tree/v4.32.0/ReasBook/Papers/glowinski_admm_counterexample/) | Qiming Dai | [Docs](https://optpku.github.io/ReasBook/sites/glowinski_admm_counterexample/docs/) &#124; [Verso](https://optpku.github.io/ReasBook/sites/glowinski_admm_counterexample/pages/) &#124; [Theorem map](https://optpku.github.io/ReasBook/theorem-maps/papers/glowinski_admm_counterexample/) |
 
-The DFP source preserves two complete proof routes: the original center-manifold
-construction and the [v21 polar construction](https://github.com/optpku/ReasBook/tree/v4.32.0/ReasBook/Papers/DFP_wolfe_local/DFPWolfe/V21/).
-The v21 entry covers numbered results 1–8, quantitative identity initialization
-and comparisons on the same Wolfe witness. Its independent Section 6 interpolation
-retains the manuscript's disjoint-ball premise. Both theorem maps have a paper-numbered
-view and a Lean declaration view. The [version comparison](https://github.com/optpku/ReasBook/tree/v4.32.0/ReasBook/Papers/DFP_wolfe_local/#proof-versions)
-records their coverage. Updated source and graph assets are released separately
-from the live Docs and Verso site; the live v21 map may still show the earlier foundations
-until the next website release.
-
 ### Other Formalized Papers
 
 | Formalization | Source | Contributors | Resources |

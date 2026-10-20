@@ -141,14 +141,6 @@ GitHub Pages 继续发布静态站点，公众评论需要运行 reviewer 后端
 | **[Technical note: a counterexample to the Rockafellar sum conjecture on c₀](ReasBook/Papers/RockafellarSum_2026/)**<br><sub>Junyu Zhang, Jinbiao Chen, Zichen Wang, Benqi Liu, and Zaiwen Wen (2026)</sub> | [`v4.32.0`](https://github.com/optpku/ReasBook/tree/v4.32.0/ReasBook/Papers/RockafellarSum_2026/) | Zichen Wang | [Note PDF](https://github.com/optpku/ReasBook/blob/v4.32.0/ReasBook/Papers/RockafellarSum_2026/note/rockafellar_sum_technical_note.pdf) · [LaTeX](https://github.com/optpku/ReasBook/blob/v4.32.0/ReasBook/Papers/RockafellarSum_2026/note/rockafellar_sum_technical_note.tex) |
 | **[The multiplier step size of two-block ADMM: convergence and counterexamples](ReasBook/Papers/glowinski_admm_counterexample/)**<br><sub>2026</sub> | [`v4.32.0`](https://github.com/optpku/ReasBook/tree/v4.32.0/ReasBook/Papers/glowinski_admm_counterexample/) | Qiming Dai | [Docs](https://optpku.github.io/ReasBook/sites/glowinski_admm_counterexample/docs/) &#124; [Verso](https://optpku.github.io/ReasBook/sites/glowinski_admm_counterexample/pages/) &#124; [定理依赖图](https://optpku.github.io/ReasBook/theorem-maps/papers/glowinski_admm_counterexample/) |
 
-DFP 源码保留两条完整证明路线：原中心流形构造与
-[v21 极坐标构造](https://github.com/optpku/ReasBook/tree/v4.32.0/ReasBook/Papers/DFP_wolfe_local/DFPWolfe/V21/)。
-v21 覆盖原文编号结果 1–8、单位初始矩阵的定量界及同一 Wolfe 轨道上的序列比较。
-独立的 Section 6 插值保留原文的不交球条件。两个定理图均提供论文编号与 Lean 声明视图；
-[版本对照](https://github.com/optpku/ReasBook/tree/v4.32.0/ReasBook/Papers/DFP_wolfe_local/#proof-versions)列出了覆盖范围。
-源码与定理图资源的更新独立于网站发布；Docs、Verso 和在线 v21 定理图需等待新版本部署，
-在线 v21 图在此之前可能仍展示基础部分。
-
 ### 其他已形式化论文
 
 | 形式化项目 | 源代码 | 贡献者 | 资源 |
