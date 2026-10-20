@@ -8,13 +8,8 @@ while producing machine-checkable statements and proofs. Use the Docs, Verso,
 and available theorem-map links in the Books and Papers tables below to
 explore each formalization.
 
-Many ReasBook projects are initialized with M2F and then checked and refined
-in Lean. M2F and Quokka have complementary roles:
-
-| Project | Role | Access |
-| --- | --- | --- |
-| M2F | Algorithm and research method for formalizing mathematical literature | [Paper](https://arxiv.org/abs/2602.17016) · [Project and examples](https://github.com/optsuite/M2F) |
-| Quokka | Engineering implementation of M2F and its public online service | [Use on ReasLab](https://quokka.reaslab.io/); source code will be open-sourced later |
+Try [Quokka](https://quokka.reaslab.io/), our online system for automatically
+formalizing mathematical textbooks and research papers into Lean 4 projects.
 
 ## Toolchain Branches
 
@@ -231,8 +226,8 @@ metadata, validation, and pull-request rules.
 </tr>
 <tr>
 <td rowspan="3" scope="rowgroup">Autoformalization and theorem proving</td>
-<td><a href="https://github.com/optsuite/M2F">M2F</a></td>
-<td>A toolkit for converting natural-language mathematical textbooks into formalization-ready Lean projects.</td>
+<td><a href="https://quokka.reaslab.io/">Quokka</a></td>
+<td>An online system for automatically formalizing mathematical textbooks and research papers into Lean 4 projects.</td>
 </tr>
 <tr>
 <td><a href="https://github.com/chenyili0818/SITA">SITA</a></td>
