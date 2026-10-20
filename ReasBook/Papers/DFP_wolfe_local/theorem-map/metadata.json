@@ -1,35 +1,37 @@
 {
-  "edges": 6624,
-  "generation": {
-    "compiledItemCount": 2271,
-    "dependencyCoverage": "partial",
-    "dependencyModel": "statement-and-proof-v1",
-    "extractorSha256": "289fb0f2033a900ed29169e757b3d19b4a38532d5d43c9279f1f0c4764b2daca",
-    "inventoryMode": "source-plus-compiled",
-    "mergedItemCount": 3402,
-    "mode": "lean-environment",
-    "moduleOwnership": [
-      "DFP_wolfe_local",
-      "DFPWolfe",
-      "ReasLib"
-    ],
-    "rawDeclarationCount": 5702,
-    "rootModule": "DFP_wolfe_local.Paper",
-    "sdkSha256": "962421c7ab9227372ee813ac09ed8b8b60b4e1ad2397b2bc2f63d2ffa34f1cee",
-    "selection": "All public source-declared theorems/lemmas; dependencies are available for Paper.lean's compiled environment; definitions and private/generated helpers are contracted",
-    "sourceInventoryItemCount": 3402,
-    "sourceOnlyItemCount": 1131,
-    "sourceSha256": "b46788dae978318d914497546e0ff818315487566c1b1cb6091c2ef32c06a1d0"
-  },
-  "nodes": 3402,
+  "schemaVersion": 1,
   "project": {
     "branch": "v4.32.0",
-    "commit": "1a74e5e51ee05415c98410f9052ba371ec546b43",
+    "commit": "cbb72b50777d56c4664fe44b816aeafa36260207",
     "id": "DFP_wolfe_local",
     "kind": "papers",
     "repository": "https://github.com/optpku/ReasBook",
     "sourceRoot": "ReasBook/Papers/DFP_wolfe_local/",
     "title": "A Counterexample to Global Convergence of Classical DFP Under the Standard Strong Wolfe Conditions"
   },
-  "schemaVersion": 1
+  "nodes": 2565,
+  "edges": 7292,
+  "generation": {
+    "compiledItemCount": 2565,
+    "dependencyCoverage": "complete",
+    "dependencyModel": "statement-and-proof-v1",
+    "extractorSha256": "289fb0f2033a900ed29169e757b3d19b4a38532d5d43c9279f1f0c4764b2daca",
+    "inventoryMode": "source-plus-compiled",
+    "mergedItemCount": 2565,
+    "mode": "lean-environment",
+    "moduleOwnership": [
+      "DFP_wolfe_local",
+      "DFPWolfe",
+      "ReasLib"
+    ],
+    "rawDeclarationCount": 6628,
+    "rootModule": "DFP_wolfe_local.Paper",
+    "sdkSha256": "070d17c9cb59b3df9a7848d0550e89e0f6bd770a628d49d69fb588f416bf9bfe",
+    "selection": "Retained original-proof public theorem/lemma inventory, refreshed through compiled private proof bodies; v21 has a separate graph",
+    "sourceInventoryItemCount": 2565,
+    "sourceOnlyItemCount": 0,
+    "sourceSha256": "c75ab7c6be6e1b009338df0008e3212b1d9f261f932afc1772d128ad26331956",
+    "compiledExportSourceCommit": "d7c214e0201d6a5d7a1cbb0acaec712c41d30532",
+    "compiledExportSha256": "01b8179ed55821441ce0755a6af5f4e711e061fc4537c0d0ab130f8f45769dc7"
+  }
 }
