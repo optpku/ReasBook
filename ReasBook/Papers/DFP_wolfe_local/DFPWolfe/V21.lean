@@ -5,18 +5,12 @@ Authors: Zichen Wang
 -/
 module
 
-public import DFPWolfe.V21.PolarData
-public import DFPWolfe.V21.NormalizedMap
-public import DFPWolfe.V21.LimitingTwoCycle
+public import DFPWolfe.V21.Paper
 
 /-!
-# v21 polar construction: verified foundations
+# v21 polar construction
 
-This independent entry point exports the polar data in Section 3.1, the
-normalized alternating map in Section 3.2, and the limiting two-cycle family
-(`eq:polar-two-cycle`) of the October 9, 2026 v21 submission.
-
-The restoring drift, invariant tube, geometric separation, cutoff interpolation,
-and final v21 counterexample theorem are not proved by this entry point.
-The earlier center-manifold proof remains available through `DFPWolfe`.
+Compatibility entry for the complete v21 paper surface. The numbered results
+and source refinements are exported by `DFPWolfe.V21.Paper`. The original
+center-manifold proof remains available through `DFPWolfe.Paper`.
 -/

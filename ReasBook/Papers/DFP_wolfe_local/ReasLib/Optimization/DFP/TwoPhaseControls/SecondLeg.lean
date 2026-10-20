@@ -125,6 +125,13 @@ def recovered (ε p h : ℝ) : ℝ × ℝ :=
 def factors (ε p h : ℝ) : (ℝ × ℝ) × (ℝ × ℝ) × (ℝ × ℝ) :=
   (spectralFactors ε p h, gradientFactors ε p h, canonicalFactors ε p h)
 
+/-- Helper for cm-center-proposition: the removable second-stage package consists
+of its spectral, gradient, and canonical factor pairs. -/
+theorem factors_apply (ε p h : ℝ) :
+    factors ε p h =
+      (spectralFactors ε p h, gradientFactors ε p h, canonicalFactors ε p h) := by
+  rfl
+
 /-- The second-control preconditioned-gradient energy has the displayed removable factor. -/
 private lemma preconditionedEnergySecondControl
     (z : DFP.AbstractSecantStep (Fin 2)) (ε L H Q U G : ℝ)

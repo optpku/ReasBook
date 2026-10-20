@@ -1,19 +1,17 @@
 module
 
 public import DFPWolfe
-public import DFPWolfe.V21
+public import DFPWolfe.V21.Paper
 
 /-!
 # A counterexample to global convergence of classical DFP under the standard
 strong Wolfe conditions
 
-This module is the ReasBook entry point for the DFP Wolfe counterexample
-formalization. The independent `DFPWolfe.V21` entry point adds the verified
-foundations of the v21 polar construction; it does not export a complete v21
-counterexample proof. `DFPWolfe` exposes the complete paper-facing surface, including
-the all-dimensional counterexample with sharp one-half Hölder Hessian regularity,
-identity-initialized matrix `liminf` certificate, planar convergence under weak
-and strong Wolfe conditions, and degeneration for general secant iterations.
+This ReasBook entry preserves both complete proof routes. The original
+center-manifold construction is exported by `DFPWolfe.Paper`; the v21 prescribed
+polar construction, numbered results 1–8 and source refinements are exported by
+`DFPWolfe.V21.Paper`. The separate Section 6 interpolation retains its explicit
+disjoint-open-ball premise and does not assert a hatted Wolfe counterexample.
 -/
 
 public section

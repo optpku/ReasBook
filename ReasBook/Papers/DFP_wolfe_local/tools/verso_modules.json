@@ -54,8 +54,58 @@
       "module": "ReasLib.Optimization.DFP.Polar.TwoCycle",
       "title": "v21: limiting two-cycle family",
       "slug": "v21-limiting-two-cycle"
+    },
+    {
+      "module": "DFPWolfe.V21.Main",
+      "title": "v21 Theorem 1: complete polar counterexample",
+      "slug": "v21-main"
+    },
+    {
+      "module": "DFPWolfe.V21.IdentityInitialization",
+      "title": "v21 Corollary 2: identity initialization",
+      "slug": "v21-identity-initialization"
+    },
+    {
+      "module": "DFPWolfe.V21.IdentityQuantitative",
+      "title": "v21 Corollary 2: quantitative eigenvalue bounds",
+      "slug": "v21-identity-quantitative"
+    },
+    {
+      "module": "DFPWolfe.V21.PlanarConvergence",
+      "title": "v21 Theorem 3: planar convergence",
+      "slug": "v21-planar-convergence"
+    },
+    {
+      "module": "DFPWolfe.V21.PolarConstruction",
+      "title": "v21 Lemmas 4–6: continuation, geometry and interpolation",
+      "slug": "v21-polar-construction"
+    },
+    {
+      "module": "DFPWolfe.V21.SecantDegeneration",
+      "title": "v21 Lemma 7: general secant degeneration",
+      "slug": "v21-secant-degeneration"
+    },
+    {
+      "module": "DFPWolfe.V21.CenterManifold",
+      "title": "v21 Proposition 8: independent center-manifold recurrence",
+      "slug": "v21-center-manifold"
+    },
+    {
+      "module": "DFPWolfe.V21.CenterInterpolation",
+      "title": "v21 Section 6: conditional interpolation",
+      "slug": "v21-center-interpolation"
+    },
+    {
+      "module": "DFPWolfe.V21.SequenceProperties",
+      "title": "v21: comparisons on the same Wolfe witness",
+      "slug": "v21-sequence-properties"
+    },
+    {
+      "module": "DFPWolfe.V21.FullTurn",
+      "title": "v21: complete-turn distance on the same Wolfe witness",
+      "slug": "v21-full-turn"
     }
   ],
   "schemaVersion": 1,
-  "description": "The original eight center-manifold/convergence routes plus three independent v21 polar-foundation routes. Build all routes from one immutable source snapshot."
+  "description": "Preserve the original eight routes and three v21 foundation URLs; add the complete v21 numbered results and source refinements from the same immutable snapshot."
 }
