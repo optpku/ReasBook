@@ -1,0 +1,111 @@
+{
+  "manuscript": "October 9, 2026 v21 submission",
+  "numbering": "The eight numbered statements of the v21 manuscript, in source order. Source refinements are included as related declarations.",
+  "items": [
+    {
+      "id": "v21-main",
+      "label": "Theorem 1",
+      "title": "Strong Wolfe counterexample",
+      "section": "main",
+      "texLabel": "thm:main",
+      "mapping": "Exact numbered statement and linked supporting proof components. Includes same-witness sequence comparisons and complete-turn distance.",
+      "declarations": [
+        "DFPWolfe.V21.main",
+        "DFPWolfe.V21.not_globalWeakWolfeConvergenceAt",
+        "DFPWolfe.V21.not_levelSetGlobalWeakWolfeConvergenceAt",
+        "DFPWolfe.V21.planarCounterexampleFamilyWithSequenceProperties",
+        "DFPWolfe.V21.planarCounterexampleFamilyWithFullTurn",
+        "DFP.Polar.PlanarCounterexample.planarCounterexampleFamily"
+      ]
+    },
+    {
+      "id": "v21-identity",
+      "label": "Corollary 2",
+      "title": "Identity initialization",
+      "section": "main",
+      "texLabel": "cor:identity-initialization",
+      "mapping": "Exact numbered statement and linked supporting proof components. Includes the source proof’s precise eigenvalue Hessian and gradient-liminf bounds.",
+      "declarations": [
+        "DFPWolfe.V21.identityInitializationExplicit",
+        "DFPWolfe.V21.identityInitializationWithSource",
+        "DFPWolfe.V21.identityInitializationQuantitative"
+      ]
+    },
+    {
+      "id": "v21-convergence",
+      "label": "Theorem 3",
+      "title": "Planar convergence",
+      "section": "convergence",
+      "texLabel": "thm:planar-convergence",
+      "mapping": "Exact numbered statement and linked supporting proof components.",
+      "declarations": [
+        "DFPWolfe.V21.planarConvergenceCases",
+        "DFPWolfe.V21.planarStrongWolfeConvergence",
+        "DFPWolfe.V21.planarConvergenceOfC3"
+      ]
+    },
+    {
+      "id": "v21-continuation",
+      "label": "Lemma 4",
+      "title": "Continuation and invariant tube",
+      "section": "construction",
+      "texLabel": "lem:polar-continuation",
+      "mapping": "Exact numbered statement and linked supporting proof components.",
+      "declarations": [
+        "DFPWolfe.V21.polarContinuation",
+        "DFP.Polar.Continuation.polarContinuation"
+      ]
+    },
+    {
+      "id": "v21-geometry",
+      "label": "Lemma 5",
+      "title": "Polar geometry and separation",
+      "section": "construction",
+      "texLabel": "lem:polar-geometry",
+      "mapping": "Exact numbered statement and linked supporting proof components.",
+      "declarations": [
+        "DFPWolfe.V21.polarGeometry",
+        "DFP.Polar.PointGeometry.polarPointGeometry"
+      ]
+    },
+    {
+      "id": "v21-interpolation",
+      "label": "Lemma 6",
+      "title": "Explicit disjoint interpolation",
+      "section": "construction",
+      "texLabel": "lem:polar-interpolation",
+      "mapping": "Exact numbered statement and linked supporting proof components.",
+      "declarations": [
+        "DFPWolfe.V21.polarInterpolation",
+        "DFPWolfe.V21.polarInterpolationConclusions",
+        "DFP.Polar.ActualObjective.polarObjectiveEstimates"
+      ]
+    },
+    {
+      "id": "v21-degeneration",
+      "label": "Lemma 7",
+      "title": "General planar secant degeneration",
+      "section": "convergence",
+      "texLabel": "lem:planar-degeneration",
+      "mapping": "Exact numbered statement and linked supporting proof components. Includes the uniform secant-coordinate criterion consumed by the convergence proof.",
+      "declarations": [
+        "DFPWolfe.V21.planarDegeneration",
+        "DFP.PlanarConvergence.SecantDegeneration.planarDegeneration",
+        "DFP.PlanarConvergence.secantSequenceDegeneration"
+      ]
+    },
+    {
+      "id": "v21-center",
+      "label": "Proposition 8",
+      "title": "Independent center-manifold recurrence",
+      "section": "construction",
+      "texLabel": "cm-center-proposition",
+      "mapping": "Exact numbered statement and linked supporting proof components. The additional Section 6 interpolation remains conditional on disjoint open balls and eventual quadratic support radii; it does not assert hatted Wolfe conditions.",
+      "declarations": [
+        "DFPWolfe.V21.CenterManifold.centerProposition",
+        "DFPWolfe.V21.CenterManifold.centerManifoldAsymptotics",
+        "DFPWolfe.V21.CenterInterpolation.centerManifoldConditionalInterpolation"
+      ]
+    }
+  ]
+}

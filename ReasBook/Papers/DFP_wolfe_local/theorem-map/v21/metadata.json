@@ -1,28 +1,30 @@
 {
-  "edges": 321,
+  "edges": 11780,
   "generation": {
-    "compiledItemCount": 154,
+    "compiledItemCount": 4052,
     "dependencyCoverage": "complete",
     "dependencyModel": "statement-and-proof-v1",
     "extractorSha256": "289fb0f2033a900ed29169e757b3d19b4a38532d5d43c9279f1f0c4764b2daca",
-    "mergedItemCount": 154,
+    "mergedItemCount": 4052,
     "mode": "lean-environment",
-    "rootModule": "DFPWolfe.V21",
-    "scope": "v21 polar foundations only; full v21 counterexample not yet proved",
-    "sourceInventoryItemCount": 154,
+    "rawDeclarationCount": 9609,
+    "rootModule": "DFPWolfe.V21.Paper",
+    "scope": "Complete v21 numbered results 1–8 and source refinements; Section 6 interpolation retains its explicit disjoint-ball premise. Includes reused infrastructure in the v21 import closure.",
+    "sourceInventoryItemCount": 4052,
+    "sourceModuleCount": 477,
     "sourceOnlyItemCount": 0,
-    "sourceSha256": "917b372227198207e448704bd3f54f57057f632af280b39c49ad1c920430c580",
-    "sourceSnapshot": "c788aa3dabd6cac78f4ec8b2c9c1e897cbc1188f"
+    "sourceSha256": "c48c25586099fb0fa2664aa05ca5b3b22743e156b569c06f8288d69907fd0727",
+    "sourceSnapshot": "28f062c4d545c579a794a50593cf144b31c51cd5"
   },
-  "nodes": 154,
+  "nodes": 4052,
   "project": {
     "branch": "v4.32.0",
-    "commit": "0b896a150c0dd5be99294c4620c9f1300f67d76a",
+    "commit": "d7c214e0201d6a5d7a1cbb0acaec712c41d30532",
     "id": "DFP_wolfe_local",
     "kind": "papers",
     "repository": "https://github.com/optpku/ReasBook",
     "sourceRoot": "ReasBook/Papers/DFP_wolfe_local/",
-    "title": "DFP v21: polar foundations (partial proof)"
+    "title": "DFP v21: complete polar proof and source refinements"
   },
   "schemaVersion": 1
 }
