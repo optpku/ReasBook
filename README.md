@@ -161,16 +161,21 @@ questions.
 
 | Formalization | Source | Contributors | Resources |
 | --- | :---: | --- | --- |
-| **[A Counterexample to Global Convergence of Classical DFP Under the Standard Strong Wolfe Conditions](ReasBook/Papers/DFP_wolfe_local/)**<br><sub>Benqi Liu, Zichen Wang, Zaiwen Wen, Liwei Zhang, and Yaxiang Yuan</sub> | [`v4.32.0`](https://github.com/optpku/ReasBook/tree/v4.32.0/ReasBook/Papers/DFP_wolfe_local/)<br>[v21 polar foundations](https://github.com/optpku/ReasBook/tree/v4.32.0/ReasBook/Papers/DFP_wolfe_local/DFPWolfe/V21/) | Zichen Wang | [Docs](https://optpku.github.io/ReasBook/sites/dfp_wolfe_local/docs/) &#124; [Verso](https://optpku.github.io/ReasBook/sites/dfp_wolfe_local/pages/) &#124; [Original theorem map](https://optpku.github.io/ReasBook/theorem-maps/papers/dfp_wolfe_local/) &#124; [v21 theorem map](https://optpku.github.io/ReasBook/theorem-maps/papers/dfp_wolfe_local/v21/) &#124; [arXiv](https://arxiv.org/html/2608.21708v1) |
+| **[A Counterexample to Global Convergence of Classical DFP Under the Standard Strong Wolfe Conditions](ReasBook/Papers/DFP_wolfe_local/)**<br><sub>Benqi Liu, Zichen Wang, Zaiwen Wen, Liwei Zhang, and Yaxiang Yuan</sub> | [`v4.32.0`](https://github.com/optpku/ReasBook/tree/v4.32.0/ReasBook/Papers/DFP_wolfe_local/)<br>[v21 complete polar proof](https://github.com/optpku/ReasBook/tree/v4.32.0/ReasBook/Papers/DFP_wolfe_local/DFPWolfe/V21/) | Zichen Wang | [Docs](https://optpku.github.io/ReasBook/sites/dfp_wolfe_local/docs/) &#124; [Verso](https://optpku.github.io/ReasBook/sites/dfp_wolfe_local/pages/) &#124; [Original theorem map](https://optpku.github.io/ReasBook/theorem-maps/papers/dfp_wolfe_local/) &#124; [v21 theorem map](https://optpku.github.io/ReasBook/theorem-maps/papers/dfp_wolfe_local/v21/) &#124; [arXiv](https://arxiv.org/html/2608.21708v1) |
 | **[A Fixed-Penalty Linearized Augmented Lagrangian Method with Classical Multiplier Updates](ReasBook/Papers/TR_LALM_theory/)**<br><sub>Benqi Liu, Kangkang Deng, Zichen Wang, and Zaiwen Wen</sub> | [`v4.32.2`](https://github.com/optpku/ReasBook/tree/v4.32.2/ReasBook/Papers/TR_LALM_theory/) | Zichen Wang, Zaiwen Wen | [Docs](https://optpku.github.io/ReasBook/docs/ReasBook/Papers/TR_LALM_theory/Paper.html) &#124; [Verso](https://optpku.github.io/ReasBook/sites/tr_lalm_theory/pages/) &#124; [Theorem map](https://optpku.github.io/ReasBook/theorem-maps/papers/tr_lalm_theory/) |
 | **[The Minimum Q-Order of BFGS with Exact Line Search Is One](ReasBook/Papers/BFGSMinimumQOrder_Liu_2026/)**<br><sub>Benqi Liu, Chenyi Li, and Zaiwen Wen (2026)</sub> | [`v4.32.2`](https://github.com/optpku/ReasBook/tree/v4.32.2/ReasBook/Papers/BFGSMinimumQOrder_Liu_2026/) | Chenyi Li | Source only (documentation pending) |
 | **[Technical note: a counterexample to the Rockafellar sum conjecture on c₀](ReasBook/Papers/RockafellarSum_2026/)**<br><sub>Junyu Zhang, Jinbiao Chen, Zichen Wang, Benqi Liu, and Zaiwen Wen (2026)</sub> | [`v4.32.0`](https://github.com/optpku/ReasBook/tree/v4.32.0/ReasBook/Papers/RockafellarSum_2026/) | Zichen Wang | [Note PDF](https://github.com/optpku/ReasBook/blob/v4.32.0/ReasBook/Papers/RockafellarSum_2026/note/rockafellar_sum_technical_note.pdf) · [LaTeX](https://github.com/optpku/ReasBook/blob/v4.32.0/ReasBook/Papers/RockafellarSum_2026/note/rockafellar_sum_technical_note.tex) |
 | **[The multiplier step size of two-block ADMM: convergence and counterexamples](ReasBook/Papers/glowinski_admm_counterexample/)**<br><sub>2026</sub> | [`v4.32.0`](https://github.com/optpku/ReasBook/tree/v4.32.0/ReasBook/Papers/glowinski_admm_counterexample/) | Qiming Dai | [Docs](https://optpku.github.io/ReasBook/sites/glowinski_admm_counterexample/docs/) &#124; [Verso](https://optpku.github.io/ReasBook/sites/glowinski_admm_counterexample/pages/) &#124; [Theorem map](https://optpku.github.io/ReasBook/theorem-maps/papers/glowinski_admm_counterexample/) |
 
-The DFP source keeps the completed center-manifold proof alongside the separate
-[v21 polar foundations](https://github.com/optpku/ReasBook/tree/v4.32.0/ReasBook/Papers/DFP_wolfe_local/DFPWolfe/V21/). The v21 counterexample proof remains
-in progress; the Docs, Verso and theorem-map links above currently serve the
-earlier proof. The [version comparison](https://github.com/optpku/ReasBook/tree/v4.32.0/ReasBook/Papers/DFP_wolfe_local/#proof-versions) records the coverage of each route.
+The DFP source preserves two complete proof routes: the original center-manifold
+construction and the [v21 polar construction](https://github.com/optpku/ReasBook/tree/v4.32.0/ReasBook/Papers/DFP_wolfe_local/DFPWolfe/V21/).
+The v21 entry covers numbered results 1–8, quantitative identity initialization
+and comparisons on the same Wolfe witness. Its independent Section 6 interpolation
+retains the manuscript's disjoint-ball premise. Both theorem maps have a paper-numbered
+view and a Lean declaration view. The [version comparison](https://github.com/optpku/ReasBook/tree/v4.32.0/ReasBook/Papers/DFP_wolfe_local/#proof-versions)
+records their coverage. Updated source and graph assets are released separately
+from the live Docs and Verso site; the live v21 map may still show the earlier foundations
+until the next website release.
 
 ### Other Formalized Papers
 
