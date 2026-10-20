@@ -43,7 +43,7 @@ bundle hashes, site-tree hashes, sizes, and projection-policy hash to one
 The Pages projection shares repeated Verso head assets and compacts opaque
 syntax-highlighting handles. Highlighting groups, prose, source text, links,
 and every retained API page remain unchanged. The production profile reserves
-30 MB below GitHub's 1 GB site limit.
+headroom below GitHub's 1 GB site limit.
 
 ## Configuration
 
@@ -228,7 +228,7 @@ workflow uses GitHub's Release and per-asset verification commands,
 independently checks the tag target,
 archive/manifest/spec/ReleaseSet bindings, and recomputes the policy digest
 from its trusted checked-out profile. It enforces the compressed,
-180,000-archive-member, 920 MB site, and 60,000-file operational budgets before
+180,000-archive-member, configured site-size, and 60,000-file operational budgets before
 extraction, plus an independent 1 GB published-site hard gate.
 Local packaging and acceptance load the same artifact policy, so these limits
 cannot first appear as a remote-only rejection. It has no full archive and
