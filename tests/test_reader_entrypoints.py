@@ -62,7 +62,10 @@ class ReaderEntrypointsTests(unittest.TestCase):
                         path,
                         r"^(?:docs/ReasBook/(?:Books|Papers)/[^/]+/(?:Book|Paper)\.html"
                         r"|sites/[^/]+/(?:pages|docs)/"
-                        r"|theorem-maps/(?:books|papers)/[^/]+/(?:v[0-9]+/)?)$",
+                        r"|theorem-maps/(?:books|papers)/[^/]+/(?:v[0-9]+/)?(?:\?view=(?:paper|lean))?"
+                        r"|versions/v[0-9]+\.[0-9]+\.[0-9]+/"
+                        r"(?:docs/[A-Za-z0-9_]+/(?:[A-Za-z0-9_]+/)*[A-Za-z0-9_]+\.html"
+                        r"|(?:books|papers)/[^/]+/sections/[^/]+/))$",
                     )
             self.assertNotIn("https://optpku.github.io/ReasBook/)", text)
 
@@ -73,14 +76,21 @@ class ReaderEntrypointsTests(unittest.TestCase):
                 with self.subTest(language=language, paper=name):
                     project = {"kind": "papers", "name": name, "slug": name.lower()}
                     url = f"https://optpku.github.io/ReasBook/theorem-maps/papers/{name.lower()}/"
-                    row = next(line for line in original.splitlines() if line.startswith("| **[") and f"ReasBook/Papers/{name}/" in line)
-                    self.assertIn(url, row)
+                    lines = original.splitlines()
+                    index = next(i for i, line in enumerate(lines) if line.startswith("| **[") and f"ReasBook/Papers/{name}/" in line)
+                    end = index + 1
+                    while end < len(lines) and lines[end].startswith("| ↳ **"):
+                        end += 1
+                    block = "\n".join(lines[index:end])
+                    self.assertIn(url, block)
                     self.assertIn(url, resource_cell(project, language=language))
                     with tempfile.TemporaryDirectory() as temp:
                         readme = Path(temp) / filename
                         readme.write_text(original, encoding="utf-8")
                         update_resource_cells(readme, {("papers", name): project}, language=language)
                         self.assertIn(url, readme.read_text(encoding="utf-8"))
+                        if end > index + 1:
+                            self.assertIn(block, readme.read_text(encoding="utf-8"))
 
     def test_rejects_symlinked_catalog_outside_site(self):
         with tempfile.TemporaryDirectory() as temp:
