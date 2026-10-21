@@ -35,7 +35,7 @@
       "id": "v21-convergence",
       "label": "Theorem 3",
       "title": "Planar convergence",
-      "section": "convergence",
+      "section": "main",
       "texLabel": "thm:planar-convergence",
       "mapping": "Exact numbered statement and linked supporting proof components.",
       "declarations": [

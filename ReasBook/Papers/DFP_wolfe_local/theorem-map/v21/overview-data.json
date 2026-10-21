@@ -190,7 +190,7 @@
       "label": "Theorem 3",
       "title": "Planar convergence",
       "type": "Theorem",
-      "section": "convergence",
+      "section": "main",
       "file": "DFPWolfe/V21/PlanarConvergence.lean",
       "line": 100,
       "declaration": "DFPWolfe.V21.planarConvergenceCases",
