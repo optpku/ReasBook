@@ -253,18 +253,21 @@ class RepositoryScriptTests(unittest.TestCase):
         self.assertIn("尚未发布 Verso", chinese_resource)
         self.assertNotIn("TBD", chinese_resource)
 
-    def test_unpublished_admm_resources_stay_pending_on_regeneration(self) -> None:
+    def test_published_admm_resources_keep_real_module_routes_on_regeneration(self) -> None:
         project = {
             "kind": "papers",
             "name": "glowinski_admm_counterexample",
             "slug": "glowinski_admm_counterexample",
         }
         projects = {("papers", project["name"]): project}
-        for language, pending in (("en", "pending publication"), ("zh-CN", "待发布")):
+        base = "https://reasbook.reaslab.io/artifacts/projects/glowinski_admm_counterexample/"
+        for language in ("en", "zh-CN"):
             with self.subTest(language=language), tempfile.TemporaryDirectory() as temp:
                 resources = update_readme.resource_cell(project, language=language)
-                self.assertIn(pending, resources)
-                self.assertNotIn("https://", resources)
+                self.assertIn(base + "docs/ReasBook/glowinski_admm_counterexample/Paper.html", resources)
+                self.assertIn(base + "glowinski_admm_counterexample/paper/", resources)
+                self.assertIn(base + "theorem-maps/papers/glowinski_admm_counterexample/", resources)
+                self.assertIn("https://reasbook.reaslab.io/review/books/glowinski_admm_counterexample/", resources)
                 readme = Path(temp) / "README.md"
                 source = "https://github.com/optpku/ReasBook/tree/v4.32.0/ReasBook/Papers/glowinski_admm_counterexample/"
                 readme.write_text(
@@ -276,10 +279,29 @@ class RepositoryScriptTests(unittest.TestCase):
                 repaired = readme.read_text()
                 self.assertIn(source, repaired)
                 self.assertIn("Qiming Dai", repaired)
-                self.assertIn(pending, repaired)
+                self.assertIn(resources, repaired)
                 self.assertNotIn("invalid.example", repaired)
                 self.assertEqual(update_readme.update_resource_cells(
                     readme, projects, language=language), 0)
+
+    def test_regeneration_preserves_specific_dfp_proof_routes(self) -> None:
+        project = {"kind": "papers", "name": "DFP_wolfe_local", "slug": "dfp_wolfe_local"}
+        for filename, language in (("README.md", "en"), ("README.zh-CN.md", "zh-CN")):
+            with self.subTest(language=language), tempfile.TemporaryDirectory() as temp:
+                text = (ROOT / filename).read_text()
+                rows = "\n".join(line for line in text.splitlines() if "ReasBook/Papers/DFP_wolfe_local/" in line) + "\n"
+                self.assertEqual(len(rows.splitlines()), 3)
+                self.assertIn("DFPWolfe/Paper.html", rows)
+                self.assertIn("DFPWolfe/V21/Paper.html", rows)
+                self.assertIn("/sections/main-theorems/", rows)
+                self.assertIn("/sections/v21-main/", rows)
+                self.assertIn("/dfp_wolfe_local/v21/?view=paper", rows)
+                self.assertNotIn("optpku.github.io", rows)
+                readme = Path(temp) / filename
+                readme.write_text(rows)
+                self.assertEqual(update_readme.update_resource_cells(
+                    readme, {("papers", "DFP_wolfe_local"): project}, language=language), 0)
+                self.assertEqual(readme.read_text(), rows)
 
     def test_public_readmes_keep_build_details_out_of_homepage(self) -> None:
         english = (ROOT / "README.md").read_text(encoding="utf-8")

@@ -34,6 +34,7 @@ PUBLISHED_DOCS = {
     ("books", "RiemannSurfaces_Forster_1981"): "ReasBook/RiemannSurfaces_Forster_1981/Book.html",
     ("papers", "BFGSMinimumQOrder_Liu_2026"): "ReasBook/Paper.html",
     ("papers", "DFP_wolfe_local"): "ReasBook/DFP_wolfe_local/Paper.html",
+    ("papers", "glowinski_admm_counterexample"): "ReasBook/glowinski_admm_counterexample/Paper.html",
     ("papers", "OnSomeLocalRings_Maassaran_2025"): "ReasBook/OnSomeLocalRings_Maassaran_2025/Paper.html",
     ("papers", "RockafellarSum_2026"): "ReasBook/RockafellarSum_2026/Paper.html",
     ("papers", "SmoothMinimization_Nesterov_2004"): "ReasBook/SmoothMinimization_Nesterov_2004/Paper.html",
@@ -43,7 +44,10 @@ PUBLISHED_THEOREM_MAPS = set(PUBLISHED_DOCS) - {
     ("books", "IntegerProgramming_Conforti_2014"),
     ("papers", "RockafellarSum_2026"),
 }
-UNPUBLISHED_DOCUMENTATION = {("papers", "glowinski_admm_counterexample")}
+PUBLISHED_VERSO = {
+    ("papers", "glowinski_admm_counterexample"): "glowinski_admm_counterexample/paper/",
+}
+UNPUBLISHED_DOCUMENTATION: set[tuple[str, str]] = set()
 README_LANGUAGES = {
     "README.md": "en",
     "README.zh-CN.md": "zh-CN",
@@ -83,7 +87,8 @@ def resource_cell(project: dict[str, str], *, language: str = "en") -> str:
 
     pieces = [f"[{labels['docs']}]({docs_href})"]
     if name not in NO_VERSO_PROJECTS:
-        pieces.append(f"[Verso]({project_base}/)")
+        reading_route = PUBLISHED_VERSO.get((kind, name), "")
+        pieces.append(f"[Verso]({project_base}/{reading_route})")
     else:
         pieces.append(labels["verso_unpublished"])
 

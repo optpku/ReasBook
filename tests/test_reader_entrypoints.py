@@ -71,17 +71,22 @@ class ReaderEntrypointsTests(unittest.TestCase):
             self.assertNotIn("https://reasbook.reaslab.io/ReasBook", text)
             self.assertNotIn("https://reasbook-reviewer.reaslab.io", text)
             for path in re.findall(r"https://reasbook[.]reaslab[.]io([^\s)\[\]<>]*)", text):
-                self.assertRegex(path, r"^(?:/?|/review/(?:books/[^/]+/)?|/artifacts/(?:projects/[^/]+/(?:docs/ReasBook/.+[.]html|theorem-maps/(?:books|papers)/[^/]+/)?)?)$")
+                self.assertRegex(
+                    path,
+                    r"^(?:/?|/review/(?:books/[^/]+/)?|/artifacts/(?:projects/[^/]+/(?:"
+                    r"docs/ReasBook/.+[.]html|(?:books|papers)/[^/]+/(?:sections/[^/]+/)?"
+                    r"|glowinski_admm_counterexample/paper/"
+                    r"|theorem-maps/(?:books|papers)/[^/]+/(?:v[0-9]+/)?(?:\?view=(?:paper|lean))?)?)?)$",
+                )
 
     def test_published_paper_maps_survive_bilingual_readme_regeneration(self):
         for filename, language in (("README.md", "en"), ("README.zh-CN.md", "zh-CN")):
             original = (ROOT / filename).read_text(encoding="utf-8")
-            for name in ("DFP_wolfe_local", "TR_LALM_theory"):
+            for name in ("DFP_wolfe_local", "TR_LALM_theory", "glowinski_admm_counterexample"):
                 with self.subTest(language=language, paper=name):
                     project = {"kind": "papers", "name": name, "slug": name.lower()}
-                    url = ("https://optpku.github.io/ReasBook/theorem-maps/papers/dfp_wolfe_local/"
-                           if name == "DFP_wolfe_local" else
-                           "https://reasbook.reaslab.io/artifacts/projects/tr_lalm_theory/theorem-maps/papers/tr_lalm_theory/")
+                    url = (f"https://reasbook.reaslab.io/artifacts/projects/{name.lower()}/"
+                           f"theorem-maps/papers/{name.lower()}/")
                     lines = original.splitlines()
                     index = next(i for i, line in enumerate(lines) if line.startswith("| **[") and f"ReasBook/Papers/{name}/" in line)
                     end = index + 1
@@ -121,6 +126,7 @@ class ReaderEntrypointsTests(unittest.TestCase):
         for name, entry in (
             ("BFGSMinimumQOrder_Liu_2026", "ReasBook/Paper.html"),
             ("TR_LALM_theory", "ReasBook/TR_LALM_theory.html"),
+            ("glowinski_admm_counterexample", "ReasBook/glowinski_admm_counterexample/Paper.html"),
         ):
             with self.subTest(project=name):
                 resource = resource_cell({"kind": "papers", "name": name, "slug": name.lower()})
