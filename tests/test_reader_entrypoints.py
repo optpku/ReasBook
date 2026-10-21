@@ -68,14 +68,25 @@ class ReaderEntrypointsTests(unittest.TestCase):
                         r"|(?:books|papers)/[^/]+/sections/[^/]+/))$",
                     )
             self.assertNotIn("https://optpku.github.io/ReasBook/)", text)
+            self.assertNotIn("https://reasbook.reaslab.io/ReasBook", text)
+            self.assertNotIn("https://reasbook-reviewer.reaslab.io", text)
+            for path in re.findall(r"https://reasbook[.]reaslab[.]io([^\s)\[\]<>]*)", text):
+                self.assertRegex(
+                    path,
+                    r"^(?:/?|/review/(?:books/[^/]+/)?|/artifacts/(?:projects/[^/]+/(?:"
+                    r"docs/ReasBook/.+[.]html|(?:books|papers)/[^/]+/(?:sections/[^/]+/)?"
+                    r"|glowinski_admm_counterexample/paper/"
+                    r"|theorem-maps/(?:books|papers)/[^/]+/(?:v[0-9]+/)?(?:\?view=(?:paper|lean))?)?)?)$",
+                )
 
     def test_published_paper_maps_survive_bilingual_readme_regeneration(self):
         for filename, language in (("README.md", "en"), ("README.zh-CN.md", "zh-CN")):
             original = (ROOT / filename).read_text(encoding="utf-8")
-            for name in ("DFP_wolfe_local", "TR_LALM_theory"):
+            for name in ("DFP_wolfe_local", "TR_LALM_theory", "glowinski_admm_counterexample"):
                 with self.subTest(language=language, paper=name):
                     project = {"kind": "papers", "name": name, "slug": name.lower()}
-                    url = f"https://optpku.github.io/ReasBook/theorem-maps/papers/{name.lower()}/"
+                    url = (f"https://reasbook.reaslab.io/artifacts/projects/{name.lower()}/"
+                           f"theorem-maps/papers/{name.lower()}/")
                     lines = original.splitlines()
                     index = next(i for i, line in enumerate(lines) if line.startswith("| **[") and f"ReasBook/Papers/{name}/" in line)
                     end = index + 1
@@ -83,7 +94,8 @@ class ReaderEntrypointsTests(unittest.TestCase):
                         end += 1
                     block = "\n".join(lines[index:end])
                     self.assertIn(url, block)
-                    self.assertIn(url, resource_cell(project, language=language))
+                    if name != "DFP_wolfe_local":
+                        self.assertIn(url, resource_cell(project, language=language))
                     with tempfile.TemporaryDirectory() as temp:
                         readme = Path(temp) / filename
                         readme.write_text(original, encoding="utf-8")
@@ -91,6 +103,35 @@ class ReaderEntrypointsTests(unittest.TestCase):
                         self.assertIn(url, readme.read_text(encoding="utf-8"))
                         if end > index + 1:
                             self.assertIn(block, readme.read_text(encoding="utf-8"))
+
+    def test_regeneration_keeps_original_papers_and_source_notes(self):
+        projects = {
+            ("papers", name): {"kind": "papers", "name": name, "slug": name.lower()}
+            for name in ("DFP_wolfe_local", "RockafellarSum_2026", "BFGSMinimumQOrder_Liu_2026")
+        }
+        for filename, language in (("README.md", "en"), ("README.zh-CN.md", "zh-CN")):
+            with self.subTest(language=language), tempfile.TemporaryDirectory() as temp:
+                original = (ROOT / filename).read_text(encoding="utf-8")
+                readme = Path(temp) / filename
+                readme.write_text(original, encoding="utf-8")
+                update_resource_cells(readme, projects, language=language)
+                regenerated = readme.read_text(encoding="utf-8")
+                self.assertEqual(regenerated, original)
+                self.assertIn("https://arxiv.org/html/2608.21708v1", regenerated)
+                self.assertIn("note/rockafellar_sum_technical_note.pdf", regenerated)
+                self.assertIn("note/rockafellar_sum_technical_note.tex", regenerated)
+                self.assertEqual(update_resource_cells(readme, projects, language=language), 0)
+
+    def test_published_docs_use_the_actual_module_entry_points(self):
+        for name, entry in (
+            ("BFGSMinimumQOrder_Liu_2026", "ReasBook/Paper.html"),
+            ("TR_LALM_theory", "ReasBook/TR_LALM_theory.html"),
+            ("glowinski_admm_counterexample", "ReasBook/glowinski_admm_counterexample/Paper.html"),
+        ):
+            with self.subTest(project=name):
+                resource = resource_cell({"kind": "papers", "name": name, "slug": name.lower()})
+                self.assertIn(f"/projects/{name.lower()}/docs/{entry}", resource)
+                self.assertNotIn("/sites/", resource)
 
     def test_rejects_symlinked_catalog_outside_site(self):
         with tempfile.TemporaryDirectory() as temp:

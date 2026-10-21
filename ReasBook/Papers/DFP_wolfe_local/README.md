@@ -1,5 +1,7 @@
 # A Counterexample to Global Convergence of Classical DFP Under the Standard Strong Wolfe Conditions
 
+[Reviewer: deployed center-manifold snapshot](https://reasbook.reaslab.io/review/books/dfp_wolfe_local/)
+
 This is a catalog link folder on `main`. The `v4.32.0` source preserves two
 complete proof routes: the original center-manifold construction and the v21
 prescribed polar construction.

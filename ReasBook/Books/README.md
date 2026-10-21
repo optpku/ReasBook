@@ -3,9 +3,9 @@
 The `main` branch contains catalog link folders, not duplicate Lean sources.
 Open a title below and use its source link to jump to the matching version branch.
 
-Book theorem maps are temporarily deferred while their statements and
-dependencies are audited. The published map is currently the TR-LALM paper
-map in the papers catalog.
+Open the [online catalog](https://reasbook.reaslab.io/artifacts/) for published
+Docs, Verso and available theorem maps, or use
+[ReasBook Reviewer](https://reasbook.reaslab.io/review/) to read and review.
 
 | Formalization | Source |
 | --- | :---: |
