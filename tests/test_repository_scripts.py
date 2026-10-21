@@ -235,7 +235,7 @@ class RepositoryScriptTests(unittest.TestCase):
             }
         )
         self.assertEqual(linked_resource.count("&#124;"), 3)
-        self.assertIn("https://reasbook-reviewer.reaslab.io/ReasBook/books/analysis2_tao_2022/", linked_resource)
+        self.assertIn("https://reasbook.reaslab.io/review/books/analysis2_tao_2022/", linked_resource)
         theorem_resource = update_readme.resource_cell(
             {
                 "kind": "papers",
@@ -252,6 +252,34 @@ class RepositoryScriptTests(unittest.TestCase):
         chinese_resource = update_readme.resource_cell(no_verso, language="zh-CN")
         self.assertIn("尚未发布 Verso", chinese_resource)
         self.assertNotIn("TBD", chinese_resource)
+
+    def test_unpublished_admm_resources_stay_pending_on_regeneration(self) -> None:
+        project = {
+            "kind": "papers",
+            "name": "glowinski_admm_counterexample",
+            "slug": "glowinski_admm_counterexample",
+        }
+        projects = {("papers", project["name"]): project}
+        for language, pending in (("en", "pending publication"), ("zh-CN", "待发布")):
+            with self.subTest(language=language), tempfile.TemporaryDirectory() as temp:
+                resources = update_readme.resource_cell(project, language=language)
+                self.assertIn(pending, resources)
+                self.assertNotIn("https://", resources)
+                readme = Path(temp) / "README.md"
+                source = "https://github.com/optpku/ReasBook/tree/v4.32.0/ReasBook/Papers/glowinski_admm_counterexample/"
+                readme.write_text(
+                    "| **[ADMM](ReasBook/Papers/glowinski_admm_counterexample/)** | "
+                    f"[v4.32.0]({source}) | Qiming Dai | [Docs](https://invalid.example/) |\n"
+                )
+                self.assertEqual(update_readme.update_resource_cells(
+                    readme, projects, language=language), 1)
+                repaired = readme.read_text()
+                self.assertIn(source, repaired)
+                self.assertIn("Qiming Dai", repaired)
+                self.assertIn(pending, repaired)
+                self.assertNotIn("invalid.example", repaired)
+                self.assertEqual(update_readme.update_resource_cells(
+                    readme, projects, language=language), 0)
 
     def test_public_readmes_keep_build_details_out_of_homepage(self) -> None:
         english = (ROOT / "README.md").read_text(encoding="utf-8")
@@ -1151,6 +1179,101 @@ class RepositoryScriptTests(unittest.TestCase):
             self.assertIn("IncompleteImports.section02_part1", manifest)
             self.assertIn("IncompleteImports.section02_part2", manifest)
 
+    def test_gen_sections_keeps_excluded_vogel_book_source_only(self) -> None:
+        generator = ROOT / "ReasBookWeb" / "scripts" / "gen_sections.py"
+        with tempfile.TemporaryDirectory() as temp:
+            repo = Path(temp) / "checkout"
+            lean_root = repo / "ReasBook"
+            web_root = repo / "ReasBookWeb"
+            vogel = lean_root / "Books" / "ComputationalMethodsInverseProblems_Vogel_2002"
+            vogel.mkdir(parents=True)
+            (lean_root / "Papers").mkdir()
+            (vogel / "Book.lean").write_text("import Mathlib\n", encoding="utf-8")
+            (lean_root / "lakefile.lean").write_text(
+                "import Lake\nopen Lake DSL\nlean_lib Books where\n",
+                encoding="utf-8",
+            )
+            (web_root / "ReasBookSite").mkdir(parents=True)
+            result = subprocess.run(
+                [sys.executable, str(generator), "--repo-root", str(repo)],
+                cwd=repo, env={**os.environ, "REASBOOK_INCLUDE_PROJECTS": "books/ComputationalMethodsInverseProblems_Vogel_2002"},
+                capture_output=True, text=True, check=False,
+            )
+            self.assertEqual(result.returncode, 0, result.stderr)
+            readme = (vogel / "README.md").read_text(encoding="utf-8")
+            self.assertIn("Verso (TBD)", readme)
+            self.assertNotIn("Documentation](https://", readme)
+
+    def test_gen_sections_uses_nested_lake_source_directories_for_modules(self) -> None:
+        generator = ROOT / "ReasBookWeb" / "scripts" / "gen_sections.py"
+        with tempfile.TemporaryDirectory() as temp:
+            repo = Path(temp) / "checkout"
+            lean_root = repo / "ReasBook"
+            web_root = repo / "ReasBookWeb"
+            project = lean_root / "Papers" / "DFP_wolfe_local"
+            (project / "DFPWolfe").mkdir(parents=True)
+            (project / "ReasLib").mkdir()
+            (lean_root / "Papers").mkdir(exist_ok=True)
+            (lean_root / "Books").mkdir(exist_ok=True)
+            (web_root / "ReasBookSite").mkdir(parents=True)
+            (lean_root / "lakefile.lean").write_text(
+                "import Lake\nopen Lake DSL\n"
+                'lean_lib DFP_wolfe_ReasLib where\n  srcDir := "Papers/DFP_wolfe_local"\n  roots := #[`ReasLib]\n'
+                'lean_lib DFP_wolfe_DFPWolfe where\n  srcDir := "Papers/DFP_wolfe_local"\n  roots := #[`DFPWolfe]\n'
+                'lean_lib DFP_wolfe_local where\n  srcDir := "Papers"\n  roots := #[`DFP_wolfe_local.Paper]\n',
+                encoding="utf-8",
+            )
+            (project / "Paper.lean").write_text("import DFPWolfe.Paper\n", encoding="utf-8")
+            (project / "DFPWolfe" / "Main.lean").write_text("", encoding="utf-8")
+            (project / "DFPWolfe" / "Paper.lean").write_text("", encoding="utf-8")
+            (project / "ReasLib" / "Core.lean").write_text("", encoding="utf-8")
+            (project / "tools").mkdir()
+            (project / "tools/verso_modules.json").write_text(json.dumps({"modules": [
+                {"module": "DFPWolfe.Main", "title": "Main theorems", "slug": "main-theorems"},
+                {"module": "ReasLib.Core", "title": "Polar foundations", "slug": "polar-foundations"},
+            ]}))
+            result = subprocess.run(
+                [sys.executable, str(generator), "--repo-root", str(repo)],
+                cwd=repo, env={**os.environ, "REASBOOK_INCLUDE_PROJECTS": "papers/DFP_wolfe_local"},
+                capture_output=True, text=True, check=False,
+            )
+            self.assertEqual(result.returncode, 0, result.stderr)
+            manifest = json.loads((web_root / ".literate-modules.json").read_text())
+            modules = set(manifest["modules"])
+            self.assertIn("DFPWolfe.Main", modules)
+            self.assertIn("DFP_wolfe_local.Paper", modules)
+            self.assertNotIn("DFP_wolfe_local.DFPWolfe.Main", modules)
+            self.assertNotIn("Paper", modules)
+            routes = (web_root / "ReasBookSite/RouteTable.lean").read_text()
+            self.assertIn('"papers/dfp_wolfe_local/sections/main-theorems/" Book.DFPWolfe.Main', routes)
+            self.assertIn('"papers/dfp_wolfe_local/sections/polar-foundations/" Book.ReasLib.Core', routes)
+            landing = (web_root / "ReasBookSite/WorkPages/Papers/DFP_wolfe_local.lean").read_text()
+            self.assertNotIn("No separate reading sections", landing)
+
+    def test_gen_sections_discovers_imported_nested_paper_facades(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            repo = Path(temp)
+            project = repo / "ReasBook/Papers/Demo"
+            (project / "Results").mkdir(parents=True)
+            (repo / "ReasBook/Books").mkdir()
+            (repo / "ReasBook/lakefile.lean").write_text(
+                'import Lake\nlean_lib Demo where\n  srcDir := "Papers"\n')
+            (project / "Paper.lean").write_text('import Demo.Results\n')
+            (project / "Results.lean").write_text('public import Demo.Results.theorem_2_1_4\n')
+            (project / "Results/theorem_2_1_4.lean").write_text('import Mathlib\n')
+            (project / "Results/theorem_9_9_9.lean").write_text('import Mathlib\n')
+            result = subprocess.run(
+                [sys.executable, str(ROOT / "ReasBookWeb/scripts/gen_sections.py"), "--repo-root", str(repo)],
+                env={**os.environ, "REASBOOK_INCLUDE_PROJECTS": "papers/Demo"},
+                capture_output=True, text=True)
+            self.assertEqual(result.returncode, 0, result.stderr)
+            manifest = json.loads((repo / "ReasBookWeb/.literate-modules.json").read_text())
+            self.assertIn("Demo.Results.theorem_2_1_4", manifest["modules"])
+            self.assertNotIn("Demo.Results.theorem_9_9_9", manifest["modules"])
+            landing = (repo / "ReasBookWeb/ReasBookSite/WorkPages/Papers/Demo.lean").read_text()
+            self.assertNotIn("No separate reading sections", landing)
+            self.assertIn("Theorem 2.1.4", landing)
+
     def test_gen_sections_links_project_docs_by_lake_root(self) -> None:
         generator = ROOT / "ReasBookWeb" / "scripts" / "gen_sections.py"
         layouts = {
@@ -1191,6 +1314,11 @@ class RepositoryScriptTests(unittest.TestCase):
                         "import DemoTheory.Paper\n",
                         encoding="utf-8",
                     )
+                    # Nested compatibility wrappers must not claim the
+                    # project's canonical landing route a second time.
+                    nested = paper_root / "DFPWolfe"
+                    nested.mkdir()
+                    (nested / "Paper.lean").write_text("import DemoTheory.Paper\n", encoding="utf-8")
 
                 result = subprocess.run(
                     [sys.executable, str(generator), "--repo-root", str(repo)],

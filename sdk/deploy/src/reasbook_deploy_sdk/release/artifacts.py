@@ -30,7 +30,7 @@ from .results import (
     ReleaseSetManifest,
 )
 from .store import ReleaseLayout, ReleaseStore
-from .static_assets import deduplicate_verso_assets
+from .static_assets import compact_verso_metadata, deduplicate_verso_assets
 
 
 _SHARED_DOC_DIRECTORIES = {"declarations", "find", "src"}
@@ -169,6 +169,7 @@ class PagesSiteProjector:
             self._write_catalog_redirects(spec, staged, canonical_routes)
             self._write_historical_reading_redirects(spec, full_site, staged, canonical_routes)
             deduplicate_verso_assets(staged, spec.base_path)
+            compact_verso_metadata(staged, spec.base_path)
             self._close_internal_references(
                 spec,
                 full_site,
@@ -295,6 +296,12 @@ class PagesSiteProjector:
             candidates = (
                 Path(project.kind) / project.slug,
                 Path(project.slug),
+            ) + (
+                # DFPWolfe is an explicit paper library root whose Verso
+                # pages live beside the catalog project route.
+                (Path("dfpwolfe"),)
+                if project.project_id == "DFP_wolfe_local"
+                else ()
             )
             chosen: Path | None = None
             chosen_score = (-1, -1, -1)
@@ -483,6 +490,39 @@ class PagesSiteProjector:
         # entry establishes ownership, retain every ProjectSpec-derived shape.
         for relative in candidates:
             self._copy_if_present(source, destination, relative)
+        # Explicit Lake roots can own API pages outside the project's named
+        # namespace. Retain those real pages by their immutable source link.
+        source_prefix = f"/ReasBook/{kind_title}/{project_id}/"
+        pending = list(entry_candidates)
+        visited: set[Path] = set()
+        while pending:
+            relative = pending.pop()
+            if relative in visited:
+                continue
+            visited.add(relative)
+            page = source / relative
+            if page.is_symlink():
+                raise DeployExecutionError(f"release site contains a symlink: {page}")
+            if not page.is_file():
+                continue
+            parser = _ReferenceParser()
+            parser.feed(page.read_text(encoding="utf-8", errors="replace"))
+            owned = relative in entry_candidates or any(
+                re.search(r"/blob/[0-9a-f]{40}" + re.escape(source_prefix),
+                          unquote(urlsplit(value).path))
+                for tag, attribute, value in parser.references
+                if tag == "a" and attribute == "href"
+            )
+            if not owned:
+                continue
+            self._copy_if_present(source, destination, relative)
+            for _, _, value in parser.references:
+                url = urlsplit(urljoin("https://reasbook.invalid/" + relative.as_posix(), value))
+                linked = Path(unquote(url.path).lstrip("/"))
+                if (url.netloc == "reasbook.invalid" and linked.parts
+                        and linked.parts[0] == "docs" and ".." not in linked.parts
+                        and linked.suffix == ".html"):
+                    pending.append(linked)
         return entry_candidates[0]
 
     def _validate_capacity(self, total_bytes: int) -> None:
@@ -619,6 +659,7 @@ class PagesSiteProjector:
         origin = "https://reasbook.invalid"
         base_path = spec.base_path
         errors: list[str] = []
+        known_present: set[tuple[Path, bool]] = set()
         documents = sorted(pages_site.rglob("*.html"))
         for document in documents:
             parser = _ReferenceParser()
@@ -637,6 +678,7 @@ class PagesSiteProjector:
                     document_base,
                     value,
                     pages_site,
+                    known_present,
                 )
                 if missing is None:
                     continue
@@ -707,6 +749,7 @@ class PagesSiteProjector:
         document_base: str,
         value: str,
         pages_site: Path,
+        known_present: set[tuple[Path, bool]] | None = None,
     ) -> tuple[Path, Path] | None:
         reference = value.strip()
         if not reference or reference.startswith(
@@ -740,6 +783,11 @@ class PagesSiteProjector:
             raise DeployExecutionError(
                 f"Pages link escapes configured base path {base_path}: {value}"
             )
+        cache_key = (relative, path.endswith("/") and not root_request)
+        # Link closure only adds regular files to a private staging tree.
+        # Reuse positive containment/existence checks for repeated API links.
+        if known_present is not None and cache_key in known_present:
+            return None
         target = pages_site / relative
         if pages_site not in target.resolve(strict=False).parents:
             raise DeployExecutionError(
@@ -749,6 +797,8 @@ class PagesSiteProjector:
             target = target / "index.html"
             relative = relative / "index.html"
         if target.is_file():
+            if known_present is not None:
+                known_present.add(cache_key)
             return None
         return relative, target
 

@@ -290,7 +290,7 @@ PAPER_SECTION_TITLES = {
     },
 }
 
-TBD_BOOKS = {"IntegerProgramming_Conforti_2014"}
+TBD_BOOKS = {"IntegerProgramming_Conforti_2014", "ComputationalMethodsInverseProblems_Vogel_2002"}
 
 SKIP_STEMS = {"utils", "tactics", "scratch", "internal", "helper", "helpers"}
 
@@ -739,11 +739,52 @@ def paper_title(paper: str) -> str:
     return humanize_identifier(paper)
 
 
+@lru_cache(maxsize=None)
+def _lake_source_layout(source_root: Path) -> tuple[dict[tuple[str, ...], str], tuple[tuple[str, ...], ...]]:
+    """Read explicit roots and per-library source directories from Lake."""
+    lakefile = source_root / "lakefile.lean"
+    if not lakefile.is_file():
+        return {}, ()
+    lines = lakefile.read_text(encoding="utf-8", errors="replace").splitlines()
+    explicit: dict[tuple[str, ...], str] = {}
+    directories: set[tuple[str, ...]] = set()
+    for index, line in enumerate(lines):
+        library = re.match(r"^[ \t]*lean_lib[ \t]+", line.split("--", 1)[0])
+        if not library:
+            continue
+        source_directory: tuple[str, ...] = ()
+        roots: list[str] = []
+        cursor = index + 1
+        while cursor < len(lines):
+            candidate = lines[cursor]
+            if candidate.strip() and not candidate[0].isspace():
+                break
+            source_match = re.match(r'^[ \t]*srcDir[ \t]*:=[ \t]*"([^"]+)"', candidate)
+            if source_match:
+                source_directory = tuple(Path(source_match.group(1)).parts)
+                directories.add(source_directory)
+            roots_match = re.match(r"^[ \t]*roots[ \t]*:=[ \t*#]*([^]]+)", candidate)
+            if roots_match:
+                roots.extend(re.findall(r"[A-Za-z_][A-Za-z0-9_'.]*", roots_match.group(1)))
+            cursor += 1
+        for root in roots:
+            root_path = tuple(Path(*root.split(".")).with_suffix(".lean").parts)
+            explicit[source_directory + root_path] = root
+    return explicit, tuple(sorted(directories, key=lambda value: (-len(value), value)))
+
+
 def to_module(source_root: Path, path: Path) -> str:
     rel = path.relative_to(source_root)
+    explicit, source_directories = _lake_source_layout(source_root)
+    if rel.parts in explicit:
+        return explicit[rel.parts]
+    for source_directory in source_directories:
+        prefix = tuple(rel.parts[:len(source_directory)])
+        if prefix == source_directory and len(rel.parts) > len(source_directory):
+            return ".".join(rel.with_suffix("").parts[len(source_directory):])
     parts = list(rel.with_suffix("").parts)
-    # For flat layout (lean_lib BookName where srcDir:="Books"),
-    # strip the Books/ or Papers/ prefix from the module path.
+    # For aggregate layout (lean_lib Books/Papers), retain the public prefix.
+    # For flat layout without explicit per-library srcDir, strip it.
     if len(parts) >= 2 and parts[0] in ("Books", "Papers"):
         if _layout_prefix(source_root, parts[0].lower()) == "":
             parts = parts[1:]
@@ -1312,6 +1353,33 @@ def collect_entries(
         for inventory in paper_inventories
         if paper_inventory_uses_item_reader(inventory)
     )
+    configured_papers: set[str] = set()
+    facade_sources: set[Path] = set()
+    for paper_dir in sorted(papers_root.iterdir()) if papers_root.is_dir() else ():
+        if not paper_dir.is_dir() or not project_enabled("papers", paper_dir.name):
+            continue
+        for facade in paper_dir.glob("*.lean"):
+            directory = paper_dir / facade.stem
+            if not directory.is_dir():
+                continue
+            imports = set(re.findall(r"^(?:public\s+)?import\s+([A-Za-z0-9_'.]+)",
+                facade.read_text(encoding="utf-8"), re.MULTILINE))
+            for path in directory.glob("*.lean"):
+                if to_module(source_root, path) in imports:
+                    facade_sources.add(path)
+        manifest = paper_dir / "tools" / "verso_modules.json"
+        if not paper_dir.is_dir() or not project_enabled("papers", paper_dir.name) or not manifest.is_file():
+            continue
+        plan = json.loads(manifest.read_text(encoding="utf-8"))
+        sources = {to_module(source_root, path): path for path in paper_dir.rglob("*.lean")}
+        for number, row in enumerate(plan["modules"], start=1):
+            module, slug = row["module"], row["slug"]
+            if module not in sources or re.fullmatch(r"[a-z0-9][a-z0-9-]*", slug) is None:
+                raise ValueError(f"invalid Verso reading module for {paper_dir.name}: {row}")
+            entries.append(Entry("papers", module, row["title"],
+                f"papers/{paper_dir.name.lower()}/sections/{slug}/", paper_dir.name,
+                0, number, 0, slug))
+        configured_papers.add(paper_dir.name)
 
     for path in sorted(books_root.rglob("*.lean")):
         if not should_include_book(path, reader_source_directories):
@@ -1353,7 +1421,7 @@ def collect_entries(
         )
 
     for path in sorted(papers_root.rglob("*.lean")):
-        if not should_include_paper(path, paper_reader_source_directories):
+        if not should_include_paper(path, paper_reader_source_directories) and path not in facade_sources:
             continue
         module = to_module(source_root, path)
         if module in SKIP_MODULES:
@@ -1361,6 +1429,8 @@ def collect_entries(
         rel = path.relative_to(papers_root)
         paper = rel.parts[0]
         if not project_enabled("papers", paper):
+            continue
+        if paper in configured_papers and path != papers_root / paper / "Paper.lean":
             continue
         sec_title = module_doc_title(path) or section_title_from_stem(path.stem)
         sec_num, part_num = parse_section_part(path.stem)
@@ -1818,11 +1888,25 @@ def emit_route_table(
             return f"ReasBookSite.WorkPages.Books.{e.book_or_paper}"
         return f"ReasBookSite.WorkPages.Papers.{e.book_or_paper}"
 
+    def is_primary_paper_root(e: Entry) -> bool:
+        """Only the project-owned Paper.lean gets the canonical paper route.
+
+        A paper may also contain nested compatibility modules such as
+        `DFPWolfe/Paper.lean`; those modules remain literate inputs but must not
+        claim the project's landing route a second time.
+        """
+        parts = e.module.split(".")
+        return (
+            e.category == "papers"
+            and e.stem in {"paper", "main"}
+            and len(parts) >= 2
+            and parts[-2].casefold() == e.book_or_paper.casefold()
+        )
+
     work_page_imports = {
         work_page_module(e)
         for e in entries
-        if (e.category == "books" and e.stem == "book")
-        or (e.category == "papers" and e.stem in {"paper", "main"})
+        if (e.category == "books" and e.stem == "book") or is_primary_paper_root(e)
     }
     work_page_imports.update(reader_chapter_module(reader) for reader in readers)
     work_page_imports.update(
@@ -1847,10 +1931,10 @@ def emit_route_table(
             bindings.append((f"books/{entry.book_or_paper.lower()}/", target))
             bindings.append((entry.route, target))
             continue
-        if entry.category == "papers" and entry.stem in {"paper", "main"}:
+        if is_primary_paper_root(entry):
             target = work_page_module(entry)
             bindings.append((f"papers/{entry.book_or_paper.lower()}/", target))
-            bindings.append((entry.route, target))
+            bindings.append((entry.route, f"Book.{entry.module}"))
             continue
         if entry.module in section_index_by_module:
             # Imports-only section aggregators retain their literate/API input,
@@ -2163,6 +2247,8 @@ def write_root_readme(repo_root: Path, source_root: Path) -> None:
     for book in sorted(
         [p.name for p in (source_root / "Books").iterdir() if p.is_dir()]
     ):
+        if book in TBD_BOOKS:
+            continue
         book_ref_re = re.compile(rf"/Books/{re.escape(book)}/?\)")
         book_repo_link = repo_relative_link(f"ReasBook/Books/{book}/")
         book_verso = published_verso_link(f"books/{book.lower()}/")
@@ -2519,6 +2605,15 @@ def write_work_pages(
             [e for e in p_entries if (e.section_num > 0 and e.part_num == 0)],
             key=lambda e: (e.section_num, e.stem),
         )
+        entry_points = sorted(
+            [
+                e
+                for e in p_entries
+                if e.section_num == 0
+                and e.part_num == 0
+            ],
+            key=lambda e: (e.module.casefold(), e.stem),
+        )
         module_name = lean_module_name(paper)
         page_file = papers_root / f"{module_name}.lean"
 
@@ -2552,6 +2647,14 @@ def write_work_pages(
                 label = readme_label(e)
                 if not label:
                     continue
+                lines.append(f"- [{label}]({portable_site_link(e.route)})")
+            lines.append("")
+        elif entry_points:
+            lines.append("Formalization entry points:")
+            lines.append("")
+            for e in entry_points:
+                stem = re.sub(r"(?<=\d)_(?=\d)", ".", e.module.rsplit(".", 1)[-1])
+                label = humanize_identifier(stem)
                 lines.append(f"- [{label}]({portable_site_link(e.route)})")
             lines.append("")
         elif item_reader is None:

@@ -16,7 +16,7 @@ branches:
 
   - version: v4.32.0
     branch: v4.32.0
-    status: empty
+    status: active
     initialization: automatic
 
   - version: v4.32.2

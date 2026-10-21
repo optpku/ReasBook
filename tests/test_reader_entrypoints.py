@@ -51,19 +51,27 @@ class ReaderEntrypointsTests(unittest.TestCase):
                 self.assertEqual((site / relative).read_text(), f"original: {relative}")
             self.assertEqual(write_reader_entrypoints(site), changed)
 
-    def test_readmes_link_to_published_reaslab_resources(self):
+    def test_readmes_link_to_project_resources_not_aggregate_catalogs(self):
         readmes = [ROOT / "README.md", ROOT / "README.zh-CN.md"]
         readmes.extend((ROOT / "ReasBook").rglob("README.md"))
         for readme in readmes:
             text = readme.read_text(encoding="utf-8")
-            self.assertNotIn("https://optpku.github.io/ReasBook/", text)
-            for path in re.findall(r"https://reasbook\.reaslab\.io/ReasBook/([^\s)]*)", text):
+            for path in re.findall(r"https://optpku\.github\.io/ReasBook/([^\s)]+)", text):
                 with self.subTest(readme=readme.relative_to(ROOT), path=path):
                     self.assertRegex(
                         path,
-                        r"^(?:projects/[^/]+/(?:docs/ReasBook/.+\.html"
-                        r"|theorem-maps/(?:books|papers)/[^/]+/)?|)$",
+                        r"^(?:docs/ReasBook/(?:Books|Papers)/[^/]+/(?:Book|Paper)\.html"
+                        r"|sites/[^/]+/(?:pages|docs)/"
+                        r"|theorem-maps/(?:books|papers)/[^/]+/(?:v[0-9]+/)?(?:\?view=(?:paper|lean))?"
+                        r"|versions/v[0-9]+\.[0-9]+\.[0-9]+/"
+                        r"(?:docs/[A-Za-z0-9_]+/(?:[A-Za-z0-9_]+/)*[A-Za-z0-9_]+\.html"
+                        r"|(?:books|papers)/[^/]+/sections/[^/]+/))$",
                     )
+            self.assertNotIn("https://optpku.github.io/ReasBook/)", text)
+            self.assertNotIn("https://reasbook.reaslab.io/ReasBook", text)
+            self.assertNotIn("https://reasbook-reviewer.reaslab.io", text)
+            for path in re.findall(r"https://reasbook[.]reaslab[.]io([^\s)\[\]<>]*)", text):
+                self.assertRegex(path, r"^(?:/?|/review/(?:books/[^/]+/)?|/artifacts/(?:projects/[^/]+/(?:docs/ReasBook/.+[.]html|theorem-maps/(?:books|papers)/[^/]+/)?)?)$")
 
     def test_published_paper_maps_survive_bilingual_readme_regeneration(self):
         for filename, language in (("README.md", "en"), ("README.zh-CN.md", "zh-CN")):
@@ -71,15 +79,25 @@ class ReaderEntrypointsTests(unittest.TestCase):
             for name in ("DFP_wolfe_local", "TR_LALM_theory"):
                 with self.subTest(language=language, paper=name):
                     project = {"kind": "papers", "name": name, "slug": name.lower()}
-                    url = f"https://reasbook.reaslab.io/ReasBook/projects/{name.lower()}/theorem-maps/papers/{name.lower()}/"
-                    row = next(line for line in original.splitlines() if line.startswith("| **[") and f"ReasBook/Papers/{name}/" in line)
-                    self.assertIn(url, row)
-                    self.assertIn(url, resource_cell(project, language=language))
+                    url = ("https://optpku.github.io/ReasBook/theorem-maps/papers/dfp_wolfe_local/"
+                           if name == "DFP_wolfe_local" else
+                           "https://reasbook.reaslab.io/artifacts/projects/tr_lalm_theory/theorem-maps/papers/tr_lalm_theory/")
+                    lines = original.splitlines()
+                    index = next(i for i, line in enumerate(lines) if line.startswith("| **[") and f"ReasBook/Papers/{name}/" in line)
+                    end = index + 1
+                    while end < len(lines) and lines[end].startswith("| ↳ **"):
+                        end += 1
+                    block = "\n".join(lines[index:end])
+                    self.assertIn(url, block)
+                    if name != "DFP_wolfe_local":
+                        self.assertIn(url, resource_cell(project, language=language))
                     with tempfile.TemporaryDirectory() as temp:
                         readme = Path(temp) / filename
                         readme.write_text(original, encoding="utf-8")
                         update_resource_cells(readme, {("papers", name): project}, language=language)
                         self.assertIn(url, readme.read_text(encoding="utf-8"))
+                        if end > index + 1:
+                            self.assertIn(block, readme.read_text(encoding="utf-8"))
 
     def test_regeneration_keeps_original_papers_and_source_notes(self):
         projects = {

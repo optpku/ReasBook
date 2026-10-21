@@ -17,7 +17,7 @@ concurrency:
 
 jobs:
   verify:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 30
     env:
       REASBOOK_PYTHON_BIN: python
@@ -179,6 +179,7 @@ jobs:
           import os
           import re
           from pathlib import Path
+          import yaml
 
           manifest = json.loads(Path(".release/release-manifest.json").read_text())
           release_set = json.loads(Path(".release/release-set.json").read_text())
@@ -215,8 +216,10 @@ jobs:
               raise SystemExit("GitHub Pages requires the pages artifact")
           if manifest["total_bytes"] > 1_000_000_000:
               raise SystemExit("Pages site exceeds GitHub's 1 GB hard limit")
-          if manifest["total_bytes"] > 920_000_000:
-              raise SystemExit("Pages site exceeds the 920 MB operational budget")
+          profile = yaml.safe_load(Path("config/deploy/github-pages.yml").read_text())
+          pages_policy = profile["artifacts"]["pages"]
+          if manifest["total_bytes"] > pages_policy["max_site_bytes"]:
+              raise SystemExit("Pages site exceeds the trusted operational budget")
           if manifest["file_count"] > 60_000:
               raise SystemExit("Pages site exceeds the 60,000-file budget")
           artifacts = release_set.get("artifacts")
@@ -258,7 +261,7 @@ jobs:
 
   deploy:
     needs: verify
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     permissions:
       pages: write

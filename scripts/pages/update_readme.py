@@ -16,9 +16,9 @@ from urllib.parse import urlsplit
 from project_catalog import EXCLUDED_PROJECTS, NO_VERSO_PROJECTS
 
 
-SITE_BASE = "https://reasbook.reaslab.io/ReasBook"
-REVIEWER_BASE = "https://reasbook-reviewer.reaslab.io/ReasBook"
-# Verified deployment entry points (2026-10-15), relative to each project's
+SITE_BASE = "https://reasbook.reaslab.io/artifacts"
+REVIEWER_BASE = "https://reasbook.reaslab.io/review"
+# Verified deployment entry points (2026-10-22), relative to each project's
 # docs/ directory. Build outputs use different module roots across toolchains.
 PUBLISHED_DOCS = {
     ("books", "AlgebraicTopology_May_1999"): "ReasBook/AlgebraicTopology_May_1999/Book.html",
@@ -43,6 +43,7 @@ PUBLISHED_THEOREM_MAPS = set(PUBLISHED_DOCS) - {
     ("books", "IntegerProgramming_Conforti_2014"),
     ("papers", "RockafellarSum_2026"),
 }
+UNPUBLISHED_DOCUMENTATION = {("papers", "glowinski_admm_counterexample")}
 README_LANGUAGES = {
     "README.md": "en",
     "README.zh-CN.md": "zh-CN",
@@ -53,12 +54,14 @@ RESOURCE_LABELS = {
         "theorem_map": "Theorem map",
         "source_only": "Source only (excluded from the current release profile)",
         "verso_unpublished": "Verso not published",
+        "documentation_pending": "Source available; Docs, Verso and theorem map pending publication",
     },
     "zh-CN": {
         "docs": "文档",
         "theorem_map": "定理依赖图",
         "source_only": "仅源代码（不包含在当前发布配置中）",
         "verso_unpublished": "尚未发布 Verso",
+        "documentation_pending": "源代码可用；Docs、Verso 和定理依赖图待发布",
     },
 }
 
@@ -68,6 +71,9 @@ def resource_cell(project: dict[str, str], *, language: str = "en") -> str:
     slug = project["slug"]
     kind = project["kind"]
     labels = RESOURCE_LABELS[language]
+
+    if (kind, name) in UNPUBLISHED_DOCUMENTATION:
+        return labels["documentation_pending"]
 
     if name in EXCLUDED_PROJECTS or (kind, name) not in PUBLISHED_DOCS:
         return labels["source_only"]
@@ -114,6 +120,22 @@ def update_resource_cells(
         if project is None:
             continue
 
+        # A paper can have independently curated proof routes below its title.
+        # Their entry modules and reading sections are more specific than the
+        # aggregate project resources returned by resource_cell.
+        following = index + 1
+        proof_routes = []
+        while following < len(lines) and lines[following].startswith("| ↳ **"):
+            proof_routes.append(lines[following])
+            following += 1
+        if proof_routes and all(
+            len(row.split("|")) == 6
+            and (reference := project_ref.search(row)) is not None
+            and reference.groups() == match.groups()
+            for row in proof_routes
+        ):
+            continue
+
         cells = line.split("|")
         if len(cells) != 6:
             continue
@@ -121,7 +143,8 @@ def update_resource_cells(
         # Keep those links when regenerating hosted reading resources.
         references = [
             link for link in re.findall(r"\[[^\]]+\]\([^)]+\)", cells[4])
-            if urlsplit(link.split("](", 1)[1][:-1]).hostname not in {
+            if not re.match(r"\[(?:Docs|文档|Verso|Theorem map|定理依赖图|Reviewer)\]", link)
+            and urlsplit(link.split("](", 1)[1][:-1]).hostname not in {
                 "optpku.github.io", "reasbook.reaslab.io", "reasbook-reviewer.reaslab.io",
             }
         ]

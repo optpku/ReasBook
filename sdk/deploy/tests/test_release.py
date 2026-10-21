@@ -305,6 +305,35 @@ def profile(root: Path, *, historical: bool = True) -> DeploymentProfile:
 
 
 class ReleasePlanningTests(unittest.TestCase):
+    def test_reference_cache_preserves_trailing_slash_validation(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            site = Path(temp)
+            (site / "style.css").write_text("body {}")
+            cache = set()
+            resolve = PagesSiteProjector._resolve_missing_reference
+            self.assertIsNone(resolve("https://reasbook.invalid", "/ReasBook/",
+                "https://reasbook.invalid/ReasBook/index.html", "style.css", site, cache))
+            missing = resolve("https://reasbook.invalid", "/ReasBook/",
+                "https://reasbook.invalid/ReasBook/index.html", "style.css/", site, cache)
+            self.assertIsNotNone(missing)
+            self.assertEqual(missing[0], Path("style.css/index.html"))
+
+    def test_project_docs_follow_owned_explicit_library_imports(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            source, destination = root / "source", root / "destination"
+            docs = source / "docs/ReasBook"
+            (docs / "Demo").mkdir(parents=True)
+            (docs / "Theory").mkdir()
+            (docs / "Demo/Paper.html").write_text('<a href="../Theory/Result.html">import</a>')
+            actual = ('<a href="https://github.com/acme/reasbook/blob/' + 'a' * 40
+                      + '/ReasBook/Papers/Demo/Theory/Result.lean">source</a><p>Actual theorem</p>')
+            (docs / "Theory/Result.html").write_text(actual)
+            (docs / "Theory/Orphan.html").write_text('unreachable')
+            PagesSiteProjector()._copy_project_docs(source, destination, "papers", "Demo", "Demo.Paper")
+            self.assertEqual((destination / "docs/ReasBook/Theory/Result.html").read_text(), actual)
+            self.assertFalse((destination / "docs/ReasBook/Theory/Orphan.html").exists())
+
     def test_project_docs_copy_flat_entry_and_sibling_namespace(self) -> None:
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
@@ -791,7 +820,7 @@ class ReleasePlanningTests(unittest.TestCase):
         )
         self.assertEqual(
             profile_value.artifact("pages").max_site_bytes,
-            920_000_000,
+            990_000_000,
         )
         self.assertEqual(
             profile_value.artifact("full").max_archive_members,

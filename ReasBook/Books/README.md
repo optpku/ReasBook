@@ -3,9 +3,9 @@
 The `main` branch contains catalog link folders, not duplicate Lean sources.
 Open a title below and use its source link to jump to the matching version branch.
 
-Open the [online catalog](https://reasbook.reaslab.io/ReasBook/) for published
+Open the [online catalog](https://reasbook.reaslab.io/artifacts/) for published
 Docs, Verso and available theorem maps, or use
-[ReasBook Reviewer](https://reasbook-reviewer.reaslab.io/ReasBook/) to read and review.
+[ReasBook Reviewer](https://reasbook.reaslab.io/review/) to read and review.
 
 | Formalization | Source |
 | --- | :---: |
