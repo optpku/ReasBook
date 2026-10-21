@@ -4,6 +4,7 @@
 This is a maintenance tool, not a CI runtime dependency.  It preserves the
 manually curated title/source/contributor columns and only replaces the final
 column of the Books and Papers tables in each language.
+Project rows followed by curated proof-route rows retain their resource cells.
 """
 
 from __future__ import annotations
@@ -101,6 +102,22 @@ def update_resource_cells(
         name = match.group(2)
         project = projects.get((kind, name))
         if project is None:
+            continue
+
+        # A paper can have independently curated proof routes below its title.
+        # Their entry modules and reading sections are more specific than the
+        # aggregate project resources returned by resource_cell.
+        following = index + 1
+        proof_routes = []
+        while following < len(lines) and lines[following].startswith("| ↳ **"):
+            proof_routes.append(lines[following])
+            following += 1
+        if proof_routes and all(
+            len(row.split("|")) == 6
+            and (reference := project_ref.search(row)) is not None
+            and reference.groups() == match.groups()
+            for row in proof_routes
+        ):
             continue
 
         cells = line.split("|")
