@@ -871,6 +871,20 @@ class ReleasePlanningTests(unittest.TestCase):
             ):
                 replace(spec, tooling_revision="d" * 40)
 
+    def test_tooling_snapshot_tracks_shared_lean_header_parser(self) -> None:
+        parser_path = Path("ReasBookWeb/scripts/lean_headers.py")
+        self.assertTrue((REPO_ROOT / parser_path).is_file())
+        self.assertTrue(any(parent in parser_path.parents for parent in TOOLING_SNAPSHOT_ENTRIES))
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            for relative in TOOLING_SNAPSHOT_ENTRIES:
+                (root / relative).mkdir(parents=True, exist_ok=True)
+            parser = root / parser_path
+            parser.write_text("# Parser revision one\n", encoding="utf-8")
+            before = tooling_source_digest(root)
+            parser.write_text("# Parser revision two\n", encoding="utf-8")
+            self.assertNotEqual(tooling_source_digest(root), before)
+
     def test_tooling_snapshot_ignores_sdk_packaging_outputs_by_path(self) -> None:
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp) / "repo"

@@ -1,9 +1,9 @@
 # Contributing to ReasBook
 
 Thank you for contributing a Lean formalization. This guide covers book and
-paper source contributions. Changes to the cross-version catalog, SDKs,
-release pipeline, or website belong on `main` and follow a separate maintainer
-workflow.
+paper source contributions and their required companion README catalog
+updates on `main`. Unrelated catalog maintenance, SDK, release-pipeline, or
+website changes follow a separate maintainer workflow on `main`.
 
 When using a coding agent, follow the [ReasBook contributing skill](CONTRIBUTING/SKILL.md)
 as an execution checklist. It mirrors the branch, metadata, validation, and
@@ -75,6 +75,65 @@ including `.lake/`, `_site/`, caches, logs, or compiled Lean artifacts.
 
 ## 3. Document the contribution
 
+### Required Lean code-author headers
+
+**Every `.lean` file published on GitHub must include verified code authors in
+its opening file header. Missing or unresolved attribution blocks submission
+and publication, even when the code builds.** This applies to roots, imports-only
+aggregators, compatibility modules, generated Lean files, and shared tooling as
+well as mathematical proofs. A README, paper citation, or Git log is not a
+substitute for the file header.
+
+Follow the [mathlib header convention](https://leanprover-community.github.io/contribute/style.html#header-and-imports):
+
+```lean
+/-
+Copyright (c) <year> <verified copyright holder>. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: <verified Lean code author>, <another verified Lean code author>
+-/
+```
+
+Place this ordinary comment before `module` and imports. Use `Authors` even for
+one author, separate names with commas, and do not end the author list with a
+period. Replace the template fields with verified information; never publish
+placeholders. Respect the original license of reused code rather than changing
+it to match the example.
+
+Code authors and bibliographic authors are different roles. Credit the people
+responsible for the Lean development, verified from existing notices, original
+source repositories, contribution records, or maintainer confirmation. Do not
+copy a textbook's author list or infer a human identity from an automation
+commit. Preserve existing names, copyright ownership, and third-party notices.
+For legacy files, restore verified author information without inventing
+copyright ownership. A project-wide roster may be used only with maintainer
+confirmation, with its project-level scope stated explicitly. Fix code
+generators too, so regeneration does not erase these notices.
+
+Each project-level fallback must cite its evidence in the header, including the
+repository, branch or commit, README path and section, for example
+`Project-level attribution: <owner>/<repo>@<ref>:<README path> (<section>)`.
+Read third-party notices and pinned upstream source before applying a project
+roster. Imported files retain the upstream authors, not just the importing
+project's contributor names. Attribute local adaptations separately, keeping
+both the upstream credit and the scope/source of any confirmed local roster.
+
+Run the checker kept on `main` against the actual source checkout (Python 3.11+):
+
+```bash
+python3.11 /path/to/ReasBook-main/scripts/config/check_lean_authors.py \
+  --repo /path/to/contribution-checkout \
+  --path ReasBook/Books/<ProjectId>
+# For papers, use ReasBook/Papers/<ProjectId> and any sibling .lean facade.
+```
+
+Omit `--path` to check all first-party Lean files. The checker includes tracked
+and non-ignored untracked source, not downloaded dependencies. It verifies the
+presence of concrete names; reviewers must still verify who those names refer
+to. List unresolved files and ask a maintainer before publication.
+
+### Project documentation
+
 Every project directory needs a `README.md` containing:
 
 - full title, authors, edition, and year where applicable;
@@ -101,6 +160,33 @@ python scripts/config/validate_book.py \
 
 Do not invent statistics or bibliographic values. Paper metadata currently
 lives in the paper `README.md`; there is no `paper.yml` contract.
+
+### Required companion update to the main README
+
+**When you add or update a project on a version branch, also synchronize its
+corresponding entry in the `main` README. Updating the source branch alone is
+not enough if the catalog still describes the old state.**
+
+On a separate branch based on current upstream `main`, inspect `README.md`
+and `README.zh-CN.md` using the exact project ID. Update the affected entry in
+both languages and its catalog-folder README, if applicable. Check:
+
+- source links and the exact available version branches;
+- verified Lean code contributors, separate from bibliographic authors;
+- coverage, proof-completion information, and distinct proof routes where listed;
+- Docs, Verso, and theorem-map links and their actual publication status.
+
+Preserve other projects, existing version links, and curated catalog structure.
+Do not mark future documentation or theorem maps as already published. If a
+source-only correction changes none of the catalog facts, record the entry
+reviewed and why no README edit was necessary instead of making an empty edit.
+
+Keep this companion change README/catalog-only and target its PR at `main`.
+Keep the mathematical source PR targeted at `vX.Y.Z`; do not merge a whole
+version branch into `main` to synchronize the README. Cross-link the two PRs
+when opening them, or provide both local change sets when PR creation has not
+been requested. Report any pending catalog synchronization explicitly rather
+than treating the source contribution as fully complete.
 
 ## 4. Run focused validation
 
@@ -138,7 +224,8 @@ The deletion-only command should not show files from unrelated projects.
 
 ## 5. Open the pull request
 
-Set the PR base to the exact version branch, never `main`.
+Set the source PR base to the exact version branch, never `main`. The required
+companion README/catalog PR targets `main` separately, as described above.
 
 ```text
 [Book][vX.Y.Z] Add <ProjectId>
@@ -156,6 +243,7 @@ Use this PR body and remove fields that do not apply:
 - **Title:** <full title>
 - **Project ID:** `<ProjectId>`
 - **Contributor:** <name> (@<GitHub-ID>)
+- **Code authorship:** every Lean file has verified `Authors:`; check command and result: <details>
 - **Target branch:** `vX.Y.Z`
 - **Lean toolchain:** `<full content of ReasBook/lean-toolchain>`
 - **Declarations:** <total> (theorem/lemma/example: <count>; other: <count>)
@@ -163,6 +251,7 @@ Use this PR body and remove fields that do not apply:
 - **Proof completion:** <done> / <total> = <percent>%
 - **Remaining placeholders:** `sorry`: <count>; `admit`: <count>
 - **Metadata:** project `README.md` added or updated; `book.yml` validated / not applicable
+- **Main README synchronization:** affected project entry; `README.md` / `README.zh-CN.md` and catalog files updated; companion change set or PR (or evidence that no catalog facts changed)
 
 ### Scope
 
@@ -185,6 +274,12 @@ should not generate or commit repository-wide caches.
 - The PR base, PR title, `lean-toolchain`, and metadata agree on the version.
 - The project path, root file, branch name, and PR label match its kind.
 - The project README and contributor information are complete.
+- The corresponding `main` README entry is synchronized in both languages,
+  including any affected catalog-folder README; the companion change set or PR
+  is identified, or the no-change review is explicitly justified.
+- Every Lean file has a verified code-author header; existing notices survive
+  regeneration, and the author-header check passes. No unresolved attribution
+  is being deferred until after publication.
 - Focused Lean validation passes and its exact command is in the PR body.
 - Statistics and `sorry`/`admit` counts are truthful.
 - Unrelated projects are unchanged and no generated output is committed.

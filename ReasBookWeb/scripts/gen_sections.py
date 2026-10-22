@@ -15,6 +15,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Iterable
 
+from lean_headers import author_field, header_span
 from site_config import (
     PROJECT_FRAGMENT,
     SKIP_MODULES,
@@ -47,12 +48,60 @@ SITE_ROOT = SITE_CONFIG.site_root
 # ---------------------------------------------------------------------------
 
 
+GENERATED_LEAN_HEADER = (
+    "/-\n"
+    "Authors: Wanli Ma, Zichen Wang\n"
+    "Released under Apache 2.0 license as described in the file LICENSE.\n"
+    "Generated website code; mathematical source authors are credited separately.\n"
+    "-/\n\n"
+)
+
+
+def with_generated_lean_header(content: str, previous: str | None) -> str:
+    """Retain attributed file notices when regenerating a Lean page."""
+    for index, source in enumerate((content, previous or "")):
+        span = header_span(source)
+        if span:
+            start, end = span
+            header = source[start:end]
+            if author_field(header, allow_singular=True):
+                if index == 0:
+                    return content
+            else:
+                header = header[:-2].rstrip() + "\nAuthors: Wanli Ma, Zichen Wang\n-/"
+            if index == 0:
+                return source[:start] + header + source[end:]
+            prefix = source[:start]
+            if content.startswith("\ufeff") and not prefix.startswith("\ufeff"):
+                prefix = "\ufeff" + prefix
+            return prefix + header + "\n\n" + content.removeprefix("\ufeff")
+        text = source.lstrip("\ufeff \t\r\n")
+        if text.startswith("/-") and not text.startswith(("/-!", "/--")):
+            raise ValueError("refusing to regenerate an unterminated Lean file header")
+    bom = "\ufeff" if content.startswith("\ufeff") else ""
+    return bom + GENERATED_LEAN_HEADER + content.removeprefix("\ufeff")
+
+
+def generated_body_first_line(path: Path) -> list[str]:
+    """Locate ownership markers after a preserved attribution header."""
+    source = path.read_text(encoding="utf-8", errors="replace")
+    span = header_span(source)
+    if span and author_field(source[span[0]:span[1]], allow_singular=True):
+        source = source[span[1]:].lstrip(" \t\r\n")
+    else:
+        source = source.removeprefix("\ufeff")
+    return source.splitlines()[:1]
+
+
 def write_text_if_changed(path: Path, content: str, *, log: bool = True) -> bool:
     old_content: str | None
     try:
         old_content = path.read_text(encoding="utf-8")
     except FileNotFoundError:
         old_content = None
+
+    if path.suffix == ".lean":
+        content = with_generated_lean_header(content, old_content)
 
     if old_content == content:
         return False
@@ -2349,9 +2398,7 @@ def write_work_pages(
                 f"{reader.book}/{reader.chapter_num:02d}"
             )
         if page_file.exists():
-            first_line = page_file.read_text(
-                encoding="utf-8", errors="replace"
-            ).splitlines()[:1]
+            first_line = generated_body_first_line(page_file)
             if first_line != [GENERATED_READER_MARKER]:
                 raise ValueError(
                     "refusing to overwrite non-generated chapter work page: "
@@ -2371,9 +2418,7 @@ def write_work_pages(
         page_file = papers_root / lean_module_name(reader.paper) / "Items.lean"
         expected_paper_reader_pages[page_file] = reader
         if page_file.exists():
-            first_line = page_file.read_text(
-                encoding="utf-8", errors="replace"
-            ).splitlines()[:1]
+            first_line = generated_body_first_line(page_file)
             if first_line != [GENERATED_PAPER_READER_MARKER]:
                 raise ValueError(
                     "refusing to overwrite non-generated paper reader work page: "
@@ -2395,9 +2440,7 @@ def write_work_pages(
             )
         expected_section_index_pages[page_file] = index
         if page_file.exists():
-            first_line = page_file.read_text(
-                encoding="utf-8", errors="replace"
-            ).splitlines()[:1]
+            first_line = generated_body_first_line(page_file)
             if first_line != [GENERATED_PAPER_SECTION_MARKER]:
                 raise ValueError(
                     "refusing to overwrite non-generated paper section work page: "
@@ -2588,9 +2631,7 @@ def write_work_pages(
     for candidate in stale_candidates:
         if candidate in expected_reader_pages:
             continue
-        first_line = candidate.read_text(
-            encoding="utf-8", errors="replace"
-        ).splitlines()[:1]
+        first_line = generated_body_first_line(candidate)
         if first_line == [GENERATED_READER_MARKER]:
             candidate.unlink()
             print(f"Removed stale generated page {candidate}")
@@ -2763,18 +2804,14 @@ def write_work_pages(
         for candidate in sorted(paper_dir.glob("Items.lean")):
             if candidate in expected_paper_reader_pages:
                 continue
-            first_line = candidate.read_text(
-                encoding="utf-8", errors="replace"
-            ).splitlines()[:1]
+            first_line = generated_body_first_line(candidate)
             if first_line == [GENERATED_PAPER_READER_MARKER]:
                 candidate.unlink()
                 print(f"Removed stale generated page {candidate}")
         for candidate in sorted(paper_dir.glob("Section*.lean")):
             if candidate in expected_section_index_pages:
                 continue
-            first_line = candidate.read_text(
-                encoding="utf-8", errors="replace"
-            ).splitlines()[:1]
+            first_line = generated_body_first_line(candidate)
             if first_line == [GENERATED_PAPER_SECTION_MARKER]:
                 candidate.unlink()
                 print(f"Removed stale generated page {candidate}")

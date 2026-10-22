@@ -3,6 +3,11 @@
 This is a catalog link folder on `main`; the complete Lean formalization is
 kept on the version branch.
 
+The BFGS formalization contributor is Chenyi Li. The imported DFP infrastructure
+is attributed separately to Zichen Wang; see the version-branch
+[third-party notices](https://github.com/optpku/ReasBook/blob/v4.32.2/ReasBook/Papers/BFGSMinimumQOrder_Liu_2026/THIRD_PARTY_NOTICES.md).
+These code-author roles are separate from the paper's bibliographic authors.
+
 **[Open the source on `v4.32.2`](https://github.com/optpku/ReasBook/tree/v4.32.2/ReasBook/Papers/BFGSMinimumQOrder_Liu_2026/)**
 
 [Docs](https://reasbook.reaslab.io/artifacts/projects/bfgsminimumqorder_liu_2026/docs/ReasBook/Paper.html) ·
