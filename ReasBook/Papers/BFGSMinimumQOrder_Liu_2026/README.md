@@ -5,6 +5,11 @@ BFGS with Exact Line Search Is One* by Benqi Liu, Chenyi Li, and Zaiwen Wen.
 The paper is available as arXiv:2609.00596 (2026).
 
 Contributor: Chenyi Li ([@chenyili0818](https://github.com/chenyili0818)).
+Imported DFP infrastructure formalization author: Zichen Wang
+([pinned upstream authorship](https://github.com/imathwy/DFP_wolfe_local/blob/e308927f5b7930bdd002f0c0e42b9d112ad821cb/README.md)).
+The upstream author is retained on imported files; locally adapted upstream
+files also state the confirmed BFGS project-level contributor credit and its
+source. See [authorship provenance](AUTHORSHIP.md).
 Source: <https://github.com/chenyili0818/bfgs-minimum-q-order>.
 Paper: <https://arxiv.org/abs/2609.00596>.
 

@@ -1,3 +1,11 @@
+/-
+Authors: Zichen Wang, Chenyi Li
+Released under Apache 2.0 license as described in the file LICENSE.
+Upstream attribution: https://github.com/imathwy/DFP_wolfe_local/blob/e308927f5b7930bdd002f0c0e42b9d112ad821cb/README.md (formalization author).
+Upstream source: https://github.com/imathwy/DFP_wolfe_local/blob/e308927f5b7930bdd002f0c0e42b9d112ad821cb/ReasLib/Analysis/Calculus/LocalInvariantGraph/ExplicitContraction/MetricScalarTopSectionAdapter.lean
+Project-level attribution: optpku/ReasBook@5bf5af722d85bd5c98368c41c4066124a15e8fd3:ReasBook/Papers/BFGSMinimumQOrder_Liu_2026/README.md (Contributor; local adaptations only).
+-/
+
 module
 
 public import ReasLib.Analysis.Calculus.LocalInvariantGraph.ExplicitContraction.MetricTopSectionFacade
