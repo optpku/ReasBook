@@ -1,3 +1,9 @@
+/-
+Authors: Yifan Bai, Wanli Ma, Zichen Wang
+Released under Apache 2.0 license as described in the file LICENSE.
+Project-level attribution: optpku/ReasBook@f40e785158f79d8f0e645890825b840af912e327:ReasBook/Books/ComputationalMethodsInverseProblems_Vogel_2002/README.md (Contributors).
+-/
+
 import ComputationalMethodsInverseProblems_Vogel_2002.Chap03.Algorithm_3_1_1.Iterates
 import ComputationalMethodsInverseProblems_Vogel_2002.Chap03.Definition_3_3
 import ComputationalMethodsInverseProblems_Vogel_2002.Chap03.Definition_3_4.ConditionNumber
