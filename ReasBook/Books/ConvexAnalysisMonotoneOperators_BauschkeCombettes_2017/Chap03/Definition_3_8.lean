@@ -1,3 +1,9 @@
+/-
+Authors: Yifan Bai, Zichen Wang, Zaiwen Wen
+Released under Apache 2.0 license as described in the file LICENSE.
+Project-level attribution: optpku/ReasBook@4885723414c12d37f87f501b8d8b3115b62742f8:README.md (formalization Contributors column).
+-/
+
 import Mathlib
 import Mathlib.Tactic.Recall
 import ConvexAnalysisMonotoneOperators_BauschkeCombettes_2017.Chap01.Text_1_0_8

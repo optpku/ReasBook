@@ -1,3 +1,9 @@
+/-
+Authors: Chenyi Li, Wanli Ma, Zichen Wang
+Released under Apache 2.0 license as described in the file LICENSE.
+Project-level attribution: optpku/ReasBook@f9674e6420188b5921fdbff7917aaf0e10cfa8a0:ReasBook/Books/OptimizationTheoryAndMethods_SunYuan_2006/README.md (Contributors).
+-/
+
 import OptimizationTheoryAndMethods_SunYuan_2006.Compat
 import Mathlib.Analysis.Matrix.Spectrum
 import Mathlib.Analysis.InnerProductSpace.PiL2

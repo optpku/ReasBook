@@ -1,3 +1,9 @@
+/-
+Authors: Zichen Wang
+Released under Apache 2.0 license as described in the file LICENSE.
+Project-level attribution: optpku/ReasBook@4885723414c12d37f87f501b8d8b3115b62742f8:README.md (formalization Contributors column).
+-/
+
 import RiemannSurfaces_Forster_1981.Chap01.Definition_1_3
 
 open scoped Manifold

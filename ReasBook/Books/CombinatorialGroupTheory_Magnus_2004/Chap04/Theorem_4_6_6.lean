@@ -1,3 +1,9 @@
+/-
+Authors: Zichen Wang
+Released under Apache 2.0 license as described in the file LICENSE.
+Project-level attribution: optpku/ReasBook@4885723414c12d37f87f501b8d8b3115b62742f8:README.md (formalization Contributors column).
+-/
+
 import Mathlib
 import CombinatorialGroupTheory_Magnus_2004.Chap01.Proposition_1_11_24
 import CombinatorialGroupTheory_Magnus_2004.Chap04.Definition_4_2_9

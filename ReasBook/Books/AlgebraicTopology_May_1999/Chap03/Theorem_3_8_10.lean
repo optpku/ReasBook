@@ -1,3 +1,9 @@
+/-
+Authors: Ze Yuan, Zichen Wang
+Released under Apache 2.0 license as described in the file LICENSE.
+Project-level attribution: optpku/ReasBook@4885723414c12d37f87f501b8d8b3115b62742f8:README.md (formalization Contributors column).
+-/
+
 import Mathlib.CategoryTheory.ObjectProperty.FullSubcategory
 import AlgebraicTopology_May_1999.Chap03.Example_3_1_7
 import AlgebraicTopology_May_1999.Chap03.Definition_3_1_6
