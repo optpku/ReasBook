@@ -1,3 +1,9 @@
+/-
+Authors: Chenyi Li, Min Cui, Qiming Dai, Shu Miao, Wanli Ma, Yi Yuan, Zichen Wang, Ziyu Wang
+Released under Apache 2.0 license as described in the file LICENSE.
+Project-level attribution: optpku/ReasBook@2ae8a0b0a2013b5f0bdd6a482d1872d2aa1a5462:ReasBook/Books/Analysis2_Tao_2022/README.md (Contributors).
+-/
+
 
 import Books.Analysis2_Tao_2022.Chap01
 import Books.Analysis2_Tao_2022.Chap02

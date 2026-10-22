@@ -1,0 +1,31 @@
+name: Lean code authors
+
+on:
+  push:
+    paths:
+      - "**/*.lean"
+      - "scripts/config/check_lean_authors.py"
+      - "ReasBookWeb/scripts/lean_headers.py"
+      - "ReasBookWeb/scripts/gen_sections.py"
+      - "tests/test_lean_headers.py"
+      - ".github/workflows/lean_authors.yml"
+  pull_request: {}
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  author-headers:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: "3.11"
+      - name: Test header parsing and regeneration without Lean dependencies
+        run: python -m unittest discover -s tests -p test_lean_headers.py -v
+      - name: Check every first-party Lean source author header
+        run: python scripts/config/check_lean_authors.py --repo .
