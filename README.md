@@ -2,7 +2,7 @@
 
 **English** | [简体中文](README.zh-CN.md)
 
-Website: [https://reasbook.reaslab.io](https://reasbook.reaslab.io/)
+Reading and review website: [https://reasbook.reaslab.io](https://reasbook.reaslab.io/)
 
 [Static Docs and Verso](https://reasbook.reaslab.io/artifacts/) ·
 [Read and review](https://reasbook.reaslab.io/review/)
@@ -15,6 +15,24 @@ explore each formalization.
 
 Try [Quokka](https://quokka.reaslab.io/), our online system for automatically
 formalizing mathematical textbooks and research papers into Lean 4 projects.
+
+## Online reading and review
+
+[ReasBook Reviewer](https://reasbook.reaslab.io/) is our online platform for
+reading and reviewing the formalized textbooks and papers in this repository.
+[Open the reviewer](https://reasbook.reaslab.io/review/) to choose a book or
+paper and inspect its definitions, theorems, and proofs.
+
+- Read Lean source alongside available Docs and Verso pages.
+- Explore theorem dependency graphs to inspect relationships between statements
+  and proofs.
+- Post review comments on individual declarations after signing in with ReasLab;
+  reading does not require an account.
+
+Available documentation and graph evidence vary by project and declaration.
+[Static Docs and Verso](https://reasbook.reaslab.io/artifacts/) are also available
+as a separate entry point. For self-hosting, see
+[Run the reading and review platform](#run-the-reading-and-review-platform).
 
 ## Toolchain Branches
 
@@ -207,6 +225,11 @@ metadata, validation, and pull-request rules.
 <td scope="rowgroup">Formalization platform</td>
 <td><a href="https://reaslab.io">ReasLab</a></td>
 <td>An online Lean formalization platform for collaborative theorem development and verification.</td>
+</tr>
+<tr>
+<td scope="rowgroup">Reading and review platform</td>
+<td><a href="https://reasbook.reaslab.io/">ReasBook Reviewer</a></td>
+<td>An online platform for reading formalized textbooks and papers, inspecting Lean source, documentation and theorem dependencies, and posting declaration-level review comments.</td>
 </tr>
 <tr>
 <td rowspan="2" scope="rowgroup">Formalization project</td>
