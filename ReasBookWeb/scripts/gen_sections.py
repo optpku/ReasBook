@@ -12,6 +12,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Iterable
 import json
+from lean_headers import author_field, header_span
 
 
 def parse_github_remote(url: str) -> tuple[str, str] | None:
@@ -140,12 +141,49 @@ def detect_github_repo() -> tuple[str, str]:
     return ("optsuite", "ReasBook")
 
 
+GENERATED_LEAN_HEADER = (
+    "/-\n"
+    "Authors: Wanli Ma, Zichen Wang\n"
+    "Released under Apache 2.0 license as described in the file LICENSE.\n"
+    "Generated website code; mathematical source authors are credited separately.\n"
+    "-/\n\n"
+)
+
+
+def with_generated_lean_header(content: str, previous: str | None) -> str:
+    """Retain attributed file notices when regenerating a Lean page."""
+    for index, source in enumerate((content, previous or "")):
+        span = header_span(source)
+        if span:
+            start, end = span
+            header = source[start:end]
+            if author_field(header, allow_singular=True):
+                if index == 0:
+                    return content
+            else:
+                header = header[:-2].rstrip() + "\nAuthors: Wanli Ma, Zichen Wang\n-/"
+            if index == 0:
+                return source[:start] + header + source[end:]
+            prefix = source[:start]
+            if content.startswith("\ufeff") and not prefix.startswith("\ufeff"):
+                prefix = "\ufeff" + prefix
+            return prefix + header + "\n\n" + content.removeprefix("\ufeff")
+        text = source.lstrip("\ufeff \t\r\n")
+        if text.startswith("/-") and not text.startswith(("/-!", "/--")):
+            raise ValueError("refusing to regenerate an unterminated Lean file header")
+    bom = "\ufeff" if content.startswith("\ufeff") else ""
+    return bom + GENERATED_LEAN_HEADER + content.removeprefix("\ufeff")
+
+
 def write_text_if_changed(path: Path, content: str, *, log: bool = True) -> bool:
     old_content: str | None
     try:
         old_content = path.read_text(encoding="utf-8")
     except FileNotFoundError:
         old_content = None
+
+    if path.suffix == ".lean":
+        content = with_generated_lean_header(content, old_content)
 
     if old_content == content:
         return False

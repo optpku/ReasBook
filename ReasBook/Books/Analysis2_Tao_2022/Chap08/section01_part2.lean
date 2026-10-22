@@ -1,3 +1,8 @@
+/-
+Authors: Zichen Wang, Wanli Ma, Min Cui, Zaiwen Wen
+Released under Apache 2.0 license as described in the file LICENSE.
+-/
+
 import Mathlib
 import Analysis2_Tao_2022.Chap08.section01_part1
 
