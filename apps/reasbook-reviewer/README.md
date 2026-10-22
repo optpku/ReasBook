@@ -5,8 +5,16 @@ books and papers, inspect Lean source, Docs, Verso and theorem dependencies, and
 publish a review comment after signing in. Source and generated evidence come
 from the existing ReasBook SDK cache; starting the web server never builds Lean.
 
+[Public reading and review website](https://reasbook.reaslab.io/) ·
 [Open the hosted Reviewer](https://reasbook.reaslab.io/review/) ·
 [Browse static Docs and Verso](https://reasbook.reaslab.io/artifacts/)
+
+To review a formalization online, choose a textbook or paper and select a
+declaration. Switch between Source, Docs, Verso and Graph to inspect the Lean
+code, available documentation and theorem dependencies. Reading does not require
+sign-in; posting a comment on the selected declaration requires ReasLab sign-in.
+Available resources vary by project and declaration, as shown by the evidence
+status indicators.
 
 ### Selecting a completed single-book Verso
 

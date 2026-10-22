@@ -70,7 +70,7 @@ class ReaderEntrypointsTests(unittest.TestCase):
             self.assertNotIn("https://optpku.github.io/ReasBook/)", text)
             self.assertNotIn("https://reasbook.reaslab.io/ReasBook", text)
             self.assertNotIn("https://reasbook-reviewer.reaslab.io", text)
-            for path in re.findall(r"https://reasbook[.]reaslab[.]io([^\s)\[\]<>]*)", text):
+            for path in re.findall(r"https://reasbook[.]reaslab[.]io([^\s)\[\]<>\"']*)", text):
                 self.assertRegex(
                     path,
                     r"^(?:/?|/review/(?:books/[^/]+/)?|/artifacts/(?:projects/[^/]+/(?:"
@@ -78,6 +78,30 @@ class ReaderEntrypointsTests(unittest.TestCase):
                     r"|glowinski_admm_counterexample/paper/"
                     r"|theorem-maps/(?:books|papers)/[^/]+/(?:v[0-9]+/)?(?:\?view=(?:paper|lean))?)?)?)$",
                 )
+
+    def test_bilingual_readmes_introduce_public_review_before_toolchains(self):
+        for filename, heading, toolchains in (
+            ("README.md", "## Online reading and review", "## Toolchain Branches"),
+            ("README.zh-CN.md", "## 在线阅读与评审", "## 工具链分支"),
+        ):
+            with self.subTest(filename=filename):
+                text = (ROOT / filename).read_text(encoding="utf-8")
+                self.assertLess(text.index(heading), text.index(toolchains))
+                introduction = text.split(heading, 1)[1].split("\n## ", 1)[0]
+                for url in ("https://reasbook.reaslab.io/", "https://reasbook.reaslab.io/review/",
+                            "https://reasbook.reaslab.io/artifacts/"):
+                    self.assertIn(f"]({url})", introduction)
+                for feature in ("Lean", "Docs", "Verso", "ReasLab"):
+                    self.assertIn(feature, introduction)
+
+    def test_public_review_platform_is_listed_and_has_app_documentation(self):
+        for filename in ("README.md", "README.zh-CN.md"):
+            with self.subTest(filename=filename):
+                text = (ROOT / filename).read_text(encoding="utf-8")
+                self.assertIn('<a href="https://reasbook.reaslab.io/">ReasBook Reviewer</a>', text)
+        app = (ROOT / "apps/reasbook-reviewer/README.md").read_text(encoding="utf-8")
+        for url in ("https://reasbook.reaslab.io/", "https://reasbook.reaslab.io/review/"):
+            self.assertIn(f"]({url})", app)
 
     def test_published_paper_maps_survive_bilingual_readme_regeneration(self):
         for filename, language in (("README.md", "en"), ("README.zh-CN.md", "zh-CN")):

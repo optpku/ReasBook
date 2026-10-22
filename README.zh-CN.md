@@ -2,7 +2,7 @@
 
 [English](README.md) | **简体中文**
 
-网站: [https://reasbook.reaslab.io](https://reasbook.reaslab.io/)
+阅读与评审网站: [https://reasbook.reaslab.io](https://reasbook.reaslab.io/)
 
 [静态文档与 Verso](https://reasbook.reaslab.io/artifacts/) ·
 [阅读与评审](https://reasbook.reaslab.io/review/)
@@ -10,6 +10,20 @@
 **ReasBook** 是一个使用 Lean 4 对数学教材和研究论文进行形式化的项目。它在保留原始文献结构的同时，生成可由机器检查的命题与证明。请通过下方书籍和论文表格中的 Docs（文档）、Verso 和已发布的定理依赖图链接浏览各项目。
 
 使用我们的在线系统 [Quokka](https://quokka.reaslab.io/)，将数学教材和研究论文自动形式化为 Lean 4 项目。
+
+## 在线阅读与评审
+
+[ReasBook Reviewer](https://reasbook.reaslab.io/) 是本项目的在线阅读与评审平台，
+面向已形式化的数学教材和研究论文。[进入评审平台](https://reasbook.reaslab.io/review/)，
+选择书籍或论文，即可查看其中的定义、定理和证明。
+
+- 对照阅读 Lean 源代码与已提供的 Docs、Verso 文档。
+- 浏览定理依赖图，查看命题与证明之间的依赖关系。
+- 通过 ReasLab 登录后，对具体声明发表评论和评审意见；阅读无需注册或登录。
+
+文档与依赖图的可用性取决于所选项目及具体声明。
+[静态文档与 Verso](https://reasbook.reaslab.io/artifacts/) 也提供独立入口。
+自行部署请参阅[部署阅读与评审平台](#部署阅读与评审平台)。
 
 ## 工具链分支
 
@@ -178,6 +192,11 @@ GitHub Pages 继续发布静态站点，公众评论需要运行 reviewer 后端
 <td scope="rowgroup">形式化平台</td>
 <td><a href="https://reaslab.io">ReasLab</a></td>
 <td>用于协作式定理开发和验证的在线 Lean 形式化平台。</td>
+</tr>
+<tr>
+<td scope="rowgroup">阅读与评审平台</td>
+<td><a href="https://reasbook.reaslab.io/">ReasBook Reviewer</a></td>
+<td>面向形式化教材和论文的在线阅读与评审平台，支持查看 Lean 源代码、文档和定理依赖关系，并针对具体声明提交评审意见。</td>
 </tr>
 <tr>
 <td rowspan="2" scope="rowgroup">形式化项目</td>
