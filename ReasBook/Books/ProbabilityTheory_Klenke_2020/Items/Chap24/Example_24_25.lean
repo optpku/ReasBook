@@ -1,3 +1,9 @@
+/-
+Authors: Xuanzhi Ren
+Released under Apache 2.0 license as described in the file LICENSE.
+Project-level attribution: optpku/ReasBook@cdaedff51aa8473d10341ae5afb27386db4d11c1:ReasBook/Books/ProbabilityTheory_Klenke_2020/README.md (formalization contributor).
+-/
+
 import Books.ProbabilityTheory_Klenke_2020.Items.Chap14.Lemma_14_27
 import Books.ProbabilityTheory_Klenke_2020.Items.Chap24.Exercise_24_1_1
 import Books.ProbabilityTheory_Klenke_2020.Items.Chap24.Theorem_24_12
