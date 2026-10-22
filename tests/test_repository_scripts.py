@@ -555,7 +555,9 @@ class RepositoryScriptTests(unittest.TestCase):
 
             chapter_page = home_page.parent / "MayLike" / "Chap01.lean"
             chapter = chapter_page.read_text(encoding="utf-8")
-            self.assertTrue(chapter.startswith(generated_marker.rstrip("\n")))
+            header, chapter_body = chapter.split("-/", 1)
+            self.assertIn("Authors:", header)
+            self.assertTrue(chapter_body.lstrip().startswith(generated_marker.rstrip("\n")))
             self.assertIn("# Section 1.1", chapter)
             self.assertIn("# Section 1.7", chapter)
             self.assertNotIn("## Section", chapter)
