@@ -1,0 +1,139 @@
+module
+
+public import Mathlib.CategoryTheory.Sites.Sheafification
+public import Mathlib.CategoryTheory.Sites.Sheaf
+public import stacks_project.Chap07.Definition_7_8_2
+
+@[expose] public section
+
+-- Declarations for this item will be appended below by the statement pipeline.
+
+universe u v w
+
+namespace CategoryTheory
+
+open Limits
+open SemiRepresentableFamily.Over
+
+section
+
+variable {C : Type u} [Category.{v} C] [HasPullbacks C]
+variable {K₁ K₂ : Pretopology C}
+variable {P : Cᵒᵖ ⥤ Type w}
+
+/- Domain-style sampling for Lemma 7.8.7:
+- primary domain: comparison of sheaf conditions for pretopologies via covering families and the
+  induced Grothendieck topologies;
+- inspected owner declarations:
+  `SemiRepresentableFamily.Over.IsCovering`,
+  `SemiRepresentableFamily.Over.toSieve_eq_of_tautologicallyEquivalent`,
+  `Pretopology.gi`,
+  `Presheaf.IsSheaf.of_le`;
+- best owner abstraction: the core owner is the sheaf predicate
+  `Presheaf.IsSheaf K.toGrothendieck P`; the fixed-target family language in
+  `SemiRepresentableFamily.Over X` is a bridge/view used only to compare covering families before
+  transporting the resulting topology inclusion to the canonical Grothendieck owner;
+- primitive data: the two pretopologies, the presheaf, and the source-facing hypotheses comparing
+  covering families or refinements;
+- derived API here: the four sheaf-transfer statements for the induced Grothendieck topologies.
+
+Source/core/bridge triage:
+- `source-facing`: the Stacks lemma clauses phrased in terms of covering families and refinements of
+  pretopologies;
+- `core/canonical`: `Presheaf.IsSheaf K.toGrothendieck P`;
+- `bridge/view`: `SemiRepresentableFamily.Over X`, `IsCovering`, and
+  `toSieve_eq_of_tautologicallyEquivalent`.
+-/
+
+/-- A `K`-covering family can be replaced by a tautologically equivalent `L`-covering family. -/
+abbrev CoversByTautologicalEquivalence (K L : Pretopology C) : Prop :=
+  ∀ {X : C} (𝒰 : SemiRepresentableFamily.Over.{max u v} X),
+    IsCovering K.toPrecoverage 𝒰 →
+    ∃ 𝒱 : SemiRepresentableFamily.Over.{max u v} X,
+      IsCovering L.toPrecoverage 𝒱 ∧ TautologicallyEquivalent 𝒰 𝒱
+
+theorem toGrothendieck_le_of_tautologicallyEquivalent_covers_pretopology
+    (h₁₂ : CoversByTautologicalEquivalence K₁ K₂) :
+    K₁.toGrothendieck ≤ K₂.toGrothendieck := by
+  exact ((Pretopology.gi C).gc K₁ K₂.toGrothendieck).2 <| by
+    intro X R hR
+    rcases R.exists_eq_ofArrows with ⟨ι, Y, f, rfl⟩
+    let 𝒰 : SemiRepresentableFamily.Over.{max u v} X :=
+      ofArrows (fun i : ULift.{max u v} ι ↦ Y i.down) fun i ↦ f i.down
+    have h𝒰_presieve : 𝒰.toPresieve = Presieve.ofArrows Y f := by
+      -- The `ULift` reindexing does not change the generated presieve.
+      simpa [𝒰] using (toPresieve_ofArrows_ulift (Uᵢ := Y) (π := f))
+    have h𝒰_sieve : 𝒰.toSieve = Sieve.generate (Presieve.ofArrows Y f) := by
+      -- The same `ULift` reindexing leaves the generated sieve unchanged.
+      simpa [𝒰, Sieve.ofArrows] using (toSieve_ofArrows_ulift (Uᵢ := Y) (π := f))
+    have h𝒰 : IsCovering K₁.toPrecoverage 𝒰 := by
+      change 𝒰.toPresieve ∈ K₁.toPrecoverage X
+      rw [h𝒰_presieve]
+      exact hR
+    rcases h₁₂ 𝒰 h𝒰 with ⟨𝒱, h𝒱, h𝒰𝒱⟩
+    have hmem : 𝒰.toSieve ∈ K₂.toGrothendieck X := by
+      rw [toSieve_eq_of_tautologicallyEquivalent h𝒰𝒱]
+      exact ⟨𝒱.toPresieve, h𝒱, Sieve.le_generate 𝒱.toPresieve⟩
+    rw [GrothendieckTopology.mem_toPretopology]
+    rw [← h𝒰_sieve]
+    exact hmem
+
+-- Proof sketch: convert the covering-family comparison hypothesis into an inclusion of the
+-- induced Grothendieck topologies, then apply the canonical monotonicity theorem
+-- `Presheaf.IsSheaf.of_le`.
+/-- Lemma 7.8.7 (1): if every covering family in `K₁` is tautologically equivalent to a covering
+family in `K₂`, then every `K₂`-sheaf of sets is also a `K₁`-sheaf of sets. -/
+theorem isSheaf_of_tautologicallyEquivalent_covers_pretopology
+    (h₁₂ : CoversByTautologicalEquivalence K₁ K₂)
+    (hP : Presheaf.IsSheaf K₂.toGrothendieck P) :
+    Presheaf.IsSheaf K₁.toGrothendieck P := by
+  exact Presheaf.IsSheaf.of_le
+    (toGrothendieck_le_of_tautologicallyEquivalent_covers_pretopology h₁₂) hP
+
+/-- Lemma 7.8.7 (2): if every covering family in `K₁` is tautologically equivalent to a covering
+family in `K₂`, and conversely, then the two pretopologies impose equivalent sheaf conditions on
+set-valued presheaves. -/
+theorem isSheaf_iff_of_mutual_tautological_equivalence_pretopology
+    (h₁₂ : CoversByTautologicalEquivalence K₁ K₂)
+    (h₂₁ : CoversByTautologicalEquivalence K₂ K₁) :
+    Presheaf.IsSheaf K₁.toGrothendieck P ↔
+      Presheaf.IsSheaf K₂.toGrothendieck P := by
+  constructor
+  · intro hP
+    exact isSheaf_of_tautologicallyEquivalent_covers_pretopology h₂₁ hP
+  · intro hP
+    exact isSheaf_of_tautologicallyEquivalent_covers_pretopology h₁₂ hP
+
+-- Proof sketch: for a `K₁`-covering presieve `R`, choose a `K₂`-cover `S` contained in the sieve
+-- generated by `R`. A `K₂`-sheaf is a sheaf for `S` and for the pullback covers over each member
+-- of `R`; then Lemma `7.8.6` upgrades the sheaf condition from the refinement `S` to the original
+-- cover `R`.
+/-- Lemma 7.8.7 (3): if every `K₁`-covering family admits a refinement by a `K₂`-covering family,
+then every `K₂`-sheaf of sets is also a `K₁`-sheaf of sets. At the presieve level, the
+refinement hypothesis is expressed by containment in the sieve generated by the original cover. -/
+theorem isSheaf_of_refinement_pretopology
+    (hrefine : K₁ ≤ K₂.toGrothendieck.toPretopology)
+    (hP : Presheaf.IsSheaf K₂.toGrothendieck P) :
+    Presheaf.IsSheaf K₁.toGrothendieck P :=
+  Presheaf.IsSheaf.of_le
+    (((Pretopology.gi C).gc K₁ K₂.toGrothendieck).2 hrefine) hP
+
+-- Proof sketch: apply `isSheaf_of_refinement_pretopology` in each direction and assemble the two
+-- implications into an equivalence of sheaf predicates.
+/-- Lemma 7.8.7 (4): if every cover in each pretopology admits a refinement by a cover in the
+other pretopology, then the two pretopologies impose equivalent sheaf conditions on set-valued
+presheaves, and hence define the same category of sheaves. -/
+theorem isSheaf_iff_of_mutual_refinement_pretopology
+    (h₁₂ : K₁ ≤ K₂.toGrothendieck.toPretopology)
+    (h₂₁ : K₂ ≤ K₁.toGrothendieck.toPretopology) :
+    Presheaf.IsSheaf K₁.toGrothendieck P ↔
+      Presheaf.IsSheaf K₂.toGrothendieck P := by
+  constructor
+  · intro hP
+    exact isSheaf_of_refinement_pretopology h₂₁ hP
+  · intro hP
+    exact isSheaf_of_refinement_pretopology h₁₂ hP
+
+end
+
+end CategoryTheory

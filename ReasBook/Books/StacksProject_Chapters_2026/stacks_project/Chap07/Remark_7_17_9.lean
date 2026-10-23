@@ -1,0 +1,537 @@
+module
+
+public import Mathlib.CategoryTheory.Sites.LocallySurjective
+public import Mathlib.Topology.Sheaves.LocallySurjective
+public import Mathlib.CategoryTheory.Sites.Sheafification
+public import Mathlib.CategoryTheory.Sites.Sheaf
+public import stacks_project.Chap07.Lemma_7_12_4
+public import stacks_project.Chap07.Lemma_7_12_5
+public import stacks_project.Chap07.Lemma_7_17_2
+public import stacks_project.Chap07.Lemma_7_17_3
+public import stacks_project.Chap07.Lemma_7_17_8
+
+@[expose] public section
+
+-- Declarations for this item will be appended below by the statement pipeline.
+
+open CategoryTheory CategoryTheory.Limits Opposite
+open CategoryTheory.Sheaf
+open CategoryTheory.SemiRepresentableFamily.Over
+open scoped CategoryTheory.GrothendieckTopology.SheafifiedRepresentable
+
+noncomputable section
+
+universe u v w
+
+namespace CategoryTheory.GrothendieckTopology
+
+attribute [local instance] Types.instFunLike Types.instConcreteCategory
+
+variable {C : Type u} [Category.{v} C] (J : GrothendieckTopology C)
+variable [HasWeakSheafify J (Type (max u v))]
+variable [HasFiniteCoproducts (Sheaf J (Type (max u v)))]
+
+local instance finiteSheafifiedRepresentableHasCoproduct {ι : Type (max u v)} [Finite ι]
+    (Y : ι → C) : HasCoproduct (fun i : ι ↦ h[Y i]^#[J]) := by
+  let _ : Fintype ι := Fintype.ofFinite ι
+  let _ : HasColimitsOfShape (Discrete ι) (Sheaf J (Type (max u v))) :=
+    Sheaf.instHasColimitsOfShape
+  infer_instance
+
+/- Source/core/bridge triage for 7.17.9:
+- source-facing owners: `HasSurjectiveBasisQuasiCompactProducts`,
+  `HasFiniteRefinementBasisQuasiCompactProducts`,
+  `HasQuasiCompactProductsOfQuasiCompactRepresentables`
+- core/canonical owners reused from earlier in the chapter: `SemiRepresentableFamily`,
+  `SemiRepresentableFamily.Over`, refinement morphisms `𝒱 ⟶ 𝒰`,
+  `sheafifiedRepresentable`/`sheafifiedRepresentableMap`, the coproduct owner
+  `∐ fun i ↦ h[U i]^#[J]` from Lemma 7.12.5, `IsQuasiCompactTestSet`,
+  the terminal-sheaf owner `(⊤_ (Sheaf J (Type (max u v)))).IsQuasiCompactObject`,
+  and `J.HasEnoughObjectsWithProperty`
+- primitive data used here: a semi-representable family `𝒰` and finiteness of `𝒰.index`
+- derived API used here: coproduct objects and their universal morphisms `Limits.Sigma.desc`,
+  together with `prod.lift`
+-/
+
+/-- The set of actual finite coproducts `∐ h_{U_j}^#` with every `U_j` lying in `B`. -/
+def FiniteSheafifiedRepresentableCoproductsFrom (B : Set C) :
+    Set (Sheaf J (Type (max u v))) :=
+  { ℱ | ∃ 𝒰 : SemiRepresentableFamily C, ∃ _ : Finite 𝒰.index,
+      (∀ i : 𝒰.index, 𝒰.obj i ∈ B) ∧
+        ℱ = ∐ fun i : 𝒰.index ↦ h[𝒰.obj i]^#[J] }
+
+/-- A basis `B` of objects detects locally surjective maps to the terminal sheaf by finite
+coproducts of sheafified representables, and pairwise products of those representables are
+quasi-compact. -/
+class HasSurjectiveBasisQuasiCompactProducts (B : Set C) : Prop where
+  surjective_to_terminal {ℱ : Sheaf J (Type (max u v))}
+      (hℱ : IsLocallySurjective (terminal.from ℱ)) :
+      ∃ 𝒰 : SemiRepresentableFamily C, ∃ _ : Finite 𝒰.index,
+        (∀ i : 𝒰.index, 𝒰.obj i ∈ B) ∧
+          ∃ κ : (∐ fun i : 𝒰.index ↦ h[𝒰.obj i]^#[J]) ⟶ ℱ,
+            IsLocallySurjective (κ ≫ terminal.from ℱ)
+  product_quasiCompact {U U' : C} (hU : U ∈ B) (hU' : U' ∈ B) :
+      (h[U]^#[J] ⨯ h[U']^#[J]).IsQuasiCompactObject
+
+/-- A basis `B` has a finite representable cover of the terminal sheaf, finite cover refinements
+inside `B`, and finite representable covers of products built from actual arrows in the site. -/
+class HasFiniteRefinementBasisQuasiCompactProducts (B : Set C) : Prop where
+  terminal_surjection :
+    ∃ 𝒰 : SemiRepresentableFamily C, ∃ _ : Finite 𝒰.index,
+      (∀ i : 𝒰.index, 𝒰.obj i ∈ B) ∧
+        IsLocallySurjective
+          (terminal.from (∐ fun i : 𝒰.index ↦ h[𝒰.obj i]^#[J]))
+  cover_refinement {U : C} (hU : U ∈ B)
+      (𝒰 : SemiRepresentableFamily.Over.{max u v} U) (h𝒰 : 𝒰.toSieve ∈ J U) :
+      ∃ (𝒱 : SemiRepresentableFamily.Over.{max u v} U) (_ : Finite 𝒱.index) (_ : 𝒱 ⟶ 𝒰),
+        𝒱.toSieve ∈ J U ∧
+          ∀ j : 𝒱.index, (𝒱.obj j).left ∈ B
+  product_surjection {U U' : C} (hU : U ∈ B) (hU' : U' ∈ B) :
+      ∃ 𝒱 : SemiRepresentableFamily C, ∃ _ : Finite 𝒱.index,
+        ∃ f : ∀ i : 𝒱.index, 𝒱.obj i ⟶ U, ∃ g : ∀ i : 𝒱.index, 𝒱.obj i ⟶ U',
+          (∀ i : 𝒱.index, 𝒱.obj i ∈ B) ∧
+            IsLocallySurjective
+              (prod.lift
+                (Limits.Sigma.desc
+                  (fun i : 𝒱.index ↦ J.sheafifiedRepresentableMap (f i)))
+                (Limits.Sigma.desc
+                  (fun i : 𝒱.index ↦ J.sheafifiedRepresentableMap (g i))))
+
+/-- Products of sheafified representables attached to quasi-compact objects are quasi-compact in
+the sheaf topos. -/
+class HasQuasiCompactProductsOfQuasiCompactRepresentables : Prop where
+  product_quasiCompact {U U' : C}
+      (hU : J.QuasiCompactObject U)
+      (hU' : J.QuasiCompactObject U') :
+      (h[U]^#[J] ⨯ h[U']^#[J]).IsQuasiCompactObject
+
+/-- The site is generated by quasi-compact objects, the terminal sheaf is quasi-compact, and
+products of sheafified representables of quasi-compact objects are quasi-compact. -/
+class HasQuasiCompactGeneratorTestSetHypotheses : Prop where
+  topos_quasiCompact :
+    (⊤_ (Sheaf J (Type (max u v)))).IsQuasiCompactObject
+  enough_quasiCompactObjects :
+    J.HasEnoughObjectsWithProperty (J.QuasiCompactObject)
+  quasiCompactRepresentableProducts :
+    HasQuasiCompactProductsOfQuasiCompactRepresentables J
+
+/-- Helper for Remark 7.17.9: distributing finite coproducts over pullbacks identifies the finite
+coproduct of pairwise products with the self-product of the original finite coproduct. -/
+private noncomputable def pairwise_product_coproduct_iso_selfProduct
+    (𝒰 : SemiRepresentableFamily C) [Finite 𝒰.index]
+    [HasCoproduct (fun i : 𝒰.index ↦ h[𝒰.obj i]^#[J])]
+    [HasCoproduct (fun p : 𝒰.index × 𝒰.index ↦ h[𝒰.obj p.1]^#[J] ⨯ h[𝒰.obj p.2]^#[J])] :
+    (∐ fun p : 𝒰.index × 𝒰.index ↦ h[𝒰.obj p.1]^#[J] ⨯ h[𝒰.obj p.2]^#[J]) ≅
+      (∐ fun i : 𝒰.index ↦ h[𝒰.obj i]^#[J]) ⨯
+        (∐ fun i : 𝒰.index ↦ h[𝒰.obj i]^#[J]) := by
+  classical
+  let _ : HasColimitsOfShape (Discrete 𝒰.index) (Sheaf J (Type (max u v))) :=
+    Sheaf.instHasColimitsOfShape
+  let _ : HasColimitsOfShape (Discrete (𝒰.index × 𝒰.index)) (Sheaf J (Type (max u v))) :=
+    Sheaf.instHasColimitsOfShape
+  let F : 𝒰.index → Sheaf J (Type (max u v)) := fun i ↦ h[𝒰.obj i]^#[J]
+  let K : Sheaf J (Type (max u v)) := ∐ F
+  let τ : ∀ i : 𝒰.index, F i ⟶ ⊤_ (Sheaf J (Type (max u v))) := fun i ↦
+    terminal.from (F i)
+  let Ppull : 𝒰.index × 𝒰.index → Sheaf J (Type (max u v)) := fun p ↦
+    Limits.pullback (τ p.1) (τ p.2)
+  let _ : HasCoproduct Ppull := by
+    infer_instance
+  let eSource :
+      (∐ fun p : 𝒰.index × 𝒰.index ↦ h[𝒰.obj p.1]^#[J] ⨯ h[𝒰.obj p.2]^#[J]) ≅
+        ∐ Ppull :=
+    Limits.Sigma.whiskerEquiv
+      (Equiv.refl _) (fun p ↦ (prodIsoPullback (F p.1) (F p.2)).symm)
+  have hτ :
+      Limits.Sigma.desc τ = terminal.from K := by
+    -- The assembled map from the coproduct to the terminal sheaf is the terminal map itself.
+    apply Limits.Sigma.hom_ext
+    intro i
+    simpa [τ, K] using (Limits.Sigma.ι_desc τ i)
+  let hpb :
+      IsPullback
+        (Limits.Sigma.desc fun p : 𝒰.index × 𝒰.index ↦
+          Limits.pullback.fst (τ p.1) (τ p.2) ≫ Limits.Sigma.ι F p.1)
+        (Limits.Sigma.desc fun p : 𝒰.index × 𝒰.index ↦
+          Limits.pullback.snd (τ p.1) (τ p.2) ≫ Limits.Sigma.ι F p.2)
+        (terminal.from K) (terminal.from K) := by
+    -- Finitary extensivity distributes pullbacks over the finite coproduct indexed by `𝒰`.
+    simpa [hτ] using
+      (FinitaryPreExtensive.isPullback_sigmaDesc
+        (C := Sheaf J (Type (max u v))) τ τ)
+  let ePull : (∐ Ppull) ≅ Limits.pullback (terminal.from K) (terminal.from K) :=
+    hpb.isoPullback
+  -- Finally identify the pullback over the terminal object with the binary product.
+  exact eSource.trans (ePull.trans (prodIsoPullback K K).symm)
+
+-- Proof sketch: use the finite coproducts supplied by the basis to test locally surjective maps
+-- to the terminal sheaf; quasi-compactness of pairwise products of basis representables yields the
+-- product quasi-compactness clause for the resulting finite coproduct test set.
+/-- Finite coproducts of sheafified representables from a surjective basis form a test set for
+Lemma 7.17.8 (4). -/
+theorem isQuasiCompactTestSet_of_surjective_basis
+    (B : Set C)
+    [HasSurjectiveBasisQuasiCompactProducts J B] :
+    IsQuasiCompactTestSet J (FiniteSheafifiedRepresentableCoproductsFrom J B) := by
+  classical
+  refine ⟨?_, ?_⟩
+  · intro F hF
+    -- The basis hypothesis already packages the required finite coproduct cover of `F`.
+    obtain ⟨𝒰, h𝒰fin, h𝒰B, κ, hκ⟩ :=
+      (inferInstance : HasSurjectiveBasisQuasiCompactProducts J B).surjective_to_terminal hF
+    refine ⟨∐ fun i : 𝒰.index ↦ h[𝒰.obj i]^#[J], ?_, κ, hκ⟩
+    exact ⟨𝒰, h𝒰fin, h𝒰B, rfl⟩
+  · intro K hK
+    rcases hK with ⟨𝒰, h𝒰fin, h𝒰B, rfl⟩
+    let _ : Finite 𝒰.index := h𝒰fin
+    let _ : HasColimitsOfShape (Discrete 𝒰.index) (Sheaf J (Type (max u v))) :=
+      Sheaf.instHasColimitsOfShape
+    let _ : HasColimitsOfShape (Discrete (𝒰.index × 𝒰.index)) (Sheaf J (Type (max u v))) :=
+      Sheaf.instHasColimitsOfShape
+    let P : 𝒰.index × 𝒰.index → Sheaf J (Type (max u v)) := fun p ↦
+      h[𝒰.obj p.1]^#[J] ⨯ h[𝒰.obj p.2]^#[J]
+    let _ : HasCoproduct P := by
+      infer_instance
+    have hsource :
+        (∐ P).IsQuasiCompactObject := by
+      -- Finite coproducts preserve quasi-compactness once each pairwise product is known to be
+      -- quasi-compact by hypothesis on the basis.
+      refine CategoryTheory.Sheaf.finite_coproduct_isQuasiCompactObject (J := J) P ?_
+      intro p
+      exact
+        (inferInstance : HasSurjectiveBasisQuasiCompactProducts J B).product_quasiCompact
+          (h𝒰B p.1) (h𝒰B p.2)
+    let e := pairwise_product_coproduct_iso_selfProduct (J := J) 𝒰
+    -- Transport quasi-compactness across the coproduct-to-product isomorphism.
+    simpa [P] using
+      CategoryTheory.Sheaf.isQuasiCompactObject_isClosedUnderIsomorphisms.of_iso e hsource
+
+/-- Helper for Remark 7.17.9: every basis object in a finite-refinement basis satisfies the
+finite-refinement property of Lemma 7.17.2. -/
+theorem basis_object_hasFiniteRefinementProperty_of_finite_refinement_basis
+    {B : Set C}
+    [HasFiniteRefinementBasisQuasiCompactProducts J B]
+    {U : C} (hU : U ∈ B) :
+    HasFiniteRefinementProperty J U := by
+  refine
+    { finite_refinement := fun R hR ↦ by
+        let 𝒰 : SemiRepresentableFamily.Over.{max u v} U :=
+          ofArrows
+            (fun i : R.uncurry ↦ i.1.1)
+            (fun i ↦ i.1.2)
+        have h𝒰toPresieve : 𝒰.toPresieve = R := by
+          simpa [𝒰, toPresieve, ofArrows] using presieve_of_uncurry_eq R
+        have h𝒰 : 𝒰.toSieve ∈ J U := by
+          rw [toSieve, h𝒰toPresieve]
+          exact hR
+        -- The basis-refinement hypothesis gives the required finite covering refinement.
+        obtain ⟨𝒱, h𝒱fin, φ, h𝒱, _⟩ :=
+          (inferInstance : HasFiniteRefinementBasisQuasiCompactProducts J B).cover_refinement
+            hU 𝒰 h𝒰
+        refine ⟨𝒱, h𝒱fin, h𝒱, ?_⟩
+        simpa [toSieve, h𝒰toPresieve] using toSieve_le_of_hom φ }
+
+/-- Helper for Remark 7.17.9: over a basis object `U`, local surjectivity to the terminal sheaf
+can be refined to a finite covering family by basis objects carrying chosen local sections. -/
+private theorem finite_basis_cover_with_sections
+    {B : Set C}
+    [HasFiniteRefinementBasisQuasiCompactProducts J B]
+    {U : C} (hU : U ∈ B)
+    (ℱ : Sheaf J (Type (max u v)))
+    (hℱ : IsLocallySurjective (terminal.from ℱ)) :
+    ∃ 𝒱 : SemiRepresentableFamily.Over.{max u v} U, ∃ _ : Finite 𝒱.index,
+      ∃ s : ∀ j : 𝒱.index, ℱ.obj.obj (op ((𝒱.obj j).left)),
+        𝒱.toSieve ∈ J U ∧
+          ∀ j : 𝒱.index, (𝒱.obj j).left ∈ B := by
+  classical
+  let 𝒲 : SemiRepresentableFamily.Over.{max u v} U :=
+    { index := Σ A : CategoryTheory.Over U, ℱ.obj.obj (op A.left)
+      obj := fun i ↦ i.1 }
+  have h𝒲 : 𝒲.toSieve ∈ J U := by
+    let xTop : (⊤_ (Sheaf J (Type (max u v)))).obj.obj (op U) :=
+      (terminal.from h[U]^#[J]).hom.app (op U)
+        (J.uliftSheafifiedRepresentableHomEquiv (h[U]^#[J]) U (𝟙 (h[U]^#[J])))
+    -- The image sieve of the unique terminal section is exactly the sieve of local sections.
+    refine J.superset_covering ?_ (hℱ.1 xTop)
+    intro V f hf
+    rcases hf with ⟨x, _hx⟩
+    let i : 𝒲.index := ⟨CategoryTheory.Over.mk f, x⟩
+    exact Sieve.le_generate 𝒲.toPresieve _ _ (Presieve.ofArrows.mk i)
+  obtain ⟨𝒱, h𝒱fin, φ, h𝒱cover, h𝒱B⟩ :=
+    (inferInstance : HasFiniteRefinementBasisQuasiCompactProducts J B).cover_refinement
+      hU 𝒲 h𝒲
+  let s : ∀ j : 𝒱.index, ℱ.obj.obj (op ((𝒱.obj j).left)) := fun j ↦
+    ℱ.obj.map ((φ.f j).left).op (φ.α j).2
+  -- Pull back each chosen section along the refinement map to obtain sections on the new family.
+  exact ⟨𝒱, h𝒱fin, s, h𝒱cover, h𝒱B⟩
+
+/-- Helper for Remark 7.17.9: flattening the refined local sections over a fixed finite terminal
+cover produces one finite basis coproduct mapping locally surjectively to the terminal sheaf. -/
+private theorem nested_basis_refinement_cover_to_terminal
+    {B : Set C}
+    [HasFiniteRefinementBasisQuasiCompactProducts J B]
+    {ℱ : Sheaf J (Type (max u v))}
+    (hℱ : IsLocallySurjective (terminal.from ℱ)) :
+    ∃ 𝒲 : SemiRepresentableFamily C, ∃ _ : Finite 𝒲.index,
+      (∀ t : 𝒲.index, 𝒲.obj t ∈ B) ∧
+        ∃ κ : (∐ fun t : 𝒲.index ↦ h[𝒲.obj t]^#[J]) ⟶ ℱ,
+          IsLocallySurjective (κ ≫ terminal.from ℱ) := by
+  classical
+  obtain ⟨𝒰₀, h𝒰₀fin, h𝒰₀B, h𝒰₀surj⟩ :=
+    (inferInstance : HasFiniteRefinementBasisQuasiCompactProducts J B).terminal_surjection
+  choose 𝒱 h𝒱fin s h𝒱cover h𝒱B using
+    fun i : 𝒰₀.index ↦
+      finite_basis_cover_with_sections (J := J) (B := B) (h𝒰₀B i) ℱ hℱ
+  let _ : ∀ i : 𝒰₀.index, Finite ((𝒱 i).index) := h𝒱fin
+  let _ : HasColimitsOfShape (Discrete 𝒰₀.index) (Sheaf J (Type (max u v))) :=
+    Sheaf.instHasColimitsOfShape
+  let _ : ∀ i : 𝒰₀.index,
+      HasColimitsOfShape (Discrete ((𝒱 i).index)) (Sheaf J (Type (max u v))) :=
+    fun _ ↦ Sheaf.instHasColimitsOfShape
+  let 𝒲 : SemiRepresentableFamily C :=
+    { index := Σ i : 𝒰₀.index, (𝒱 i).index
+      obj := fun t ↦ ((𝒱 t.1).obj t.2).left }
+  let h𝒲fin : Finite 𝒲.index := by
+    infer_instance
+  let _ : HasColimitsOfShape (Discrete 𝒲.index) (Sheaf J (Type (max u v))) :=
+    Sheaf.instHasColimitsOfShape
+  let nestedToTarget :
+      (∐ fun i : 𝒰₀.index ↦ ∐ fun j : (𝒱 i).index ↦ h[((𝒱 i).obj j).left]^#[J]) ⟶ ℱ :=
+    Limits.Sigma.desc fun i : 𝒰₀.index ↦
+      Limits.Sigma.desc fun j : (𝒱 i).index ↦
+        (J.uliftSheafifiedRepresentableHomEquiv ℱ ((𝒱 i).obj j).left).symm (s i j)
+  have hinner :
+      ∀ i : 𝒰₀.index,
+        IsLocallySurjective
+          (Limits.Sigma.desc
+            (fun j : (𝒱 i).index ↦ J.sheafifiedRepresentableMap ((𝒱 i).obj j).hom)) := by
+    intro i
+    have hcover :
+        Sieve.ofArrows
+            (fun j : (𝒱 i).index ↦ ((𝒱 i).obj j).left)
+            (fun j ↦ ((𝒱 i).obj j).hom) ∈ J (𝒰₀.obj i) := by
+      simpa [SemiRepresentableFamily.Over.toSieve, SemiRepresentableFamily.Over.toPresieve] using
+        h𝒱cover i
+    have hpres :
+        Presheaf.IsLocallySurjective J
+          (Limits.Sigma.desc
+            (fun j : (𝒱 i).index ↦
+              CategoryTheory.uliftYoneda.{max u v}.map ((𝒱 i).obj j).hom)) := by
+      exact
+        (J.ofArrows_mem_iff_isLocallySurjective_sigmaDesc_uliftYoneda_map
+          (fun j : (𝒱 i).index ↦ ((𝒱 i).obj j).hom)).1 hcover
+    -- Convert the covering sieve of the refined family to local surjectivity on sheaves.
+    exact
+      (J.isLocallySurjective_sigmaDesc_sheafifiedRepresentableMap_iff
+        (fun j : (𝒱 i).index ↦ ((𝒱 i).obj j).left)
+        (fun j ↦ ((𝒱 i).obj j).hom)).2 hpres
+  let nestedToBase :
+      (∐ fun i : 𝒰₀.index ↦ ∐ fun j : (𝒱 i).index ↦ h[((𝒱 i).obj j).left]^#[J]) ⟶
+        ∐ fun i : 𝒰₀.index ↦ h[𝒰₀.obj i]^#[J] :=
+    Limits.Sigma.desc fun i : 𝒰₀.index ↦
+      (Limits.Sigma.desc
+        (fun j : (𝒱 i).index ↦ J.sheafifiedRepresentableMap ((𝒱 i).obj j).hom)) ≫
+          Limits.Sigma.ι (fun i : 𝒰₀.index ↦ h[𝒰₀.obj i]^#[J]) i
+  have hnestedToBase :
+      IsLocallySurjective nestedToBase := by
+    -- Assemble the componentwise locally surjective inner maps into one outer coproduct map.
+    simpa [nestedToBase] using
+      (CategoryTheory.Sheaf.isLocallySurjective_sigma_desc_of_componentwise
+        (J := J)
+        (Y := fun i : 𝒰₀.index ↦ ∐ fun j : (𝒱 i).index ↦ h[((𝒱 i).obj j).left]^#[J])
+        (F := fun i : 𝒰₀.index ↦ h[𝒰₀.obj i]^#[J])
+        (γ := fun i ↦
+          Limits.Sigma.desc
+            (fun j : (𝒱 i).index ↦ J.sheafifiedRepresentableMap ((𝒱 i).obj j).hom))
+        hinner)
+  have hterminal_nested :
+      IsLocallySurjective
+        (nestedToBase ≫ terminal.from (∐ fun i : 𝒰₀.index ↦ h[𝒰₀.obj i]^#[J])) := by
+    let _ : IsLocallySurjective nestedToBase := hnestedToBase
+    let _ :
+        IsLocallySurjective
+          (terminal.from (∐ fun i : 𝒰₀.index ↦ h[𝒰₀.obj i]^#[J])) := h𝒰₀surj
+    infer_instance
+  have hcomparison :
+      nestedToTarget ≫ terminal.from ℱ =
+        nestedToBase ≫ terminal.from (∐ fun i : 𝒰₀.index ↦ h[𝒰₀.obj i]^#[J]) := by
+    -- On every representable summand, both composites are the unique map to the terminal sheaf.
+    apply Limits.Sigma.hom_ext
+    intro i
+    apply Limits.Sigma.hom_ext
+    intro j
+    apply Limits.terminal.hom_ext
+  have hnestedToTarget :
+      IsLocallySurjective (nestedToTarget ≫ terminal.from ℱ) := by
+    exact hcomparison.symm ▸ hterminal_nested
+  let eFlat :
+      (∐ fun i : 𝒰₀.index ↦ ∐ fun j : (𝒱 i).index ↦ h[((𝒱 i).obj j).left]^#[J]) ≅
+        (∐ fun t : 𝒲.index ↦ h[𝒲.obj t]^#[J]) :=
+    Limits.sigmaSigmaIso
+      (fun i : 𝒰₀.index ↦ (𝒱 i).index)
+      (fun i j ↦ h[((𝒱 i).obj j).left]^#[J])
+  let κ : (∐ fun t : 𝒲.index ↦ h[𝒲.obj t]^#[J]) ⟶ ℱ := eFlat.inv ≫ nestedToTarget
+  have hκ :
+      IsLocallySurjective (κ ≫ terminal.from ℱ) := by
+    let _ : IsLocallySurjective eFlat.inv := by infer_instance
+    let _ : IsLocallySurjective (nestedToTarget ≫ terminal.from ℱ) := hnestedToTarget
+    simpa [κ, Category.assoc] using
+      (inferInstance : IsLocallySurjective (eFlat.inv ≫ (nestedToTarget ≫ terminal.from ℱ)))
+  refine ⟨𝒲, h𝒲fin, ?_, κ, hκ⟩
+  intro t
+  exact h𝒱B t.1 t.2
+
+-- Proof sketch: the finite cover of the terminal sheaf gives the first clause of
+-- `IsQuasiCompactTestSet`; refinements by finite `B`-covers produce finite coproducts that test
+-- arbitrary surjections to `*`, and the product-cover hypothesis supplies the quasi-compactness
+-- information needed for their pairwise products.
+/-- Finite coproducts of sheafified representables from a finite-refinement basis form a test set
+for Lemma 7.17.8 (4). -/
+theorem isQuasiCompactTestSet_of_finite_refinement_basis
+    (B : Set C)
+    [HasFiniteRefinementBasisQuasiCompactProducts J B] :
+    IsQuasiCompactTestSet J (FiniteSheafifiedRepresentableCoproductsFrom J B) := by
+  let _ : HasSurjectiveBasisQuasiCompactProducts J B :=
+    { surjective_to_terminal := fun {ℱ} hℱ ↦ by
+        -- Route correction: refine the fixed finite terminal cover by local sections of `ℱ`,
+        -- flatten the resulting nested family, and map the finite coproduct to `ℱ`.
+        exact nested_basis_refinement_cover_to_terminal (J := J) (B := B) hℱ
+      product_quasiCompact := fun {U U'} hU hU' ↦ by
+        classical
+        obtain ⟨𝒱, h𝒱fin, f, g, h𝒱B, hsurj⟩ :=
+          (inferInstance : HasFiniteRefinementBasisQuasiCompactProducts J B).product_surjection
+            hU hU'
+        let _ : Finite 𝒱.index := h𝒱fin
+        have hsource :
+            (∐ fun i : 𝒱.index ↦ h[𝒱.obj i]^#[J]).IsQuasiCompactObject := by
+          -- Each source summand comes from a basis object, hence is quasi-compact.
+          refine
+            CategoryTheory.Sheaf.finite_coproduct_isQuasiCompactObject
+              (J := J) (F := fun i : 𝒱.index ↦ h[𝒱.obj i]^#[J]) ?_
+          intro i
+          rw [← J.quasiCompactObject_iff_isQuasiCompactObject_sheafifiedRepresentable]
+          exact
+            hasFiniteRefinementProperty_implies_quasiCompactObject
+              (basis_object_hasFiniteRefinementProperty_of_finite_refinement_basis
+                (J := J) (B := B) (h𝒱B i))
+        let κ :
+            (∐ fun i : 𝒱.index ↦ h[𝒱.obj i]^#[J]) ⟶
+              h[U]^#[J] ⨯ h[U']^#[J] :=
+          prod.lift
+            (Limits.Sigma.desc
+              (fun i : 𝒱.index ↦ J.sheafifiedRepresentableMap (f i)))
+            (Limits.Sigma.desc
+              (fun i : 𝒱.index ↦ J.sheafifiedRepresentableMap (g i)))
+        -- The product-cover axiom makes the finite coproduct source a locally surjective cover.
+        exact
+          CategoryTheory.Sheaf.isQuasiCompactObject_of_isLocallySurjective
+            (π := κ) hsurj hsource }
+  -- Once the finite-refinement basis is translated into a surjective basis, reuse the core case.
+  simpa using (isQuasiCompactTestSet_of_surjective_basis (J := J) B)
+
+/-- Helper for Remark 7.17.9: quasi-compact generators give the surjective-basis package used by
+the core test-set theorem. -/
+theorem surjective_basis_of_quasiCompact_generators
+    (hTopos : (⊤_ (Sheaf J (Type (max u v)))).IsQuasiCompactObject)
+    (hEnough : J.HasEnoughObjectsWithProperty (J.QuasiCompactObject))
+    [HasQuasiCompactProductsOfQuasiCompactRepresentables J] :
+    HasSurjectiveBasisQuasiCompactProducts J { U | J.QuasiCompactObject U } := by
+  classical
+  refine ⟨?_, ?_⟩
+  · intro ℱ hℱ
+    obtain ⟨𝒰, π, hπ⟩ :=
+      exists_locally_surjective_map_from_basis_objects (J := J) hEnough ℱ
+    let _ : HasColimitsOfShape (Discrete 𝒰.1.index) (Sheaf J (Type (max u v))) :=
+      Sheaf.instHasColimitsOfShape
+    have hterminal :
+        IsLocallySurjective (π ≫ terminal.from ℱ) := by
+      -- Compose the representable cover of `ℱ` with the given locally surjective map to `*`.
+      rw [Sheaf.isLocallySurjective_iff_epi] at hπ hℱ ⊢
+      let _ : Epi π := hπ
+      let _ : Epi (terminal.from ℱ) := hℱ
+      infer_instance
+    obtain ⟨T, hT, hTsurj⟩ :=
+      hTopos.finite_subcoproduct
+        (fun i : 𝒰.1.index ↦ h[𝒰.1.obj i]^#[J])
+        (π ≫ terminal.from ℱ)
+        hterminal
+    let 𝒱 : SemiRepresentableFamily C :=
+      { index := T
+        obj := fun i ↦ 𝒰.1.obj i.1 }
+    let h𝒱fin : Finite 𝒱.index := hT.to_subtype
+    let _ : HasColimitsOfShape (Discrete 𝒱.index) (Sheaf J (Type (max u v))) :=
+      Sheaf.instHasColimitsOfShape
+    let κ : (∐ fun i : 𝒱.index ↦ h[𝒱.obj i]^#[J]) ⟶ ℱ :=
+      Limits.Sigma.desc
+        (fun i : 𝒱.index ↦
+          Limits.Sigma.ι (fun j : 𝒰.1.index ↦ h[𝒰.1.obj j]^#[J]) i.1 ≫ π)
+    refine ⟨𝒱, h𝒱fin, ?_, κ, ?_⟩
+    · intro i
+      exact 𝒰.2 i.1
+    · -- The finite witness returned by quasi-compactness is exactly the required map to `*`.
+      have hTsurj' :
+          IsLocallySurjective
+            (Limits.Sigma.desc (fun i : 𝒱.index ↦ terminal.from h[𝒱.obj i]^#[J])) := by
+        simpa [𝒱] using hTsurj
+      have hterminal_desc :
+          Limits.Sigma.desc (fun i : 𝒱.index ↦ terminal.from h[𝒱.obj i]^#[J]) =
+            terminal.from (∐ fun i : 𝒱.index ↦ h[𝒱.obj i]^#[J]) := by
+        apply Limits.terminal.hom_ext
+      simpa [hterminal_desc] using hTsurj'
+  · intro U U' hU hU'
+    -- This is the standing quasi-compactness assumption on pairwise representable products.
+    exact
+      (inferInstance : HasQuasiCompactProductsOfQuasiCompactRepresentables J).product_quasiCompact
+        hU hU'
+
+-- Proof sketch: quasi-compactness of the terminal sheaf handles the first stage of the testing
+-- argument; coverings by quasi-compact objects yield finite representable coproducts that refine
+-- any locally surjective map to `*`, and quasi-compactness of products of quasi-compact
+-- representables gives the second clause of `IsQuasiCompactTestSet`.
+/-- Finite coproducts of sheafified representables attached to quasi-compact objects form a test
+set for Lemma 7.17.8 (4) on a quasi-compact site generated by quasi-compact objects. -/
+theorem isQuasiCompactTestSet_of_quasiCompact_generators
+    (hTopos : (⊤_ (Sheaf J (Type (max u v)))).IsQuasiCompactObject)
+    (hEnough : J.HasEnoughObjectsWithProperty (J.QuasiCompactObject))
+    [HasQuasiCompactProductsOfQuasiCompactRepresentables J] :
+    IsQuasiCompactTestSet J
+      (FiniteSheafifiedRepresentableCoproductsFrom J
+        { U | J.QuasiCompactObject U }) :=
+  by
+    let _ : HasSurjectiveBasisQuasiCompactProducts J { U | J.QuasiCompactObject U } :=
+      surjective_basis_of_quasiCompact_generators (J := J) hTopos hEnough
+    -- Reduce the quasi-compact-generator case to the surjective-basis case already isolated.
+    simpa using
+      (isQuasiCompactTestSet_of_surjective_basis
+        (J := J) { U | J.QuasiCompactObject U })
+
+-- Proof sketch: perform the explicit three-way case split from Remark 7.17.9 and apply the
+-- corresponding existence theorem, using the finite coproduct family supplied in each case.
+/-- Remark 7.17.9: any of the three standard hypotheses yields a test set satisfying the
+assumptions of Lemma 7.17.8 (4). -/
+theorem exists_quasiCompactTestSet_of_surjective_basis_or_finite_refinement_basis_or_quasiCompact_generators
+    (h :
+      (∃ B : Set C, HasSurjectiveBasisQuasiCompactProducts J B) ∨
+        (∃ B : Set C, HasFiniteRefinementBasisQuasiCompactProducts J B) ∨
+          HasQuasiCompactGeneratorTestSetHypotheses J) :
+    ∃ S : Set (Sheaf J (Type (max u v))), IsQuasiCompactTestSet J S := by
+  rcases h with hsurj | hfinite | hqc
+  · rcases hsurj with ⟨B, _⟩
+    -- In the surjective-basis case, use the finite coproducts built from that basis.
+    exact
+      ⟨FiniteSheafifiedRepresentableCoproductsFrom J B,
+        isQuasiCompactTestSet_of_surjective_basis (J := J) B⟩
+  · rcases hfinite with ⟨B, _⟩
+    -- In the finite-refinement case, pass to the corresponding surjective-basis test set.
+    exact
+      ⟨FiniteSheafifiedRepresentableCoproductsFrom J B,
+        isQuasiCompactTestSet_of_finite_refinement_basis (J := J) B⟩
+  · let _ : HasQuasiCompactProductsOfQuasiCompactRepresentables J :=
+      hqc.quasiCompactRepresentableProducts
+    -- In the quasi-compact-generator case, use quasi-compact representables themselves.
+    exact
+      ⟨FiniteSheafifiedRepresentableCoproductsFrom J { U | J.QuasiCompactObject U },
+        isQuasiCompactTestSet_of_quasiCompact_generators
+          (J := J) hqc.topos_quasiCompact hqc.enough_quasiCompactObjects⟩
+
+end CategoryTheory.GrothendieckTopology
