@@ -10,6 +10,11 @@ These code-author roles are separate from the paper's bibliographic authors.
 
 **[Open the source on `v4.32.2`](https://github.com/optpku/ReasBook/tree/v4.32.2/ReasBook/Papers/BFGSMinimumQOrder_Liu_2026/)**
 
+From that branch's `ReasBook/` directory, `lake build BFGSMinimumQOrder_Liu_2026`
+builds the registered public aggregate used by Documentation. The broader
+`BFGSMinimumQOrder_Implementation` library retains all imported infrastructure
+and compatibility roots.
+
 [Docs](https://reasbook.reaslab.io/artifacts/projects/bfgsminimumqorder_liu_2026/docs/ReasBook/BFGSMinimumQOrder_Liu_2026.html) ·
 [Verso](https://reasbook.reaslab.io/artifacts/projects/bfgsminimumqorder_liu_2026/papers/bfgsminimumqorder_liu_2026/) ·
 [Theorem map](https://reasbook.reaslab.io/artifacts/projects/bfgsminimumqorder_liu_2026/theorem-maps/papers/bfgsminimumqorder_liu_2026/) ·
