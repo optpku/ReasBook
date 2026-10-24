@@ -43,13 +43,26 @@ class ReaderEntrypointsTests(unittest.TestCase):
             self.assertEqual({p.relative_to(site).as_posix() for p in changed}, set(catalogs))
             for relative in catalogs:
                 page = (site / relative).read_text(encoding="utf-8")
-                self.assertIn(f'content="0; url={README_URL}"', page)
+                target = './pages/' if relative == 'sites/demo/index.html' else README_URL
+                self.assertIn(f'content="0; url={target}"', page)
                 self.assertIn('content="noindex,follow"', page)
-                self.assertIn(f'<a href="{README_URL}">', page)
+                self.assertIn(f'<a href="{target}">', page)
                 self.assertNotIn("original:", page)
             for relative in content:
                 self.assertEqual((site / relative).read_text(), f"original: {relative}")
             self.assertEqual(write_reader_entrypoints(site), changed)
+
+    def test_project_bookmarks_use_docs_when_reading_pages_are_absent(self):
+        with tempfile.TemporaryDirectory() as temp:
+            site = Path(temp)
+            project = site / 'versions/v4.30.0/sites/demo'
+            docs = project / 'docs/index.html'
+            docs.parent.mkdir(parents=True)
+            docs.write_text('real documentation')
+            (project / 'index.html').write_text('old project catalog')
+            write_reader_entrypoints(site)
+            self.assertIn('content="0; url=./docs/"', (project / 'index.html').read_text())
+            self.assertEqual(docs.read_text(), 'real documentation')
 
     def test_readmes_link_to_project_resources_not_aggregate_catalogs(self):
         readmes = [ROOT / "README.md", ROOT / "README.zh-CN.md"]

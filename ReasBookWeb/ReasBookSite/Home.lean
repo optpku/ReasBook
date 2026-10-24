@@ -9,8 +9,8 @@ open Verso Genre Blog
 
 #doc (Page) "ReasBook" =>
 
-Books and research papers formalized in Lean, with source-linked API
+Books and research papers formalized in Lean, with source-linked statements,
 documentation and theorem dependency maps.
 
-- [API documentation](/ReasBook/docs/)
+- [Documentation](/ReasBook/docs/)
 - [Theorem dependency maps](/ReasBook/theorem-maps/)

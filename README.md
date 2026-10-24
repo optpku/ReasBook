@@ -29,6 +29,11 @@ paper and inspect its definitions, theorems, and proofs.
 - Post review comments on individual declarations after signing in with ReasLab;
   reading does not require an account.
 
+Docs means **Documentation**: its reading focus is mathematical **Statements**
+(definitions and theorem statements). Use a project's Docs or Verso link in the
+tables below to open its reading entry directly; the source-directory links are
+for browsing Lean files.
+
 Available documentation and graph evidence vary by project and declaration.
 [Static Docs and Verso](https://reasbook.reaslab.io/artifacts/) are also available
 as a separate entry point. For self-hosting, see

@@ -717,6 +717,48 @@ class ProjectDocumentationTests(unittest.TestCase):
             self.assertFalse(rebuilt.reused)
             self.assertGreater(len(runner.commands), command_count)
 
+    def test_reference_statements_and_flat_contents_work_in_both_docgen_modes(self) -> None:
+        for modern in (True, False):
+            with self.subTest(modern=modern), tempfile.TemporaryDirectory() as temp:
+                root = Path(temp)
+                project = self._project(root, modern=modern)
+                (project / 'Books/Demo/Chapter.lean').write_text(
+                    'import Mathlib\nvariable (n : Nat)\n/- A checked expression. -/\n#check n + 1\n'
+                )
+                output = root / 'output'
+                runner = _DocsRunner()
+                builder = ProjectDocumentationBuilder(runner=runner)
+                builder.build(project, ('Books.Demo.Book',), output)
+                chapter = (output / 'doc/Books/Demo/Chapter.html').read_text()
+                self.assertIn('#check n + 1', chapter)
+                self.assertIn('variable (n : Nat)', chapter)
+                self.assertIn('A checked expression.', chapter)
+                book = (output / 'doc/Books/Demo/Book.html').read_text()
+                self.assertIn('href="Chapter.html"', book)
+                self.assertNotIn('href="Dead.html"', book)
+                self.assertTrue(builder.build(project, ('Books.Demo.Book',), output).reused)
+
+    def test_statement_renderer_invalidates_html_but_reuses_analysis(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            project = self._project(root, modern=True)
+            output = root / 'output'
+            ProjectDocumentationBuilder(runner=_DocsRunner()).build(
+                project, ('Books.Demo.Book',), output
+            )
+            marker = output / 'project-docs.json'
+            old = json.loads(marker.read_text())
+            old.pop('statement_renderer_sha256')
+            marker.write_text(json.dumps(old))
+            runner = _DocsRunner()
+            result = ProjectDocumentationBuilder(runner=runner).build(
+                project, ('Books.Demo.Book',), output
+            )
+            self.assertFalse(result.reused)
+            self.assertTrue(any('fromDb' in command.argv for command in runner.commands))
+            self.assertFalse(any('--run' in command.argv for command in runner.commands))
+            self.assertIn('statement_renderer_sha256', json.loads(marker.read_text()))
+
     def test_compiled_artifact_changes_invalidate_docs_and_analysis(self) -> None:
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)

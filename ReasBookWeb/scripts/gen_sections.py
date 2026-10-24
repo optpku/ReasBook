@@ -34,6 +34,8 @@ for sdk_source in (
     if value not in sys.path:
         sys.path.insert(0, value)
 
+from reasbook_build_sdk.statement_docs import source_reading  # noqa: E402
+
 
 SITE_CONFIG: SiteConfig = load_site_config()
 GITHUB_OWNER = SITE_CONFIG.github_owner
@@ -2361,6 +2363,21 @@ def lean_module_name(s: str) -> str:
     return re.sub(r"[^A-Za-z0-9_]", "_", s)
 
 
+def item_reading_links(source_root: Path, item: BookItem | PaperItem) -> str:
+    """Do not send readers to a known imports-only placeholder item."""
+    path = source_root.parent / item.source_path
+    reading = source_reading(path.read_text(encoding="utf-8"))
+    source_link = f"([Lean source]({github_blob_link(item.source_path)}))"
+    external_roots = {"Mathlib", "Init", "Lean", "Std", "Batteries", "Aesop"}
+    if reading.imports_only and all(name.split('.')[0] in external_roots for name in reading.imports):
+        return f"— no statement yet {source_link}"
+    docs_path = _module_to_docs_path(source_root, item.module)
+    return (
+        f"([Documentation]({portable_site_link(f'docs/ReasBook/{docs_path}.html')})) "
+        + source_link
+    )
+
+
 def write_work_pages(
     repo_root: Path,
     source_root: Path,
@@ -2488,7 +2505,7 @@ def write_work_pages(
             readers_by_book.get(book, []), key=lambda reader: reader.chapter_num
         )
         if book_readers:
-            lines.append("Chapter index:")
+            lines.append("Statements by chapter:")
             lines.append("")
             for reader in book_readers:
                 section_count = len(
@@ -2498,9 +2515,13 @@ def write_work_pages(
                 if section_count:
                     inventory = f"{section_count} sections, {inventory}"
                 lines.append(
-                    f"- [{chapter_title_for_book(book, reader.chapter_num)}]"
-                    f"({portable_site_link(reader.route)}) -- {inventory}"
+                    f"# [{chapter_title_for_book(book, reader.chapter_num)}]"
+                    f"({portable_site_link(reader.route)})"
                 )
+                lines.extend(["", inventory, ""])
+                for item in reader.items:
+                    lines.append(f"- {book_item_label(item)} {item_reading_links(source_root, item)}")
+                lines.append("")
             lines.append("")
         if section_entries:
             lines.append("Section index:")
@@ -2571,7 +2592,7 @@ def write_work_pages(
                 )
                 lines.append(
                     f"- {label} ({reading_link}"
-                    f"[API documentation]({portable_site_link(f'docs/ReasBook/{docs_path}.html')}) | "
+                    f"[Documentation]({portable_site_link(f'docs/ReasBook/{docs_path}.html')}) | "
                     f"[Lean source]({github_blob_link(source.source_path)}))"
                 )
             lines.append("")
@@ -2587,12 +2608,7 @@ def write_work_pages(
             lines.append(f"# {section_title}")
             lines.append("")
             for item in section_items:
-                docs_path = _module_to_docs_path(source_root, item.module)
-                lines.append(
-                    f"- {book_item_label(item)} "
-                    f"([API documentation]({portable_site_link(f'docs/ReasBook/{docs_path}.html')})) "
-                    f"([Lean source]({github_blob_link(item.source_path)}))"
-                )
+                lines.append(f"- {book_item_label(item)} {item_reading_links(source_root, item)}")
             lines.append("")
         if reader.support_modules:
             lines.append("# Supporting modules")
@@ -2606,7 +2622,7 @@ def write_work_pages(
                 docs_path = _module_to_docs_path(source_root, source.module)
                 lines.append(
                     f"- `{source.relative_path}` "
-                    f"([API documentation]({portable_site_link(f'docs/ReasBook/{docs_path}.html')})) "
+                    f"([Documentation]({portable_site_link(f'docs/ReasBook/{docs_path}.html')})) "
                     f"([Lean source]({github_blob_link(source.source_path)}))"
                 )
             lines.append("")
@@ -2674,23 +2690,28 @@ def write_work_pages(
         lines.append("")
         item_reader = paper_readers_by_paper.get(paper)
         if item_reader is not None:
-            lines.append("Item index:")
+            lines.append("Statements:")
             lines.append("")
-            lines.append(
-                f"- [Formalized items]({portable_site_link(item_reader.route)}) "
-                f"-- {len(item_reader.items)} items"
-            )
+            for item in item_reader.items:
+                lines.append(f"- {paper_item_label(item)} {item_reading_links(source_root, item)}")
+            lines.extend(["", f"[Grouped contents]({portable_site_link(item_reader.route)})"])
             lines.append("")
         if section_entries:
             lines.append("Section index:")
             lines.append("")
+            split_sections = {index.base.module: index for index in section_indexes_by_paper.get(paper, [])}
             for e in section_entries:
                 label = readme_label(e)
                 if not label:
                     continue
-                lines.append(f"- [{label}]({portable_site_link(e.route)})")
+                split = split_sections.get(e.module)
+                if split is not None:
+                    for part in split.parts:
+                        lines.append(f"- [{label} — Part {part.part_num}]({portable_site_link(part.route)})")
+                else:
+                    lines.append(f"- [{label}]({portable_site_link(e.route)})")
             lines.append("")
-        elif entry_points:
+        elif entry_points and item_reader is None:
             lines.append("Formalization entry points:")
             lines.append("")
             for e in entry_points:
@@ -2739,12 +2760,7 @@ def write_work_pages(
             lines.append(f"# {heading}")
             lines.append("")
             for item in by_section[section_token]:
-                docs_path = _module_to_docs_path(source_root, item.module)
-                lines.append(
-                    f"- {paper_item_label(item)} "
-                    f"([API documentation]({portable_site_link(f'docs/ReasBook/{docs_path}.html')})) "
-                    f"([Lean source]({github_blob_link(item.source_path)}))"
-                )
+                lines.append(f"- {paper_item_label(item)} {item_reading_links(source_root, item)}")
             lines.append("")
         write_text_if_changed(page_file, "\n".join(lines), log=True)
 
@@ -2765,7 +2781,7 @@ def write_work_pages(
             f"#doc (Page) {lean_string(f'{paper_title(index.paper)} -- {label}')} =>",
             "",
             f"- [Paper home]({portable_site_link(f'papers/{index.paper.lower()}/')})",
-            f"- [Parent API documentation]({portable_site_link(f'docs/ReasBook/{base_docs_path}.html')})",
+            f"- [Parent documentation]({portable_site_link(f'docs/ReasBook/{base_docs_path}.html')})",
             f"- [Parent Lean source]({github_blob_link(index.source_path)})",
             "",
             "This section is split across the following reading parts.",
@@ -2782,7 +2798,7 @@ def write_work_pages(
             lines.append(
                 f"- Part {part.part_num} "
                 f"([Reading page]({portable_site_link(part.route)})) "
-                f"([API documentation]({portable_site_link(f'docs/ReasBook/{part_docs_path}.html')})) "
+                f"([Documentation]({portable_site_link(f'docs/ReasBook/{part_docs_path}.html')})) "
                 f"([Lean source]({github_blob_link(source_path)}))"
             )
         lines.append("")
@@ -2832,10 +2848,10 @@ def write_home_page(repo_root: Path) -> None:
         "",
         '#doc (Page) "ReasBook" =>',
         "",
-        "Books and research papers formalized in Lean, with source-linked API",
+        "Books and research papers formalized in Lean, with source-linked statements,",
         "documentation and theorem dependency maps.",
         "",
-        f"- [API documentation]({portable_site_link('docs/')})",
+        f"- [Documentation]({portable_site_link('docs/')})",
         f"- [Theorem dependency maps]({portable_site_link('theorem-maps/')})",
         "",
     ]

@@ -45,7 +45,7 @@ _HREF_RE = re.compile(
     flags=re.IGNORECASE,
 )
 _SOURCE_DOCUMENTATION_PAIR_RE = re.compile(
-    r"(?P<documentation><a\b[^>]*>\s*API documentation\s*</a>)"
+    r"(?P<documentation><a\b[^>]*>\s*(?:API )?documentation\s*</a>)"
     r"(?P<separator>\s*\)\s*\(\s*)"
     r"(?P<source><a\b[^>]*>\s*Lean source\s*</a>)",
     flags=re.IGNORECASE,
@@ -311,7 +311,7 @@ def reconcile_documentation_links(
             continue
         source = document.read_text(encoding="utf-8", errors="replace")
         if not (("Documentation" in source and "Verso" in source) or
-                (verified_source_links and "API documentation" in source)):
+                (verified_source_links and "documentation" in source.lower())):
             continue
 
         relative_document = document.relative_to(site_root).as_posix()
@@ -349,7 +349,7 @@ def reconcile_documentation_links(
             replacement_count += 1
             return (
                 '<span class="documentation-unavailable" '
-                'title="This source module is not part of the published API '
+                'title="This source module is not part of the published '
                 'documentation">Documentation unavailable</span>'
                 + match.group("separator")
                 + f"({verso})"
@@ -372,8 +372,8 @@ def reconcile_documentation_links(
                 return match.group(0)
             replacement_count += 1
             source_occurrences[(docs_href, pinned)].append(relative_document)
-            return ('<span class="documentation-unavailable" title="API documentation '
-                    'has not been generated for this item">API documentation unavailable</span>'
+            return ('<span class="documentation-unavailable" title="Documentation '
+                    'has not been generated for this item">Documentation unavailable</span>'
                     + match.group("separator")
                     + f'<a href="{html.escape(pinned, quote=True)}">Lean source</a>')
 
@@ -842,7 +842,7 @@ def main() -> None:
                 *masthead("../../", "../../versions/" if has_versions else None),
                 '  <main id="main-content" class="page-shell narrow-shell">',
                 '    <section class="page-heading">',
-                '      <p class="eyebrow">API Reference</p>',
+                '      <p class="eyebrow">Documentation</p>',
                 "      <h1>Documentation</h1>",
                 "    </section>",
                 "    <h2>Books</h2>",
@@ -869,7 +869,7 @@ def main() -> None:
     (docs_root / "index.html").write_text(
         html_page(
             "Documentation",
-            [("./ReasBook/", "Browse API Documentation")],
+            [("./ReasBook/", "Browse Documentation")],
             "../",
             stylesheet="../static/catalog.css",
             home_href="../",

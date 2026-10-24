@@ -12,8 +12,9 @@ import re
 README_URL = "https://github.com/optpku/ReasBook#readme"
 
 
-def redirect_page(target: str = README_URL) -> str:
+def redirect_page(target: str = README_URL, *, title: str = "ReasBook README") -> str:
     target = html.escape(target, quote=True)
+    title = html.escape(title)
     return "\n".join(
         [
             "<!doctype html>",
@@ -24,11 +25,11 @@ def redirect_page(target: str = README_URL) -> str:
             '  <meta name="robots" content="noindex,follow" />',
             f'  <meta http-equiv="refresh" content="0; url={target}" />',
             f'  <link rel="canonical" href="{target}" />',
-            "  <title>ReasBook README</title>",
+            f"  <title>{title}</title>",
             "</head>",
             "<body>",
             '  <main id="main-content">',
-            f'    <p><a href="{target}">Open ReasBook README</a></p>',
+            f'    <p><a href="{target}">Open {title}</a></p>',
             "  </main>",
             "</body>",
             "</html>",
@@ -40,8 +41,8 @@ def redirect_page(target: str = README_URL) -> str:
 def write_reader_entrypoints(site: Path) -> list[Path]:
     """Replace only known catalog indexes; preserve Docs/Verso descendants.
 
-    Old bookmarks remain usable, but the GitHub README is the only public
-    aggregate catalog. This is navigation policy, not access control.
+    Aggregate catalogs return to the GitHub README. Project bookmarks go
+    directly to their existing reading/docs entry, without a catalog round trip.
     """
     site = site.resolve()
     if not site.is_dir():
@@ -56,6 +57,7 @@ def write_reader_entrypoints(site: Path) -> list[Path]:
         )
 
     indexes: set[Path] = {site / "index.html"}
+    project_indexes: set[Path] = set()
     for root in roots:
         for relative in (
             "index.html", "books/index.html", "papers/index.html",
@@ -66,12 +68,20 @@ def write_reader_entrypoints(site: Path) -> list[Path]:
             path = root / relative
             if path.is_file():
                 indexes.add(path)
-        indexes.update((root / "sites").glob("*/index.html"))
+        project_indexes.update((root / "sites").glob("*/index.html"))
 
-    content = redirect_page()
+    indexes.update(project_indexes)
     for path in sorted(indexes):
         if path.is_symlink() or site not in path.resolve().parents:
             raise ValueError(f"catalog index must be inside the site: {path}")
+        content = redirect_page()
+        if path in project_indexes:
+            for kind in ("pages", "docs"):
+                entry = path.parent / kind / "index.html"
+                if (entry.is_file() and not entry.is_symlink()
+                        and site in entry.resolve().parents):
+                    content = redirect_page(f"./{kind}/", title="project documentation")
+                    break
         path.write_text(content, encoding="utf-8")
     return sorted(indexes)
 
@@ -81,7 +91,7 @@ def main() -> None:
     parser.add_argument("site", type=Path)
     args = parser.parse_args()
     paths = write_reader_entrypoints(args.site)
-    print(f"Redirected {len(paths)} catalog indexes to the GitHub README")
+    print(f"Updated {len(paths)} catalog and project reading entry points")
 
 
 if __name__ == "__main__":

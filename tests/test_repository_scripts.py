@@ -50,7 +50,7 @@ class RepositoryScriptTests(unittest.TestCase):
             result = assemble.reconcile_documentation_links(root, verified_source_links={original: pinned})
             self.assertEqual(result["replacement_count"], 1)
             text = doc.read_text()
-            self.assertIn("API documentation unavailable", text)
+            self.assertIn("Documentation unavailable", text)
             self.assertIn(pinned, text)
             self.assertIn('href="/ReasBook/missing.html"', text)
             self.assertFalse((root / "docs/Item.html").exists())
@@ -58,6 +58,10 @@ class RepositoryScriptTests(unittest.TestCase):
                 doc.write_text(source)
                 result = assemble.reconcile_documentation_links(root, verified_source_links={original: invalid})
                 self.assertEqual(result["replacement_count"], 0)
+            doc.write_text(source.replace("API documentation", "Documentation"))
+            result = assemble.reconcile_documentation_links(root, verified_source_links={original: pinned})
+            self.assertEqual(result["replacement_count"], 1)
+            self.assertIn("Documentation unavailable", doc.read_text())
             (root / "docs").mkdir()
             (root / "docs/Item.html").write_text("Real documentation")
             doc.write_text(source)
@@ -132,7 +136,7 @@ class RepositoryScriptTests(unittest.TestCase):
             kind = kinds[offset % len(kinds)]
             stem = f"{kind}_1_{section}_{item_number}"
             (chapter_root / f"{stem}.lean").write_text(
-                "import Mathlib\n", encoding="utf-8"
+                "import Mathlib\n#check Nat\n", encoding="utf-8"
             )
         return repo, lean_root, web_root
 
@@ -481,8 +485,28 @@ class RepositoryScriptTests(unittest.TestCase):
                 ["Books.DemoBook.Book", "Books.DemoBook.Chap01"],
             )
             home = (web_root / "ReasBookSite" / "Home.lean").read_text(encoding="utf-8")
-            self.assertIn("API documentation", home)
+            self.assertIn("[Documentation]", home)
+            self.assertNotIn("API", home)
             self.assertNotIn("python3 scripts/gen_sections.py", home)
+
+    def test_item_readers_mark_empty_items_without_linking_to_empty_docs(self) -> None:
+        generator = ROOT / "ReasBookWeb/scripts/gen_sections.py"
+        with tempfile.TemporaryDirectory() as temp:
+            repo, lean_root, web_root = self._item_style_book_fixture(Path(temp), item_count=2)
+            empty = lean_root / 'Books/MayLike/Chap01/Lemma_1_1_2.lean'
+            empty.write_text('import Mathlib\n/- no statement has been added -/\n')
+            result = subprocess.run(
+                [sys.executable, str(generator), '--repo-root', str(repo)], cwd=repo,
+                env={**os.environ, 'REASBOOK_GITHUB_BRANCH': 'main'},
+                capture_output=True, text=True, check=False,
+            )
+            self.assertEqual(result.returncode, 0, result.stderr)
+            for relative in ('MayLike.lean', 'MayLike/Chap01.lean'):
+                page = (web_root / 'ReasBookSite/WorkPages/Books' / relative).read_text()
+                self.assertIn('Lemma 1.1.2 — no statement yet', page)
+                self.assertIn('Lemma_1_1_2.lean', page)
+                self.assertNotIn('Lemma_1_1_2.html', page)
+                self.assertIn('Definition_1_1_1.html', page)
 
     def test_gen_sections_builds_compact_item_style_chapter_readers(self) -> None:
         generator = ROOT / "ReasBookWeb" / "scripts" / "gen_sections.py"
@@ -550,8 +574,11 @@ class RepositoryScriptTests(unittest.TestCase):
             )
             home = home_page.read_text(encoding="utf-8")
             self.assertIn('#doc (Page) "A Concise Course in Test Topology"', home)
-            self.assertIn("Chapter index:", home)
+            self.assertIn("Statements by chapter:", home)
             self.assertIn("7 sections, 193 items", home)
+            self.assertEqual(home.count("([Documentation]"), 193)
+            self.assertIn("/MayLike/Chap01/Definition_1_1_1.html", home)
+            self.assertIn("# [Chapter 01](/ReasBook/books/maylike/chapters/chap01/)", home)
 
             chapter_page = home_page.parent / "MayLike" / "Chap01.lean"
             chapter = chapter_page.read_text(encoding="utf-8")
@@ -561,7 +588,7 @@ class RepositoryScriptTests(unittest.TestCase):
             self.assertIn("# Section 1.1", chapter)
             self.assertIn("# Section 1.7", chapter)
             self.assertNotIn("## Section", chapter)
-            self.assertEqual(chapter.count("([API documentation]"), 193)
+            self.assertEqual(chapter.count("([Documentation]"), 193)
             self.assertIn(
                 "/ReasBook/docs/ReasBook/MayLike/Chap01/Definition_1_1_1.html",
                 chapter,
@@ -694,7 +721,7 @@ class RepositoryScriptTests(unittest.TestCase):
                 / "MayLike"
                 / "Chap01.lean"
             ).read_text(encoding="utf-8")
-            self.assertEqual(chapter_page.count("([API documentation]"), 5)
+            self.assertEqual(chapter_page.count("([Documentation]"), 5)
             self.assertIn("/ReasBook/Books/MayLike/Parts/Chap01", chapter_page)
 
     def test_gen_sections_classifies_mixed_item_inventory_without_partial_takeover(
@@ -784,7 +811,7 @@ class RepositoryScriptTests(unittest.TestCase):
             home = (
                 web_root / "ReasBookSite" / "WorkPages" / "Books" / "BauschkeLike.lean"
             ).read_text(encoding="utf-8")
-            self.assertIn("Chapter index:", home)
+            self.assertIn("Statements by chapter:", home)
             self.assertIn("Section index:", home)
             self.assertEqual(home.count("books/bauschkelike/chapters/chap01/"), 1)
 
@@ -899,7 +926,7 @@ class RepositoryScriptTests(unittest.TestCase):
             )
             for stem in item_stems:
                 (paper_root / f"{stem}.lean").write_text(
-                    "import Mathlib\n", encoding="utf-8"
+                    "import Mathlib\n#check Nat\n", encoding="utf-8"
                 )
             nested = paper_root / "Theorem_2_9" / "OperationalTrace.lean"
             nested.parent.mkdir()
@@ -956,14 +983,16 @@ class RepositoryScriptTests(unittest.TestCase):
             home = home_path.read_text(encoding="utf-8")
             reader = reader_path.read_text(encoding="utf-8")
             self.assertIn("TR-LALM Theory", home)
-            self.assertIn("papers/tr_lalm_theory/items/", home)
+            self.assertIn("[Grouped contents](/ReasBook/papers/tr_lalm_theory/items/)", home)
+            self.assertIn("/TR_LALM_theory/Theorem_2_9.html", home)
+            self.assertEqual(home.count("([Documentation]"), 4)
             self.assertIn("indexes 4 formalized items", reader)
             self.assertIn("# Section 2", reader)
             self.assertIn("# Section 3", reader)
             self.assertIn("# Appendix C", reader)
             self.assertIn("Theorem 2.9", reader)
             self.assertIn("Remark C.1", reader)
-            self.assertEqual(reader.count("[API documentation]"), 4)
+            self.assertEqual(reader.count("[Documentation]"), 4)
             self.assertEqual(reader.count("[Lean source]"), 4)
             self.assertNotIn("OperationalTrace", reader)
             self.assertNotIn("## ", reader)
@@ -1081,11 +1110,15 @@ class RepositoryScriptTests(unittest.TestCase):
             self.assertFalse(selected_stale.exists())
             self.assertTrue(unrelated_stale.exists())
             page = section_one_path.read_text(encoding="utf-8")
-            self.assertIn("[Parent API documentation]", page)
+            home = section_dir.with_suffix('.lean').read_text(encoding='utf-8')
+            self.assertIn('section01_part1/', home)
+            self.assertIn('section01_part2/', home)
+            self.assertNotIn('](/ReasBook/partedpaper/section01/)', home)
+            self.assertIn("[Parent documentation]", page)
             self.assertIn("[Parent Lean source]", page)
             self.assertIn("# Parts", page)
             self.assertEqual(page.count("[Reading page]"), 2)
-            self.assertEqual(page.count("[API documentation]"), 2)
+            self.assertEqual(page.count("[Documentation]"), 2)
             self.assertEqual(page.count("[Lean source]"), 2)
             self.assertNotIn("## ", page)
 

@@ -25,6 +25,7 @@ from .command import Command, CommandResult
 from .errors import BuildFailed, ConfigurationError
 from .executor import SubprocessRunner
 from .project import discover_project
+from . import statement_docs
 from .targets import parse_library_declarations
 
 
@@ -427,6 +428,7 @@ class ProjectDocumentationBuilder:
             "adapter_sha256": self._sha256(self._adapter(mode)),
             "mode": mode,
             "link_policy": _LINK_POLICY,
+            "statement_renderer_sha256": self._sha256(Path(statement_docs.__file__)),
         }
         if compiled_artifacts is not None:
             identity["compiled_artifacts"] = compiled_artifacts
@@ -641,6 +643,11 @@ class ProjectDocumentationBuilder:
 
                     pages = self._expected_pages(stage, modules)
                     self._validate_pages(pages)
+                    statement_docs.enrich_documentation(
+                        stage / "doc", module_sources, module_owners,
+                        {module: self._source_uri(project_root, source, repository, revision)
+                         for module, source in module_sources},
+                    )
                     stub_count = self._close_documentation_links(
                         stage / "doc",
                         project_root=project_root,
