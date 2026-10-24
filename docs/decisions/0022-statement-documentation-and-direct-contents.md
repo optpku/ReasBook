@@ -68,6 +68,10 @@ and then a documentation link which could lead to that empty page.
   documentation builder. Explicit Lake `roots` are not a reliable substitute:
   BFGS retains a real `BFGSMinimumQOrder_Liu_2026` aggregate module selected for
   Docs, while the separate `Paper` module is outside that build's import closure.
+  Register that aggregate as its own Lake library rooted at `Papers`, and keep
+  the original flat-source roots in `BFGSMinimumQOrder_Implementation`. A file
+  discovered by the documentation scanner is not proof that Lake builds it:
+  validate that the public target produces the aggregate `.olean` as well.
 - Project bookmarks under `sites/<slug>/` open their existing reading entry
   (or documentation when no reading entry exists). Aggregate static catalogs
   stay on the static site and only link to existing artifacts; they no longer

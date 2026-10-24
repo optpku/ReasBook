@@ -1419,8 +1419,10 @@ class RepositoryScriptTests(unittest.TestCase):
                 "DemoTheory.html",
             ),
             "multiple-roots": (
-                'lean_lib DemoTheory where\n  srcDir := "Papers/DemoTheory"\n'
-                '  roots := #[`Book, `Paper]\n',
+                'lean_lib DemoTheory_Implementation where\n  srcDir := "Papers/DemoTheory"\n'
+                '  roots := #[`Book, `Paper]\n'
+                'lean_lib DemoTheory where\n  srcDir := "Papers"\n'
+                '  roots := #[`DemoTheory]\n',
                 "DemoTheory.html",
             ),
         }
