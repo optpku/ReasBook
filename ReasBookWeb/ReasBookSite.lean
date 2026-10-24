@@ -747,6 +747,6 @@ def linkTargets : Code.LinkTargets α where
   const name _ := #[mkLink s!"{baseUrl}find?pattern={name}#doc"]
   definition name _ := #[mkLink s!"{baseUrl}find?pattern={name}#doc"]
 where
-  mkLink href := { shortDescription := "doc", description := "API documentation", href }
+  mkLink href := { shortDescription := "doc", description := "Documentation", href }
 
 def main := blogMain theme demoSite (linkTargets := linkTargets)
