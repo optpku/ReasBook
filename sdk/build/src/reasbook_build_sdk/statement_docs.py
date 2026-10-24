@@ -1,9 +1,4 @@
-"""Readable source statements and direct contents for project documentation.
-
-``recall`` and ``#check`` do not introduce declarations for doc-gen4 to render.
-Keep their original source, including local notation and variable context, in
-the module page. This is source evidence, not a reconstruction of Lean's output.
-"""
+"""Source statement excerpts, not proof dumps or reconstructed Lean output."""
 
 from __future__ import annotations
 
@@ -20,6 +15,24 @@ from .errors import BuildFailed
 
 _IMPORT = re.compile(r"(?m)^[ \t]*(?:public[ \t]+)?import\s+([^\n]+)")
 _REFERENCE = re.compile(r"(?m)^[ \t]*(?:recall\b|#check\b)")
+_RAW_STRING = re.compile(r'r(#+)?"')
+_CHAR_LITERAL = re.compile(r"'(?:\\(?:u\{[0-9A-Fa-f]+\}|x[0-9A-Fa-f]{2}|.)|[^'\\\n])'")
+_COMMAND = re.compile(
+    r"(?m)^(?P<indent>[ \t]*)(?:(?:@\[[^\n]*?\]|private|protected|noncomputable|"
+    r"unsafe|partial|public|local|scoped)\s+)*(?P<kind>theorem|lemma|def|abbrev|opaque|axiom|"
+    r"constant|structure|class|inductive|instance|example|recall|#check|#print|#eval|"
+    r"namespace|section|end|variable|universe|open|export|include|omit|"
+    r"local|scoped|notation|infix[lr]?|prefix|postfix|attribute|set_option|"
+    r"syntax|macro|elab|initialize|import|module|prelude)\b"
+)
+_STATEMENT_KINDS = frozenset({
+    "theorem", "lemma", "def", "abbrev", "opaque", "axiom", "constant",
+    "structure", "class", "inductive", "instance", "recall", "#check",
+})
+_CONTEXT_KINDS = frozenset({
+    "namespace", "variable", "universe", "open", "include", "omit",
+    "notation", "infix", "infixl", "infixr", "prefix", "postfix",
+})
 _MARKER = 'data-reasbook-statements="true"'
 _STYLE = """
 .reasbook-statements { margin: 1.5em 0; }
@@ -63,6 +76,15 @@ def _code_mask(source: str) -> str:
         elif pair == "/-":
             depth = 1
             size = 2
+        elif char == "r" and (raw := _RAW_STRING.match(source, index)):
+            terminator = '"' + (raw.group(1) or '')
+            close = source.find(terminator, raw.end())
+            size = len(source) - index if close < 0 else close + len(terminator) - index
+        elif char == "'" and (literal := _CHAR_LITERAL.match(source, index)):
+            size = literal.end() - index
+        elif char == "«":
+            close = source.find("»", index + 1)
+            size = len(source) - index if close < 0 else close + 1 - index
         elif char == '"':
             string = True
         else:
@@ -83,6 +105,125 @@ class SourceReading:
     imports_only: bool
 
 
+@dataclass(frozen=True)
+class Statement:
+    """An explicitly labelled, verbatim excerpt; never a checked declaration."""
+
+    signature: str
+    prose: str
+    context: tuple[str, ...]
+    reference: bool
+
+
+def _signature(command: str, kind: str) -> str:
+    # Fields and constructors ARE the definition, not an implementation/proof
+    # boundary. Keep the entire bounded type command (including field defaults).
+    if kind in {"recall", "#check", "structure", "class", "inductive"}:
+        return command.strip()
+    mask = _code_mask(command)
+    depth = 0
+    pending_lets = 0
+    type_match = False
+    for match in re.finditer(r"[()\[\]{}⦃⦄]|:=|\b(?:where|let|letI|match)\b|(?m:^\s*\|)", mask):
+        token = match.group().strip()
+        if token in {"(", "[", "{", "⦃"}:
+            depth += 1
+        elif token in {")", "]", "}", "⦄"}:
+            depth = max(0, depth - 1)
+        elif depth == 0:
+            if token in {"let", "letI"}:
+                pending_lets += 1
+                continue
+            if token == "match":
+                type_match = True
+                continue
+            if token == ":=" and pending_lets:
+                pending_lets -= 1
+                continue
+            if token == "|" and type_match:
+                continue
+            # A short definitional RHS is often the mathematical definition.
+            # Never include tactic proofs or a long implementation in previews.
+            rhs = mask[match.end():].strip()
+            if (token == ":=" and kind in {"def", "abbrev"}
+                    and len(command) <= 600 and not re.search(r"\b(by|do)\b", rhs)):
+                return command.strip()
+            return command[:match.start()].strip()
+    return command.strip()
+
+
+def statement_excerpts(source: str, *, label: str = "") -> tuple[Statement, ...]:
+    """Conservative lexical previews of source commands, with proofs omitted.
+
+    This is intentionally not a Lean parser or elaborator. Types are never
+    inferred for #check. Commands are bounded by source indentation and known
+    command starts; comments/strings are masked before scanning. Documentation
+    remains the authoritative elaborated view, and every preview links to source.
+    """
+    mask = _code_mask(source)
+    commands = list(_COMMAND.finditer(mask))
+    frames: list[list[str]] = [[]]
+    statements: list[Statement] = []
+    comments = list(re.finditer(r"/-(?:!|-)?(.*?)-/", source, re.DOTALL))
+    command_end = 0
+    for number, match in enumerate(commands):
+        if match.start() < command_end:
+            continue
+        indent = len(match['indent'])
+        context_command = match['kind'] in _CONTEXT_KINDS | {
+            "section", "end", "import", "module", "prelude", "set_option", "attribute",
+        }
+        end = next((other.start() for other in commands[number + 1:]
+                    if len(other['indent']) <= indent or context_command), len(source))
+        # Exclude trailing comments belonging to the next command.
+        code_end = end
+        for comment in reversed(comments):
+            if match.end() < comment.start() < code_end and not mask[comment.end():code_end].strip():
+                code_end = comment.start()
+        command = source[match.start():code_end].strip()
+        kind = match['kind']
+        command_end = end
+        if kind in {"namespace", "section"}:
+            frames.append([])
+        if kind == "end":
+            if len(frames) > 1:
+                frames.pop()
+            continue
+        if kind in _CONTEXT_KINDS and not re.search(r"\bin\s*$", command):
+            frames[-1].append(command)
+        if kind not in _STATEMENT_KINDS or re.search(r"\bprivate\b", mask[match.start():match.start('kind')]):
+            continue
+        prose = ""
+        preceding = next((comment for comment in reversed(comments)
+                          if comment.end() <= match.start()), None)
+        if preceding and not mask[preceding.end():match.start()].strip():
+            prose = preceding.group(1).strip()
+            if re.search(r"Authors?:|Copyright|Declarations for this item", prose):
+                prose = ""
+        signature = _signature(command, kind)
+        if signature:
+            statements.append(Statement(signature, prose,
+                                        tuple(line for frame in frames for line in frame),
+                                        kind in {"recall", "#check"}))
+    if label:
+        # A citation in helper prose is not the item itself. Magnus uses hyphens
+        # in numbers; other books use dots, sometimes after a Chapter10 prefix.
+        identifier = r"[.-]".join(re.escape(part) for part in
+                                  re.split(r"(?<=\d)[.-](?=\d)", label))
+        identifier = identifier.replace(r"\ ", r"\s+")
+        identifier += r"(?!\d|[.-]\d)"
+        heading = re.compile(r"^\s*(?:Chapter\s*\d+\s*[:.,—–-]?\s+)?" + identifier, re.I)
+        mention = re.compile(r"(?<![\w.-])" + identifier, re.I)
+        def rank(item: Statement) -> tuple[bool, bool, bool]:
+            # Numbered headings are stronger evidence than prose vocabulary.
+            # "auxiliary objective/state" can be the mathematics being defined;
+            # only an explicit Helper/Auxiliary prefix marks a helper comment.
+            helper = bool(re.match(r"\s*(?:helpers?|auxiliary)\b", item.prose, re.I))
+            return not bool(heading.search(item.prose)), helper, not bool(mention.search(item.prose))
+        statements.sort(key=rank)  # Stable: preserve source order within a tier.
+    return tuple(statements)
+
+
 def source_reading(source: str) -> SourceReading:
     mask = _code_mask(source.removeprefix("\ufeff"))
     source = source.removeprefix("\ufeff")
@@ -90,6 +231,23 @@ def source_reading(source: str) -> SourceReading:
                     for name in match.group(1).split())
     remaining = _IMPORT.sub("", mask)
     remaining = re.sub(r"(?m)^\s*(?:module|prelude)\s*$", "", remaining)
+    # Modern facade modules may wrap only imports/comments in `public section`
+    # and leave local variables/open commands for documentation. They still
+    # have no statement of their own; follow their project imports as contents.
+    facade = True
+    continuation_indent: int | None = None
+    for line in remaining.splitlines():
+        if not line.strip():
+            continue
+        indent = len(line) - len(line.lstrip())
+        context = re.match(r"\s*(?:(?:public|noncomputable)\s+)?(section|namespace|end|open|universe|variable)\b", line)
+        if context and not re.search(r"\bin\s*\S*", line):
+            continuation_indent = indent if context[1] in {"variable", "open"} else None
+        elif continuation_indent is not None and indent > continuation_indent:
+            continue
+        else:
+            facade = False
+            break
     # Drop only the file header/import prefix. Subsequent comments, namespaces,
     # variables, notation and multiline expressions retain their exact spelling.
     prefix_end = 0
@@ -100,7 +258,7 @@ def source_reading(source: str) -> SourceReading:
         r"(?m)^-- Declarations for this item will be appended below by the statement pipeline\.\s*",
         "", body,
     ).strip()
-    return SourceReading(body, imports, bool(_REFERENCE.search(mask)), not remaining.strip())
+    return SourceReading(body, imports, bool(_REFERENCE.search(mask)), facade)
 
 
 class _Main(HTMLParser):
@@ -142,6 +300,18 @@ def module_label(module: str) -> str:
     return leaf.replace("_", " ")
 
 
+def _module_order(module: str) -> tuple:
+    """Keep chapter groups together, but compare item numbers before kinds."""
+    parent, _, leaf = module.rpartition(".")
+    numbers = tuple(int(part) for part in re.findall(r"\d+", leaf))
+    return _natural(parent), not bool(numbers), numbers, _natural(leaf)
+
+
+def prose_html(prose: str) -> str:
+    """Only inline code markup is supported; all source HTML stays inert."""
+    return re.sub(r'`([^`\n]+)`', r'<code>\1</code>', html.escape(prose))
+
+
 def enrich_documentation(
     doc_root: Path,
     module_sources: tuple[tuple[str, Path], ...],
@@ -163,11 +333,13 @@ def enrich_documentation(
         if page.is_symlink() or not page.is_file() or doc_root.resolve() not in page.resolve().parents:
             raise BuildFailed(f"unsafe or missing statement documentation page: {page}")
         pages[module] = page
-        reading = source_reading(source_path.read_text(encoding="utf-8"))
+        source = source_path.read_text(encoding="utf-8")
+        reading = source_reading(source)
         # Do not retain a whole book's proofs in memory while planning navigation.
         readings[module] = SourceReading("", reading.imports, reading.references, reading.imports_only)
         probe = _Main(page.read_text(encoding="utf-8"))
-        if reading.references or probe.declarations or not reading.imports_only:
+        if (statement_excerpts(source) or probe.declarations
+                or (not reading.imports_only and "".join(probe.text).strip())):
             content_modules.add(module)
 
     def leaves(module: str) -> list[str]:
@@ -185,7 +357,7 @@ def enrich_documentation(
                 found.add(child)
             else:
                 pending.extend(readings[child].imports)
-        return sorted(found, key=_natural)
+        return sorted(found, key=_module_order)
 
     changed = 0
     for module, page in pages.items():
@@ -196,15 +368,25 @@ def enrich_documentation(
         probe = _Main(original)
         sections: list[str] = []
         if reading.references or (not reading.imports_only and not "".join(probe.text).strip()):
-            body = source_reading(sources[module].read_text(encoding="utf-8")).body
-            sections.extend([
+            excerpts = statement_excerpts(sources[module].read_text(encoding="utf-8"))
+            if probe.declarations:
+                excerpts = tuple(item for item in excerpts if item.reference)
+            if excerpts:
+                sections.extend([
                 '<h2 id="reasbook-statements">Statements</h2>',
-                '<p class="statement-note">From the Lean source, with its mathematical '
-                'comments and local context. <code>recall</code> restates an existing '
-                'declaration; <code>#check</code> records a checked expression, '
-                'not a new theorem.</p>',
-                f'<pre><code class="language-lean">{html.escape(body)}</code></pre>',
-            ])
+                '<p class="statement-note">Source excerpts; proofs omitted. '
+                '<code>recall</code> restates an existing declaration; '
+                '<code>#check</code> records an expression, not its inferred type.</p>',
+                ])
+            elif not probe.declarations and not "".join(probe.text).strip():
+                sections.append('<p>No statement preview is available for this module. See the Lean source.</p>')
+            for item in excerpts:
+                if item.prose:
+                    sections.append(f'<p>{prose_html(item.prose)}</p>')
+                sections.append(f'<pre><code class="language-lean">{html.escape(item.signature)}</code></pre>')
+                if item.context:
+                    context = html.escape('\n'.join(item.context))
+                    sections.append(f'<details><summary>Source context</summary><pre>{context}</pre></details>')
         elif reading.imports_only:
             children = leaves(module)
             sections.append('<h2 id="reasbook-statements">Statements</h2>')

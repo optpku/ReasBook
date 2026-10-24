@@ -506,7 +506,57 @@ class RepositoryScriptTests(unittest.TestCase):
                 self.assertIn('Lemma 1.1.2 — no statement yet', page)
                 self.assertIn('Lemma_1_1_2.lean', page)
                 self.assertNotIn('Lemma_1_1_2.html', page)
-                self.assertIn('Definition_1_1_1.html', page)
+                self.assertIn('Definition_1_1_1.html' if '/Chap01' in relative else '#definition-1-1-1', page)
+
+    def test_fragment_root_is_project_home_and_nested_item_helpers_are_not_sections(self):
+        with tempfile.TemporaryDirectory() as temp:
+            repo, lean_root, web_root = self._item_style_book_fixture(Path(temp), item_count=2)
+            helper = lean_root / 'Books/MayLike/Chap01/Lemma_1_1_2/section13325.lean'
+            helper.parent.mkdir()
+            helper.write_text('import Mathlib\n/-! # Section 13325 -/\ntheorem helper : True := by trivial\n')
+            item = lean_root / 'Books/MayLike/Chap01/Definition_1_1_1.lean'
+            item.write_text('import Mathlib\n/- Definition 1.1.1: the zero lower bound. -/\n'
+                            'theorem bound (n : Nat) : 0 ≤ n := by\n  exact Nat.zero_le _\n')
+            result = subprocess.run(
+                [sys.executable, str(ROOT / 'ReasBookWeb/scripts/gen_sections.py'), '--repo-root', str(repo)],
+                env={**os.environ, 'REASBOOK_PROJECT_FRAGMENT': '1', 'REASBOOK_INCLUDE_PROJECTS': 'books/MayLike'},
+                capture_output=True, text=True)
+            self.assertEqual(result.returncode, 0, result.stderr)
+            home = (web_root / 'ReasBookSite/Home.lean').read_text()
+            chapter = (web_root / 'ReasBookSite/WorkPages/Books/MayLike/Chap01.lean').read_text()
+            sidebar = (web_root / 'ReasBookSite/Sections.lean').read_text()
+            self.assertIn('#doc (Page) "A Concise Course in Test Topology"', home)
+            self.assertIn('/chap01/#definition-1-1-1', home)
+            self.assertIn('(id := "definition-1-1-1")', chapter)
+            self.assertIn('theorem bound (n : Nat) : 0 ≤ n', chapter)
+            self.assertNotIn('exact Nat.zero_le', chapter)
+            self.assertNotIn('section13325', sidebar.lower())
+            self.assertIn(r'\"route\":\"books/maylike/chapters/chap01/\"', sidebar)
+
+    def test_section_chapter_contains_statements_and_home_skips_empty_aggregator(self):
+        with tempfile.TemporaryDirectory() as temp:
+            repo = Path(temp)
+            chapter = repo / 'ReasBook/Books/Demo/Chapters/Chap01'
+            chapter.mkdir(parents=True)
+            (repo / 'ReasBook/Papers').mkdir()
+            (repo / 'ReasBook/lakefile.lean').write_text('import Lake\nlean_lib Books where\n')
+            (chapter.parent.parent / 'Book.lean').write_text('import Books.Demo.Chapters.Chap01\n')
+            chapter.with_suffix('.lean').write_text('import Books.Demo.Chapters.Chap01.Section01\n')
+            (chapter / 'Section01.lean').write_text('import Books.Demo.Chapters.Chap01.Section01_part1\n')
+            (chapter / 'Section01_part1.lean').write_text('import Mathlib\n/- A real statement. -/\nrecall foo : True\n')
+            result = subprocess.run(
+                [sys.executable, str(ROOT / 'ReasBookWeb/scripts/gen_sections.py'), '--repo-root', str(repo)],
+                env={**os.environ, 'REASBOOK_INCLUDE_PROJECTS': 'books/Demo', 'REASBOOK_PROJECT_FRAGMENT': '1'},
+                capture_output=True, text=True)
+            self.assertEqual(result.returncode, 0, result.stderr)
+            web = repo / 'ReasBookWeb/ReasBookSite'
+            home = (web / 'Home.lean').read_text()
+            contents = (web / 'WorkPages/Books/Demo/Chap01.lean').read_text()
+            self.assertIn('/chap01/#books-demo-chapters-chap01-section01_part1', home)
+            self.assertEqual(contents.count('recall foo : True'), 1)
+            self.assertNotIn('aggregation page', contents)
+            routes = (web / 'RouteTable.lean').read_text()
+            self.assertIn('"books/demo/chapters/chap01/" ReasBookSite.WorkPages.Books.Demo.Chap01', routes)
 
     def test_gen_sections_builds_compact_item_style_chapter_readers(self) -> None:
         generator = ROOT / "ReasBookWeb" / "scripts" / "gen_sections.py"
@@ -576,9 +626,9 @@ class RepositoryScriptTests(unittest.TestCase):
             self.assertIn('#doc (Page) "A Concise Course in Test Topology"', home)
             self.assertIn("Statements by chapter:", home)
             self.assertIn("7 sections, 193 items", home)
-            self.assertEqual(home.count("([Documentation]"), 193)
-            self.assertIn("/MayLike/Chap01/Definition_1_1_1.html", home)
-            self.assertIn("# [Chapter 01](/ReasBook/books/maylike/chapters/chap01/)", home)
+            self.assertEqual(home.count("([Documentation]"), 0)
+            self.assertIn("/chap01/#definition-1-1-1", home)
+            self.assertIn("\n## [Chapter 01](/ReasBook/books/maylike/chapters/chap01/)", home)
 
             chapter_page = home_page.parent / "MayLike" / "Chap01.lean"
             chapter = chapter_page.read_text(encoding="utf-8")
@@ -589,6 +639,8 @@ class RepositoryScriptTests(unittest.TestCase):
             self.assertIn("# Section 1.7", chapter)
             self.assertNotIn("## Section", chapter)
             self.assertEqual(chapter.count("([Documentation]"), 193)
+            self.assertEqual(chapter.count('«data-reasbook-statement» := "true"'), 193)
+            self.assertIn('```\n#check Nat\n```', chapter)
             self.assertIn(
                 "/ReasBook/docs/ReasBook/MayLike/Chap01/Definition_1_1_1.html",
                 chapter,
@@ -812,8 +864,10 @@ class RepositoryScriptTests(unittest.TestCase):
                 web_root / "ReasBookSite" / "WorkPages" / "Books" / "BauschkeLike.lean"
             ).read_text(encoding="utf-8")
             self.assertIn("Statements by chapter:", home)
-            self.assertIn("Section index:", home)
-            self.assertEqual(home.count("books/bauschkelike/chapters/chap01/"), 1)
+            self.assertIn("\n# Section index:\n", home)
+            self.assertIn("\n# Statements by chapter:\n", home)
+            self.assertNotRegex(home, r"(?m)^# \[Chapter")
+            self.assertEqual(home.count("books/bauschkelike/chapters/chap01/"), 2)
 
             reader = (
                 web_root
@@ -843,7 +897,7 @@ class RepositoryScriptTests(unittest.TestCase):
                 reader,
             )
             self.assertNotIn("## ", reader)
-            self.assertFalse(
+            self.assertTrue(
                 (
                     web_root
                     / "ReasBookSite"
@@ -983,7 +1037,9 @@ class RepositoryScriptTests(unittest.TestCase):
             home = home_path.read_text(encoding="utf-8")
             reader = reader_path.read_text(encoding="utf-8")
             self.assertIn("TR-LALM Theory", home)
-            self.assertIn("[Grouped contents](/ReasBook/papers/tr_lalm_theory/items/)", home)
+            self.assertNotIn("[Grouped contents]", home)
+            self.assertIn('«data-reasbook-verso-standalone» := "true"', home)
+            self.assertIn('```\n#check Nat\n```', home)
             self.assertIn("/TR_LALM_theory/Theorem_2_9.html", home)
             self.assertEqual(home.count("([Documentation]"), 4)
             self.assertIn("indexes 4 formalized items", reader)
@@ -1317,7 +1373,7 @@ class RepositoryScriptTests(unittest.TestCase):
                 'import Lake\nlean_lib Demo where\n  srcDir := "Papers"\n')
             (project / "Paper.lean").write_text('import Demo.Results\n')
             (project / "Results.lean").write_text('public import Demo.Results.theorem_2_1_4\n')
-            (project / "Results/theorem_2_1_4.lean").write_text('import Mathlib\n')
+            (project / "Results/theorem_2_1_4.lean").write_text('import Mathlib\ntheorem result : True := by trivial\n')
             (project / "Results/theorem_9_9_9.lean").write_text('import Mathlib\n')
             result = subprocess.run(
                 [sys.executable, str(ROOT / "ReasBookWeb/scripts/gen_sections.py"), "--repo-root", str(repo)],
@@ -1329,7 +1385,9 @@ class RepositoryScriptTests(unittest.TestCase):
             self.assertNotIn("Demo.Results.theorem_9_9_9", manifest["modules"])
             landing = (repo / "ReasBookWeb/ReasBookSite/WorkPages/Papers/Demo.lean").read_text()
             self.assertNotIn("No separate reading sections", landing)
-            self.assertIn("Theorem 2.1.4", landing)
+            self.assertIn("theorem 2.1.4", landing)
+            self.assertIn("theorem result : True", landing)
+            self.assertNotIn("by trivial", landing)
 
     def test_gen_sections_links_project_docs_by_lake_root(self) -> None:
         generator = ROOT / "ReasBookWeb" / "scripts" / "gen_sections.py"
@@ -1347,6 +1405,11 @@ class RepositoryScriptTests(unittest.TestCase):
                 '  srcDir := "Papers"\n'
                 "  roots := #[`DemoTheory]\n",
                 "DemoTheory.html",
+            ),
+            "multiple-roots": (
+                'lean_lib DemoTheory where\n  srcDir := "Papers/DemoTheory"\n'
+                '  roots := #[`Book, `Paper]\n',
+                "Paper.html",
             ),
         }
         for name, (declaration, docs_path) in layouts.items():
@@ -1682,7 +1745,8 @@ class RepositoryScriptTests(unittest.TestCase):
             self.assertTrue((site / "static" / "catalog.css").is_file())
             root_page = (site / "index.html").read_text(encoding="utf-8")
             self.assertIn('id="main-content"', root_page)
-            self.assertIn('http-equiv="refresh"', root_page)
+            self.assertNotIn('http-equiv="refresh"', root_page)
+            self.assertIn('sites/demobook/pages/index.html', root_page)
             self.assertIn("https://github.com/optpku/ReasBook#readme", root_page)
             self.assertNotIn("Version Archive", root_page)
             canonical_doc = (

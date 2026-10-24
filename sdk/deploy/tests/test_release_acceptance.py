@@ -1495,6 +1495,19 @@ class ReleaseAcceptanceTests(unittest.TestCase):
             ):
                 runner._validate_verso_content(layout.site, relative, project)
 
+            # Counts and link labels are not mathematical reading content.
+            chapter.write_text(
+                '<!doctype html><html><main><p>This chapter indexes 62 formalized items and 4 supporting source modules.</p>'
+                '<p>Definition 1.1 (Documentation) (Lean source)</p>'
+                '<div class="hover-container"><p>Hidden tooltip statement.</p></div></main></html>')
+            with self.assertRaisesRegex(DeployExecutionError, 'no readable'):
+                runner._validate_verso_content(layout.site, relative, project)
+            chapter.write_text('<!doctype html><html><main><div data-reasbook-statement="true">'
+                               '<p>Lemma 1.1 (Documentation) (Lean source)</p>'
+                               '<pre>recall add_comm (a b : Nat) : a + b = b + a</pre>'
+                               '</div></main></html>')
+            runner._validate_verso_content(layout.site, relative, project)
+
     def test_pages_verso_adapter_binds_refresh_and_anchor_to_direct_root(
         self,
     ) -> None:

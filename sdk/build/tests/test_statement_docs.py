@@ -5,10 +5,141 @@ import tempfile
 import unittest
 
 from reasbook_build_sdk import BuildFailed
-from reasbook_build_sdk.statement_docs import enrich_documentation, source_reading
+from reasbook_build_sdk.statement_docs import enrich_documentation, source_reading, statement_excerpts
 
 
 class StatementDocumentationTests(unittest.TestCase):
+    def test_numbered_headings_outrank_mentions_and_helpers(self):
+        for heading in ('Lemma 2.5.5', 'Lemma 2-5-5', 'Chapter10 Lemma 2-5.5'):
+            with self.subTest(heading=heading):
+                source = ('/-- Helper for Lemma 2.5.5. -/\nlemma helper : True := by trivial\n'
+                          '/-- Auxiliary result for Lemma 2.5.5. -/\nlemma aux : True := by trivial\n'
+                          '/-- Uses Lemma 2.5.5. -/\nlemma citation : True := by trivial\n'
+                          '/-- Lemma 2.5.50 is a different item. -/\nlemma other : True := by trivial\n'
+                          f'/-- {heading}: the actual statement. -/\nlemma actual : True := by trivial\n')
+                excerpts = statement_excerpts(source, label='Lemma 2.5.5')
+                self.assertEqual(excerpts[0].signature, 'lemma actual : True')
+                self.assertEqual(excerpts[1].signature, 'lemma citation : True')
+                self.assertEqual(excerpts[2].signature, 'lemma other : True')
+                self.assertEqual({item.signature for item in excerpts[-2:]},
+                                 {'lemma helper : True', 'lemma aux : True'})
+
+    def test_beck_definition_of_auxiliary_state_outranks_simp_helper(self):
+        # Regression: Beck Chap14/Definition_14_1. Mathematical use of
+        # "auxiliary" in the numbered definition must not penalize its heading.
+        source = ('/-- Definition 14.1: the auxiliary state x^{k,i} uses the new iterate. -/\n'
+                  'def alternating_minimization_auxiliary_iterate (x : Nat) := x\n'
+                  '/-- The state at zero agrees with the outer iterate. -/\n'
+                  '@[simp] theorem alternating_minimization_auxiliary_iterate_zero (x : Nat) :\n'
+                  '  alternating_minimization_auxiliary_iterate x = x := by rfl\n')
+        excerpts = statement_excerpts(source, label='Definition 14.1')
+        self.assertEqual(excerpts[0].signature,
+                         'def alternating_minimization_auxiliary_iterate (x : Nat) := x')
+
+    def test_nesterov_auxiliary_objective_headings_keep_source_order(self):
+        # Regression: Nesterov Chap02/Lemma_2_21 has two legitimate numbered
+        # sides. Neither "auxiliary" nor "helper" in body prose is a marker.
+        source = ('/-- The bound follows from Lemma 2.21. -/\nlemma citation : True := by trivial\n'
+                  '/-- Auxiliary bridge for Lemma 2.21. -/\nlemma bridge : True := by trivial\n'
+                  '/-- Lemma 2.21 (below-threshold side): the auxiliary objective attains its minimum. '
+                  'A helper establishes the bound. -/\n'
+                  'theorem constrainedAuxiliaryOptimalValue_pos_of_lt : True := by trivial\n'
+                  '/-- Lemma 2.21 (above-threshold side): the value is nonpositive. -/\n'
+                  'theorem constrainedAuxiliaryOptimalValue_nonpos_of_le : True := by trivial\n')
+        excerpts = statement_excerpts(source, label='Lemma 2.21')
+        self.assertEqual([item.signature for item in excerpts[:2]], [
+            'theorem constrainedAuxiliaryOptimalValue_pos_of_lt : True',
+            'theorem constrainedAuxiliaryOptimalValue_nonpos_of_le : True',
+        ])
+        self.assertEqual(excerpts[-1].signature, 'lemma bridge : True')
+
+    def test_auxiliary_in_body_does_not_change_unlabelled_fallback_order(self):
+        source = ('/-- An auxiliary objective on the state space. -/\ndef first := 1\n'
+                  '/-- Another definition. -/\ndef second := 2\n'
+                  '/-- Auxiliary bridge. -/\ndef bridge := 3\n')
+        self.assertEqual([item.signature for item in statement_excerpts(source, label='Definition 9.9')],
+                         ['def first := 1', 'def second := 2', 'def bridge := 3'])
+
+    def test_label_boundaries_and_unlabelled_fallback_are_stable(self):
+        source = ('/-- Lemma 1.2.30 -/\nlemma wrong : True := by trivial\n'
+                  '/-- Helper for Lemma 1.2.3 -/\nlemma helper : True := by trivial\n'
+                  '/-- Lemma 1.2.3.1 -/\nlemma nested : True := by trivial\n'
+                  '/-- Lemma 1-2-3. The result. -/\nlemma actual : True := by trivial\n')
+        self.assertEqual(statement_excerpts(source, label='Lemma 1.2.3')[0].signature,
+                         'lemma actual : True')
+        self.assertEqual(statement_excerpts(source, label='Lemma 9.9')[0].signature,
+                         'lemma wrong : True')
+
+    def test_structures_classes_and_inductives_keep_their_mathematical_bodies(self):
+        definitions = [
+            'structure Witness where\n  value : Nat\n  positive : 0 < value',
+            'class Condition (n : Nat) : Prop where\n  positive : 0 < n\n  default : Nat := 1',
+            'inductive Generator\n  | a\n  | b\n  deriving DecidableEq',
+            'inductive Relation : Nat → Prop where\n  | zero : Relation 0\n  | next (n) : Relation n → Relation (n+1)',
+        ]
+        source = '\n\n'.join(definitions) + '\nlemma later : True := by trivial\n'
+        excerpts = statement_excerpts(source)
+        self.assertEqual([item.signature for item in excerpts[:-1]], definitions)
+        self.assertEqual(excerpts[-1].signature, 'lemma later : True')
+
+    def test_statement_excerpts_omit_proofs_and_prefer_numbered_statement(self):
+        source = ('import Mathlib\nnamespace Test\nvariable (n : Nat)\n'
+                  '@[simp]\nprivate theorem helper : True := by trivial\n'
+                  '/-- Lemma 1.2.3: zero is a lower bound. -/\n'
+                  'theorem bound (a : Nat := 0) : 0 ≤ n := by\n  exact Nat.zero_le _\n'
+                  'end Test\n#check Nat\n')
+        excerpts = statement_excerpts(source, label='Lemma 1.2.3')
+        self.assertEqual(len(excerpts), 2)
+        self.assertEqual(excerpts[0].signature, 'theorem bound (a : Nat := 0) : 0 ≤ n')
+        self.assertEqual(excerpts[0].context, ('namespace Test', 'variable (n : Nat)'))
+        self.assertEqual(excerpts[1].context, ())
+        self.assertNotIn('exact', repr(excerpts))
+
+    def test_literal_contents_do_not_invent_commands_or_end_signatures(self):
+        source = ('def text := r#"text "quoted"\n#check fake\n"#\n'
+                  "def brace := '('\nrecall actual (n : Nat) : n = n\n")
+        excerpts = statement_excerpts(source)
+        self.assertEqual(len(excerpts), 3)
+        self.assertIn('"quoted"', excerpts[0].signature)
+        self.assertEqual(excerpts[1].signature, "def brace := '('")
+        self.assertEqual(excerpts[2].signature, 'recall actual (n : Nat) : n = n')
+
+    def test_indented_namespaces_and_multiline_checks(self):
+        excerpts = statement_excerpts('namespace X\n  variable (n : Nat)\n'
+                                      '  #check\n    (n, n)\nend X\n')
+        self.assertEqual(len(excerpts), 1)
+        self.assertEqual(excerpts[0].signature, '#check\n    (n, n)')
+        self.assertEqual(excerpts[0].context, ('namespace X', 'variable (n : Nat)'))
+
+    def test_assignments_and_matches_inside_a_type_are_not_proof_boundaries(self):
+        excerpts = statement_excerpts('theorem foo : let n := 0; n = n := by rfl\n'
+                                      'theorem bar : match true with\n | true => True\n | false => False\n := by trivial\n')
+        self.assertEqual(excerpts[0].signature, 'theorem foo : let n := 0; n = n')
+        self.assertIn('| false => False', excerpts[1].signature)
+        self.assertNotIn('trivial', excerpts[1].signature)
+
+    def test_extra_command_indentation_and_local_instances_do_not_swallow_statements(self):
+        excerpts = statement_excerpts('variable (n : Nat)\n'
+                                      '  theorem bound : 0 ≤ n := by\n  exact Nat.zero_le _\n'
+                                      'local instance : Inhabited Nat := by exact ⟨0⟩\n'
+                                      '#check Nat\n')
+        self.assertEqual(len(excerpts), 3)
+        self.assertEqual(excerpts[0].signature, 'theorem bound : 0 ≤ n')
+        self.assertNotIn('exact', repr(excerpts))
+        self.assertEqual(excerpts[-1].context, ('variable (n : Nat)',))
+
+    def test_mixed_recall_page_does_not_repeat_proofs_or_existing_declarations(self):
+        with tempfile.TemporaryDirectory() as temp:
+            source = ('import Mathlib\nrecall imported : True\n'
+                      'theorem local_result : True := by\n  trivial\n')
+            original = '<div class="decl" id="local_result">local_result : True</div>'
+            args = self.fixture(Path(temp), {'Demo.Item': source}, contents={'Demo.Item': original})
+            enrich_documentation(*args)
+            page = (args[0] / 'Demo/Item.html').read_text()
+            self.assertIn('recall imported : True', page)
+            self.assertEqual(page.count('local_result : True'), 1)
+            self.assertNotIn('trivial', page)
+
     def test_recall_keeps_comments_variables_and_multiline_statement(self):
         source = ('/- Authors: Test Author -/\nimport Mathlib\n\nuniverse u\n'
                   'open Path.Homotopic.Quotient\nvariable {X : Type u} [TopologicalSpace X]\n'
@@ -46,6 +177,10 @@ class StatementDocumentationTests(unittest.TestCase):
         self.assertTrue(reading.imports_only)
         self.assertEqual(reading.imports, ('A', 'B', 'C'))
         self.assertTrue(source_reading('/- no declarations -/').imports_only)
+        self.assertTrue(source_reading('module\npublic import A\npublic section\n'
+                                      'open X\nuniverse u\nvariable {a : Type u}\nend\n').imports_only)
+        self.assertFalse(source_reading('import A\nopen X in theorem foo : True := trivial\n').imports_only)
+        self.assertFalse(source_reading('import A\ncustom_command foo\n').imports_only)
 
     def fixture(self, root, sources, *, contents=None, owners=None):
         doc = root / 'doc'
@@ -118,6 +253,19 @@ class StatementDocumentationTests(unittest.TestCase):
             original = path.read_text()
             self.assertEqual(enrich_documentation(*args), 0)
             self.assertEqual(path.read_text(), original)
+
+    def test_contents_sort_item_numbers_before_statement_kinds(self):
+        with tempfile.TemporaryDirectory() as temp:
+            items = ['Demo.Chap02.Construction_2_1', 'Demo.Chap01.Theorem_1_1_10',
+                     'Demo.Chap01.Construction_1_1_2', 'Demo.Chap01.Definition_1_1_1']
+            args = self.fixture(Path(temp), {'Demo.Book': '\n'.join('import ' + item for item in items),
+                                           **{item: '#check Nat' for item in items}})
+            enrich_documentation(*args)
+            page = (args[0] / 'Demo/Book.html').read_text()
+            offsets = [page.index(item.replace('Demo.', '').replace('.', '/') + '.html')
+                       for item in reversed(items)]
+            self.assertEqual(offsets, sorted(offsets))
+            self.assertEqual(page.count('<h3>Chapter 1</h3>'), 1)
 
     def test_missing_or_symlinked_pages_fail_instead_of_becoming_placeholders(self):
         with tempfile.TemporaryDirectory() as temp:

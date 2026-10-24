@@ -2,7 +2,9 @@
 
 ## Status
 
-Accepted
+Accepted; revised after the static-site click-path audit. Supersedes the
+link-only reader content policy in ADR-0009, preserving its route ownership
+and isolated-fragment contracts.
 
 ## Context
 
@@ -17,22 +19,55 @@ and then a documentation link which could lead to that empty page.
 - Label reading links **Documentation** and mathematical content **Statements**.
   Keep technical identifiers and actual service API routes unchanged.
 - Enrich project-owned doc-gen pages in the private build stage, before link
-  closure and atomic publication. Display the original source body for modules
-  containing `recall` or `#check`, retaining mathematical comments, namespaces,
-  variables, and notation. Escape source as text. This is not inferred Lean
+  closure and atomic publication. Display command/signature excerpts for modules
+  containing `recall` or `#check`, retaining mathematical comments and explicit
+  variable/namespace/notation context. Omit proof bodies and unrelated helpers;
+  do not paste the whole source file. Escape source as text. This is not inferred Lean
   output: a checked expression is not presented as a newly proved theorem.
+- For numbered item previews, prefer comments beginning with the exact item
+  identifier (optionally after a `Chapter10` prefix), treating dots and hyphens
+  in the number equivalently. Exact headings always rank first. Among other
+  comments, explicit `Helper`/`Auxiliary` prefixes rank last; these words within
+  mathematical prose (e.g. "auxiliary objective") do not affect priority.
+  Preserve source order within a rank. Keep complete `structure`/`class` fields and `inductive` constructors,
+  including field defaults: those bodies are part of the mathematical definition.
 - Keep existing declarations, anchors, and immutable source links. Never rewrite
   version-branch mathematics or introduce alias theorems just for documentation.
 - Give imports-only documentation pages direct links to reachable content,
   following the module graph within shared selected-root ownership. Skip empty
-  leaves, deduplicate paths, bound cycles, and sort item numbers naturally.
-- Put item documentation/source links on book and paper home pages, with chapter
-  grouping. Existing chapter and grouped-item routes remain optional navigation
-  and retain their ownership/fragment contracts. Known placeholder items with
-  only external imports are labelled as having no statement and link to source.
+  leaves, deduplicate paths, bound cycles, and sort item numbers naturally before
+  statement kinds, within their chapter/module groups.
+- README reading links go to the named project page. A single-project build's
+  root contains that same page and project title, not the shared ReasBook hub.
+- Book home pages link to stable item anchors in chapters. Chapters contain
+  numbered source statement previews with secondary Documentation/source links.
+  Section-oriented chapters inline their sections' statement excerpts, including
+  split parts, instead of adding another aggregation hop. The sidebar links
+  directly to these real chapter pages and stays at chapter depth. Legacy
+  chapter routes remain compatible real pages, not required redirect hops.
+- Item papers show statements directly on their home page. Papers without
+  separate sections expose excerpts from reachable project-owned modules, so
+  BFGS and RockafellarSum are not dead ends. Split-section home links go straight
+  to parts; old split-section pages also contain statement excerpts.
+- Known placeholders with only external imports have no documentation link and
+  say `no statement yet`. Internal facades resolve to reachable statements with
+  the actual excerpt's source link. Unsupported source commands explicitly say
+  `statement preview unavailable`; they are not silently called empty or proved.
+- Only direct chapter children qualify as ordinary sections. Nested item support
+  files such as Sun–Yuan's `Lemma_13_6_3/section13325` never become sidebar sections.
+- Use bibliographic project titles and actual module entry points. A multi-root
+  Lake library name is not necessarily a documentation module (BFGS uses `Paper`).
 - Project bookmarks under `sites/<slug>/` open their existing reading entry
-  (or documentation when no reading entry exists). Only aggregate catalogs
-  return to the README. Split paper sections link directly to their parts.
+  (or documentation when no reading entry exists). Aggregate static catalogs
+  stay on the static site and only link to existing artifacts; they no longer
+  redirect to the README. Pages projection rebuilds these catalogs against its
+  retained routes, including documentation-only projects.
+- Assembly and reader entrypoint generation use the shared, self-contained
+  styled catalog renderer in `reasbook_sdk_common.catalog`. The final Pages root
+  is written by `PagesSiteProjector._write_catalog_redirects`, using that same
+  renderer after selecting retained routes, not a second HTML implementation.
+- Counts, navigation labels, transition-page explanations, and hidden tooltips
+  do not satisfy the readable-content publication gate.
 - Bind the statement renderer to the rendered-doc cache identity. Reuse a
   compatible database analysis checkpoint, but regenerate old HTML. Include the
   renderer in the existing SDK tooling snapshot and its digest.
@@ -45,3 +80,11 @@ all mathlib documentation or creating an additional literate target per item.
 the inferred type from Lean's diagnostic output. Ordinary declaration pages keep
 their existing rendering. New releases must be built and promoted for the live
 website to change; immutable published artifacts are not edited in place.
+
+The source excerpt scanner is a conservative lexical presentation helper, not
+an elaborator. It preserves expressions and separates previews from authoritative
+Documentation. It does not infer types, recreate dependencies or certify proofs.
+`v4.29.0` is not an active registered release; Klenke and Vogel remain explicitly
+excluded. Missing deployments require separate publication work, not fabricated
+pages or changing project selection to make a catalog look complete. The mirror's
+external hosting inventory must likewise be regenerated from published artifacts.

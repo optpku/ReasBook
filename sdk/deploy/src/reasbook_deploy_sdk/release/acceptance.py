@@ -75,7 +75,29 @@ _VERSO_DIRECTORY_LABELS = {
     "chapter index",
     "directory",
     "section index",
+    "statements",
+    "statements by chapter",
 }
+_VERSO_NAVIGATION_PROSE = re.compile(
+    r"^(?:this (?:chapter|reader) indexes \d+ formalized items\b"
+    r"|this chapter aggregation page links\b|this section is split across\b"
+    r"|these source modules support\b|the source tree also contains\b"
+    r"|statement excerpts below omit proofs\b|source excerpts; proofs omitted\b"
+    r"|statements from the reading parts\b|additional statements are available\b"
+    r"|statements are available in documentation\b"
+    r"|.*\bstatement preview unavailable\b"
+    r"|\d+ (?:items|reading sections|sections, \d+ items)$"
+    r"|(?:definition|lemma|theorem|corollary|remark|example|algorithm|part) "
+    r"[\w.]+(?:\s*\(|\s*$))", re.IGNORECASE,
+)
+
+
+def _readable_paragraph(text: str) -> bool:
+    normalized = text.casefold().strip(" .:-")
+    return bool(normalized and normalized not in _VERSO_DIRECTORY_LABELS
+                and not _VERSO_NAVIGATION_PROSE.search(normalized))
+
+
 _VERSO_MAX_LINK_DEPTH = 12
 _VERSO_VISITING = 1
 _VERSO_VALIDATED = 2
@@ -168,6 +190,7 @@ class _VersoContentProbe(HTMLParser):
             or "hidden" in normalized_attrs
             or normalized_attrs.get("aria-hidden") == "true"
             or self._HIDDEN_STYLE_RE.search(exact_attrs.get("style", "")) is not None
+            or "hover-container" in normalized_attrs.get("class", "").split()
         )
         if self._content_root_tag is None:
             if tag in {"article", "main"} or normalized_attrs.get("role") == "main":
@@ -203,11 +226,9 @@ class _VersoContentProbe(HTMLParser):
                         text = " ".join(" ".join(self._current).split())
                         if text:
                             self.paragraphs.append(text)
-                            normalized = text.casefold().strip(" .:-")
                             if (
                                 self._stop_after_readable
-                                and normalized
-                                and normalized not in _VERSO_DIRECTORY_LABELS
+                                and _readable_paragraph(text)
                             ):
                                 raise _VersoReadableContent
                         self._current = []
@@ -856,11 +877,7 @@ class ReleaseAcceptanceRunner:
                 f"{marker or 'data-reasbook-verso-empty'}"
             )
 
-        readable = any(
-            (normalized := paragraph.casefold().strip(" .:-"))
-            and normalized not in _VERSO_DIRECTORY_LABELS
-            for paragraph in probe.paragraphs
-        )
+        readable = any(_readable_paragraph(paragraph) for paragraph in probe.paragraphs)
         if probe.refresh_meta_count:
             if (
                 probe.refresh_meta_count != 1
