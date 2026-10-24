@@ -30,6 +30,7 @@ from pathlib import Path
 from urllib.parse import unquote, urlsplit
 
 from reader_entrypoints import write_reader_entrypoints
+from reasbook_sdk_common.catalog import catalog_page as render_catalog_page
 
 
 ASSETS_DIR = Path(__file__).resolve().parent / "assets"
@@ -45,7 +46,7 @@ _HREF_RE = re.compile(
     flags=re.IGNORECASE,
 )
 _SOURCE_DOCUMENTATION_PAIR_RE = re.compile(
-    r"(?P<documentation><a\b[^>]*>\s*API documentation\s*</a>)"
+    r"(?P<documentation><a\b[^>]*>\s*(?:API )?documentation\s*</a>)"
     r"(?P<separator>\s*\)\s*\(\s*)"
     r"(?P<source><a\b[^>]*>\s*Lean source\s*</a>)",
     flags=re.IGNORECASE,
@@ -311,7 +312,7 @@ def reconcile_documentation_links(
             continue
         source = document.read_text(encoding="utf-8", errors="replace")
         if not (("Documentation" in source and "Verso" in source) or
-                (verified_source_links and "API documentation" in source)):
+                (verified_source_links and "documentation" in source.lower())):
             continue
 
         relative_document = document.relative_to(site_root).as_posix()
@@ -349,7 +350,7 @@ def reconcile_documentation_links(
             replacement_count += 1
             return (
                 '<span class="documentation-unavailable" '
-                'title="This source module is not part of the published API '
+                'title="This source module is not part of the published '
                 'documentation">Documentation unavailable</span>'
                 + match.group("separator")
                 + f"({verso})"
@@ -372,8 +373,8 @@ def reconcile_documentation_links(
                 return match.group(0)
             replacement_count += 1
             source_occurrences[(docs_href, pinned)].append(relative_document)
-            return ('<span class="documentation-unavailable" title="API documentation '
-                    'has not been generated for this item">API documentation unavailable</span>'
+            return ('<span class="documentation-unavailable" title="Documentation '
+                    'has not been generated for this item">Documentation unavailable</span>'
                     + match.group("separator")
                     + f'<a href="{html.escape(pinned, quote=True)}">Lean source</a>')
 
@@ -596,69 +597,11 @@ def project_page(
 
 
 def catalog_page(projects: list[dict[str, str]], *, has_versions: bool) -> str:
-    groups: list[str] = []
-    for kind, heading in (("books", "Books"), ("papers", "Papers")):
-        rows = sorted(
-            (project for project in projects if project["kind"] == kind),
-            key=lambda project: project["name"].lower(),
-        )
-        if not rows:
-            continue
-        links = []
-        for project in rows:
-            name = project["name"]
-            links.extend(
-                [
-                    "      <li>",
-                    f'        <a class="catalog-row" href="./sites/{html.escape(project["slug"], quote=True)}/">',
-                    '          <span class="catalog-title">',
-                    f"            <strong>{html.escape(display_name(name))}</strong>",
-                    f'            <code translate="no">{html.escape(name)}</code>',
-                    "          </span>",
-                    '          <span class="catalog-version" translate="no">'
-                    f"{html.escape(project.get('branch', ''))}</span>",
-                    '          <span class="link-arrow" aria-hidden="true">&#8594;</span>',
-                    "        </a>",
-                    "      </li>",
-                ]
-            )
-        groups.extend(
-            [
-                '    <section class="catalog-group">',
-                '      <div class="group-heading">',
-                f"        <h2>{heading}</h2>",
-                f'        <span class="group-count">{len(rows)}</span>',
-                "      </div>",
-                '      <ul class="catalog-list" role="list">',
-                *links,
-                "      </ul>",
-                "    </section>",
-            ]
-        )
-    if not groups:
-        groups = ['    <p class="empty-state">No published books or papers yet.</p>']
-    versions_href = "./versions/" if has_versions else None
-    return "\n".join(
-        [
-            "<!doctype html>",
-            '<html lang="en">',
-            *page_head("ReasBook", "./static/catalog.css"),
-            "<body>",
-            *masthead("./", versions_href),
-            '  <main id="main-content" class="page-shell">',
-            '    <section class="catalog-intro">',
-            '      <p class="eyebrow">Lean Library Index</p>',
-            "      <h1>ReasBook</h1>",
-            "      <p>Books and papers formalized in Lean.</p>",
-            "    </section>",
-            *groups,
-            "  </main>",
-            '  <footer class="site-footer"><span>ReasBook</span><span>Formal Mathematics</span></footer>',
-            "</body>",
-            "</html>",
-            "",
-        ]
-    )
+    entries = [(display_name(project["name"]), f'./sites/{project["slug"]}/')
+               for project in sorted(projects, key=lambda item: (item["kind"], item["name"].lower()))]
+    if has_versions:
+        entries.append(("Published versions", "./versions/"))
+    return render_catalog_page("ReasBook — Statements and Documentation", entries)
 
 
 def write_catalog_asset(dst_root: Path) -> None:
@@ -842,7 +785,7 @@ def main() -> None:
                 *masthead("../../", "../../versions/" if has_versions else None),
                 '  <main id="main-content" class="page-shell narrow-shell">',
                 '    <section class="page-heading">',
-                '      <p class="eyebrow">API Reference</p>',
+                '      <p class="eyebrow">Documentation</p>',
                 "      <h1>Documentation</h1>",
                 "    </section>",
                 "    <h2>Books</h2>",
@@ -869,7 +812,7 @@ def main() -> None:
     (docs_root / "index.html").write_text(
         html_page(
             "Documentation",
-            [("./ReasBook/", "Browse API Documentation")],
+            [("./ReasBook/", "Browse Documentation")],
             "../",
             stylesheet="../static/catalog.css",
             home_href="../",
@@ -894,8 +837,7 @@ def main() -> None:
             f"see {_UNAVAILABLE_DOCUMENTATION_MANIFEST}"
         )
 
-    # The README is the public catalog. Keep old catalog URLs as redirects,
-    # while preserving all per-project Docs and Verso routes and assets.
+    # Keep static-site visitors on the site, with only existing reader targets.
     write_reader_entrypoints(dst_root)
 
 

@@ -63,6 +63,26 @@ closed. The builder requires the generated stylesheet and rechecks closure in
 no-write mode after creating dependency stubs. It rejects a symlink at the
 output path or any existing parent component before resolving the destination.
 
+Project pages also display source-backed **Statements** for modules containing
+`recall` or `#check`, including mathematical comments and local variable/notation
+context, with proof bodies and unrelated implementation code omitted. These commands reuse existing mathematics and do not create declarations
+for doc-gen to list. The renderer preserves the source expression; it does not
+invent a type for `#check` or treat it as a new theorem. Existing declaration
+anchors and source attribution remain intact. Imports-only contents pages link
+directly to reachable content, skipping intermediate import aggregators and empty
+leaves, ordered by item number within each chapter rather than declaration kind.
+Numbered reader previews prefer item-heading comments over citations, accept both
+dot- and hyphen-separated identifiers, and only demote explicit Helper/Auxiliary
+comment prefixes among non-heading candidates. Mathematical uses of these words
+inside the prose do not affect priority.
+Structure/class fields and inductive constructors are retained as definitions,
+including field defaults. This applies to both legacy and database doc-gen output.
+
+The rendered-cache identity includes the statement renderer's digest. Old HTML
+is regenerated while compatible database analysis checkpoints remain reusable.
+Existing published releases are immutable; publishing these presentation changes
+requires generating and promoting a new release.
+
 Controllers that need the same preflight without running doc-gen should use
 the public read-only closure and artifact APIs:
 

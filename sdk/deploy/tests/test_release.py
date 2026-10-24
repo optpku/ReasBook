@@ -305,6 +305,13 @@ def profile(root: Path, *, historical: bool = True) -> DeploymentProfile:
 
 
 class ReleasePlanningTests(unittest.TestCase):
+    def test_pages_catalog_uses_the_shared_styled_renderer(self) -> None:
+        from reasbook_sdk_common.catalog import catalog_page
+        self.assertEqual(
+            PagesSiteProjector._branch_index('v4.30.0', [('books/demo/', 'Demo')]),
+            catalog_page('ReasBook — v4.30.0', [('Demo', 'books/demo/')]),
+        )
+
     def test_reference_cache_preserves_trailing_slash_validation(self) -> None:
         with tempfile.TemporaryDirectory() as temp:
             site = Path(temp)
@@ -1472,6 +1479,12 @@ class ReleasePlanningTests(unittest.TestCase):
 
             PagesSiteProjector().project(spec, layout.site, layout.pages_site)
             self.assertEqual(full_site_identity, site_tree_digest(layout.site))
+            for relative in ('index.html', 'docs/index.html', 'versions/v4.30.0/index.html'):
+                catalog = (layout.pages_site / relative).read_text()
+                self.assertNotIn('http-equiv="refresh"', catalog)
+                self.assertIn('<li><a href=', catalog)
+            project_entry = (layout.pages_site / 'sites/demo/index.html').read_text()
+            self.assertIn('/ReasBook/versions/v4.30.0/books/demo/', project_entry)
             self.assertTrue((layout.pages_site / ".nojekyll").is_file())
             self.assertFalse(
                 (layout.pages_site / "private-build-evidence.json").exists()

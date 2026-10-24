@@ -1606,7 +1606,7 @@
     const versoUrl = !stacksMode && resources.verso?.available ? resources.verso.url || "" : "";
     const waiting = Boolean(state.selectedKey && !state.context);
     const failed = Boolean(state.context?.error);
-    refs.docsEmpty.textContent = waiting ? "Checking documentation for this declaration…" : failed ? "Unable to check documentation. Select the declaration again to retry." : "API documentation is unavailable for this declaration in the selected release.";
+    refs.docsEmpty.textContent = waiting ? "Checking documentation for this statement…" : failed ? "Unable to check documentation. Select the statement again to retry." : "Documentation is unavailable for this statement in the selected release.";
     refs.versoEmpty.textContent = waiting ? "Checking Verso for this declaration…" : failed ? "Unable to check Verso. Select the declaration again to retry." : "A generated Verso page is unavailable for this declaration in the selected release.";
     refs.versoTab.hidden = stacksMode;
     if (stacksMode && state.evidenceView === "verso") setEvidenceView("graph");

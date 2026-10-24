@@ -87,7 +87,7 @@ def resource_cell(project: dict[str, str], *, language: str = "en") -> str:
 
     pieces = [f"[{labels['docs']}]({docs_href})"]
     if name not in NO_VERSO_PROJECTS:
-        reading_route = PUBLISHED_VERSO.get((kind, name), "")
+        reading_route = PUBLISHED_VERSO.get((kind, name), f"{kind}/{slug}/")
         pieces.append(f"[Verso]({project_base}/{reading_route})")
     else:
         pieces.append(labels["verso_unpublished"])

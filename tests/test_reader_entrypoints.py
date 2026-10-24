@@ -10,12 +10,12 @@ import unittest
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts" / "pages"))
 
-from reader_entrypoints import README_URL, write_reader_entrypoints  # noqa: E402
+from reader_entrypoints import write_reader_entrypoints  # noqa: E402
 from update_readme import resource_cell, update_resource_cells  # noqa: E402
 
 
 class ReaderEntrypointsTests(unittest.TestCase):
-    def test_only_catalog_indexes_redirect_and_content_is_preserved(self):
+    def test_catalogs_stay_on_site_and_project_content_is_preserved(self):
         with tempfile.TemporaryDirectory() as temp:
             site = Path(temp)
             catalogs = (
@@ -43,13 +43,48 @@ class ReaderEntrypointsTests(unittest.TestCase):
             self.assertEqual({p.relative_to(site).as_posix() for p in changed}, set(catalogs))
             for relative in catalogs:
                 page = (site / relative).read_text(encoding="utf-8")
-                self.assertIn(f'content="0; url={README_URL}"', page)
-                self.assertIn('content="noindex,follow"', page)
-                self.assertIn(f'<a href="{README_URL}">', page)
+                if relative == 'sites/demo/index.html':
+                    self.assertIn('content="0; url=pages/index.html"', page)
+                else:
+                    self.assertNotIn('http-equiv="refresh"', page)
+                    self.assertIn('Statements and Documentation', page)
+                    self.assertIn('<style>', page)
+                    self.assertIn('class="catalog-list"', page)
                 self.assertNotIn("original:", page)
             for relative in content:
                 self.assertEqual((site / relative).read_text(), f"original: {relative}")
             self.assertEqual(write_reader_entrypoints(site), changed)
+
+    def test_project_bookmarks_use_docs_when_reading_pages_are_absent(self):
+        with tempfile.TemporaryDirectory() as temp:
+            site = Path(temp)
+            project = site / 'versions/v4.30.0/sites/demo'
+            docs = project / 'docs/index.html'
+            docs.parent.mkdir(parents=True)
+            docs.write_text('real documentation')
+            (project / 'index.html').write_text('old project catalog')
+            write_reader_entrypoints(site)
+            self.assertIn('content="0; url=docs/index.html"', (project / 'index.html').read_text())
+            self.assertEqual(docs.read_text(), 'real documentation')
+
+    def test_catalog_skips_missing_artifacts_and_follows_local_redirects(self):
+        with tempfile.TemporaryDirectory() as temp:
+            site = Path(temp)
+            (site / 'sites/missing').mkdir(parents=True)
+            (site / 'sites/missing/index.html').write_text('unpublished')
+            (site / 'sites/demo/pages').mkdir(parents=True)
+            (site / 'sites/demo/index.html').write_text('old catalog')
+            (site / 'sites/demo/pages/index.html').write_text(
+                '<meta http-equiv="refresh" content="0; url=../../../books/demo/">')
+            target = site / 'books/demo/index.html'
+            target.parent.mkdir(parents=True)
+            target.write_text('<title>A readable book -- ReasBook</title><main>Statements</main>')
+            write_reader_entrypoints(site)
+            page = (site / 'index.html').read_text()
+            self.assertIn('href="books/demo/index.html"', page)
+            self.assertIn('A readable book', page)
+            self.assertNotIn('sites/missing', page)
+            self.assertIn('url=../../books/demo/index.html', (site / 'sites/demo/index.html').read_text())
 
     def test_readmes_link_to_project_resources_not_aggregate_catalogs(self):
         readmes = [ROOT / "README.md", ROOT / "README.zh-CN.md"]

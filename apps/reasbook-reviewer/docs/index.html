@@ -136,7 +136,7 @@
               <div class="view-tabs" role="tablist" aria-label="Evidence view">
                 <button id="graphTab" type="button" role="tab" data-evidence-view="graph" aria-selected="true" aria-controls="graphView">Graph</button>
                 <button id="sourceTab" type="button" role="tab" data-evidence-view="source" aria-selected="false" aria-controls="sourceView">Source</button>
-                <button id="docsTab" type="button" role="tab" data-evidence-view="docs" aria-selected="false" aria-controls="docsView">Docs</button>
+                <button id="docsTab" type="button" role="tab" data-evidence-view="docs" aria-selected="false" aria-controls="docsView">Documentation</button>
                 <button id="versoTab" type="button" role="tab" data-evidence-view="verso" aria-selected="false" aria-controls="versoView">Verso</button>
               </div>
               <div id="evidenceHistoryControls" class="evidence-history-controls" role="group" aria-label="Evidence page history" hidden>
@@ -162,8 +162,8 @@
             <pre id="sourceCode" class="source-code"><code>Select a statement to load Lean source.</code></pre>
           </div>
           <div id="docsView" class="evidence-view document-view" role="tabpanel" aria-labelledby="docsTab" hidden>
-            <div id="docsEmpty" class="evidence-empty" hidden>Generated API documentation is not available for this declaration.</div>
-            <iframe id="docsFrame" title="Lean API documentation" loading="lazy" sandbox="allow-scripts allow-same-origin" referrerpolicy="no-referrer" hidden></iframe>
+            <div id="docsEmpty" class="evidence-empty" hidden>Documentation is not available for this statement.</div>
+            <iframe id="docsFrame" title="Lean statement documentation" loading="lazy" sandbox="allow-scripts allow-same-origin" referrerpolicy="no-referrer" hidden></iframe>
           </div>
           <div id="versoView" class="evidence-view document-view" role="tabpanel" aria-labelledby="versoTab" hidden>
             <div id="versoEmpty" class="evidence-empty" hidden>A generated Verso page is not available for this declaration.</div>

@@ -15,6 +15,7 @@ from urllib.parse import unquote, urljoin, urlsplit
 import uuid
 
 from reasbook_sdk_common import atomic_write_json
+from reasbook_sdk_common.catalog import catalog_page
 
 from ..errors import DeployExecutionError
 from ..git import version_key
@@ -35,6 +36,20 @@ from .static_assets import compact_verso_metadata, deduplicate_verso_assets
 
 _SHARED_DOC_DIRECTORIES = {"declarations", "find", "src"}
 README_URL = "https://github.com/optpku/ReasBook#readme"
+
+
+def _reader_title(page: Path, fallback: str) -> str:
+    """Reuse the project's bibliographic title rather than its directory slug."""
+    if page.is_file() and not page.is_symlink():
+        with page.open(encoding="utf-8") as handle:
+            match = re.search(r'<title[^>]*>(.*?)</title>', handle.read(8192), re.DOTALL | re.IGNORECASE)
+        if match:
+            title = html.unescape(re.sub(r'<[^>]+>', '', match[1])).strip().removesuffix(' -- ReasBook')
+            if title and title not in {'ReasBook', 'ReasBook README'}:
+                return title
+    return re.sub(r'(?<=[a-z])(?=[A-Z])', ' ', fallback).replace('_', ' ')
+
+
 _EXTERNAL_DOC_NAMESPACES = {
     "Aesop",
     "Batteries",
@@ -325,9 +340,11 @@ class PagesSiteProjector:
                 project_routes.append(
                     (
                         chosen.as_posix().rstrip("/") + "/",
-                        project.project_id,
+                        _reader_title(source / chosen / "index.html", project.project_id),
                     )
                 )
+            elif docs is not None:
+                project_routes.append((docs.as_posix(), _reader_title(source / docs, project.project_id)))
             canonical_routes[project.key] = (
                 Path("versions") / branch / chosen if chosen is not None else None,
                 Path("versions") / branch / docs if docs is not None else None,
@@ -567,11 +584,24 @@ class PagesSiteProjector:
         site: Path,
         routes: dict[str, tuple[Path | None, Path | None]],
     ) -> None:
+        catalog: list[tuple[str, str]] = []
+        docs_catalog: list[tuple[str, str]] = []
         for project in spec.canonical_projects():
             route = routes.get(project.key)
             if route is None:
                 raise DeployExecutionError(f"Pages projection omitted {project.key}")
             pages, docs = route
+            primary = pages or docs
+            title = project.project_id
+            if pages is not None:
+                title = _reader_title(site / pages / 'index.html', title)
+            elif docs is not None:
+                title = _reader_title(site / docs, title)
+            if primary is not None:
+                url = spec.base_path + primary.as_posix() + ('/' if pages is not None else '')
+                catalog.append((url, title))
+                self._write_redirect(site / "sites" / project.slug / "index.html",
+                                     url, title, spec.base_path)
             if pages is not None:
                 self._write_redirect(
                     site / "sites" / project.slug / "pages" / "index.html",
@@ -580,12 +610,21 @@ class PagesSiteProjector:
                     spec.base_path,
                 )
             if docs is not None:
+                docs_catalog.append((spec.base_path + docs.as_posix(), title))
                 self._write_redirect(
                     site / "sites" / project.slug / "docs" / "index.html",
                     spec.base_path + docs.as_posix(),
                     f"{project.project_id} documentation",
                     spec.base_path,
                 )
+        for relative, entries in (("index.html", catalog), ("docs/index.html", docs_catalog),
+                                  ("sites/index.html", catalog)):
+            path = site / relative
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(self._branch_index("Statements and Documentation", entries), encoding="utf-8")
+        (site / "versions/index.html").write_text(
+            self._branch_index("Published versions", [(f"{branch.name}/", branch.name)
+                                                       for branch in spec.branches]), encoding="utf-8")
 
     @staticmethod
     def _write_redirect(
@@ -626,28 +665,8 @@ class PagesSiteProjector:
         branch: str,
         routes: list[tuple[str, str]],
     ) -> str:
-        # Version roots are compatibility entrypoints, not another catalog.
-        # Project routes below them remain intact for Docs/Verso deep links.
-        target = README_URL
-        return "\n".join(
-            [
-                "<!doctype html>",
-                '<html lang="en">',
-                "<head>",
-                '  <meta charset="utf-8" />',
-                '  <meta name="viewport" content="width=device-width,initial-scale=1" />',
-                '  <meta name="robots" content="noindex,follow" />',
-                f'  <meta http-equiv="refresh" content="0; url={target}" />',
-                f'  <link rel="canonical" href="{target}" />',
-                "  <title>ReasBook README</title>",
-                "</head>",
-                "<body>",
-                f'  <p><a href="{target}">Open ReasBook README</a></p>',
-                "</body>",
-                "</html>",
-                "",
-            ]
-        )
+        return catalog_page(f"ReasBook — {branch}",
+                            [(label, url) for url, label in routes])
 
     def _close_internal_references(
         self,

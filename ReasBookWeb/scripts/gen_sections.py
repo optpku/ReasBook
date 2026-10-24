@@ -34,6 +34,8 @@ for sdk_source in (
     if value not in sys.path:
         sys.path.insert(0, value)
 
+from reasbook_build_sdk.statement_docs import module_label, source_reading, statement_excerpts  # noqa: E402
+
 
 SITE_CONFIG: SiteConfig = load_site_config()
 GITHUB_OWNER = SITE_CONFIG.github_owner
@@ -134,6 +136,13 @@ def write_text_if_changed(path: Path, content: str, *, log: bool = True) -> bool
 
 
 BOOK_TITLES = {
+    "AlgebraicTopology_May_1999": "A Concise Course in Algebraic Topology (May, 1999)",
+    "CombinatorialGroupTheory_Magnus_2004": "Combinatorial Group Theory (Magnus, Karrass and Solitar, 2004)",
+    "ConvexAnalysisMonotoneOperators_BauschkeCombettes_2017": "Convex Analysis and Monotone Operator Theory in Hilbert Spaces (Bauschke and Combettes, 2017)",
+    "FirstOrderMethodsOptimization_Beck_2017": "First-Order Methods in Optimization (Beck, 2017)",
+    "IntroductoryLecturesOnConvexOptimization_Nesterov_2004": "Introductory Lectures on Convex Optimization (Nesterov, 2004)",
+    "OptimizationTheoryAndMethods_SunYuan_2006": "Optimization Theory and Methods: Nonlinear Programming (Sun and Yuan, 2006)",
+    "RiemannSurfaces_Forster_1981": "Lectures on Riemann Surfaces (Forster, 1981)",
     "ConvexAnalysis_Rockafellar_1970": "Convex Analysis (Rockafellar, 1970)",
     "IntegerProgramming_Conforti_2014": "Integer Programming (Conforti et al., 2014)",
     "Analysis2_Tao_2022": "Analysis II (Tao, 2022)",
@@ -141,8 +150,12 @@ BOOK_TITLES = {
 }
 
 PAPER_TITLES = {
-    "SmoothMinimization_Nesterov_2004": "Smooth Minimization (Nesterov, 2004)",
-    "OnSomeLocalRings_Maassaran_2025": "On Some Local Rings (Maassaran, 2025)",
+    "BFGSMinimumQOrder_Liu_2026": "The Minimum Q-Order of BFGS with Exact Line Search Is One (Liu et al., 2026)",
+    "RockafellarSum_2026": "A Counterexample to the Rockafellar Sum Conjecture on c₀ (2026)",
+    "DFP_wolfe_local": "Local Convergence of DFP with Wolfe Line Search",
+    "glowinski_admm_counterexample": "The Multiplier Step Size of Two-Block ADMM",
+    "SmoothMinimization_Nesterov_2004": "Smooth Minimization of Non-Smooth Functions (Nesterov, 2004)",
+    "OnSomeLocalRings_Maassaran_2025": "On Some Local Rings (Maassarani, 2025)",
     "TR_LALM_theory": "TR-LALM Theory",
 }
 
@@ -965,12 +978,18 @@ def _module_to_docs_path(source_root: Path, module_name: str) -> str:
 def project_docs_path(source_root: Path, project: str, kind: str) -> str:
     """Return the doc-gen4 path for a registered project's actual Lake root."""
 
-    from reasbook_build_sdk.targets import library_target
+    from reasbook_build_sdk.targets import library_target, parse_library_roots_text
 
-    return _module_to_docs_path(
-        source_root,
-        library_target(source_root, project, kind),
-    )
+    target = library_target(source_root, project, kind)
+    lakefile = source_root / "lakefile.lean"
+    roots = parse_library_roots_text(lakefile.read_text(encoding="utf-8"))
+    if roots.get(project) and target not in roots[project]:
+        # A multi-root library target is a build group, not a Lean module.
+        # BFGS, for example, exports Paper/Book/ReasLib rather than a module
+        # named after its project directory.
+        directory, leaf = ("Books", "Book") if kind == "book" else ("Papers", "Paper")
+        target = to_module(source_root, source_root / directory / project / f"{leaf}.lean")
+    return _module_to_docs_path(source_root, target)
 
 
 def docs_relative_doc_link(source_root: Path, from_module: str, to_module: str) -> str:
@@ -1025,7 +1044,9 @@ def should_include_book(
         return False
 
     if stem.startswith("section"):
-        return True
+        # Nested item implementation files (e.g. Lemma_13_6_3/section13325)
+        # are supporting modules, not book sections. Do not invent numbering.
+        return CHAPTER_RE.fullmatch(path.parent.name) is not None
 
     return module_doc_title(path) is not None
 
@@ -1353,7 +1374,8 @@ def collect_reader_chapters(
     entries_by_module = {entry.module: entry for entry in entries}
     chapters: list[ReaderChapter] = []
     for inventory in inventories:
-        if not inventory_uses_item_reader(inventory):
+        item_reader = inventory_uses_item_reader(inventory)
+        if not item_reader and not inventory.ordinary_section_modules:
             continue
         book = inventory.book
         chapter_num = inventory.chapter_num
@@ -1368,7 +1390,7 @@ def collect_reader_chapters(
                 route=route,
                 legacy_routes=legacy_routes,
                 source_directory=inventory.source_directory,
-                items=inventory.items,
+                items=inventory.items if item_reader else (),
                 ordinary_sections=tuple(
                     entry
                     for source in inventory.ordinary_section_modules
@@ -1675,8 +1697,9 @@ def emit_literate_manifest(entries: list[Entry]) -> str:
 
 
 def emit_sections(
-    entries: list[Entry], reader_chapters: Iterable[ReaderChapter] = ()
+    entries: list[Entry], reader_chapters: Iterable[ReaderChapter] = (),
 ) -> str:
+    reader_chapters = tuple(reader_chapters)
     books: dict[str, dict] = {}
     papers: dict[str, dict] = {}
 
@@ -1787,6 +1810,9 @@ def emit_sections(
         work = ensure_book(reader.book)
         chapter = ensure_chapter(work, reader.book, reader.chapter_num)
         chapter["route"] = reader.route
+        # The chapter itself now contains the sections. Keep the sidebar at
+        # chapter depth instead of retaining a second tree of intermediary pages.
+        chapter["sections"] = {}
 
     books_payload: list[dict] = []
     for book in sorted(books):
@@ -1948,8 +1974,8 @@ def emit_route_table(
         return (
             e.category == "papers"
             and e.stem in {"paper", "main"}
-            and len(parts) >= 2
-            and parts[-2].casefold() == e.book_or_paper.casefold()
+            and (len(parts) == 1 or parts[-2].casefold() == e.book_or_paper.casefold()
+                 or parts[-1].casefold() == e.book_or_paper.casefold())
         )
 
     work_page_imports = {
@@ -2361,6 +2387,138 @@ def lean_module_name(s: str) -> str:
     return re.sub(r"[^A-Za-z0-9_]", "_", s)
 
 
+def item_reading_links(source_root: Path, item: BookItem | PaperItem) -> str:
+    """Do not send readers to a known imports-only placeholder item."""
+    path = source_root.parent / item.source_path
+    reading = source_reading(path.read_text(encoding="utf-8"))
+    source_link = f"([Lean source]({github_blob_link(item.source_path)}))"
+    external_roots = {"Mathlib", "Init", "Lean", "Std", "Batteries", "Aesop"}
+    if reading.imports_only and all(name.split('.')[0] in external_roots for name in reading.imports):
+        return f"— no statement yet {source_link}"
+    docs_path = _module_to_docs_path(source_root, item.module)
+    return (
+        f"([Documentation]({portable_site_link(f'docs/ReasBook/{docs_path}.html')})) "
+        + source_link
+    )
+
+
+def item_anchor(item: BookItem | PaperItem) -> str:
+    return item.stem.casefold().replace("_", "-")
+
+
+def item_statement_blocks(source_root: Path, item: BookItem | PaperItem) -> list[str]:
+    label = book_item_label(item) if isinstance(item, BookItem) else paper_item_label(item)
+    path = source_root.parent / item.source_path
+    source = path.read_text(encoding="utf-8")
+    links = item_reading_links(source_root, item)
+    if statement_excerpts(source):
+        return statement_blocks(source, label, links, item_anchor(item))
+    category, project = (('books', item.book) if isinstance(item, BookItem) else ('papers', item.paper))
+    targets = statement_sources(item.module, project_sources(source_root, category, project))
+    if targets:
+        name, target = next((target for target in targets if target[0].startswith(item.module + '.')), targets[0])
+        docs_path = _module_to_docs_path(source_root, name)
+        actual_source = target.relative_to(source_root.parent).as_posix()
+        links = (f"([Documentation]({portable_site_link(f'docs/ReasBook/{docs_path}.html')})) "
+                 f"([Lean source]({github_blob_link(actual_source)}))")
+        return statement_blocks(target.read_text(encoding="utf-8"), label, links, item_anchor(item))
+    if "no statement yet" in links:
+        return [f"- {label} {links}", ""]
+    # Unknown/custom commands are not silently called an empty mathematical
+    # item. Keep the anchor valid, with an honest indication of preview limits.
+    return [f':::html div (id := {lean_string(item_anchor(item))})',
+            f"{label} — statement preview unavailable {links}", ":::" , ""]
+
+
+def statement_blocks(source: str, label: str, links: str, anchor: str,
+                     *, limit: int | None = 1) -> list[str]:
+    """Render inert source excerpts with stable item anchors, never Lean proofs."""
+    excerpts = statement_excerpts(source, label=label)
+    if not excerpts:
+        return [f"- {label} {links}", ""]
+    selected = excerpts if limit is None else excerpts[:limit]
+    lines = [f':::html div (id := {lean_string(anchor)}) '
+             '(style := "max-width:100%;overflow-x:auto") '
+             '(«data-reasbook-statement» := "true") '
+             '(«data-reasbook-verso-standalone» := "true")',
+             f"*{label}* {links}", ""]
+    for excerpt in selected:
+        if excerpt.prose:
+            # Treat upstream prose as text, not executable Verso directives.
+            prose = ''.join(part if re.fullmatch(r'`[^`\n]+`', part)
+                            else re.sub(r"([\\`*{}\[\]<>_#~$|])", r"\\\1", part)
+                            for part in re.split(r'(`[^`\n]+`)', excerpt.prose))
+            prose = " ".join(prose.split())
+            if prose.startswith((':::', '%%%')):
+                prose = '\\' + prose
+            lines.extend([prose, ""])
+        snippet = "\n".join((*excerpt.context, excerpt.signature))
+        fence = "`" * max(3, 1 + max((len(run) for run in re.findall(r"`+", snippet)), default=0))
+        lines.extend([fence, snippet, fence, ""])
+    if len(selected) < len(excerpts):
+        lines.extend(["Additional statements are available in Documentation.", ""])
+    lines.extend([":::" , ""])
+    return lines
+
+
+@lru_cache(maxsize=None)
+def project_sources(source_root: Path, category: str, project: str) -> dict[str, Path]:
+    directory = source_root / category.title() / project
+    return {to_module(source_root, path): path for path in sorted(directory.rglob("*.lean"))}
+
+
+def statement_sources(module: str, sources: dict[str, Path]) -> list[tuple[str, Path]]:
+    """Skip imports-only facades, staying inside the selected project."""
+    found: list[tuple[str, Path]] = []
+    visited: set[str] = set()
+
+    def visit(name: str) -> None:
+        if name in visited or name not in sources:
+            return
+        visited.add(name)
+        path = sources[name]
+        text = path.read_text(encoding="utf-8")
+        reading = source_reading(text)
+        if statement_excerpts(text):
+            found.append((name, path))
+        elif reading.imports_only:
+            for child in reading.imports:
+                visit(child)
+
+    visit(module)
+    return found
+
+
+def section_reading_route(source_root: Path, entry: Entry,
+                          readers: dict[tuple[str, int], ReaderChapter]) -> str:
+    reader = readers.get((entry.book_or_paper, entry.chapter_num))
+    if reader is None:
+        return entry.route
+    targets = statement_sources(entry.module, project_sources(source_root, "books", entry.book_or_paper))
+    if not targets:
+        return reader.route
+    return reader.route + '#' + targets[0][0].casefold().replace('.', '-')
+
+
+def module_statement_blocks(source_root: Path, module: str, category: str,
+                            project: str, label: str, *, seen: set[str] | None = None,
+                            limit: int | None = None) -> list[str]:
+    lines: list[str] = []
+    for name, path in statement_sources(module, project_sources(source_root, category, project)):
+        if seen is not None:
+            if name in seen:
+                continue
+            seen.add(name)
+        docs_path = _module_to_docs_path(source_root, name)
+        source_path = path.relative_to(source_root.parent).as_posix()
+        links = (f"([Documentation]({portable_site_link(f'docs/ReasBook/{docs_path}.html')})) "
+                 f"([Lean source]({github_blob_link(source_path)}))")
+        lines.extend(statement_blocks(path.read_text(encoding="utf-8"),
+                                      label if name == module else module_label(name), links,
+                                      name.casefold().replace(".", "-"), limit=limit))
+    return lines
+
+
 def write_work_pages(
     repo_root: Path,
     source_root: Path,
@@ -2488,7 +2646,7 @@ def write_work_pages(
             readers_by_book.get(book, []), key=lambda reader: reader.chapter_num
         )
         if book_readers:
-            lines.append("Chapter index:")
+            lines.append("# Statements by chapter:")
             lines.append("")
             for reader in book_readers:
                 section_count = len(
@@ -2497,13 +2655,24 @@ def write_work_pages(
                 inventory = f"{len(reader.items)} items"
                 if section_count:
                     inventory = f"{section_count} sections, {inventory}"
+                if not reader.items:
+                    inventory = f"{len(reader.ordinary_section_modules)} reading sections"
                 lines.append(
-                    f"- [{chapter_title_for_book(book, reader.chapter_num)}]"
-                    f"({portable_site_link(reader.route)}) -- {inventory}"
+                    f"## [{chapter_title_for_book(book, reader.chapter_num)}]"
+                    f"({portable_site_link(reader.route)})"
                 )
+                lines.extend(["", inventory, ""])
+                for item in reader.items:
+                    links = item_reading_links(source_root, item)
+                    if "no statement yet" in links:
+                        lines.append(f"- {book_item_label(item)} {links}")
+                    else:
+                        lines.append(f"- [{book_item_label(item)}]"
+                                     f"({portable_site_link(reader.route)}#{item_anchor(item)})")
+                lines.append("")
             lines.append("")
         if section_entries:
-            lines.append("Section index:")
+            lines.append("# Section index:")
             lines.append("")
             current_chapter = None
             for e in section_entries:
@@ -2511,12 +2680,14 @@ def write_work_pages(
                     if current_chapter is not None:
                         lines.append("")
                     current_chapter = e.chapter_num
-                    lines.append(f"{chapter_title_for_book(book, current_chapter)}")
+                    lines.append(f"## {chapter_title_for_book(book, current_chapter)}")
                     lines.append("")
                 label = readme_label(e)
                 if not label:
                     continue
-                lines.append(f"- [{label}]({portable_site_link(e.route)})")
+                route = section_reading_route(source_root, e,
+                                              {(r.book, r.chapter_num): r for r in book_readers})
+                lines.append(f"- [{label}]({portable_site_link(route)})")
             lines.append("")
         if not section_entries and not book_readers:
             lines.append("No separate reading sections are published for this version.")
@@ -2551,11 +2722,14 @@ def write_work_pages(
             f"This chapter indexes {len(chapter_items)} formalized items and "
             f"{len(reader.support_modules)} supporting source modules.",
             "",
+            "Statement excerpts below omit proofs. A `#check` excerpt is a checked expression, not its inferred type.",
+            "",
         ]
         entries_by_module = {entry.module: entry for entry in reader.ordinary_sections}
         if reader.ordinary_section_modules:
             lines.append("# Reading sections")
             lines.append("")
+            seen_modules: set[str] = set()
             for source in reader.ordinary_section_modules:
                 entry = entries_by_module.get(source.module)
                 label = (
@@ -2563,17 +2737,15 @@ def write_work_pages(
                     if entry is not None
                     else humanize_identifier(Path(source.relative_path).stem)
                 )
-                docs_path = _module_to_docs_path(source_root, source.module)
-                reading_link = (
-                    f"[Reading page]({portable_site_link(entry.route)}) "
-                    if entry is not None
-                    else ""
-                )
-                lines.append(
-                    f"- {label} ({reading_link}"
-                    f"[API documentation]({portable_site_link(f'docs/ReasBook/{docs_path}.html')}) | "
-                    f"[Lean source]({github_blob_link(source.source_path)}))"
-                )
+                if source.module in seen_modules:
+                    continue
+                blocks = module_statement_blocks(source_root, source.module, "books", reader.book, label,
+                                                 seen=seen_modules)
+                if blocks:
+                    lines.extend(blocks)
+                else:
+                    lines.append(f"- {label} — no statement yet "
+                                 f"([Lean source]({github_blob_link(source.source_path)}))")
             lines.append("")
         by_section: dict[int, list[BookItem]] = {}
         for item in chapter_items:
@@ -2587,12 +2759,7 @@ def write_work_pages(
             lines.append(f"# {section_title}")
             lines.append("")
             for item in section_items:
-                docs_path = _module_to_docs_path(source_root, item.module)
-                lines.append(
-                    f"- {book_item_label(item)} "
-                    f"([API documentation]({portable_site_link(f'docs/ReasBook/{docs_path}.html')})) "
-                    f"([Lean source]({github_blob_link(item.source_path)}))"
-                )
+                lines.extend(item_statement_blocks(source_root, item))
             lines.append("")
         if reader.support_modules:
             lines.append("# Supporting modules")
@@ -2606,7 +2773,7 @@ def write_work_pages(
                 docs_path = _module_to_docs_path(source_root, source.module)
                 lines.append(
                     f"- `{source.relative_path}` "
-                    f"([API documentation]({portable_site_link(f'docs/ReasBook/{docs_path}.html')})) "
+                    f"([Documentation]({portable_site_link(f'docs/ReasBook/{docs_path}.html')})) "
                     f"([Lean source]({github_blob_link(source.source_path)}))"
                 )
             lines.append("")
@@ -2674,32 +2841,39 @@ def write_work_pages(
         lines.append("")
         item_reader = paper_readers_by_paper.get(paper)
         if item_reader is not None:
-            lines.append("Item index:")
+            lines.append("Statements:")
+            lines.extend(["", "Source excerpts; proofs omitted. A `#check` excerpt shows an expression, not its inferred type."])
             lines.append("")
-            lines.append(
-                f"- [Formalized items]({portable_site_link(item_reader.route)}) "
-                f"-- {len(item_reader.items)} items"
-            )
+            for item in item_reader.items:
+                lines.extend(item_statement_blocks(source_root, item))
             lines.append("")
         if section_entries:
             lines.append("Section index:")
             lines.append("")
+            split_sections = {index.base.module: index for index in section_indexes_by_paper.get(paper, [])}
             for e in section_entries:
                 label = readme_label(e)
                 if not label:
                     continue
-                lines.append(f"- [{label}]({portable_site_link(e.route)})")
+                split = split_sections.get(e.module)
+                if split is not None:
+                    for part in split.parts:
+                        lines.append(f"- [{label} — Part {part.part_num}]({portable_site_link(part.route)})")
+                else:
+                    lines.append(f"- [{label}]({portable_site_link(e.route)})")
             lines.append("")
-        elif entry_points:
-            lines.append("Formalization entry points:")
+        elif entry_points and item_reader is None:
+            lines.append("Statements (source excerpts; proofs omitted):")
             lines.append("")
+            seen_modules = set()
             for e in entry_points:
                 stem = re.sub(r"(?<=\d)_(?=\d)", ".", e.module.rsplit(".", 1)[-1])
                 label = humanize_identifier(stem)
-                lines.append(f"- [{label}]({portable_site_link(e.route)})")
+                lines.extend(module_statement_blocks(source_root, e.module, "papers", paper, label,
+                                                     seen=seen_modules, limit=1))
             lines.append("")
         elif item_reader is None:
-            lines.append("No separate reading sections are published for this version.")
+            lines.append("Statements are available in Documentation above.")
             lines.append("")
 
         write_text_if_changed(page_file, "\n".join(lines), log=True)
@@ -2739,12 +2913,7 @@ def write_work_pages(
             lines.append(f"# {heading}")
             lines.append("")
             for item in by_section[section_token]:
-                docs_path = _module_to_docs_path(source_root, item.module)
-                lines.append(
-                    f"- {paper_item_label(item)} "
-                    f"([API documentation]({portable_site_link(f'docs/ReasBook/{docs_path}.html')})) "
-                    f"([Lean source]({github_blob_link(item.source_path)}))"
-                )
+                lines.extend(item_statement_blocks(source_root, item))
             lines.append("")
         write_text_if_changed(page_file, "\n".join(lines), log=True)
 
@@ -2765,10 +2934,10 @@ def write_work_pages(
             f"#doc (Page) {lean_string(f'{paper_title(index.paper)} -- {label}')} =>",
             "",
             f"- [Paper home]({portable_site_link(f'papers/{index.paper.lower()}/')})",
-            f"- [Parent API documentation]({portable_site_link(f'docs/ReasBook/{base_docs_path}.html')})",
+            f"- [Parent documentation]({portable_site_link(f'docs/ReasBook/{base_docs_path}.html')})",
             f"- [Parent Lean source]({github_blob_link(index.source_path)})",
             "",
-            "This section is split across the following reading parts.",
+            "Statements from the reading parts (source excerpts; proofs omitted).",
             "",
             "# Parts",
             "",
@@ -2782,9 +2951,11 @@ def write_work_pages(
             lines.append(
                 f"- Part {part.part_num} "
                 f"([Reading page]({portable_site_link(part.route)})) "
-                f"([API documentation]({portable_site_link(f'docs/ReasBook/{part_docs_path}.html')})) "
+                f"([Documentation]({portable_site_link(f'docs/ReasBook/{part_docs_path}.html')})) "
                 f"([Lean source]({github_blob_link(source_path)}))"
             )
+            lines.extend(module_statement_blocks(source_root, part.module, "papers", index.paper,
+                                                 f"Part {part.part_num}"))
         lines.append("")
         write_text_if_changed(page_file, "\n".join(lines), log=True)
 
@@ -2821,10 +2992,19 @@ def write_work_pages(
             pass
 
 
-def write_home_page(repo_root: Path) -> None:
+def write_home_page(repo_root: Path, entries: list[Entry], fragment_project: str | None = None) -> None:
     """Keep the generated release home focused on published reader paths."""
 
     home = repo_root / "ReasBookWeb" / "ReasBookSite" / "Home.lean"
+    if fragment_project:
+        category, project = fragment_project.split("/", 1)
+        page = home.parent / "WorkPages" / category.title() / f"{lean_module_name(project)}.lean"
+        content = page.read_text(encoding="utf-8")
+        # Preserve Home's established authorship header; copy the actual project
+        # body so its root has the same title/content, not a generic hub page.
+        content = content[content.index("import VersoBlog"):]
+        write_text_if_changed(home, content, log=False)
+        return
     lines = [
         "-- This file is generated by scripts/gen_sections.py",
         "import VersoBlog",
@@ -2832,13 +3012,17 @@ def write_home_page(repo_root: Path) -> None:
         "",
         '#doc (Page) "ReasBook" =>',
         "",
-        "Books and research papers formalized in Lean, with source-linked API",
+        "Books and research papers formalized in Lean, with source-linked statements,",
         "documentation and theorem dependency maps.",
         "",
-        f"- [API documentation]({portable_site_link('docs/')})",
+        f"- [Documentation]({portable_site_link('docs/')})",
         f"- [Theorem dependency maps]({portable_site_link('theorem-maps/')})",
         "",
     ]
+    for category, project in sorted({(e.category, e.book_or_paper) for e in entries}):
+        title = book_title(project) if category == "books" else paper_title(project)
+        lines.append(f"- [{title}]({portable_site_link(f'{category}/{project.lower()}/')})")
+    lines.append("")
     write_text_if_changed(home, "\n".join(lines), log=False)
 
 
@@ -3216,7 +3400,6 @@ def main() -> None:
             + "\n",
             log=False,
         )
-    write_home_page(repo_root)
     write_work_pages(
         repo_root,
         source_root,
@@ -3226,6 +3409,7 @@ def main() -> None:
         paper_section_indexes,
         fragment_project,
     )
+    write_home_page(repo_root, entries, fragment_project)
     if not PROJECT_FRAGMENT:
         write_book_readmes(source_root, entries)
         write_paper_readmes(source_root, entries)
