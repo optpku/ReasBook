@@ -982,6 +982,16 @@ class RepositoryScriptTests(unittest.TestCase):
                 (paper_root / f"{stem}.lean").write_text(
                     "import Mathlib\n#check Nat\n", encoding="utf-8"
                 )
+            # The real algorithm facade owns its defining clauses in imports.
+            (paper_root / "Algorithm_2_1").mkdir()
+            (paper_root / "Algorithm_2_1.lean").write_text(
+                "import TR_LALM_theory.Algorithm_2_1.Iteration\n"
+                "/-- Algorithm 2.1 (7): a derived consequence. -/\n"
+                "theorem consequence : True := by trivial\n")
+            (paper_root / "Algorithm_2_1/Model.lean").write_text("def stepModel := 0\n")
+            (paper_root / "Algorithm_2_1/Iteration.lean").write_text(
+                "import TR_LALM_theory.Algorithm_2_1.Model\n"
+                "structure Run where\n  step : Nat\n")
             nested = paper_root / "Theorem_2_9" / "OperationalTrace.lean"
             nested.parent.mkdir()
             nested.write_text("import Mathlib\n", encoding="utf-8")
@@ -1022,9 +1032,9 @@ class RepositoryScriptTests(unittest.TestCase):
             manifest = json.loads(
                 (web_root / ".literate-modules.json").read_text(encoding="utf-8")
             )["modules"]
-            self.assertEqual(manifest, ["TR_LALM_theory.Paper"])
+            self.assertEqual(manifest, ["TR_LALM_theory.Algorithm_2_1.Iteration", "TR_LALM_theory.Paper"])
             for stem in item_stems:
-                self.assertFalse(any(stem in module for module in manifest))
+                self.assertNotIn(f"TR_LALM_theory.{stem}", manifest)
 
             home_path = (
                 web_root
@@ -1041,15 +1051,17 @@ class RepositoryScriptTests(unittest.TestCase):
             self.assertIn('«data-reasbook-verso-standalone» := "true"', home)
             self.assertIn('```\n#check Nat\n```', home)
             self.assertIn("/TR_LALM_theory/Theorem_2_9.html", home)
-            self.assertEqual(home.count("([Documentation]"), 4)
+            self.assertEqual(home.count("([Documentation]"), 5)
+            self.assertIn("structure Run where", home)
+            self.assertNotIn("theorem consequence", home)
             self.assertIn("indexes 4 formalized items", reader)
             self.assertIn("# Section 2", reader)
             self.assertIn("# Section 3", reader)
             self.assertIn("# Appendix C", reader)
             self.assertIn("Theorem 2.9", reader)
             self.assertIn("Remark C.1", reader)
-            self.assertEqual(reader.count("[Documentation]"), 4)
-            self.assertEqual(reader.count("[Lean source]"), 4)
+            self.assertEqual(reader.count("[Documentation]"), 5)
+            self.assertEqual(reader.count("[Lean source]"), 5)
             self.assertNotIn("OperationalTrace", reader)
             self.assertNotIn("## ", reader)
 
@@ -1409,7 +1421,7 @@ class RepositoryScriptTests(unittest.TestCase):
             "multiple-roots": (
                 'lean_lib DemoTheory where\n  srcDir := "Papers/DemoTheory"\n'
                 '  roots := #[`Book, `Paper]\n',
-                "Paper.html",
+                "DemoTheory.html",
             ),
         }
         for name, (declaration, docs_path) in layouts.items():
@@ -1429,6 +1441,12 @@ class RepositoryScriptTests(unittest.TestCase):
                     "import Mathlib\n",
                     encoding="utf-8",
                 )
+                if name == "multiple-roots":
+                    # Like BFGS, the build root is a sibling aggregate module.
+                    # Paper exists but is NOT in the selected docs closure.
+                    (lean_root / "lean-toolchain").write_text("leanprover/lean4:v4.32.2\n")
+                    (paper_root / "Book.lean").write_text("import Mathlib\n")
+                    (lean_root / "Papers/DemoTheory.lean").write_text("import Book\n")
                 if name == "explicit-root":
                     (lean_root / "Papers" / "DemoTheory.lean").write_text(
                         "import DemoTheory.Paper\n",
@@ -1461,6 +1479,32 @@ class RepositoryScriptTests(unittest.TestCase):
                     / "DemoTheory.lean"
                 ).read_text(encoding="utf-8")
                 self.assertIn(f"docs/ReasBook/{docs_path}", page)
+                if name == "multiple-roots":
+                    self.assertNotIn("docs/ReasBook/Paper.html", page)
+                    # Verify against the actual documentation planner, not
+                    # only against the URL that the generator guesses.
+                    check = subprocess.run(
+                        [sys.executable, "-c",
+                         "from reasbook_build_sdk import plan_reachable_project_modules; "
+                         "import json,sys; "
+                         "p=plan_reachable_project_modules(sys.argv[1], ['DemoTheory']); "
+                         "print(json.dumps([m.name for m in p.entries]))", str(lean_root)],
+                        env={**os.environ, "PYTHONPATH": os.pathsep.join(
+                            str(ROOT / 'sdk' / name / 'src') for name in ('build', 'common'))},
+                        capture_output=True, text=True, check=False,
+                    )
+                    self.assertEqual(check.returncode, 0, check.stderr)
+                    modules = json.loads(check.stdout)
+                    self.assertIn(docs_path.removesuffix('.html'), modules)
+                    self.assertNotIn('Paper', modules)
+
+    def test_bfgs_catalog_links_share_the_selected_documentation_root(self) -> None:
+        expected = 'projects/bfgsminimumqorder_liu_2026/docs/ReasBook/BFGSMinimumQOrder_Liu_2026.html'
+        for relative in ('README.md', 'README.zh-CN.md',
+                         'ReasBook/Papers/BFGSMinimumQOrder_Liu_2026/README.md'):
+            text = (ROOT / relative).read_text()
+            self.assertIn(expected, text)
+            self.assertNotIn('projects/bfgsminimumqorder_liu_2026/docs/ReasBook/Paper.html', text)
 
     def test_gen_sections_project_fragment_is_exact_and_does_not_rewrite_catalog_docs(
         self,

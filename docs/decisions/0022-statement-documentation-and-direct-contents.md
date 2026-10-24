@@ -31,6 +31,8 @@ and then a documentation link which could lead to that empty page.
   mathematical prose (e.g. "auxiliary objective") do not affect priority.
   Preserve source order within a rank. Keep complete `structure`/`class` fields and `inductive` constructors,
   including field defaults: those bodies are part of the mathematical definition.
+- Track `mutual` as a command/block boundary, not namespace context. Its `end`
+  must close that block without discarding the enclosing variables or notation.
 - Keep existing declarations, anchors, and immutable source links. Never rewrite
   version-branch mathematics or introduce alias theorems just for documentation.
 - Give imports-only documentation pages direct links to reachable content,
@@ -49,14 +51,23 @@ and then a documentation link which could lead to that empty page.
   separate sections expose excerpts from reachable project-owned modules, so
   BFGS and RockafellarSum are not dead ends. Split-section home links go straight
   to parts; old split-section pages also contain statement excerpts.
+- Numbered facades can contain only derived consequences while their defining
+  clauses live in imported owner modules. Reviewed selectors in
+  `ReasBookWeb/scripts/statement_previews.py` identify the defining clauses of
+  the four affected TR-LALM items. Render their exact source, retain the item
+  anchor, link each clause to its own module, and explicitly label the preview
+  as partial. Missing or ambiguous selectors fail generation rather than
+  silently substituting the first helper.
 - Known placeholders with only external imports have no documentation link and
   say `no statement yet`. Internal facades resolve to reachable statements with
   the actual excerpt's source link. Unsupported source commands explicitly say
   `statement preview unavailable`; they are not silently called empty or proved.
 - Only direct chapter children qualify as ordinary sections. Nested item support
   files such as Sun–Yuan's `Lemma_13_6_3/section13325` never become sidebar sections.
-- Use bibliographic project titles and actual module entry points. A multi-root
-  Lake library name is not necessarily a documentation module (BFGS uses `Paper`).
+- Use bibliographic project titles and the same root module passed to the
+  documentation builder. Explicit Lake `roots` are not a reliable substitute:
+  BFGS retains a real `BFGSMinimumQOrder_Liu_2026` aggregate module selected for
+  Docs, while the separate `Paper` module is outside that build's import closure.
 - Project bookmarks under `sites/<slug>/` open their existing reading entry
   (or documentation when no reading entry exists). Aggregate static catalogs
   stay on the static site and only link to existing artifacts; they no longer
@@ -71,6 +82,11 @@ and then a documentation link which could lead to that empty page.
 - Bind the statement renderer to the rendered-doc cache identity. Reuse a
   compatible database analysis checkpoint, but regenerate old HTML. Include the
   renderer in the existing SDK tooling snapshot and its digest.
+- Runtime label changes must also be applied to each active version branch's
+  `ReasBookWeb/ReasBookSite.lean`. Production uses that version's Lean runtime;
+  main's tooling snapshot carries the generator, not a replacement runtime.
+  Pin the updated branch commits in a new release plan after these changes are
+  committed and merged; do not alter an already frozen plan or release artifact.
 
 ## Consequences
 

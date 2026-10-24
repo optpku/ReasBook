@@ -21,7 +21,7 @@ _COMMAND = re.compile(
     r"(?m)^(?P<indent>[ \t]*)(?:(?:@\[[^\n]*?\]|private|protected|noncomputable|"
     r"unsafe|partial|public|local|scoped)\s+)*(?P<kind>theorem|lemma|def|abbrev|opaque|axiom|"
     r"constant|structure|class|inductive|instance|example|recall|#check|#print|#eval|"
-    r"namespace|section|end|variable|universe|open|export|include|omit|"
+    r"namespace|section|mutual|end|variable|universe|open|export|include|omit|"
     r"local|scoped|notation|infix[lr]?|prefix|postfix|attribute|set_option|"
     r"syntax|macro|elab|initialize|import|module|prelude)\b"
 )
@@ -113,6 +113,8 @@ class Statement:
     prose: str
     context: tuple[str, ...]
     reference: bool
+    # The declaration identifier as written, not an elaborated/qualified name.
+    name: str = ""
 
 
 def _signature(command: str, kind: str) -> str:
@@ -171,7 +173,7 @@ def statement_excerpts(source: str, *, label: str = "") -> tuple[Statement, ...]
             continue
         indent = len(match['indent'])
         context_command = match['kind'] in _CONTEXT_KINDS | {
-            "section", "end", "import", "module", "prelude", "set_option", "attribute",
+            "section", "mutual", "end", "import", "module", "prelude", "set_option", "attribute",
         }
         end = next((other.start() for other in commands[number + 1:]
                     if len(other['indent']) <= indent or context_command), len(source))
@@ -183,7 +185,9 @@ def statement_excerpts(source: str, *, label: str = "") -> tuple[Statement, ...]
         command = source[match.start():code_end].strip()
         kind = match['kind']
         command_end = end
-        if kind in {"namespace", "section"}:
+        # A mutual block owns an `end`, but is not namespace/notation context.
+        # Keep its frame so closing it cannot discard the enclosing scope.
+        if kind in {"namespace", "section", "mutual"}:
             frames.append([])
         if kind == "end":
             if len(frames) > 1:
@@ -202,9 +206,14 @@ def statement_excerpts(source: str, *, label: str = "") -> tuple[Statement, ...]
                 prose = ""
         signature = _signature(command, kind)
         if signature:
+            name = ""
+            if kind not in {"instance", "recall", "#check"}:
+                identifier = re.match(r"\s+((?:«[^»]+»|[^\s([{:=])+)", source[match.end():])
+                if identifier:
+                    name = identifier[1]
             statements.append(Statement(signature, prose,
                                         tuple(line for frame in frames for line in frame),
-                                        kind in {"recall", "#check"}))
+                                        kind in {"recall", "#check"}, name))
     if label:
         # A citation in helper prose is not the item itself. Magnus uses hyphens
         # in numbers; other books use dots, sometimes after a Chapter10 prefix.

@@ -9,6 +9,37 @@ from reasbook_build_sdk.statement_docs import enrich_documentation, source_readi
 
 
 class StatementDocumentationTests(unittest.TestCase):
+    def test_mutual_end_preserves_outer_scope_and_does_not_pollute_notation(self):
+        for indent in ('', '  '):
+            with self.subTest(indent=indent):
+                source = ('namespace N\nvariable (x : Nat)\n'
+                          'local notation "T" => Nat\nmutual\n'
+                          f'{indent}def a : T := 0\n{indent}def b : T := a\n'
+                          'end\ntheorem result : x = x := by rfl\nend N\n'
+                          '#check Nat\n')
+                excerpts = statement_excerpts(source)
+                expected = ('namespace N', 'variable (x : Nat)', 'local notation "T" => Nat')
+                self.assertEqual([item.context for item in excerpts[:3]], [expected] * 3)
+                self.assertEqual(excerpts[-1].context, ())
+                self.assertNotIn('mutual', repr(excerpts))
+
+    def test_mutual_inside_section_balances_its_own_end(self):
+        source = ('namespace N\nsection\nvariable (x : Nat)\nmutual\n'
+                  'def a : Nat := 0\ndef b : Nat := a\nend\n'
+                  'theorem inside : x = x := by rfl\nend\n'
+                  'def outside := 0\nend N\n')
+        excerpts = statement_excerpts(source)
+        self.assertEqual(excerpts[-2].context, ('namespace N', 'variable (x : Nat)'))
+        self.assertEqual(excerpts[-1].context, ('namespace N',))
+
+    def test_declaration_selectors_preserve_exact_source_identifiers(self):
+        source = ('@[expose] noncomputable def objective := 1\n'
+                  'structure Run where\n  x : Nat\n'
+                  'theorem Run.spec : True := by trivial\n'
+                  'def «a quoted name» := 0\n#check Nat\n')
+        self.assertEqual([item.name for item in statement_excerpts(source)],
+                         ['objective', 'Run', 'Run.spec', '«a quoted name»', ''])
+
     def test_numbered_headings_outrank_mentions_and_helpers(self):
         for heading in ('Lemma 2.5.5', 'Lemma 2-5-5', 'Chapter10 Lemma 2-5.5'):
             with self.subTest(heading=heading):
