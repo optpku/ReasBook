@@ -183,7 +183,7 @@ class ReaderEntrypointsTests(unittest.TestCase):
 
     def test_published_docs_use_the_actual_module_entry_points(self):
         for name, entry in (
-            ("BFGSMinimumQOrder_Liu_2026", "ReasBook/Paper.html"),
+            ("BFGSMinimumQOrder_Liu_2026", "ReasBook/BFGSMinimumQOrder_Liu_2026.html"),
             ("TR_LALM_theory", "ReasBook/TR_LALM_theory.html"),
             ("glowinski_admm_counterexample", "ReasBook/glowinski_admm_counterexample/Paper.html"),
         ):

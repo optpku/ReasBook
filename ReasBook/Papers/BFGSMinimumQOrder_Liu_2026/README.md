@@ -10,8 +10,8 @@ These code-author roles are separate from the paper's bibliographic authors.
 
 **[Open the source on `v4.32.2`](https://github.com/optpku/ReasBook/tree/v4.32.2/ReasBook/Papers/BFGSMinimumQOrder_Liu_2026/)**
 
-[Docs](https://reasbook.reaslab.io/artifacts/projects/bfgsminimumqorder_liu_2026/docs/ReasBook/Paper.html) ·
-[Verso](https://reasbook.reaslab.io/artifacts/projects/bfgsminimumqorder_liu_2026/) ·
+[Docs](https://reasbook.reaslab.io/artifacts/projects/bfgsminimumqorder_liu_2026/docs/ReasBook/BFGSMinimumQOrder_Liu_2026.html) ·
+[Verso](https://reasbook.reaslab.io/artifacts/projects/bfgsminimumqorder_liu_2026/papers/bfgsminimumqorder_liu_2026/) ·
 [Theorem map](https://reasbook.reaslab.io/artifacts/projects/bfgsminimumqorder_liu_2026/theorem-maps/papers/bfgsminimumqorder_liu_2026/) ·
 [Reviewer](https://reasbook.reaslab.io/review/books/bfgsminimumqorder_liu_2026/)
 

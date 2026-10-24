@@ -16,6 +16,7 @@ from pathlib import Path
 from typing import Iterable
 
 from lean_headers import author_field, header_span
+from statement_previews import ITEM_PREVIEWS
 from site_config import (
     PROJECT_FRAGMENT,
     SKIP_MODULES,
@@ -976,19 +977,14 @@ def _module_to_docs_path(source_root: Path, module_name: str) -> str:
 
 
 def project_docs_path(source_root: Path, project: str, kind: str) -> str:
-    """Return the doc-gen4 path for a registered project's actual Lake root."""
+    """Link the same root module that the documentation builder receives."""
 
-    from reasbook_build_sdk.targets import library_target, parse_library_roots_text
+    from reasbook_build_sdk.targets import library_target
 
+    # Explicit Lake roots need not include a compatibility aggregate module.
+    # In particular BFGS has both a real project-named aggregate and Paper;
+    # only the former is selected by the release documentation build.
     target = library_target(source_root, project, kind)
-    lakefile = source_root / "lakefile.lean"
-    roots = parse_library_roots_text(lakefile.read_text(encoding="utf-8"))
-    if roots.get(project) and target not in roots[project]:
-        # A multi-root library target is a build group, not a Lean module.
-        # BFGS, for example, exports Paper/Book/ReasLib rather than a module
-        # named after its project directory.
-        directory, leaf = ("Books", "Book") if kind == "book" else ("Papers", "Paper")
-        target = to_module(source_root, source_root / directory / project / f"{leaf}.lean")
     return _module_to_docs_path(source_root, target)
 
 
@@ -2411,6 +2407,28 @@ def item_statement_blocks(source_root: Path, item: BookItem | PaperItem) -> list
     path = source_root.parent / item.source_path
     source = path.read_text(encoding="utf-8")
     links = item_reading_links(source_root, item)
+    if selection := ITEM_PREVIEWS.get(item.module):
+        category, project = (('books', item.book) if isinstance(item, BookItem) else ('papers', item.paper))
+        sources = project_sources(source_root, category, project)
+        reachable = {name for name, _ in statement_sources(item.module, sources, follow_imports=True)}
+        lines: list[str] = []
+        for index, (module, declaration) in enumerate(selection, 1):
+            target = sources.get(module)
+            if target is None:
+                raise ValueError(f"Selected statement source is missing: {item.module}: {module}")
+            if module not in reachable:
+                raise ValueError(f"Selected statement source is not imported: {item.module}: {module}")
+            actual_source = target.relative_to(source_root.parent).as_posix()
+            docs_path = _module_to_docs_path(source_root, module)
+            selected_links = (
+                f"([Documentation]({portable_site_link(f'docs/ReasBook/{docs_path}.html')})) "
+                f"([Lean source]({github_blob_link(actual_source)}))")
+            anchor = item_anchor(item) + (f"-clause-{index}" if index > 1 else "")
+            lines.extend(statement_blocks(
+                target.read_text(encoding="utf-8"), label, selected_links, anchor,
+                declaration=declaration,
+                note=f"Selected defining clause {index} of {len(selection)}; not the complete item."))
+        return lines
     if statement_excerpts(source):
         return statement_blocks(source, label, links, item_anchor(item))
     category, project = (('books', item.book) if isinstance(item, BookItem) else ('papers', item.paper))
@@ -2431,17 +2449,26 @@ def item_statement_blocks(source_root: Path, item: BookItem | PaperItem) -> list
 
 
 def statement_blocks(source: str, label: str, links: str, anchor: str,
-                     *, limit: int | None = 1) -> list[str]:
+                     *, limit: int | None = 1, declaration: str | None = None,
+                     note: str = "") -> list[str]:
     """Render inert source excerpts with stable item anchors, never Lean proofs."""
     excerpts = statement_excerpts(source, label=label)
+    if declaration is not None:
+        matches = tuple(item for item in excerpts if item.name == declaration)
+        if len(matches) != 1:
+            raise ValueError(f"Selected statement must resolve exactly once: {label}: {declaration}")
+        selected = matches
+    else:
+        selected = excerpts if limit is None else excerpts[:limit]
     if not excerpts:
         return [f"- {label} {links}", ""]
-    selected = excerpts if limit is None else excerpts[:limit]
     lines = [f':::html div (id := {lean_string(anchor)}) '
              '(style := "max-width:100%;overflow-x:auto") '
              '(«data-reasbook-statement» := "true") '
              '(«data-reasbook-verso-standalone» := "true")',
              f"*{label}* {links}", ""]
+    if note:
+        lines.extend([note, ""])
     for excerpt in selected:
         if excerpt.prose:
             # Treat upstream prose as text, not executable Verso directives.
@@ -2467,7 +2494,8 @@ def project_sources(source_root: Path, category: str, project: str) -> dict[str,
     return {to_module(source_root, path): path for path in sorted(directory.rglob("*.lean"))}
 
 
-def statement_sources(module: str, sources: dict[str, Path]) -> list[tuple[str, Path]]:
+def statement_sources(module: str, sources: dict[str, Path], *,
+                      follow_imports: bool = False) -> list[tuple[str, Path]]:
     """Skip imports-only facades, staying inside the selected project."""
     found: list[tuple[str, Path]] = []
     visited: set[str] = set()
@@ -2481,7 +2509,7 @@ def statement_sources(module: str, sources: dict[str, Path]) -> list[tuple[str, 
         reading = source_reading(text)
         if statement_excerpts(text):
             found.append((name, path))
-        elif reading.imports_only:
+        if reading.imports_only or follow_imports:
             for child in reading.imports:
                 visit(child)
 

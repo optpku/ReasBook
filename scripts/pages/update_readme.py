@@ -32,7 +32,7 @@ PUBLISHED_DOCS = {
     ("books", "IntroductoryLecturesOnConvexOptimization_Nesterov_2004"): "ReasBook/IntroductoryLecturesOnConvexOptimization_Nesterov_2004/Book.html",
     ("books", "OptimizationTheoryAndMethods_SunYuan_2006"): "ReasBook/OptimizationTheoryAndMethods_SunYuan_2006/Book.html",
     ("books", "RiemannSurfaces_Forster_1981"): "ReasBook/RiemannSurfaces_Forster_1981/Book.html",
-    ("papers", "BFGSMinimumQOrder_Liu_2026"): "ReasBook/Paper.html",
+    ("papers", "BFGSMinimumQOrder_Liu_2026"): "ReasBook/BFGSMinimumQOrder_Liu_2026.html",
     ("papers", "DFP_wolfe_local"): "ReasBook/DFP_wolfe_local/Paper.html",
     ("papers", "glowinski_admm_counterexample"): "ReasBook/glowinski_admm_counterexample/Paper.html",
     ("papers", "OnSomeLocalRings_Maassaran_2025"): "ReasBook/OnSomeLocalRings_Maassaran_2025/Paper.html",
