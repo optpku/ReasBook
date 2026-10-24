@@ -27,8 +27,10 @@ contribution.
 
 ## Scope
 
-The public paper surface is imported by `BFGSMinimumQOrder` and documented by
-`Paper.lean`. It covers the exact-line-search quasi-Newton algorithm, the
+The public paper surface is imported by `BFGSMinimumQOrder`. ReasBook builds
+and documents the registered `BFGSMinimumQOrder_Liu_2026` aggregate in
+`Papers/BFGSMinimumQOrder_Liu_2026.lean`; `Paper.lean` remains a compatibility
+entry. It covers the exact-line-search quasi-Newton algorithm, the
 planar alternating-scale BFGS construction, the smooth localized strongly
 convex objective, the universal Q-order lower bound, and the convex Broyden
 extension. The reusable analysis and optimization infrastructure is retained
@@ -61,18 +63,22 @@ the word `admit` is not a placeholder.
 From the `ReasBook/` directory on branch `v4.32.2`:
 
 ```sh
+lake build BFGSMinimumQOrder_Liu_2026
 lake env lean Papers/BFGSMinimumQOrder_Liu_2026/Paper.lean
 lake env lean Papers/BFGSMinimumQOrder_Liu_2026/BFGSMinimumQOrder.lean
 ```
 
-Both commands pass locally; the full project build also passes with
-`lake build BFGSMinimumQOrder_Liu_2026` (4,110 jobs).
+The public build includes the aggregate `.olean` required by the release
+documentation gate. To also build every retained infrastructure and compatibility
+root, use `lake build BFGSMinimumQOrder_Implementation`. The previously reported
+4,110-job validation applied to that full implementation library before its rename,
+not to a newly completed release of the public aggregate.
 
 ## Layout
 
 ```text
 ReasBook/Papers/BFGSMinimumQOrder_Liu_2026/
-|-- Paper.lean                 # ReasBook documentation root
+|-- Paper.lean                 # Compatibility paper entry
 |-- BFGSMinimumQOrder.lean     # Stable public aggregate
 |-- Book/                      # Paper-facing statements and checks
 |-- ReasLib/                   # Reusable analysis and optimization proofs

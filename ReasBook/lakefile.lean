@@ -40,9 +40,14 @@ lean_lib «TR_LALM_theory» where
   roots := #[`TR_LALM_theory]
 
 /-- BFGS minimum-Q-order formalization imported from the contributor repository. -/
-lean_lib «BFGSMinimumQOrder_Liu_2026» where
+lean_lib «BFGSMinimumQOrder_Implementation» where
   srcDir := "Papers/BFGSMinimumQOrder_Liu_2026"
   roots := #[`BFGSMinimumQOrder, `Book, `ReasLib, `DFPWolfe, `Paper]
+
+/-- Public ReasBook aggregate used by both release builds and Documentation. -/
+lean_lib «BFGSMinimumQOrder_Liu_2026» where
+  srcDir := "Papers"
+  roots := #[`BFGSMinimumQOrder_Liu_2026]
 
 lean_exe "literate-extract" where
   root := `LiterateExtract
