@@ -363,6 +363,7 @@ OLD_OVERVIEW_END = "-- END REASBOOK OVERVIEW"
 CHAPTER_RE = re.compile(r"^(?:chapter_|chap)(\d+)$", re.IGNORECASE)
 SECTION_RE = re.compile(r"^section_?(\d+)$", re.IGNORECASE)
 PART_RE = re.compile(r"^part_?(\d+)$", re.IGNORECASE)
+PAPER_SECTION_RE = re.compile(r"section\d+(?:_part\d+)?", re.IGNORECASE)
 ITEM_STEM_RE = re.compile(
     r"^(?P<kind>[A-Za-z][A-Za-z0-9]*)_"
     r"(?P<chapter>\d+)_(?P<tail>[A-Za-z0-9]+(?:_[A-Za-z0-9]+)*)$"
@@ -1048,7 +1049,8 @@ def should_include_book(
 
 
 def should_include_paper(
-    path: Path, reader_source_directories: frozenset[Path] = frozenset()
+    path: Path, reader_source_directories: frozenset[Path] = frozenset(),
+    *, paper_root: Path,
 ) -> bool:
     stem = path.stem.lower()
     if stem in SKIP_STEMS:
@@ -1057,7 +1059,11 @@ def should_include_paper(
         return True
     if parse_paper_item_identity(path) is not None:
         return path.parent not in reader_source_directories
-    return stem.startswith("section")
+    # Automatic sections are direct, numbered paper children. Internal support
+    # modules such as ReasLib/.../SectionContraction and nested section13325
+    # must not become reading entries or links outside the published docs.
+    # Explicit reading manifests and imported facades are handled separately.
+    return path.parent == paper_root and PAPER_SECTION_RE.fullmatch(stem) is not None
 
 
 def parse_item_identity(path: Path) -> tuple[str, int, tuple[str, ...]] | None:
@@ -1294,9 +1300,7 @@ def collect_paper_inventories(source_root: Path) -> list[PaperInventory]:
             item = parse_paper_item(path, source_root)
             if item is not None:
                 items.append(item)
-            elif path.parent == paper_dir and path.stem.casefold().startswith(
-                "section"
-            ):
+            elif path.parent == paper_dir and PAPER_SECTION_RE.fullmatch(path.stem):
                 ordinary.append(to_module(source_root, path))
             else:
                 support_count += 1
@@ -1488,13 +1492,15 @@ def collect_entries(
         )
 
     for path in sorted(papers_root.rglob("*.lean")):
-        if not should_include_paper(path, paper_reader_source_directories) and path not in facade_sources:
+        rel = path.relative_to(papers_root)
+        paper = rel.parts[0]
+        if not should_include_paper(
+            path, paper_reader_source_directories, paper_root=papers_root / paper
+        ) and path not in facade_sources:
             continue
         module = to_module(source_root, path)
         if module in SKIP_MODULES:
             continue
-        rel = path.relative_to(papers_root)
-        paper = rel.parts[0]
         if not project_enabled("papers", paper):
             continue
         if paper in configured_papers and path != papers_root / paper / "Paper.lean":
@@ -2383,6 +2389,26 @@ def lean_module_name(s: str) -> str:
     return re.sub(r"[^A-Za-z0-9_]", "_", s)
 
 
+@lru_cache(maxsize=None)
+def paper_documentation_modules(source_root: Path, paper: str) -> frozenset[str]:
+    """Use the same public root and closure as the documentation builder."""
+    from reasbook_build_sdk import library_target, plan_reachable_project_modules
+
+    target = library_target(source_root, paper, "paper")
+    return frozenset(entry.name for entry in
+                     plan_reachable_project_modules(source_root, [target]).entries)
+
+
+def statement_reading_links(source_root: Path, module: str, source_path: str,
+                            category: str, project: str) -> str:
+    source_link = f"([Lean source]({github_blob_link(source_path)}))"
+    if category == "papers" and module not in paper_documentation_modules(source_root, project):
+        return f"— source only (outside the published documentation root) {source_link}"
+    docs_path = _module_to_docs_path(source_root, module)
+    return (f"([Documentation]({portable_site_link(f'docs/ReasBook/{docs_path}.html')})) "
+            + source_link)
+
+
 def item_reading_links(source_root: Path, item: BookItem | PaperItem) -> str:
     """Do not send readers to a known imports-only placeholder item."""
     path = source_root.parent / item.source_path
@@ -2391,11 +2417,8 @@ def item_reading_links(source_root: Path, item: BookItem | PaperItem) -> str:
     external_roots = {"Mathlib", "Init", "Lean", "Std", "Batteries", "Aesop"}
     if reading.imports_only and all(name.split('.')[0] in external_roots for name in reading.imports):
         return f"— no statement yet {source_link}"
-    docs_path = _module_to_docs_path(source_root, item.module)
-    return (
-        f"([Documentation]({portable_site_link(f'docs/ReasBook/{docs_path}.html')})) "
-        + source_link
-    )
+    category, project = (('books', item.book) if isinstance(item, BookItem) else ('papers', item.paper))
+    return statement_reading_links(source_root, item.module, item.source_path, category, project)
 
 
 def item_anchor(item: BookItem | PaperItem) -> str:
@@ -2419,10 +2442,7 @@ def item_statement_blocks(source_root: Path, item: BookItem | PaperItem) -> list
             if module not in reachable:
                 raise ValueError(f"Selected statement source is not imported: {item.module}: {module}")
             actual_source = target.relative_to(source_root.parent).as_posix()
-            docs_path = _module_to_docs_path(source_root, module)
-            selected_links = (
-                f"([Documentation]({portable_site_link(f'docs/ReasBook/{docs_path}.html')})) "
-                f"([Lean source]({github_blob_link(actual_source)}))")
+            selected_links = statement_reading_links(source_root, module, actual_source, category, project)
             anchor = item_anchor(item) + (f"-clause-{index}" if index > 1 else "")
             lines.extend(statement_blocks(
                 target.read_text(encoding="utf-8"), label, selected_links, anchor,
@@ -2435,10 +2455,8 @@ def item_statement_blocks(source_root: Path, item: BookItem | PaperItem) -> list
     targets = statement_sources(item.module, project_sources(source_root, category, project))
     if targets:
         name, target = next((target for target in targets if target[0].startswith(item.module + '.')), targets[0])
-        docs_path = _module_to_docs_path(source_root, name)
         actual_source = target.relative_to(source_root.parent).as_posix()
-        links = (f"([Documentation]({portable_site_link(f'docs/ReasBook/{docs_path}.html')})) "
-                 f"([Lean source]({github_blob_link(actual_source)}))")
+        links = statement_reading_links(source_root, name, actual_source, category, project)
         return statement_blocks(target.read_text(encoding="utf-8"), label, links, item_anchor(item))
     if "no statement yet" in links:
         return [f"- {label} {links}", ""]
@@ -2483,7 +2501,8 @@ def statement_blocks(source: str, label: str, links: str, anchor: str,
         fence = "`" * max(3, 1 + max((len(run) for run in re.findall(r"`+", snippet)), default=0))
         lines.extend([fence, snippet, fence, ""])
     if len(selected) < len(excerpts):
-        lines.extend(["Additional statements are available in Documentation.", ""])
+        destination = "Documentation" if "[Documentation](" in links else "the Lean source"
+        lines.extend([f"Additional statements are available in {destination}.", ""])
     lines.extend([":::" , ""])
     return lines
 
@@ -2537,10 +2556,8 @@ def module_statement_blocks(source_root: Path, module: str, category: str,
             if name in seen:
                 continue
             seen.add(name)
-        docs_path = _module_to_docs_path(source_root, name)
         source_path = path.relative_to(source_root.parent).as_posix()
-        links = (f"([Documentation]({portable_site_link(f'docs/ReasBook/{docs_path}.html')})) "
-                 f"([Lean source]({github_blob_link(source_path)}))")
+        links = statement_reading_links(source_root, name, source_path, category, project)
         lines.extend(statement_blocks(path.read_text(encoding="utf-8"),
                                       label if name == module else module_label(name), links,
                                       name.casefold().replace(".", "-"), limit=limit))

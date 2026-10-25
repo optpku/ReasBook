@@ -64,6 +64,17 @@ and then a documentation link which could lead to that empty page.
   `statement preview unavailable`; they are not silently called empty or proved.
 - Only direct chapter children qualify as ordinary sections. Nested item support
   files such as Sun–Yuan's `Lemma_13_6_3/section13325` never become sidebar sections.
+- Automatically discovered paper sections must be direct project children named
+  `sectionNN` or `sectionNN_partN`. Internal support files such as BFGS's
+  `ReasLib/.../SectionContraction` are not reading entries merely because their
+  names start with `Section`. Keep explicitly configured reading modules and
+  imported facades; check generated Documentation links against the public
+  root's actual documentation closure.
+- Paper statement links use the Build SDK's public-root closure, not the mere
+  existence of a source file. Keep source excerpts for numbered legacy items
+  outside that closure, label them `source only`, and link to Lean source rather
+  than nonexistent Documentation (for example TR-LALM's legacy remarks C.1/C.2).
+  Apply the same check to the actual owner of a selected or imported clause.
 - Use bibliographic project titles and the same root module passed to the
   documentation builder. Explicit Lake `roots` are not a reliable substitute:
   BFGS retains a real `BFGSMinimumQOrder_Liu_2026` aggregate module selected for
