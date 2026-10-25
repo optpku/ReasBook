@@ -969,8 +969,11 @@ class RepositoryScriptTests(unittest.TestCase):
             (lean_root / "Papers" / "TR_LALM_theory.lean").write_text(
                 "import TR_LALM_theory.Paper\n", encoding="utf-8"
             )
+            (lean_root / "lean-toolchain").write_text("leanprover/lean4:v4.32.2\n")
             (paper_root / "Paper.lean").write_text(
-                "import TR_LALM_theory.Theorem_2_9\n", encoding="utf-8"
+                "import TR_LALM_theory.Algorithm_2_1\n"
+                "import TR_LALM_theory.Theorem_2_9\n"
+                "import TR_LALM_theory.Corollary_3_8\n", encoding="utf-8"
             )
             item_stems = (
                 "Algorithm_2_1",
@@ -1051,7 +1054,10 @@ class RepositoryScriptTests(unittest.TestCase):
             self.assertIn('«data-reasbook-verso-standalone» := "true"', home)
             self.assertIn('```\n#check Nat\n```', home)
             self.assertIn("/TR_LALM_theory/Theorem_2_9.html", home)
-            self.assertEqual(home.count("([Documentation]"), 5)
+            self.assertEqual(home.count("([Documentation]"), 4)
+            self.assertNotIn("/TR_LALM_theory/Remark_C_1.html", home)
+            self.assertIn("/TR_LALM_theory/Remark_C_1.lean", home)
+            self.assertIn("source only (outside the published documentation root)", home)
             self.assertIn("structure Run where", home)
             self.assertNotIn("theorem consequence", home)
             self.assertIn("indexes 4 formalized items", reader)
@@ -1060,7 +1066,7 @@ class RepositoryScriptTests(unittest.TestCase):
             self.assertIn("# Appendix C", reader)
             self.assertIn("Theorem 2.9", reader)
             self.assertIn("Remark C.1", reader)
-            self.assertEqual(reader.count("[Documentation]"), 5)
+            self.assertEqual(reader.count("[Documentation]"), 4)
             self.assertEqual(reader.count("[Lean source]"), 5)
             self.assertNotIn("OperationalTrace", reader)
             self.assertNotIn("## ", reader)
@@ -1383,6 +1389,7 @@ class RepositoryScriptTests(unittest.TestCase):
             (repo / "ReasBook/Books").mkdir()
             (repo / "ReasBook/lakefile.lean").write_text(
                 'import Lake\nlean_lib Demo where\n  srcDir := "Papers"\n')
+            (repo / "ReasBook/lean-toolchain").write_text("leanprover/lean4:v4.32.2\n")
             (project / "Paper.lean").write_text('import Demo.Results\n')
             (project / "Results.lean").write_text('public import Demo.Results.theorem_2_1_4\n')
             (project / "Results/theorem_2_1_4.lean").write_text('import Mathlib\ntheorem result : True := by trivial\n')
@@ -1507,6 +1514,99 @@ class RepositoryScriptTests(unittest.TestCase):
             text = (ROOT / relative).read_text()
             self.assertIn(expected, text)
             self.assertNotIn('projects/bfgsminimumqorder_liu_2026/docs/ReasBook/Paper.html', text)
+
+    def test_paper_home_documentation_stays_inside_public_root_closure(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            repo = Path(temp)
+            lean_root = repo / "ReasBook"
+            paper = lean_root / "Papers/DemoTheory"
+            (paper / "Book").mkdir(parents=True)
+            (paper / "ReasLib/Graph").mkdir(parents=True)
+            (lean_root / "Books").mkdir()
+            (lean_root / "lean-toolchain").write_text("leanprover/lean4:v4.32.2\n")
+            (lean_root / "lakefile.lean").write_text(
+                "import Lake\nopen Lake DSL\n"
+                'lean_lib Implementation where\n  srcDir := "Papers/DemoTheory"\n'
+                '  roots := #[`Book, `Paper, `ReasLib]\n'
+                'lean_lib DemoTheory where\n  srcDir := "Papers"\n'
+                '  roots := #[`DemoTheory]\n'
+            )
+            (lean_root / "Papers/DemoTheory.lean").write_text("public import Book\n")
+            (paper / "Paper.lean").write_text("import Book\n")
+            (paper / "Book.lean").write_text("public import Book.Theorem_1_1\n")
+            (paper / "Book/Theorem_1_1.lean").write_text(
+                "/-- Theorem 1.1: the main result. -/\n"
+                "theorem main_result : True := by trivial\n"
+            )
+            for relative in (
+                "ReasLib/Graph/SectionContraction.lean",
+                "ReasLib/Graph/section13325.lean",
+                "SectionContraction.lean",
+            ):
+                (paper / relative).write_text("theorem unused_helper : True := by trivial\n")
+
+            result = subprocess.run(
+                [sys.executable, str(ROOT / "ReasBookWeb/scripts/gen_sections.py"),
+                 "--repo-root", str(repo)],
+                env={**os.environ, "REASBOOK_INCLUDE_PROJECTS": "papers/DemoTheory",
+                     "REASBOOK_PROJECT_FRAGMENT": "1"},
+                capture_output=True, text=True, check=False,
+            )
+            self.assertEqual(result.returncode, 0, result.stderr)
+            web = repo / "ReasBookWeb"
+            landing = (web / "ReasBookSite/WorkPages/Papers/DemoTheory.lean").read_text()
+            self.assertIn("theorem main_result : True", landing)
+            self.assertNotIn("unused_helper", landing)
+            self.assertNotIn("Section index:", landing)
+            manifest = json.loads((web / ".literate-modules.json").read_text())
+            routes = (web / "ReasBookSite/RouteTable.lean").read_text()
+            for module in ("ReasLib.Graph.SectionContraction", "ReasLib.Graph.section13325",
+                           "DemoTheory.SectionContraction"):
+                self.assertNotIn(module, manifest["modules"])
+                self.assertNotIn(module, routes)
+            check = subprocess.run(
+                [sys.executable, "-c",
+                 "from reasbook_build_sdk import plan_reachable_project_modules; "
+                 "import json,sys; "
+                 "p=plan_reachable_project_modules(sys.argv[1], ['DemoTheory']); "
+                 "print(json.dumps([m.name for m in p.entries]))", str(lean_root)],
+                env={**os.environ, "PYTHONPATH": os.pathsep.join(
+                    str(ROOT / 'sdk' / name / 'src') for name in ('build', 'common'))},
+                capture_output=True, text=True, check=False,
+            )
+            self.assertEqual(check.returncode, 0, check.stderr)
+            reachable = set(json.loads(check.stdout))
+            linked = {path.replace('/', '.') for path in re.findall(
+                r"\[Documentation\]\([^)]*/docs/ReasBook/([^)]*)\.html\)", landing)}
+            self.assertEqual(linked, {"DemoTheory", "Book.Theorem_1_1"})
+            self.assertLessEqual(linked, reachable)
+
+    def test_paper_section_discovery_requires_direct_numbered_sections(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            repo = Path(temp)
+            paper = repo / "ReasBook/Papers/Demo"
+            (paper / "Support").mkdir(parents=True)
+            (repo / "ReasBook/Books").mkdir()
+            (repo / "ReasBook/lakefile.lean").write_text(
+                'import Lake\nlean_lib Demo where\n  srcDir := "Papers"\n')
+            (paper / "Paper.lean").write_text("import Demo.section01\n")
+            (paper / "section01.lean").write_text("theorem main_result : True := by trivial\n")
+            for relative in ("SectionContraction.lean", "Support/section02.lean",
+                             "Support/section01_part1.lean"):
+                (paper / relative).write_text("theorem unused_helper : True := by trivial\n")
+            result = subprocess.run(
+                [sys.executable, str(ROOT / "ReasBookWeb/scripts/gen_sections.py"),
+                 "--repo-root", str(repo)],
+                env={**os.environ, "REASBOOK_INCLUDE_PROJECTS": "papers/Demo"},
+                capture_output=True, text=True, check=False,
+            )
+            self.assertEqual(result.returncode, 0, result.stderr)
+            web = repo / "ReasBookWeb"
+            manifest = json.loads((web / ".literate-modules.json").read_text())
+            self.assertEqual(set(manifest["modules"]), {"Demo.Paper", "Demo.section01"})
+            landing = (web / "ReasBookSite/WorkPages/Papers/Demo.lean").read_text()
+            self.assertIn("demo/section01/", landing)
+            self.assertNotIn("demo/support/", landing)
 
     def test_gen_sections_project_fragment_is_exact_and_does_not_rewrite_catalog_docs(
         self,

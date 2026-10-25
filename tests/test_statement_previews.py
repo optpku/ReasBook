@@ -22,6 +22,10 @@ class SelectedStatementPreviewTests(unittest.TestCase):
         self.project.mkdir(parents=True)
         (self.source / 'lakefile.lean').write_text(
             'lean_lib TR_LALM_theory where\n  srcDir := "Papers"\n')
+        (self.source / 'lean-toolchain').write_text('leanprover/lean4:v4.32.2\n')
+        (self.project / 'Paper.lean').write_text('\n'.join(
+            'import TR_LALM_theory.' + stem for stem in
+            ('Algorithm_2_1', 'Definition_2_2', 'Definition_3_2', 'Assumption_2_5')) + '\n')
         sources = {
             'Algorithm_2_1': (
                 'import TR_LALM_theory.Algorithm_2_1.Iteration\n'
@@ -137,6 +141,36 @@ class SelectedStatementPreviewTests(unittest.TestCase):
         text = self.render('Theorem_9_9')
         self.assertIn('theorem actual : True', text)
         self.assertNotIn('lemma helper', text)
+
+    def test_unpublished_items_keep_statements_and_source_without_dead_doc_links(self):
+        (self.project / 'Remark_C_1.lean').write_text(
+            '/-- Remark C.1: a historical appendix statement. -/\n'
+            'theorem legacy_result : True := by trivial\n'
+            'theorem another_result : True := by trivial\n')
+        text = self.render('Remark_C_1')
+        self.assertIn('theorem legacy_result : True', text)
+        self.assertIn('source only (outside the published documentation root)', text)
+        self.assertIn('Additional statements are available in the Lean source.', text)
+        self.assertIn('TR_LALM_theory/Remark_C_1.lean', text)
+        self.assertNotIn('[Documentation]', text)
+        self.assertNotIn('by trivial', text)
+
+    def test_selected_clauses_check_public_root_not_just_facade_imports(self):
+        (self.project / 'Paper.lean').write_text('import TR_LALM_theory.Definition_2_2\n')
+        text = self.render('Algorithm_2_1')
+        self.assertIn('structure Run where', text)
+        self.assertEqual(text.count('[Lean source]'), 2)
+        self.assertEqual(text.count('outside the published documentation root'), 2)
+        self.assertNotIn('[Documentation]', text)
+
+    def test_unpublished_facade_can_link_a_published_owner(self):
+        (self.project / 'Algorithm_2_1/Model.lean').write_text('def stepModel := 0\n')
+        (self.project / 'Remark_C_1.lean').write_text(
+            'import TR_LALM_theory.Algorithm_2_1.Model\n')
+        text = self.render('Remark_C_1')
+        self.assertIn('def stepModel', text)
+        self.assertIn('docs/ReasBook/TR_LALM_theory/Algorithm_2_1/Model.html', text)
+        self.assertNotIn('Remark_C_1.html', text)
 
 
 if __name__ == '__main__':
