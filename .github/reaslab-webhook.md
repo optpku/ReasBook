@@ -59,6 +59,12 @@ conflicts while retaining the local file and its original baseline. Repeated
 delivery IDs are deduplicated. Deleted/forced/truncated pushes request a check
 rather than blindly changing sources.
 
+An authorized push to a configured source/ref also requests the downstream
+build and publication stages. Those stages run as separate fixed tasks on
+ReasLab, not as commands supplied by the webhook payload. Clean source,
+successful resource-limited builds and artifact acceptance are required before
+promoting a candidate; conflicts or failures keep the previous site available.
+
 The webhook response acknowledges receipt, not a successful Lean build or a
 website release. Current reading/review services and published artifacts are
 kept available independently. The ReasLab operator retains per-delivery reports
