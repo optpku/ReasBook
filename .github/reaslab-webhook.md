@@ -56,8 +56,9 @@ Accepted deliveries enter a persistent queue. The worker fetches the configured
 upstreams, applies ordinary three-way source merges in an isolated checkout,
 pushes clean changes to the downstream synchronization branch and reports
 conflicts while retaining the local file and its original baseline. Repeated
-delivery IDs are deduplicated. Deleted/forced/truncated pushes request a check
-rather than blindly changing sources.
+delivery IDs are deduplicated. Deleted branches request a check only. Created
+or forced branches and incomplete commit inventories request a full fetch and
+ordinary source synchronization, with the same conflict and build checks.
 
 An authorized push to a configured source/ref also requests the downstream
 build and publication stages. Those stages run as separate fixed tasks on
