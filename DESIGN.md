@@ -249,8 +249,10 @@ At widths up to 1000px, navigation becomes a sticky top region. The contents
 control is at least 48px tall; expanded contents scroll within half the viewport
 height. Main content loses its left margin and uses
 `2rem max(1.25rem, env(safe-area-inset-left)) 4rem` padding. Navigation targets
-are at least 44px tall. The rail remains visible if enhancement JavaScript is
-absent; collapsing is enabled only after the toggle is created.
+are at least 44px tall. The contents rail requires JavaScript to populate its
+links; collapsing is enabled only after the toggle is created. Without
+JavaScript, mathematical content and the book home's chapter links remain
+readable, but the contents rail is empty.
 
 At widths up to 640px, the page title shrinks, the chapter directory becomes
 one column, statement headers stack, and code padding becomes 0.875rem. The

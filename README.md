@@ -226,6 +226,10 @@ metadata, validation, and pull-request rules.
 - Book and paper code lives on the registered version branch matching its Lean/mathlib toolchain; only registered stable `vX.Y.Z` versions are accepted.
 - **Book and paper code is not merged to `main`.** `main` remains the cross-version catalog, while its link folders point to the corresponding version branches.
 - PR base, PR title version, `ReasBook/lean-toolchain`, and book metadata (when applicable) must all match.
+- Every published Lean file must retain verified code-author headers. The
+  `author-headers` check is required on `main` and the protected version branches.
+  Reader changes also run Chromium navigation and responsive-layout checks;
+  these do not replace native Lean/Verso builds and full release acceptance.
 
 ## Lean Projects
 

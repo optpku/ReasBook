@@ -186,6 +186,7 @@ GitHub Pages 继续发布静态站点，公众评论需要运行 reviewer 后端
 - 书籍和论文代码位于与其 Lean/mathlib 工具链相匹配的已注册版本分支；仅接受已注册的稳定 `vX.Y.Z` 版本。
 - **书籍和论文代码不合并到 `main`。** `main` 始终作为跨版本目录，其中的链接目录指向对应版本分支。
 - PR 的目标分支、PR 标题中的版本、`ReasBook/lean-toolchain` 和书籍元数据（如适用）必须完全一致。
+- 每份公开 Lean 文件都必须保留经核实的代码作者署名；`main` 和受保护的版本分支均要求 `author-headers` 检查通过。阅读站改动另有 Chromium 导航及响应式布局检查，但不能代替原生 Lean/Verso 构建与完整发布验收。
 
 ## Lean 项目
 
