@@ -9,7 +9,9 @@ class CatalogTests(unittest.TestCase):
     def test_self_contained_styled_catalog_escapes_text_and_keeps_route_order(self):
         page = catalog_page('Books <&>', [('Second <book>', 'two/?x=1&y="2"'), ('First', '../one/')])
         self.assertIn('<style>', page)
-        self.assertIn('prefers-color-scheme: dark', page)
+        self.assertIn('color-scheme: light', page)
+        self.assertIn('--reader-link: #514077', page)
+        self.assertNotIn('border-radius:', page)
         self.assertIn('id="main-content"', page)
         self.assertIn('Books &lt;&amp;&gt;', page)
         self.assertIn('Second &lt;book&gt;', page)

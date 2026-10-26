@@ -150,7 +150,7 @@ class SelectedStatementPreviewTests(unittest.TestCase):
         text = self.render('Remark_C_1')
         self.assertIn('theorem legacy_result : True', text)
         self.assertIn('source only (outside the published documentation root)', text)
-        self.assertIn('Additional statements are available in the Lean source.', text)
+        self.assertNotIn('Additional statements are available', text)
         self.assertIn('TR_LALM_theory/Remark_C_1.lean', text)
         self.assertNotIn('[Documentation]', text)
         self.assertNotIn('by trivial', text)

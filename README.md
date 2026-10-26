@@ -35,6 +35,14 @@ tables below to open its reading entry directly; the source-directory links are
 for browsing Lean files.
 Generated reading pages use project → chapter → statement anchors; chapter pages
 show source statement excerpts with proofs omitted, and mark unfinished items explicitly.
+Book home pages use a compact chapter directory, without counts or repeated items.
+Catalogs, homes, and chapters share a mathematical-reference reading style:
+clear numbered statements, restrained navigation, and secondary source/documentation links.
+The book title in the sidebar returns home; Documentation on the home page opens
+that project's documentation directly, without the all-projects directory.
+The Verso sidebar expands each chapter into one entry per reading file, linking
+directly to its statement excerpt; unfinished items are labeled without an empty-page link.
+On mobile, use **Show contents** to open the navigation; selecting an item returns to the text.
 Numbered previews prioritize the matching statement heading; definition fields and
 inductive constructors remain visible. Documentation contents follow item-number order.
 

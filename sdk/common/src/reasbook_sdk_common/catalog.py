@@ -7,23 +7,26 @@ import html
 
 
 _STYLE = """
-:root { color-scheme: light dark; font-family: system-ui, sans-serif; line-height: 1.6; }
-body { margin: 0; background: #f7f8fa; color: #172b3a; }
-main { max-width: 64rem; margin: auto; padding: 2.5rem 1.25rem; }
-h1 { line-height: 1.2; font-size: clamp(1.6rem, 4vw, 2.5rem); }
-a { color: #205d89; text-underline-offset: .2em; overflow-wrap: anywhere; }
-.catalog-list { list-style: none; padding: 0; display: grid; gap: .75rem;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 24rem), 1fr)); }
-.catalog-list a { display: block; padding: 1rem; border: 1px solid #bac9d5;
-  border-radius: .4rem; background: white; text-decoration: none; }
-a:hover { text-decoration: underline; }
-a:focus-visible { outline: 3px solid #ba6400; outline-offset: 3px; }
-footer { margin-top: 2rem; font-size: .9rem; }
-@media (prefers-color-scheme: dark) {
-  body { background: #14212b; color: #e5edf4; }
-  a { color: #a9d5f3; }
-  .catalog-list a { background: #1c303f; border-color: #4a6578; }
-}
+:root { color-scheme: light;
+  --reader-surface: #ffffff; --reader-ink: #25232d; --reader-muted: #68636f;
+  --reader-link: #514077; --reader-rule: #ddd9e3; --reader-navigation: #f5f5f8;
+  --reader-serif: Georgia, "Times New Roman", "DejaVu Serif", serif;
+  font-family: system-ui, sans-serif; line-height: 1.6; }
+body { margin: 0; background: var(--reader-surface); color: var(--reader-ink); }
+main { max-width: 54rem; margin: auto; padding: 3rem 1.25rem 4rem; }
+h1 { font: 400 2.5rem/1.25 var(--reader-serif); max-width: 30ch;
+  margin: 0 0 1rem; text-wrap: balance; overflow-wrap: anywhere; }
+p { font: 1.125rem/1.75 var(--reader-serif); max-width: 72ch; }
+a { color: var(--reader-link); text-underline-offset: .2em; overflow-wrap: anywhere; }
+.catalog-list { list-style: none; padding: 0; margin-top: 2rem; }
+.catalog-list li { border-top: 1px solid var(--reader-rule); }
+.catalog-list a { display: block; padding: 1rem .5rem;
+  font: 1.25rem/1.5 var(--reader-serif); text-decoration: none; }
+.catalog-list a:hover { background: var(--reader-navigation); text-decoration: underline; }
+a:focus-visible, main:focus-visible { outline: 2px solid var(--reader-link); outline-offset: 3px; }
+::selection { background: var(--reader-navigation); color: var(--reader-ink); }
+footer { margin-top: 2.5rem; color: var(--reader-muted); font-size: .875rem; }
+@media (max-width: 640px) { main { padding-top: 2rem; } h1 { font-size: 2rem; } }
 """
 
 
@@ -38,9 +41,10 @@ def catalog_page(title: str, entries: Iterable[tuple[str, str]]) -> str:
     title = html.escape(title)
     return ('<!doctype html><html lang="en"><head><meta charset="utf-8">'
             '<meta name="viewport" content="width=device-width,initial-scale=1">'
+            '<meta name="theme-color" content="#ffffff">'
             f'<title>{title}</title><style>{_STYLE}</style></head><body>'
             f'<main id="main-content"><h1>{title}</h1>'
-            '<p>Read mathematical statements and Lean documentation.</p>'
+            '<p>Mathematical textbooks and research papers formalized in Lean.</p>'
             + (f'<ul class="catalog-list">{links}</ul>' if links else
                '<p>No project artifacts are published here yet.</p>')
             + '<footer><a href="https://github.com/optpku/ReasBook#readme">'
