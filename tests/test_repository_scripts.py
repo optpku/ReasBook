@@ -501,12 +501,15 @@ class RepositoryScriptTests(unittest.TestCase):
                 capture_output=True, text=True, check=False,
             )
             self.assertEqual(result.returncode, 0, result.stderr)
-            for relative in ('MayLike.lean', 'MayLike/Chap01.lean'):
-                page = (web_root / 'ReasBookSite/WorkPages/Books' / relative).read_text()
-                self.assertIn('Lemma 1.1.2 — no statement yet', page)
-                self.assertIn('Lemma_1_1_2.lean', page)
-                self.assertNotIn('Lemma_1_1_2.html', page)
-                self.assertIn('Definition_1_1_1.html' if '/Chap01' in relative else '#definition-1-1-1', page)
+            page = (web_root / 'ReasBookSite/WorkPages/Books/MayLike/Chap01.lean').read_text()
+            self.assertIn('Lemma 1.1.2 — no statement yet', page)
+            self.assertIn('Lemma_1_1_2.lean', page)
+            self.assertNotIn('Lemma_1_1_2.html', page)
+            self.assertIn('Definition_1_1_1.html', page)
+            home = (web_root / 'ReasBookSite/WorkPages/Books/MayLike.lean').read_text()
+            self.assertIn('/chap01/)\n', home)
+            self.assertNotIn('1 section, 2 items', home)
+            self.assertNotIn('Lemma 1.1.2', home)
 
     def test_fragment_root_is_project_home_and_nested_item_helpers_are_not_sections(self):
         with tempfile.TemporaryDirectory() as temp:
@@ -526,7 +529,8 @@ class RepositoryScriptTests(unittest.TestCase):
             chapter = (web_root / 'ReasBookSite/WorkPages/Books/MayLike/Chap01.lean').read_text()
             sidebar = (web_root / 'ReasBookSite/Sections.lean').read_text()
             self.assertIn('#doc (Page) "A Concise Course in Test Topology"', home)
-            self.assertIn('/chap01/#definition-1-1-1', home)
+            self.assertIn('/chap01/)', home)
+            self.assertNotIn('#definition-1-1-1', home)
             self.assertIn('(id := "definition-1-1-1")', chapter)
             self.assertIn('theorem bound (n : Nat) : 0 ≤ n', chapter)
             self.assertNotIn('exact Nat.zero_le', chapter)
@@ -552,7 +556,9 @@ class RepositoryScriptTests(unittest.TestCase):
             web = repo / 'ReasBookWeb/ReasBookSite'
             home = (web / 'Home.lean').read_text()
             contents = (web / 'WorkPages/Books/Demo/Chap01.lean').read_text()
-            self.assertIn('/chap01/#books-demo-chapters-chap01-section01_part1', home)
+            self.assertIn('/chap01/)\n', home)
+            self.assertNotIn('1 reading file', home)
+            self.assertNotIn('Section index:', home)
             self.assertEqual(contents.count('recall foo : True'), 1)
             self.assertNotIn('aggregation page', contents)
             routes = (web / 'RouteTable.lean').read_text()
@@ -624,11 +630,13 @@ class RepositoryScriptTests(unittest.TestCase):
             )
             home = home_page.read_text(encoding="utf-8")
             self.assertIn('#doc (Page) "A Concise Course in Test Topology"', home)
-            self.assertIn("Statements by chapter:", home)
-            self.assertIn("7 sections, 193 items", home)
+            self.assertIn("# Chapters", home)
+            self.assertNotIn("7 sections, 193 items", home)
+            self.assertIn('class := "reader-chapter-grid"', home)
             self.assertEqual(home.count("([Documentation]"), 0)
-            self.assertIn("/chap01/#definition-1-1-1", home)
-            self.assertIn("\n## [Chapter 01](/ReasBook/books/maylike/chapters/chap01/)", home)
+            self.assertNotIn("#definition-1-1-1", home)
+            self.assertIn("\n- [Chapter 01](/ReasBook/books/maylike/chapters/chap01/)", home)
+            self.assertLess(len(home.splitlines()), 25)
 
             chapter_page = home_page.parent / "MayLike" / "Chap01.lean"
             chapter = chapter_page.read_text(encoding="utf-8")
@@ -863,11 +871,10 @@ class RepositoryScriptTests(unittest.TestCase):
             home = (
                 web_root / "ReasBookSite" / "WorkPages" / "Books" / "BauschkeLike.lean"
             ).read_text(encoding="utf-8")
-            self.assertIn("Statements by chapter:", home)
-            self.assertIn("\n# Section index:\n", home)
-            self.assertIn("\n# Statements by chapter:\n", home)
+            self.assertIn("# Chapters", home)
+            self.assertNotIn("Section index:", home)
             self.assertNotRegex(home, r"(?m)^# \[Chapter")
-            self.assertEqual(home.count("books/bauschkelike/chapters/chap01/"), 2)
+            self.assertEqual(home.count("books/bauschkelike/chapters/chap01/"), 1)
 
             reader = (
                 web_root
@@ -877,9 +884,10 @@ class RepositoryScriptTests(unittest.TestCase):
                 / "BauschkeLike"
                 / "Chap01.lean"
             ).read_text(encoding="utf-8")
-            self.assertIn("indexes 7 formalized items and 3 supporting", reader)
+            self.assertNotIn("This chapter indexes", reader)
+            self.assertEqual(reader.count("— no statement yet"), 8)
             self.assertIn("# Reading sections", reader)
-            self.assertIn("# Chapter items", reader)
+            self.assertIn("# Statements", reader)
             self.assertIn("# Section 1.2", reader)
             self.assertIn("Definition 1.2.extra.1", reader)
             self.assertIn("`Helper_1_1.lean`", reader)
@@ -911,7 +919,15 @@ class RepositoryScriptTests(unittest.TestCase):
             sections = (web_root / "ReasBookSite" / "Sections.lean").read_text(
                 encoding="utf-8"
             )
-            self.assertNotIn("Definition_1_2_extra_1", sections)
+            # Item modules stay out of literate targets, but each source file
+            # now has a chapter-sidebar entry (disabled for this empty fixture).
+            self.assertNotIn("Definition_1_2_extra_1", sections.split("def sidebarDataJson", 1)[0])
+            sidebar = json.loads(json.loads(re.search(
+                r"^def sidebarDataJson : String := (.+)$", sections, re.M).group(1)))
+            chapter_items = sidebar["books"][0]["chapters"][0]["items"]
+            self.assertEqual(len(chapter_items), 8)
+            extra = next(item for item in chapter_items if item["title"] == "Definition 1.2.extra.1")
+            self.assertEqual(extra["anchor"], "")
             self.assertIn(r"\"number\":2", sections)
 
     def test_gen_sections_refuses_unowned_reader_work_page(self) -> None:

@@ -1698,8 +1698,94 @@ def emit_literate_manifest(entries: list[Entry]) -> str:
     )
 
 
+def emit_literate_source_map(entries: list[Entry], source_root: Path) -> str:
+    """Bind logical literate names to their actual, possibly nested srcDir files."""
+    projects: dict[tuple[str, str], dict[str, Path]] = {}
+    result: dict[str, str] = {}
+    for entry in entries:
+        key = (entry.category, entry.book_or_paper)
+        if key not in projects:
+            directory = source_root / entry.category.title() / entry.book_or_paper
+            paths = sorted(directory.rglob("*.lean"))
+            facade = directory.with_suffix(".lean")
+            if facade.is_file():
+                paths.append(facade)
+            sources: dict[str, Path] = {}
+            for path in paths:
+                module = to_module(source_root, path)
+                if module in sources and sources[module] != path:
+                    raise ValueError(f"ambiguous literate source for {module}")
+                sources[module] = path
+            projects[key] = sources
+        path = projects[key].get(entry.module)
+        if path is None or not path.is_file():
+            raise ValueError(f"missing literate source for {entry.module}")
+        relative = path.resolve().relative_to(source_root.resolve()).as_posix()
+        if entry.module in result:
+            raise ValueError(f"duplicate literate module: {entry.module}")
+        result[entry.module] = relative
+    return json.dumps(result, ensure_ascii=True, sort_keys=True, indent=2) + "\n"
+
+
+def update_literate_source_lookup(web_root: Path) -> None:
+    """Adapt only known archived Web Lakefile layouts, preserving branch tooling.
+
+    Mathematical Lakefiles and logical JSON paths are never changed. This
+    generated compatibility block is applied in the isolated build checkout.
+    """
+    lakefile = web_root / "lakefile.lean"
+    if not lakefile.exists():
+        return  # Source-only generation fixtures need not contain a Web project.
+    text = lakefile.read_text(encoding="utf-8")
+    source_lookup = '''    -- ReasBook generated source lookup: begin
+    let origName ← match sourcePaths.getObjValAs? String module.toString with
+      | .ok path => pure path
+      | .error err => error s!"Missing source path for {module}: {err}"
+    let origLeanFile : System.FilePath := pkg.dir / reasbookRoot / origName
+    addTrace (← computeTrace <| TextFilePath.mk sourcePathsFile)
+    addTrace (← computeTrace <| TextFilePath.mk origLeanFile)
+    -- ReasBook generated source lookup: end
+'''
+    source_loader = '''  -- ReasBook generated source map: begin
+  let sourcePathsFile := pkg.dir / ".literate-sources.json"
+  let sourcePathsText ← liftM (m := LogIO) <| IO.FS.readFile sourcePathsFile
+  let sourcePaths ← match Lean.Json.parse sourcePathsText with
+    | .ok paths => pure paths
+    | .error err => error s!"Invalid literate source map: {err}"
+  -- ReasBook generated source map: end
+'''
+    if text.count(source_lookup) == 1 and text.count(source_loader) == 1:
+        return
+    if "ReasBook generated source" in text:
+        raise ValueError("unrecognized generated literate source lookup; refusing to replace it")
+    prefix = '    let origName := "/".intercalate (module.components.map (·.toString)) ++ ".lean"\n'
+    trace = "    addTrace (← computeTrace <| TextFilePath.mk origLeanFile)\n"
+    direct = "    let origLeanFile : System.FilePath := pkg.dir / reasbookRoot / origName\n"
+    known = (
+        prefix + direct + trace,
+        prefix + '    let papersPath := pkg.dir / reasbookRoot / "Papers" / origName\n'
+        + '    let booksPath := pkg.dir / reasbookRoot / "Books" / origName\n'
+        + '    let origLeanFile ← if (← papersPath.pathExists) then pure papersPath else pure booksPath\n'
+        + trace,
+        prefix + direct
+        + '    -- Explicit project roots can place a module below `Papers/<project>` or\n'
+        + '    -- `Books/<project>`, so its logical module path need not be a source path\n'
+        + '    -- relative to `ReasBook`.  The literate JSON is the authoritative input;\n'
+        + '    -- retain the source trace when the legacy flat path exists.\n'
+        + '    if ← origLeanFile.pathExists then\n  ' + trace,
+    )
+    matches = [block for block in known if block in text]
+    load_sections = "  let sections ← liftM (m := LogIO) <| loadSections pkg\n"
+    if len(matches) != 1 or text.count(matches[0]) != 1 or text.count(load_sections) != 1:
+        raise ValueError("unrecognized Web Lakefile source lookup; refusing to rewrite it")
+    text = text.replace(matches[0], source_lookup)
+    text = text.replace(load_sections, load_sections + source_loader)
+    write_text_if_changed(lakefile, text)
+
+
 def emit_sections(
     entries: list[Entry], reader_chapters: Iterable[ReaderChapter] = (),
+    *, source_root: Path,
 ) -> str:
     reader_chapters = tuple(reader_chapters)
     books: dict[str, dict] = {}
@@ -1720,7 +1806,7 @@ def emit_sections(
         if chapter_num not in chapters:
             chapters[chapter_num] = {
                 "number": chapter_num,
-                "title": chapter_title_for_book(book, chapter_num),
+                "title": f"Chapter {chapter_num:02d}",
                 "route": f"books/{book.lower()}/chapters/chap{chapter_num:02d}/",
                 "sections": {},
             }
@@ -1812,9 +1898,22 @@ def emit_sections(
         work = ensure_book(reader.book)
         chapter = ensure_chapter(work, reader.book, reader.chapter_num)
         chapter["route"] = reader.route
-        # The chapter itself now contains the sections. Keep the sidebar at
-        # chapter depth instead of retaining a second tree of intermediary pages.
+        # Link each reading file directly to its content in the chapter, not
+        # to the former intermediate section/aggregation pages. A multi-clause
+        # statement still has one navigation entry for its owning item file.
         chapter["sections"] = {}
+        chapter["items"] = [
+            {"title": label, "module": module,
+             "anchor": module.casefold().replace(".", "-") if has_statement else "",
+             "source": source_path}
+            for module, label, source_path, has_statement in chapter_reading_modules(source_root, reader)
+        ]
+        chapter["items"].extend(
+            {"title": book_item_label(item), "module": item.module,
+             "anchor": "" if "no statement yet" in item_reading_links(source_root, item) else item_anchor(item),
+             "source": item.source_path}
+            for item in sorted(reader.items, key=book_item_sort_key)
+        )
 
     books_payload: list[dict] = []
     for book in sorted(books):
@@ -1847,6 +1946,7 @@ def emit_sections(
                     "title": chapter["title"],
                     "route": chapter["route"],
                     "sections": sections_payload,
+                    "items": chapter.get("items", []),
                 }
             )
         books_payload.append(
@@ -2480,11 +2580,16 @@ def statement_blocks(source: str, label: str, links: str, anchor: str,
         selected = excerpts if limit is None else excerpts[:limit]
     if not excerpts:
         return [f"- {label} {links}", ""]
-    lines = [f':::html div (id := {lean_string(anchor)}) '
-             '(style := "max-width:100%;overflow-x:auto") '
+    # Verso requires outer directive fences to be wider than nested fences.
+    lines = [f':::::html div (id := {lean_string(anchor)}) '
              '(«data-reasbook-statement» := "true") '
              '(«data-reasbook-verso-standalone» := "true")',
-             f"*{label}* {links}", ""]
+             '::::html div (class := "reader-statement-header")',
+             ':::html div (class := "reader-statement-title") '
+             '(role := "heading") («aria-level» := "3")',
+             label, ':::',
+             ':::html div (class := "reader-statement-links")',
+             links, ':::', '::::', ""]
     if note:
         lines.extend([note, ""])
     for excerpt in selected:
@@ -2500,10 +2605,7 @@ def statement_blocks(source: str, label: str, links: str, anchor: str,
         snippet = "\n".join((*excerpt.context, excerpt.signature))
         fence = "`" * max(3, 1 + max((len(run) for run in re.findall(r"`+", snippet)), default=0))
         lines.extend([fence, snippet, fence, ""])
-    if len(selected) < len(excerpts):
-        destination = "Documentation" if "[Documentation](" in links else "the Lean source"
-        lines.extend([f"Additional statements are available in {destination}.", ""])
-    lines.extend([":::" , ""])
+    lines.extend([":::::" , ""])
     return lines
 
 
@@ -2536,17 +2638,6 @@ def statement_sources(module: str, sources: dict[str, Path], *,
     return found
 
 
-def section_reading_route(source_root: Path, entry: Entry,
-                          readers: dict[tuple[str, int], ReaderChapter]) -> str:
-    reader = readers.get((entry.book_or_paper, entry.chapter_num))
-    if reader is None:
-        return entry.route
-    targets = statement_sources(entry.module, project_sources(source_root, "books", entry.book_or_paper))
-    if not targets:
-        return reader.route
-    return reader.route + '#' + targets[0][0].casefold().replace('.', '-')
-
-
 def module_statement_blocks(source_root: Path, module: str, category: str,
                             project: str, label: str, *, seen: set[str] | None = None,
                             limit: int | None = None) -> list[str]:
@@ -2562,6 +2653,40 @@ def module_statement_blocks(source_root: Path, module: str, category: str,
                                       label if name == module else module_label(name), links,
                                       name.casefold().replace(".", "-"), limit=limit))
     return lines
+
+
+@lru_cache(maxsize=None)
+def chapter_reading_modules(
+    source_root: Path, reader: ReaderChapter,
+) -> tuple[tuple[str, str, str, bool], ...]:
+    """Share the exact file inventory between chapter content and navigation.
+
+    Imports-only section facades resolve to their reading parts. Each rendered
+    module occurs once, including when several facades import the same part.
+    Empty sections remain visible as disabled, explicitly unfinished entries.
+    """
+    entries = {entry.module: entry for entry in reader.ordinary_sections}
+    sources = project_sources(source_root, "books", reader.book)
+    # A section facade may import numbered items; those already own a reader
+    # card and must not acquire a second file entry under the section list.
+    seen: set[str] = {item.module for item in reader.items}
+    result: list[tuple[str, str, str, bool]] = []
+    for source in sorted(reader.ordinary_section_modules,
+                         key=lambda value: _natural_parts(tuple(re.split(r"(\d+)", value.relative_path)))):
+        if source.module in seen:
+            continue
+        entry = entries.get(source.module)
+        label = readme_label(entry) if entry else humanize_identifier(Path(source.relative_path).stem)
+        targets = statement_sources(source.module, sources)
+        if not targets:
+            result.append((source.module, label, source.source_path, False))
+            seen.add(source.module)
+        for name, path in targets:
+            if name not in seen:
+                result.append((name, label if name == source.module else module_label(name),
+                               path.relative_to(source_root.parent).as_posix(), True))
+                seen.add(name)
+    return tuple(result)
 
 
 def write_work_pages(
@@ -2680,42 +2805,37 @@ def write_work_pages(
         lines.append(f"#doc (Page) {lean_string(title)} =>")
         lines.append("")
         docs_path = project_docs_path(source_root, book, "book")
+        lines.append(':::html div (class := "reader-home-links")')
         lines.append(
             f"- [Documentation]({portable_site_link(f'docs/ReasBook/{docs_path}.html')})"
         )
         lines.append(
-            f"- [Lean source path]({github_tree_link(f'ReasBook/Books/{book}/')})"
+            f"- [Lean source]({github_tree_link(f'ReasBook/Books/{book}/')})"
         )
+        lines.append(":::")
         lines.append("")
         book_readers = sorted(
             readers_by_book.get(book, []), key=lambda reader: reader.chapter_num
         )
-        if book_readers:
-            lines.append("# Statements by chapter:")
+        # Home is a compact chapter directory. File-level navigation belongs
+        # in the sidebar and the chapter, not in a second all-items index here.
+        chapters = {entry.chapter_num: entry.route
+                    for entry in b_entries if is_chapter_entry(entry)}
+        for reader in book_readers:
+            chapters[reader.chapter_num] = reader.route
+        if chapters:
+            lines.append("# Chapters")
             lines.append("")
-            for reader in book_readers:
-                section_count = len(
-                    {item.section_num for item in reader.items if item.section_num > 0}
-                )
-                inventory = f"{len(reader.items)} items"
-                if section_count:
-                    inventory = f"{section_count} sections, {inventory}"
-                if not reader.items:
-                    inventory = f"{len(reader.ordinary_section_modules)} reading sections"
+            lines.append(':::html div (class := "reader-chapter-grid")')
+            for chapter_num, route in sorted(chapters.items()):
                 lines.append(
-                    f"## [{chapter_title_for_book(book, reader.chapter_num)}]"
-                    f"({portable_site_link(reader.route)})"
+                    f"- [Chapter {chapter_num:02d}]({portable_site_link(route)})"
                 )
-                lines.extend(["", inventory, ""])
-                for item in reader.items:
-                    links = item_reading_links(source_root, item)
-                    if "no statement yet" in links:
-                        lines.append(f"- {book_item_label(item)} {links}")
-                    else:
-                        lines.append(f"- [{book_item_label(item)}]"
-                                     f"({portable_site_link(reader.route)}#{item_anchor(item)})")
-                lines.append("")
+            lines.append(":::")
             lines.append("")
+        # Retain access to reading sections lacking any chapter entry, without
+        # duplicating chapters already represented above.
+        section_entries = [entry for entry in section_entries if entry.chapter_num not in chapters]
         if section_entries:
             lines.append("# Section index:")
             lines.append("")
@@ -2730,11 +2850,9 @@ def write_work_pages(
                 label = readme_label(e)
                 if not label:
                     continue
-                route = section_reading_route(source_root, e,
-                                              {(r.book, r.chapter_num): r for r in book_readers})
-                lines.append(f"- [{label}]({portable_site_link(route)})")
+                lines.append(f"- [{label}]({portable_site_link(e.route)})")
             lines.append("")
-        if not section_entries and not book_readers:
+        if not section_entries and not chapters:
             lines.append("No separate reading sections are published for this version.")
             lines.append("")
 
@@ -2755,42 +2873,31 @@ def write_work_pages(
             "open Verso Genre Blog",
             "",
             "#doc (Page) "
-            + lean_string(
-                f"{book_title(reader.book)} -- "
-                f"{chapter_title_for_book(reader.book, reader.chapter_num)}"
-            )
+            + lean_string(chapter_title_for_book(reader.book, reader.chapter_num))
             + " =>",
             "",
-            f"- [Book home]({portable_site_link(f'books/{reader.book.lower()}/')})",
-            f"- [Lean source directory]({github_tree_link(reader.source_directory)})",
+            ':::html div (class := "reader-chapter-links")',
+            f"- [{book_title(reader.book)}]({portable_site_link(f'books/{reader.book.lower()}/')})",
+            f"- [Lean source]({github_tree_link(reader.source_directory)})",
+            ':::',
             "",
-            f"This chapter indexes {len(chapter_items)} formalized items and "
-            f"{len(reader.support_modules)} supporting source modules.",
-            "",
-            "Statement excerpts below omit proofs. A `#check` excerpt is a checked expression, not its inferred type.",
+            ':::html div (class := "reader-scope-note")',
+            "Proofs omitted. A `#check` excerpt shows the checked expression, not its inferred type.",
+            ':::',
             "",
         ]
-        entries_by_module = {entry.module: entry for entry in reader.ordinary_sections}
         if reader.ordinary_section_modules:
             lines.append("# Reading sections")
             lines.append("")
-            seen_modules: set[str] = set()
-            for source in reader.ordinary_section_modules:
-                entry = entries_by_module.get(source.module)
-                label = (
-                    readme_label(entry)
-                    if entry is not None
-                    else humanize_identifier(Path(source.relative_path).stem)
-                )
-                if source.module in seen_modules:
-                    continue
-                blocks = module_statement_blocks(source_root, source.module, "books", reader.book, label,
-                                                 seen=seen_modules)
-                if blocks:
-                    lines.extend(blocks)
+            for module, label, source_path, has_statement in chapter_reading_modules(source_root, reader):
+                if has_statement:
+                    links = statement_reading_links(source_root, module, source_path, "books", reader.book)
+                    lines.extend(statement_blocks(
+                        (source_root.parent / source_path).read_text(encoding="utf-8"), label, links,
+                        module.casefold().replace(".", "-"), limit=None))
                 else:
                     lines.append(f"- {label} — no statement yet "
-                                 f"([Lean source]({github_blob_link(source.source_path)}))")
+                                 f"([Lean source]({github_blob_link(source_path)}))")
             lines.append("")
         by_section: dict[int, list[BookItem]] = {}
         for item in chapter_items:
@@ -2799,7 +2906,7 @@ def write_work_pages(
             section_title = (
                 f"Section {reader.chapter_num}.{section_num}"
                 if section_num > 0
-                else "Chapter items"
+                else "Statements"
             )
             lines.append(f"# {section_title}")
             lines.append("")
@@ -2877,17 +2984,20 @@ def write_work_pages(
         lines.append(f"#doc (Page) {lean_string(title)} =>")
         lines.append("")
         docs_path = project_docs_path(source_root, paper, "paper")
+        lines.append(':::html div (class := "reader-home-links")')
         lines.append(
             f"- [Documentation]({portable_site_link(f'docs/ReasBook/{docs_path}.html')})"
         )
         lines.append(
-            f"- [Lean source path]({github_tree_link(f'ReasBook/Papers/{paper}/')})"
+            f"- [Lean source]({github_tree_link(f'ReasBook/Papers/{paper}/')})"
         )
+        lines.append(":::")
         lines.append("")
         item_reader = paper_readers_by_paper.get(paper)
         if item_reader is not None:
-            lines.append("Statements:")
-            lines.extend(["", "Source excerpts; proofs omitted. A `#check` excerpt shows an expression, not its inferred type."])
+            lines.append("# Statements")
+            lines.extend(["", ':::html div (class := "reader-scope-note")',
+                          "Proofs omitted. A `#check` excerpt shows the checked expression, not its inferred type.", ':::'])
             lines.append("")
             for item in item_reader.items:
                 lines.extend(item_statement_blocks(source_root, item))
@@ -2908,7 +3018,9 @@ def write_work_pages(
                     lines.append(f"- [{label}]({portable_site_link(e.route)})")
             lines.append("")
         elif entry_points and item_reader is None:
-            lines.append("Statements (source excerpts; proofs omitted):")
+            lines.append("# Statements")
+            lines.extend(["", ':::html div (class := "reader-scope-note")',
+                          "Source excerpts; proofs omitted.", ':::'])
             lines.append("")
             seen_modules = set()
             for e in entry_points:
@@ -2916,9 +3028,6 @@ def write_work_pages(
                 label = humanize_identifier(stem)
                 lines.extend(module_statement_blocks(source_root, e.module, "papers", paper, label,
                                                      seen=seen_modules, limit=1))
-            lines.append("")
-        elif item_reader is None:
-            lines.append("Statements are available in Documentation above.")
             lines.append("")
 
         write_text_if_changed(page_file, "\n".join(lines), log=True)
@@ -3407,7 +3516,7 @@ def main() -> None:
     paper_readers = collect_paper_readers(paper_inventories)
     paper_section_indexes = collect_paper_section_indexes(source_root, entries)
     out_file.parent.mkdir(parents=True, exist_ok=True)
-    write_text_if_changed(out_file, emit_sections(entries, reader_chapters), log=False)
+    write_text_if_changed(out_file, emit_sections(entries, reader_chapters, source_root=source_root), log=False)
     write_text_if_changed(
         route_file,
         emit_route_table(
@@ -3423,6 +3532,12 @@ def main() -> None:
         emit_literate_manifest(entries),
         log=False,
     )
+    write_text_if_changed(
+        web_root / ".literate-sources.json",
+        emit_literate_source_map(entries, source_root),
+        log=False,
+    )
+    update_literate_source_lookup(web_root)
     if PROJECT_FRAGMENT:
         write_text_if_changed(
             fragment_manifest,

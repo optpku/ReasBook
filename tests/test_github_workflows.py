@@ -4,6 +4,8 @@ from pathlib import Path
 import re
 import unittest
 
+import yaml
+
 
 ROOT = Path(__file__).resolve().parents[1]
 WORKFLOWS = ROOT / ".github" / "workflows"
@@ -118,6 +120,42 @@ class GitHubWorkflowPolicyTests(unittest.TestCase):
         self.assertIn("  pull_request: {}", text)
         self.assertEqual(text.count("    paths:"), 1)
         self.assertIn("      REASBOOK_PYTHON_BIN: python", text)
+
+    def test_reader_browser_checks_run_without_opt_in_or_path_gaps(self) -> None:
+        workflow = yaml.load(
+            (WORKFLOWS / "sdk_tests.yml").read_text(encoding="utf-8"),
+            Loader=yaml.BaseLoader,
+        )
+        self.assertIn("pull_request", workflow["on"])
+        paths = workflow["on"]["push"]["paths"]
+        self.assertIn("ReasBookWeb/ReasBookSite.lean", paths)
+        self.assertIn("ReasBookWeb/static_files/**", paths)
+        browser = workflow["jobs"]["browser-tests"]
+        self.assertEqual(browser["runs-on"], "ubuntu-24.04")
+        self.assertNotIn("if", browser)
+        self.assertEqual(browser["env"]["REASBOOK_SIDEBAR_BROWSER_TEST"], "1")
+        steps = browser["steps"]
+        commands = "\n".join(step.get("run", "") for step in steps)
+        self.assertRegex(commands, r"pip install playwright==\d+\.\d+\.\d+")
+        self.assertIn("playwright install --with-deps chromium", commands)
+        self.assertIn("python -m unittest tests.test_sidebar_navigation -v", commands)
+        self.assertFalse(any("if" in step or "continue-on-error" in step for step in steps))
+
+    def test_test_jobs_do_not_persist_checkout_credentials(self) -> None:
+        workflow = yaml.load(
+            (WORKFLOWS / "sdk_tests.yml").read_text(encoding="utf-8"),
+            Loader=yaml.BaseLoader,
+        )
+        self.assertEqual(workflow["permissions"], {"contents": "read"})
+        for name, job in workflow["jobs"].items():
+            with self.subTest(job=name):
+                checkouts = [step for step in job["steps"]
+                             if step.get("uses", "").startswith("actions/checkout@")]
+                self.assertEqual(len(checkouts), 1)
+                self.assertEqual(checkouts[0]["with"]["persist-credentials"], "false")
+                for step in job["steps"]:
+                    if "uses" in step:
+                        self.assertRegex(step["uses"], r"@[0-9a-f]{40}$")
 
 
 if __name__ == "__main__":

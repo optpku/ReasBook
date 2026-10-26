@@ -10,6 +10,7 @@ ReasBookWeb/-verso-*/
 # Generated website sources
 ReasBookWeb/Book/
 /ReasBookWeb/.literate-modules.json
+/ReasBookWeb/.literate-sources.json
 /ReasBookWeb/.literate_modules.txt
 /ReasBookWeb/.literate_manifest.json
 /ReasBookWeb/.literate_failed.txt
@@ -66,6 +67,11 @@ CLAUDE.md
 /maintenance/
 # Local SiFlow skill, credentials, task state, and generated E2E artifacts
 /SiFlow-sdk/
+
+# Private design decisions, captures and transient build evidence
+/.impeccable/mocks/
+/.impeccable/review/
+/.impeccable/reader-direction-options.json
 
 # OS / editor junk
 .DS_Store

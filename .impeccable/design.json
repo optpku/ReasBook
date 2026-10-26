@@ -1,0 +1,337 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-26T04:09:27.367Z",
+  "title": "Design System: ReasBook static reader",
+  "extensions": {
+    "colorMeta": {
+      "reader-surface": {
+        "role": "neutral",
+        "displayName": "White paper",
+        "tonalRamp": [
+          "oklch(15.00% 0.00000 0.00)",
+          "oklch(26.43% 0.00000 0.00)",
+          "oklch(37.86% 0.00000 0.00)",
+          "oklch(49.29% 0.00000 0.00)",
+          "oklch(60.71% 0.00000 0.00)",
+          "oklch(72.14% 0.00000 0.00)",
+          "oklch(83.57% 0.00000 0.00)",
+          "oklch(95.00% 0.00000 0.00)"
+        ],
+        "tonalRampNote": "Derived OKLCH preview metadata: source hue, eight lightness steps from 15% to 95%, chroma reduced near black and white. These are not shipping CSS tokens."
+      },
+      "reader-navigation": {
+        "role": "neutral",
+        "displayName": "Ink-gray rail",
+        "tonalRamp": [
+          "oklch(15.00% 0.00170 286.33)",
+          "oklch(26.43% 0.00300 286.33)",
+          "oklch(37.86% 0.00398 286.33)",
+          "oklch(49.29% 0.00398 286.33)",
+          "oklch(60.71% 0.00398 286.33)",
+          "oklch(72.14% 0.00398 286.33)",
+          "oklch(83.57% 0.00261 286.33)",
+          "oklch(95.00% 0.00080 286.33)"
+        ],
+        "tonalRampNote": "Derived OKLCH preview metadata: source hue, eight lightness steps from 15% to 95%, chroma reduced near black and white. These are not shipping CSS tokens."
+      },
+      "reader-ink": {
+        "role": "neutral",
+        "displayName": "Charcoal ink",
+        "tonalRamp": [
+          "oklch(15.00% 0.00801 294.25)",
+          "oklch(26.43% 0.01411 294.25)",
+          "oklch(37.86% 0.01868 294.25)",
+          "oklch(49.29% 0.01868 294.25)",
+          "oklch(60.71% 0.01868 294.25)",
+          "oklch(72.14% 0.01868 294.25)",
+          "oklch(83.57% 0.01228 294.25)",
+          "oklch(95.00% 0.00374 294.25)"
+        ],
+        "tonalRampNote": "Derived OKLCH preview metadata: source hue, eight lightness steps from 15% to 95%, chroma reduced near black and white. These are not shipping CSS tokens."
+      },
+      "reader-muted": {
+        "role": "neutral",
+        "displayName": "Quiet gray",
+        "tonalRamp": [
+          "oklch(15.00% 0.00843 304.51)",
+          "oklch(26.43% 0.01485 304.51)",
+          "oklch(37.86% 0.01966 304.51)",
+          "oklch(49.29% 0.01966 304.51)",
+          "oklch(60.71% 0.01966 304.51)",
+          "oklch(72.14% 0.01966 304.51)",
+          "oklch(83.57% 0.01292 304.51)",
+          "oklch(95.00% 0.00393 304.51)"
+        ],
+        "tonalRampNote": "Derived OKLCH preview metadata: source hue, eight lightness steps from 15% to 95%, chroma reduced near black and white. These are not shipping CSS tokens."
+      },
+      "reader-link": {
+        "role": "primary",
+        "displayName": "Violet ink",
+        "tonalRamp": [
+          "oklch(15.00% 0.03890 296.49)",
+          "oklch(26.43% 0.06853 296.49)",
+          "oklch(37.86% 0.09076 296.49)",
+          "oklch(49.29% 0.09076 296.49)",
+          "oklch(60.71% 0.09076 296.49)",
+          "oklch(72.14% 0.09076 296.49)",
+          "oklch(83.57% 0.05964 296.49)",
+          "oklch(95.00% 0.01815 296.49)"
+        ],
+        "tonalRampNote": "Derived OKLCH preview metadata: source hue, eight lightness steps from 15% to 95%, chroma reduced near black and white. These are not shipping CSS tokens."
+      },
+      "reader-link-hover": {
+        "role": "primary",
+        "displayName": "Deep violet ink",
+        "tonalRamp": [
+          "oklch(15.00% 0.03206 299.60)",
+          "oklch(26.43% 0.05648 299.60)",
+          "oklch(37.86% 0.07480 299.60)",
+          "oklch(49.29% 0.07480 299.60)",
+          "oklch(60.71% 0.07480 299.60)",
+          "oklch(72.14% 0.07480 299.60)",
+          "oklch(83.57% 0.04915 299.60)",
+          "oklch(95.00% 0.01496 299.60)"
+        ],
+        "tonalRampNote": "Derived OKLCH preview metadata: source hue, eight lightness steps from 15% to 95%, chroma reduced near black and white. These are not shipping CSS tokens."
+      },
+      "reader-rule": {
+        "role": "neutral",
+        "displayName": "Fine rule",
+        "tonalRamp": [
+          "oklch(15.00% 0.00608 304.12)",
+          "oklch(26.43% 0.01070 304.12)",
+          "oklch(37.86% 0.01418 304.12)",
+          "oklch(49.29% 0.01418 304.12)",
+          "oklch(60.71% 0.01418 304.12)",
+          "oklch(72.14% 0.01418 304.12)",
+          "oklch(83.57% 0.00932 304.12)",
+          "oklch(95.00% 0.00284 304.12)"
+        ],
+        "tonalRampNote": "Derived OKLCH preview metadata: source hue, eight lightness steps from 15% to 95%, chroma reduced near black and white. These are not shipping CSS tokens."
+      },
+      "reader-active": {
+        "role": "primary",
+        "displayName": "Pale violet selection",
+        "tonalRamp": [
+          "oklch(15.00% 0.00724 304.79)",
+          "oklch(26.43% 0.01276 304.79)",
+          "oklch(37.86% 0.01690 304.79)",
+          "oklch(49.29% 0.01690 304.79)",
+          "oklch(60.71% 0.01690 304.79)",
+          "oklch(72.14% 0.01690 304.79)",
+          "oklch(83.57% 0.01111 304.79)",
+          "oklch(95.00% 0.00338 304.79)"
+        ],
+        "tonalRampNote": "Derived OKLCH preview metadata: source hue, eight lightness steps from 15% to 95%, chroma reduced near black and white. These are not shipping CSS tokens."
+      },
+      "reader-hover": {
+        "role": "primary",
+        "displayName": "Pale violet hover",
+        "tonalRamp": [
+          "oklch(15.00% 0.00409 299.24)",
+          "oklch(26.43% 0.00721 299.24)",
+          "oklch(37.86% 0.00955 299.24)",
+          "oklch(49.29% 0.00955 299.24)",
+          "oklch(60.71% 0.00955 299.24)",
+          "oklch(72.14% 0.00955 299.24)",
+          "oklch(83.57% 0.00628 299.24)",
+          "oklch(95.00% 0.00191 299.24)"
+        ],
+        "tonalRampNote": "Derived OKLCH preview metadata: source hue, eight lightness steps from 15% to 95%, chroma reduced near black and white. These are not shipping CSS tokens."
+      },
+      "reader-code": {
+        "role": "neutral",
+        "displayName": "Code paper",
+        "tonalRamp": [
+          "oklch(15.00% 0.00176 301.43)",
+          "oklch(26.43% 0.00309 301.43)",
+          "oklch(37.86% 0.00410 301.43)",
+          "oklch(49.29% 0.00410 301.43)",
+          "oklch(60.71% 0.00410 301.43)",
+          "oklch(72.14% 0.00410 301.43)",
+          "oklch(83.57% 0.00269 301.43)",
+          "oklch(95.00% 0.00082 301.43)"
+        ],
+        "tonalRampNote": "Derived OKLCH preview metadata: source hue, eight lightness steps from 15% to 95%, chroma reduced near black and white. These are not shipping CSS tokens."
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Reading title",
+        "purpose": "Book, chapter, paper, and catalog h1; capped at 30ch."
+      },
+      "display-mobile": {
+        "displayName": "Narrow reading title",
+        "purpose": "h1 at viewport widths up to 640px."
+      },
+      "headline": {
+        "displayName": "Section heading",
+        "purpose": "Main h2 headings."
+      },
+      "title": {
+        "displayName": "Numbered statement",
+        "purpose": "Serif statement heading; source labels preserve literature numbering."
+      },
+      "body": {
+        "displayName": "Mathematical prose",
+        "purpose": "Serif reading paragraphs capped at 72ch."
+      },
+      "chapter-link": {
+        "displayName": "Chapter directory",
+        "purpose": "Compact chapter rows with tabular numerals."
+      },
+      "catalog-link": {
+        "displayName": "Catalog entry",
+        "purpose": "Full-width project row."
+      },
+      "navigation": {
+        "displayName": "Contents",
+        "purpose": "Sans navigation hierarchy; explicit work, summary, and file variants are in DESIGN.md."
+      },
+      "label": {
+        "displayName": "Resource link",
+        "purpose": "Home and chapter source/documentation links."
+      },
+      "statement-link": {
+        "displayName": "Statement resource",
+        "purpose": "Compact links beside the mathematical label."
+      },
+      "scope-note": {
+        "displayName": "Excerpt scope",
+        "purpose": "Muted explanation of coverage or availability, capped at 80ch."
+      },
+      "contents-toggle": {
+        "displayName": "Mobile contents control",
+        "purpose": "Show contents / Hide contents button."
+      },
+      "code": {
+        "displayName": "Lean excerpt",
+        "purpose": "Genuine monospace source; installed face depends on the platform."
+      },
+      "code-mobile": {
+        "displayName": "Narrow Lean excerpt",
+        "purpose": "Code at viewport widths up to 640px."
+      }
+    },
+    "shadows": [],
+    "motion": [
+      {
+        "name": "reader-hover",
+        "value": "background-color 120ms ease-out",
+        "purpose": "Only navigation and chapter links, within prefers-reduced-motion: no-preference. Contents and location changes are immediate."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "mobile-contents-max",
+        "value": "1000px"
+      },
+      {
+        "name": "narrow-reading-max",
+        "value": "640px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Chapter directory",
+      "kind": "nav",
+      "refersTo": "chapter-link",
+      "description": "Existing chapter labels, two columns for five or more entries and one column on narrow screens.",
+      "html": "<div class=\"ds-sample-chapter-link\"><div class=\"ds-main\"><div class=\"ds-reader-chapter-grid\"><ul><li><a href=\"#ds-chapter-link-chapter-01\">Chapter 01</a></li><li><a href=\"#ds-chapter-link-chapter-02\">Chapter 02</a></li><li><a href=\"#ds-chapter-link-chapter-03\">Chapter 03</a></li><li><a href=\"#ds-chapter-link-chapter-04\">Chapter 04</a></li><li><a href=\"#ds-chapter-link-chapter-05\">Chapter 05</a></li></ul></div></div></div>",
+      "css": ".ds-sample-chapter-link div.ds-main .ds-reader-chapter-grid ul { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:0 2rem; margin:0; padding:0; list-style:none; } .ds-sample-chapter-link div.ds-main .ds-reader-chapter-grid ul:not(:has(li:nth-child(5))) { grid-template-columns:1fr; } .ds-sample-chapter-link div.ds-main .ds-reader-chapter-grid li { margin:0; } .ds-sample-chapter-link div.ds-main .ds-reader-chapter-grid a { display:block; min-height:52px; padding:0.75rem 0.5rem; color:var(--reader-ink, #25232d); font:1.125rem/1.5 var(--reader-serif, Georgia, \"Times New Roman\", \"DejaVu Serif\", serif); font-variant-numeric:tabular-nums; text-decoration:none; border-radius:var(--reader-radius, 4px); } .ds-sample-chapter-link div.ds-main .ds-reader-chapter-grid a:hover { color:var(--reader-link, #514077); background:var(--reader-hover, #efedf4); text-decoration:underline; } .ds-sample-chapter-link a:focus-visible { outline:2px solid var(--reader-link, #514077); outline-offset:3px; } @media(max-width:640px) { .ds-sample-chapter-link div.ds-main .ds-reader-chapter-grid ul { grid-template-columns:1fr; } } @media(prefers-reduced-motion:no-preference) { .ds-sample-chapter-link .ds-reader-chapter-grid a { transition:background-color 120ms ease-out; } }"
+    },
+    {
+      "name": "Contents navigation",
+      "kind": "nav",
+      "refersTo": "navigation-rail",
+      "description": "Native disclosure hierarchy with an underlined, tinted current location; the sample omits page-level fixed positioning.",
+      "html": "<div class=\"ds-sample-navigation-rail\"><nav id=\"ds-navigation-rail-sidebar-nav-root\" aria-label=\"Contents\"><ul><li><a class=\"ds-nav-work-title\" href=\"#ds-navigation-rail-book\">First-Order Methods in Optimization</a><ul class=\"ds-nav-work-tree\"><li><details class=\"ds-nav-chapter\" open><summary>Chapter 01</summary><ul><li class=\"ds-nav-file-item\"><a class=\"ds-is-current\" aria-current=\"location\" data-ds-chapter-target href=\"#ds-navigation-rail-definition-1-1\">Definition 1.1</a></li><li class=\"ds-nav-file-item\"><a data-ds-chapter-target href=\"#ds-navigation-rail-lemma-1-1\">Lemma 1.1</a></li></ul></details></li></ul></li></ul></nav></div>",
+      "css": ".ds-sample-navigation-rail #ds-navigation-rail-sidebar-nav-root { width:var(--reader-sidebar, 18rem); padding:1.5rem 0.875rem; background:var(--reader-navigation, #f5f5f8); border-right:1px solid var(--reader-rule, #ddd9e3); overflow-y:auto; font:0.875rem/1.45 var(--reader-sans, system-ui, \"Segoe UI\", \"DejaVu Sans\", sans-serif); } .ds-sample-navigation-rail #ds-navigation-rail-sidebar-nav-root ul { list-style:none; padding:0; margin:0; } .ds-sample-navigation-rail #ds-navigation-rail-sidebar-nav-root li { margin:0.125rem 0; } .ds-sample-navigation-rail #ds-navigation-rail-sidebar-nav-root a, .ds-sample-navigation-rail #ds-navigation-rail-sidebar-nav-root summary { color:var(--reader-ink, #25232d); border-radius:var(--reader-radius, 4px); padding:0.375rem 0.5rem; font-family:var(--reader-sans, system-ui, \"Segoe UI\", \"DejaVu Sans\", sans-serif); line-height:1.45; overflow-wrap:anywhere; } .ds-sample-navigation-rail #ds-navigation-rail-sidebar-nav-root a { display:block; text-decoration:none; } .ds-sample-navigation-rail #ds-navigation-rail-sidebar-nav-root summary { cursor:pointer; font-weight:550; } .ds-sample-navigation-rail #ds-navigation-rail-sidebar-nav-root a:hover, .ds-sample-navigation-rail #ds-navigation-rail-sidebar-nav-root summary:hover { background:var(--reader-hover, #efedf4); } .ds-sample-navigation-rail #ds-navigation-rail-sidebar-nav-root a.ds-is-current { background:var(--reader-active, #eae5f1); color:var(--reader-link, #514077); font-weight:650; text-decoration:underline; text-decoration-thickness:1px; } .ds-sample-navigation-rail #ds-navigation-rail-sidebar-nav-root .ds-nav-work-title { font-size:1rem; font-weight:650; line-height:1.5; padding-block:0.625rem; } .ds-sample-navigation-rail #ds-navigation-rail-sidebar-nav-root .ds-nav-work-tree { margin-top:1.25rem; } .ds-sample-navigation-rail #ds-navigation-rail-sidebar-nav-root details ul { margin:0.25rem 0 0.5rem 0.75rem; } .ds-sample-navigation-rail #ds-navigation-rail-sidebar-nav-root .ds-nav-chapter > summary { font-size:0.9375rem; } .ds-sample-navigation-rail #ds-navigation-rail-sidebar-nav-root .ds-nav-file-item > a { font-size:0.8125rem; } .ds-sample-navigation-rail a:focus-visible, .ds-sample-navigation-rail summary:focus-visible { outline:2px solid var(--reader-link, #514077); outline-offset:3px; } @media(max-width:1000px) { .ds-sample-navigation-rail #ds-navigation-rail-sidebar-nav-root { width:auto; max-height:50dvh; border:0; padding:0.75rem max(1rem,env(safe-area-inset-left)); } .ds-sample-navigation-rail #ds-navigation-rail-sidebar-nav-root a, .ds-sample-navigation-rail #ds-navigation-rail-sidebar-nav-root summary { min-height:44px; padding-block:0.75rem; } .ds-sample-navigation-rail #ds-navigation-rail-sidebar-nav-root .ds-nav-file-item > a { font-size:0.875rem; } } @media(prefers-reduced-motion:no-preference) { .ds-sample-navigation-rail #ds-navigation-rail-sidebar-nav-root a { transition:background-color 120ms ease-out; } }"
+    },
+    {
+      "name": "Resource links",
+      "kind": "custom",
+      "refersTo": "resource-link",
+      "description": "Wrapping documentation and source row; unavailable resources are muted text.",
+      "html": "<div class=\"ds-sample-resource-link\"><div class=\"ds-reader-home-links\"><ul><li><a href=\"#ds-resource-link-documentation\">Documentation</a></li><li><a href=\"#ds-resource-link-source\">Lean source</a></li></ul></div></div>",
+      "css": ".ds-sample-resource-link .ds-reader-home-links { margin:0 0 2rem; } .ds-sample-resource-link .ds-reader-home-links ul { display:flex; flex-wrap:wrap; gap:0.25rem 1.5rem; padding:0; margin:0; list-style:none; } .ds-sample-resource-link .ds-reader-home-links li { margin:0; } .ds-sample-resource-link .ds-reader-home-links a, .ds-sample-resource-link .ds-reader-home-links span[aria-disabled] { display:inline-block; padding:0.5rem 0; min-height:44px; font:0.875rem/1.75 var(--reader-sans, system-ui, \"Segoe UI\", \"DejaVu Sans\", sans-serif); } .ds-sample-resource-link a { color:var(--reader-link, #514077); text-underline-offset:0.2em; } .ds-sample-resource-link a:hover { color:var(--reader-link-hover, #362650); } .ds-sample-resource-link .ds-reader-home-links span[aria-disabled] { color:var(--reader-muted, #68636f); } .ds-sample-resource-link a:focus-visible { outline:2px solid var(--reader-link, #514077); outline-offset:3px; }"
+    },
+    {
+      "name": "Numbered statement",
+      "kind": "custom",
+      "refersTo": "statement",
+      "description": "Continuous numbered text with a fine top rule and an addressable heading, not a card.",
+      "html": "<div class=\"ds-sample-statement\"><div class=\"ds-main\"><div id=\"ds-statement-definition-1-1\" data-ds-reasbook-statement=\"true\"><div class=\"ds-reader-statement-header\"><div class=\"ds-reader-statement-title\" role=\"heading\" aria-level=\"3\"><p>Definition 1.1</p></div><div class=\"ds-reader-statement-links\"><p>(<a href=\"#ds-statement-documentation\">Documentation</a>) (<a href=\"#ds-statement-source\">Lean source</a>)</p></div></div><p>The additive data of a real vector space is the canonical typeclass <code>AddCommGroup E</code>.</p></div></div></div>",
+      "css": ".ds-sample-statement div.ds-main { color:var(--reader-ink, #25232d); } .ds-sample-statement [data-ds-reasbook-statement] { margin:0 0 2rem; padding:1.5rem 0 0; border-top:1px solid var(--reader-rule, #ddd9e3); scroll-margin-top:1.5rem; } .ds-sample-statement [data-ds-reasbook-statement]:target { border-top-color:var(--reader-link, #514077); } .ds-sample-statement [data-ds-reasbook-statement]:target .ds-reader-statement-title { color:var(--reader-link, #514077); text-decoration:underline; text-underline-offset:0.25em; } .ds-sample-statement .ds-reader-statement-header { display:flex; align-items:baseline; justify-content:space-between; flex-wrap:wrap; gap:0.25rem 1rem; } .ds-sample-statement div.ds-main p { max-width:72ch; font:1.125rem/1.75 var(--reader-serif, Georgia, \"Times New Roman\", \"DejaVu Serif\", serif); overflow-wrap:anywhere; } .ds-sample-statement div.ds-main .ds-reader-statement-title p { font:600 1.1875rem/1.5 var(--reader-serif, Georgia, \"Times New Roman\", \"DejaVu Serif\", serif); margin:0; } .ds-sample-statement div.ds-main .ds-reader-statement-links p { font:0.75rem/1.75 var(--reader-sans, system-ui, \"Segoe UI\", \"DejaVu Sans\", sans-serif); color:var(--reader-muted, #68636f); margin:0; } .ds-sample-statement .ds-reader-statement-links a { display:inline-block; padding-block:0.25rem; } .ds-sample-statement a { color:var(--reader-link, #514077); text-underline-offset:0.2em; } .ds-sample-statement a:hover { color:var(--reader-link-hover, #362650); } .ds-sample-statement a:focus-visible { outline:2px solid var(--reader-link, #514077); outline-offset:3px; } .ds-sample-statement [data-ds-reasbook-statement] > p { margin:0.875rem 0; } .ds-sample-statement [data-ds-reasbook-statement] > :last-child { margin-bottom:0; } .ds-sample-statement div.ds-main code { font-family:var(--reader-mono, \"SFMono-Regular\", Consolas, \"Liberation Mono\", \"DejaVu Sans Mono\", monospace); } .ds-sample-statement div.ds-main p code { font-size:0.85em; } @media(max-width:1000px) { .ds-sample-statement [data-ds-reasbook-statement] { scroll-margin-top:4.5rem; } .ds-sample-statement .ds-reader-statement-links a { min-height:44px; padding-block:0.75rem; } } @media(max-width:640px) { .ds-sample-statement .ds-reader-statement-header { display:block; } }"
+    },
+    {
+      "name": "Lean excerpt",
+      "kind": "custom",
+      "refersTo": "lean-excerpt",
+      "description": "Keyboard-focusable monospace source region with internal horizontal scrolling.",
+      "html": "<div class=\"ds-sample-lean-excerpt\"><div class=\"ds-main\"><pre tabindex=\"0\" role=\"region\" aria-label=\"Lean statement excerpt\" translate=\"no\"><code>#check AddCommGroup E</code></pre></div></div>",
+      "css": ".ds-sample-lean-excerpt div.ds-main code, .ds-sample-lean-excerpt div.ds-main code span, .ds-sample-lean-excerpt div.ds-main pre { font-family:var(--reader-mono, \"SFMono-Regular\", Consolas, \"Liberation Mono\", \"DejaVu Sans Mono\", monospace); } .ds-sample-lean-excerpt div.ds-main pre { max-width:100%; padding:1rem; background:var(--reader-code, #f7f6f9); color:var(--reader-ink, #25232d); border-radius:var(--reader-radius, 4px); overflow-x:auto; font-size:0.875rem; line-height:1.65; tab-size:2; } .ds-sample-lean-excerpt div.ds-main pre code, .ds-sample-lean-excerpt div.ds-main pre code span { font-size:inherit; } .ds-sample-lean-excerpt pre:focus-visible { outline:2px solid var(--reader-link, #514077); outline-offset:3px; } @media(max-width:640px) { .ds-sample-lean-excerpt div.ds-main pre { padding:0.875rem; font-size:0.8125rem; } }"
+    },
+    {
+      "name": "Mobile contents toggle",
+      "kind": "button",
+      "refersTo": "contents-toggle",
+      "description": "Mobile control with synchronized label and aria-expanded; runtime behavior is supplied by the reader shell.",
+      "html": "<div class=\"ds-sample-contents-toggle\"><header class=\"ds-reader-navigation\"><button id=\"ds-contents-toggle-reader-nav-toggle\" type=\"button\" aria-controls=\"ds-contents-toggle-sidebar-nav-root\" aria-expanded=\"false\">Show contents</button><nav id=\"ds-contents-toggle-sidebar-nav-root\" hidden aria-label=\"Contents\"></nav></header></div>",
+      "css": ".ds-sample-contents-toggle .ds-reader-navigation { position:sticky; top:0; z-index:100; background:var(--reader-navigation, #f5f5f8); border-bottom:1px solid var(--reader-rule, #ddd9e3); } .ds-sample-contents-toggle #ds-contents-toggle-reader-nav-toggle { display:block; min-height:48px; padding:0.75rem max(1.25rem,env(safe-area-inset-left)); margin:0; border:0; background:transparent; color:var(--reader-link, #514077); font:600 0.9375rem/1.5 var(--reader-sans, system-ui, \"Segoe UI\", \"DejaVu Sans\", sans-serif); cursor:pointer; } .ds-sample-contents-toggle #ds-contents-toggle-reader-nav-toggle:hover { background:var(--reader-hover, #efedf4); } .ds-sample-contents-toggle button:focus-visible { outline:2px solid var(--reader-link, #514077); outline-offset:3px; }"
+    },
+    {
+      "name": "Project catalog row",
+      "kind": "custom",
+      "refersTo": "catalog-link",
+      "description": "Source-ordered project links divided by fine rules, with no JavaScript dependency.",
+      "html": "<div class=\"ds-sample-catalog-link\"><ul class=\"ds-catalog-list\"><li><a href=\"#ds-catalog-link-project\">First-Order Methods in Optimization</a></li></ul></div>",
+      "css": ".ds-sample-catalog-link .ds-catalog-list { list-style:none; padding:0; margin-top:2rem; } .ds-sample-catalog-link .ds-catalog-list li { border-top:1px solid var(--reader-rule, #ddd9e3); } .ds-sample-catalog-link .ds-catalog-list a { display:block; padding:1rem .5rem; font:1.25rem/1.5 var(--reader-serif, Georgia, \"Times New Roman\", \"DejaVu Serif\", serif); text-decoration:none; color:var(--reader-link, #514077); text-underline-offset:.2em; overflow-wrap:anywhere; } .ds-sample-catalog-link .ds-catalog-list a:hover { background:var(--reader-navigation, #f5f5f8); text-decoration:underline; } .ds-sample-catalog-link a:focus-visible { outline:2px solid var(--reader-link, #514077); outline-offset:3px; }"
+    },
+    {
+      "name": "Scope note",
+      "kind": "custom",
+      "refersTo": "scope-note",
+      "description": "Quiet, factual explanation of excerpt coverage, separate from local preview tooling.",
+      "html": "<div class=\"ds-sample-scope-note\"><div class=\"ds-main\"><div class=\"ds-reader-scope-note\"><p>Proofs omitted. A <code>#check</code> excerpt shows the checked expression, not its inferred type.</p></div></div></div>",
+      "css": ".ds-sample-scope-note .ds-reader-scope-note { margin:-0.75rem 0 2rem; } .ds-sample-scope-note div.ds-main .ds-reader-scope-note p { font:0.8125rem/1.6 var(--reader-sans, system-ui, \"Segoe UI\", \"DejaVu Sans\", sans-serif); color:var(--reader-muted, #68636f); max-width:80ch; overflow-wrap:anywhere; } .ds-sample-scope-note div.ds-main code { font-family:var(--reader-mono, \"SFMono-Regular\", Consolas, \"Liberation Mono\", \"DejaVu Sans Mono\", monospace); } .ds-sample-scope-note div.ds-main p code { font-size:0.85em; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Mathematical Reference Handbook",
+    "overview": "ReasBook presents formalized books and papers as a calm, addressable mathematical\nreference. Original chapter structure and statement numbering establish the\nhierarchy. White paper, a pale navigation rail, and restrained violet links\nsupport sustained reading and movement between the literature and Lean.\n\nThis system covers the static reader generated by `ReasBookWeb` and the shared\nproject catalog. Its source of truth is `ReasBookWeb/static_files/style.css`,\nthe shell in `ReasBookWeb/ReasBookSite.lean`, the reader markup in\n`ReasBookWeb/scripts/gen_sections.py`, and the catalog renderer in\n`sdk/common/src/reasbook_sdk_common/catalog.py`. It does not replace the separate\nreview application's design system or the native documentation generator's\nmathematical-content styling. The surface contract owns page strategy;\n`PRODUCT.md` owns product commitments.",
+    "keyCharacteristics": [
+      "Serif mathematical reading, sans navigation, and monospace Lean.",
+      "Continuous numbered statements separated by fine rules.",
+      "Compact chapter directories and direct resource links.",
+      "Flat, bounded reading surfaces with visible keyboard and location states."
+    ],
+    "rules": [
+      {
+        "name": "The Location Is Visible Rule",
+        "body": "Active navigation combines a tinted fill,\nviolet text, heavier weight, underline, and `aria-current`. A statement target\nuses a violet rule and underlined title. Location must remain identifiable\nwithout relying on color alone.",
+        "section": "colors"
+      },
+      {
+        "name": "The Three Reading Roles Rule",
+        "body": "Preserve the serif/sans/monospace distinction:\nmathematical reading, navigation, and formal source each have a recognizable\nvoice. Actual typeface selection follows the platform's available fonts.",
+        "section": "typography"
+      }
+    ],
+    "dos": [
+      "**Do** preserve original numbering, attribution, direct statement anchors,\n  and the distinction between prose and formal source.",
+      "**Do** use the measured reading widths and responsive contents behavior.",
+      "**Do** keep keyboard focus visible and current location identifiable by\n  more than color; preserve the skip-to-content link.",
+      "**Do** use real source/documentation destinations and truthful availability.",
+      "**Do** treat system font stacks as fallbacks and verify mathematical glyphs\n  and Lean monospace rendering on the target platform."
+    ],
+    "donts": [
+      "**Don't** replace continuous mathematical text with promotional cards,\n  decorative imagery, or shadow-based hierarchy on this reading surface.",
+      "**Don't** turn the compact book home into a duplicate inventory of statements\n  or add chapter counts to its labels.",
+      "**Don't** remove code overflow, stable fragments, or no-JavaScript access to\n  contents in pursuit of a cleaner screenshot.",
+      "**Don't** extend these rules into the separate review application or claim\n  that this record changes native documentation-generator styling.",
+      "**Don't** promote local-preview banners, fixture text, or release-validation\n  claims into the reusable system. No shipping raster assets are used;\n  raster provenance is not applicable."
+    ]
+  }
+}

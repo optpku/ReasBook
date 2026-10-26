@@ -19,6 +19,104 @@ open Output Html Template Theme
 def siteRoot : String := ReasBookSite.Sections.siteRoot
 def siteRootScript : String := s!"window.__versoSiteRoot=\"{siteRoot}\""
 def sidebarDataScript : String := s!"window.__reasbookSidebarData={ReasBookSite.Sections.sidebarDataJson};"
+def sidebarItemStateScript : String := r##"
+(function () {
+  function pathKey(path) {
+    return path.replace(/index\.html$/i, "").replace(/\/+$/, "");
+  }
+  function fragment(hash) {
+    try { return decodeURIComponent(hash); } catch (_) { return hash; }
+  }
+  // Shared by the full sidebar and its fallback. Update in place so a hash
+  // change does not reset the reader's expanded chapters or scroll position.
+  window.__reasbookSyncChapterItems = function () {
+    const nav = document.getElementById("sidebar-nav-root");
+    if (!nav) return;
+    const hash = fragment(window.location.hash);
+    for (const a of nav.querySelectorAll("a[data-chapter-target]")) {
+      const targetHash = fragment(a.hash);
+      const matchesHash = hash === targetHash || (targetHash && hash.startsWith(targetHash + "-clause-"));
+      const active = pathKey(a.pathname) === pathKey(window.location.pathname) && !!matchesHash;
+      a.classList.toggle("is-current", active);
+      if (active) {
+        a.setAttribute("aria-current", targetHash ? "location" : "page");
+        for (let parent = a.parentElement; parent && parent !== nav; parent = parent.parentElement) {
+          if (parent.tagName === "DETAILS") parent.open = true;
+        }
+      } else {
+        a.removeAttribute("aria-current");
+      }
+    }
+    const current = nav.querySelector("a.is-current");
+    const work = nav.querySelector(".nav-work-title");
+    const heading = document.querySelector(".main h1");
+    if (work && heading && /^Chapter\s+\d/.test(heading.textContent.trim())) {
+      document.title = work.textContent.trim() + " — " + heading.textContent.trim() + " — ReasBook";
+    }
+    if (current && nav.clientHeight > 0 && nav.scrollHeight > nav.clientHeight) {
+      const box = current.getBoundingClientRect();
+      const bounds = nav.getBoundingClientRect();
+      if (box.top < bounds.top || box.bottom > bounds.bottom) {
+        // Scroll only the navigation panel, never move the statement out of
+        // view (notably on mobile and when following a deep fragment link).
+        nav.scrollTop += box.top - bounds.top - nav.clientHeight / 2 + box.height / 2;
+      }
+    }
+  };
+  window.addEventListener("hashchange", window.__reasbookSyncChapterItems);
+
+  function setupContentsToggle() {
+    const skip = document.querySelector(".reader-skip-link");
+    // Keep this fragment on the current page despite the project-level base.
+    if (skip) skip.href = window.location.pathname + window.location.search + "#main-content";
+    for (const pre of document.querySelectorAll(".main pre")) {
+      pre.tabIndex = 0;
+      pre.setAttribute("role", "region");
+      pre.setAttribute("aria-label", "Lean statement excerpt");
+      pre.setAttribute("translate", "no");
+    }
+    const nav = document.getElementById("sidebar-nav-root");
+    if (!nav) return;
+    const mobile = window.matchMedia("(max-width: 1000px)");
+    const button = document.createElement("button");
+    button.id = "reader-nav-toggle";
+    button.type = "button";
+    button.setAttribute("aria-controls", nav.id);
+    nav.before(button);
+    nav.classList.add("has-toggle");
+    const header = nav.closest("header");
+    if (header) header.classList.add("reader-navigation");
+    function setOpen(open) {
+      const expanded = mobile.matches && open;
+      nav.classList.toggle("is-open", expanded);
+      button.setAttribute("aria-expanded", String(expanded));
+      button.textContent = expanded ? "Hide contents" : "Show contents";
+      if (expanded || !mobile.matches) window.__reasbookSyncChapterItems();
+    }
+    function closeContents() {
+      if (!mobile.matches) return;
+      if (nav.contains(document.activeElement)) button.focus({ preventScroll: true });
+      setOpen(false);
+    }
+    button.addEventListener("click", () => setOpen(button.getAttribute("aria-expanded") !== "true"));
+    nav.addEventListener("click", (event) => {
+      if (event.button === 0 && !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey
+          && event.target.closest("a[href]")) closeContents();
+    });
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && nav.classList.contains("is-open")) {
+        closeContents();
+        button.focus({ preventScroll: true });
+      }
+    });
+    window.addEventListener("hashchange", closeContents);
+    mobile.addEventListener("change", () => setOpen(false));
+    setOpen(false);
+  }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", setupContentsToggle);
+  else setupContentsToggle();
+})();
+"##
 def sidebarFallbackScript : String := r##"
 (function () {
   const siteRoot = (typeof window !== "undefined" && typeof window.__versoSiteRoot === "string" && window.__versoSiteRoot)
@@ -139,6 +237,13 @@ def sidebarFallbackScript : String := r##"
       const work = (navData.papers || []).find((w) => String(w.slug || "").toLowerCase() === slug) || null;
       return { kind: "paper", work: work, route: route };
     }
+    // A project fragment renders its own home at / as well as the named route.
+    // Do not turn that landing page back into an all-projects navigation tree.
+    if (!rel && document.querySelector(".reader-home-links")) {
+      const works = (navData.books || []).map(work => ({kind: "book", work}))
+        .concat((navData.papers || []).map(work => ({kind: "paper", work})));
+      if (works.length === 1) return {...works[0], route: works[0].work.home};
+    }
     return { kind: "", work: null, route: route };
   }
 
@@ -146,7 +251,8 @@ def sidebarFallbackScript : String := r##"
     return String(s || "")
       .replace(/&/g, "&amp;")
       .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;");
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
   }
 
   function itemHtml(href, label) {
@@ -158,22 +264,38 @@ def sidebarFallbackScript : String := r##"
     const route = current.route;
     if (!work) return "";
 
-    let html = "<li><details open><summary>" + escapeHtml(work.title || "") + "</summary><ul>";
+    let html = '<li class="nav-current-work">';
     if (work.home) {
       const href = siteRoot + trimSlashes(work.home) + "/";
-      html += sameRoute(work.home, route)
-        ? '<li><a class="is-current" href="' + href + '">Home</a></li>'
-        : itemHtml(href, "Home");
+      html += '<a class="nav-work-title' + (sameRoute(work.home, route) ? ' is-current' : '')
+        + '" title="' + (current.kind === "book" ? "Book home" : "Paper home") + '"'
+        + (sameRoute(work.home, route) ? ' aria-current="page"' : '')
+        + ' href="' + escapeHtml(href) + '">' + escapeHtml(work.title) + '</a>';
+    } else {
+      html += '<div class="nav-work-title">' + escapeHtml(work.title) + '</div>';
     }
+    html += '<ul class="nav-work-tree">';
 
     if (current.kind === "book" && Array.isArray(work.chapters) && work.chapters.length > 0) {
       for (const chapter of work.chapters) {
-        html += "<li><details open><summary>" + escapeHtml(chapter.title || "") + "</summary><ul>";
+        html += '<li><details class="nav-chapter"' + (sameRoute(chapter.route, route) ? " open" : "")
+          + "><summary>" + escapeHtml(chapter.title || "")
+          + '</summary><ul class="nav-section-list">';
         if (chapter.route) {
           const href = siteRoot + trimSlashes(chapter.route) + "/";
-          html += sameRoute(chapter.route, route)
-            ? '<li><a class="is-current" href="' + href + '">Overview</a></li>'
-            : itemHtml(href, "Overview");
+          html += '<li><a data-chapter-target="true" href="' + escapeHtml(href) + '">Overview</a></li>';
+        }
+        for (const item of (chapter.items || [])) {
+          html += '<li class="nav-file-item">';
+          if (item.anchor) {
+            const href = siteRoot + trimSlashes(chapter.route) + "/#" + encodeURIComponent(item.anchor);
+            html += '<a data-chapter-target="true" href="' + escapeHtml(href) + '" title="'
+              + escapeHtml(item.source || item.module) + '">' + escapeHtml(item.title) + '</a>';
+          } else {
+            html += '<span aria-disabled="true" title="' + escapeHtml(item.source || item.module) + '">'
+              + escapeHtml(item.title) + ' — no statement yet</span>';
+          }
+          html += '</li>';
         }
         for (const section of (chapter.sections || [])) {
           if (section.route) {
@@ -201,7 +323,7 @@ def sidebarFallbackScript : String := r##"
       }
     }
 
-    html += "</ul></details></li>";
+    html += "</ul></li>";
     return html;
   }
 
@@ -209,8 +331,10 @@ def sidebarFallbackScript : String := r##"
     const navData = window.__reasbookSidebarData || { books: [], papers: [] };
     const current = findCurrentWork(navData);
     let html = "<ol>";
-    html += itemHtml(siteRoot, "Home");
-    html += itemHtml(siteRoot + "docs/", "Documentation");
+    if (!current.work) {
+      html += itemHtml(siteRoot, "Home");
+      html += itemHtml(siteRoot + "docs/", "Documentation");
+    }
 
     if (current.work) {
       html += renderCurrentWork(current);
@@ -233,6 +357,7 @@ def sidebarFallbackScript : String := r##"
     if (!navRoot) return;
     if (navRoot.children && navRoot.children.length > 0) return;
     navRoot.innerHTML = fallbackHtml();
+    window.__reasbookSyncChapterItems();
   }
 
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", ensureSidebarFallback);
@@ -363,6 +488,11 @@ def navLinkRewriteScript : String := r##"
     if (parts.length >= 3 && p0 === "docs" && p1 === "papers") {
       return { kind: "paper", work: findWork(navData.papers, parts[2]), route: currentRoute };
     }
+    if (!rel && document.querySelector(".reader-home-links")) {
+      const works = (navData.books || []).map(work => ({kind: "book", work}))
+        .concat((navData.papers || []).map(work => ({kind: "paper", work})));
+      if (works.length === 1) return {...works[0], route: works[0].work.home};
+    }
     return { kind: "", work: null, route: currentRoute };
   }
 
@@ -388,20 +518,16 @@ def navLinkRewriteScript : String := r##"
     const a = document.createElement("a");
     a.href = href;
     a.textContent = label;
-    if (isCurrent) a.classList.add("is-current");
+    if (isCurrent) {
+      a.classList.add("is-current");
+      a.setAttribute("aria-current", "page");
+    }
     return a;
   }
 
   function mkItem(href, label, isCurrent) {
     const li = document.createElement("li");
     li.appendChild(mkAnchor(href, label, isCurrent));
-    return li;
-  }
-
-  function mkLabel(text) {
-    const li = document.createElement("li");
-    li.classList.add("nav-group-label");
-    li.textContent = text;
     return li;
   }
 
@@ -504,7 +630,25 @@ def navLinkRewriteScript : String := r##"
     const sectionList = document.createElement("ul");
     sectionList.classList.add("nav-section-list");
     if (chapter.route) {
-      sectionList.appendChild(mkItem(routeHref(chapter.route), "Overview", sameRoute(chapter.route, currentRoute)));
+      const overview = mkItem(routeHref(chapter.route), "Overview", false);
+      overview.firstChild.setAttribute("data-chapter-target", "true");
+      sectionList.appendChild(overview);
+    }
+    for (const item of (chapter.items || [])) {
+      const node = document.createElement("li");
+      node.classList.add("nav-file-item");
+      let label;
+      if (item.anchor) {
+        label = mkAnchor(routeHref(chapter.route) + "#" + encodeURIComponent(item.anchor), item.title, false);
+        label.setAttribute("data-chapter-target", "true");
+      } else {
+        label = document.createElement("span");
+        label.textContent = item.title + " — no statement yet";
+        label.setAttribute("aria-disabled", "true");
+      }
+      label.title = item.source || item.module || "";
+      node.appendChild(label);
+      sectionList.appendChild(node);
     }
     for (const section of (chapter.sections || [])) {
       sectionList.appendChild(mkSectionNode(section, currentRoute, chapter.number));
@@ -515,22 +659,23 @@ def navLinkRewriteScript : String := r##"
     return li;
   }
 
-  function mkBookTree(work, currentRoute) {
+  function mkWorkHeader(work, currentRoute, label) {
     const li = document.createElement("li");
     li.classList.add("nav-current-work");
-    const details = document.createElement("details");
-    details.classList.add("nav-work");
-    details.open = true;
+    const title = work.home
+      ? mkAnchor(routeHref(work.home), work.title || label, sameRoute(work.home, currentRoute))
+      : document.createElement("div");
+    if (!work.home) title.textContent = work.title || label;
+    title.classList.add("nav-work-title");
+    title.title = label;
+    li.appendChild(title);
+    return li;
+  }
 
-    const summary = document.createElement("summary");
-    summary.textContent = work.title || "";
-    details.appendChild(summary);
-
+  function mkBookTree(work, currentRoute) {
+    const li = mkWorkHeader(work, currentRoute, "Book home");
     const tree = document.createElement("ul");
     tree.classList.add("nav-work-tree");
-    if (work.home) {
-      tree.appendChild(mkItem(routeHref(work.home), "Home", sameRoute(work.home, currentRoute)));
-    }
 
     const chapters = Array.isArray(work.chapters) ? work.chapters : [];
     if (chapters.length > 0) {
@@ -544,34 +689,20 @@ def navLinkRewriteScript : String := r##"
       }
     }
 
-    details.appendChild(tree);
-    li.appendChild(details);
+    li.appendChild(tree);
     return li;
   }
 
   function mkPaperTree(work, currentRoute) {
-    const li = document.createElement("li");
-    li.classList.add("nav-current-work");
-    const details = document.createElement("details");
-    details.classList.add("nav-work");
-    details.open = true;
-
-    const summary = document.createElement("summary");
-    summary.textContent = work.title || "";
-    details.appendChild(summary);
-
+    const li = mkWorkHeader(work, currentRoute, "Paper home");
     const sectionList = document.createElement("ul");
     sectionList.classList.add("nav-work-tree");
-    if (work.home) {
-      sectionList.appendChild(mkItem(routeHref(work.home), "Home", sameRoute(work.home, currentRoute)));
-    }
     for (const section of (work.sections || [])) {
       if (!section.route) continue;
       sectionList.appendChild(mkSectionNode(section, currentRoute, 0));
     }
 
-    details.appendChild(sectionList);
-    li.appendChild(details);
+    li.appendChild(sectionList);
     return li;
   }
 
@@ -670,16 +801,15 @@ def navLinkRewriteScript : String := r##"
       const list = document.createElement("ol");
       list.classList.add("nav-tree-root");
       try {
-        list.appendChild(mkItem(siteRoot, "Home", sameRoute("", current.route)));
-        list.appendChild(mkItem(siteRoot + "docs/", "Documentation", false));
         if (current.work) {
-          list.appendChild(mkLabel(current.kind === "book" ? "Current Book" : "Current Paper"));
           if (current.kind === "book") {
             list.appendChild(mkBookTree(current.work, current.route));
           } else if (current.kind === "paper") {
             list.appendChild(mkPaperTree(current.work, current.route));
           }
         } else {
+          list.appendChild(mkItem(siteRoot, "Home", sameRoute("", current.route)));
+          list.appendChild(mkItem(siteRoot + "docs/", "Documentation", false));
           list.appendChild(mkSectionGroup("Books", navData.books || [], true));
           list.appendChild(mkSectionGroup("Papers", navData.papers || [], true));
         }
@@ -689,10 +819,7 @@ def navLinkRewriteScript : String := r##"
       }
       navRoot.innerHTML = "";
       navRoot.appendChild(list);
-      const currentNode = navRoot.querySelector("a.is-current");
-      if (currentNode && currentNode.scrollIntoView) {
-        currentNode.scrollIntoView({ block: "center", inline: "nearest" });
-      }
+      window.__reasbookSyncChapterItems();
     }
 
     renderSidebarNav();
@@ -707,26 +834,31 @@ def navLinkRewriteScript : String := r##"
 
 def theme : Theme := { Theme.default with
   primaryTemplate := do
+    let pagePath := String.intercalate "/" (← currentPath).toList
+    let skipTarget := siteRoot ++ pagePath ++ (if pagePath.isEmpty || pagePath.endsWith "/" then "" else "/") ++ "#main-content"
     return {{
-      <html>
+      <html lang="en">
         <head>
           <meta charset="UTF-8"/>
+          <meta name="theme-color" content="#ffffff"/>
           <base href={{siteRoot}}/>
           <title>{{ (← param (α := String) "title") }} " -- ReasBook "</title>
           <link rel="stylesheet" href={{staticRoot}}/>
           <script>{{Html.text false siteRootScript}}</script>
           <script>{{Html.text false sidebarDataScript}}</script>
+          <script>{{Html.text false sidebarItemStateScript}}</script>
           <script>{{Html.text false navLinkRewriteScript}}</script>
           <script>{{Html.text false sidebarFallbackScript}}</script>
           {{← builtinHeader }}
         </head>
         <body>
+          <a class="reader-skip-link" href={{skipTarget}}>"Skip to content"</a>
           <header>
             <div class="inner-wrap">
-              <nav class="top" role="navigation" id="sidebar-nav-root"></nav>
+              <nav class="top" role="navigation" aria-label="Reading contents" id="sidebar-nav-root"></nav>
             </div>
           </header>
-          <div class="main" role="main">
+          <div class="main" role="main" id="main-content" tabindex="-1">
             <div class="wrap">
               {{ (← param "content") }}
             </div>

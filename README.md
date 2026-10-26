@@ -35,6 +35,14 @@ tables below to open its reading entry directly; the source-directory links are
 for browsing Lean files.
 Generated reading pages use project → chapter → statement anchors; chapter pages
 show source statement excerpts with proofs omitted, and mark unfinished items explicitly.
+Book home pages use a compact chapter directory, without counts or repeated items.
+Catalogs, homes, and chapters share a mathematical-reference reading style:
+clear numbered statements, restrained navigation, and secondary source/documentation links.
+The book title in the sidebar returns home; Documentation on the home page opens
+that project's documentation directly, without the all-projects directory.
+The Verso sidebar expands each chapter into one entry per reading file, linking
+directly to its statement excerpt; unfinished items are labeled without an empty-page link.
+On mobile, use **Show contents** to open the navigation; selecting an item returns to the text.
 Numbered previews prioritize the matching statement heading; definition fields and
 inductive constructors remain visible. Documentation contents follow item-number order.
 
@@ -218,6 +226,10 @@ metadata, validation, and pull-request rules.
 - Book and paper code lives on the registered version branch matching its Lean/mathlib toolchain; only registered stable `vX.Y.Z` versions are accepted.
 - **Book and paper code is not merged to `main`.** `main` remains the cross-version catalog, while its link folders point to the corresponding version branches.
 - PR base, PR title version, `ReasBook/lean-toolchain`, and book metadata (when applicable) must all match.
+- Every published Lean file must retain verified code-author headers. The
+  `author-headers` check is required on `main` and the protected version branches.
+  Reader changes also run Chromium navigation and responsive-layout checks;
+  these do not replace native Lean/Verso builds and full release acceptance.
 
 ## Lean Projects
 
