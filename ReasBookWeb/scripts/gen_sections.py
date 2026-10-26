@@ -1698,6 +1698,91 @@ def emit_literate_manifest(entries: list[Entry]) -> str:
     )
 
 
+def emit_literate_source_map(entries: list[Entry], source_root: Path) -> str:
+    """Bind logical literate names to their actual, possibly nested srcDir files."""
+    projects: dict[tuple[str, str], dict[str, Path]] = {}
+    result: dict[str, str] = {}
+    for entry in entries:
+        key = (entry.category, entry.book_or_paper)
+        if key not in projects:
+            directory = source_root / entry.category.title() / entry.book_or_paper
+            paths = sorted(directory.rglob("*.lean"))
+            facade = directory.with_suffix(".lean")
+            if facade.is_file():
+                paths.append(facade)
+            sources: dict[str, Path] = {}
+            for path in paths:
+                module = to_module(source_root, path)
+                if module in sources and sources[module] != path:
+                    raise ValueError(f"ambiguous literate source for {module}")
+                sources[module] = path
+            projects[key] = sources
+        path = projects[key].get(entry.module)
+        if path is None or not path.is_file():
+            raise ValueError(f"missing literate source for {entry.module}")
+        relative = path.resolve().relative_to(source_root.resolve()).as_posix()
+        if entry.module in result:
+            raise ValueError(f"duplicate literate module: {entry.module}")
+        result[entry.module] = relative
+    return json.dumps(result, ensure_ascii=True, sort_keys=True, indent=2) + "\n"
+
+
+def update_literate_source_lookup(web_root: Path) -> None:
+    """Adapt only known archived Web Lakefile layouts, preserving branch tooling.
+
+    Mathematical Lakefiles and logical JSON paths are never changed. This
+    generated compatibility block is applied in the isolated build checkout.
+    """
+    lakefile = web_root / "lakefile.lean"
+    if not lakefile.exists():
+        return  # Source-only generation fixtures need not contain a Web project.
+    text = lakefile.read_text(encoding="utf-8")
+    source_lookup = '''    -- ReasBook generated source lookup: begin
+    let origName ← match sourcePaths.getObjValAs? String module.toString with
+      | .ok path => pure path
+      | .error err => error s!"Missing source path for {module}: {err}"
+    let origLeanFile : System.FilePath := pkg.dir / reasbookRoot / origName
+    addTrace (← computeTrace <| TextFilePath.mk sourcePathsFile)
+    addTrace (← computeTrace <| TextFilePath.mk origLeanFile)
+    -- ReasBook generated source lookup: end
+'''
+    source_loader = '''  -- ReasBook generated source map: begin
+  let sourcePathsFile := pkg.dir / ".literate-sources.json"
+  let sourcePathsText ← liftM (m := LogIO) <| IO.FS.readFile sourcePathsFile
+  let sourcePaths ← match Lean.Json.parse sourcePathsText with
+    | .ok paths => pure paths
+    | .error err => error s!"Invalid literate source map: {err}"
+  -- ReasBook generated source map: end
+'''
+    if text.count(source_lookup) == 1 and text.count(source_loader) == 1:
+        return
+    if "ReasBook generated source" in text:
+        raise ValueError("unrecognized generated literate source lookup; refusing to replace it")
+    prefix = '    let origName := "/".intercalate (module.components.map (·.toString)) ++ ".lean"\n'
+    trace = "    addTrace (← computeTrace <| TextFilePath.mk origLeanFile)\n"
+    direct = "    let origLeanFile : System.FilePath := pkg.dir / reasbookRoot / origName\n"
+    known = (
+        prefix + direct + trace,
+        prefix + '    let papersPath := pkg.dir / reasbookRoot / "Papers" / origName\n'
+        + '    let booksPath := pkg.dir / reasbookRoot / "Books" / origName\n'
+        + '    let origLeanFile ← if (← papersPath.pathExists) then pure papersPath else pure booksPath\n'
+        + trace,
+        prefix + direct
+        + '    -- Explicit project roots can place a module below `Papers/<project>` or\n'
+        + '    -- `Books/<project>`, so its logical module path need not be a source path\n'
+        + '    -- relative to `ReasBook`.  The literate JSON is the authoritative input;\n'
+        + '    -- retain the source trace when the legacy flat path exists.\n'
+        + '    if ← origLeanFile.pathExists then\n  ' + trace,
+    )
+    matches = [block for block in known if block in text]
+    load_sections = "  let sections ← liftM (m := LogIO) <| loadSections pkg\n"
+    if len(matches) != 1 or text.count(matches[0]) != 1 or text.count(load_sections) != 1:
+        raise ValueError("unrecognized Web Lakefile source lookup; refusing to rewrite it")
+    text = text.replace(matches[0], source_lookup)
+    text = text.replace(load_sections, load_sections + source_loader)
+    write_text_if_changed(lakefile, text)
+
+
 def emit_sections(
     entries: list[Entry], reader_chapters: Iterable[ReaderChapter] = (),
     *, source_root: Path,
@@ -3447,6 +3532,12 @@ def main() -> None:
         emit_literate_manifest(entries),
         log=False,
     )
+    write_text_if_changed(
+        web_root / ".literate-sources.json",
+        emit_literate_source_map(entries, source_root),
+        log=False,
+    )
+    update_literate_source_lookup(web_root)
     if PROJECT_FRAGMENT:
         write_text_if_changed(
             fragment_manifest,
