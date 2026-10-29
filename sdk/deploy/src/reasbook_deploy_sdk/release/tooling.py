@@ -18,6 +18,7 @@ TOOLING_SNAPSHOT_ENTRIES = (
     Path("scripts/pages"),
     Path("ReasBookWeb/scripts"),
     Path("ReasBookWeb/ReasBookSite.lean"),
+    Path("ReasBookWeb/ReasBookSite/LiterateModule.lean"),
     Path("ReasBookWeb/static_files/style.css"),
 )
 TOOLING_DIGEST_SUFFIX = "+tooling-sha256:"
