@@ -885,7 +885,12 @@ class ReleasePlanningTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
             for relative in TOOLING_SNAPSHOT_ENTRIES:
-                (root / relative).mkdir(parents=True, exist_ok=True)
+                target = root / relative
+                if relative.suffix in {".lean", ".css"}:
+                    target.parent.mkdir(parents=True, exist_ok=True)
+                    target.write_text("reader shell\n")
+                else:
+                    target.mkdir(parents=True, exist_ok=True)
             parser = root / parser_path
             parser.write_text("# Parser revision one\n", encoding="utf-8")
             before = tooling_source_digest(root)
@@ -897,6 +902,10 @@ class ReleasePlanningTests(unittest.TestCase):
             root = Path(temp) / "repo"
             for sequence, relative in enumerate(TOOLING_SNAPSHOT_ENTRIES):
                 directory = root / relative
+                if relative.suffix in {".lean", ".css"}:
+                    directory.parent.mkdir(parents=True, exist_ok=True)
+                    directory.write_text(f"shell {sequence}\n", encoding="utf-8")
+                    continue
                 directory.mkdir(parents=True, exist_ok=True)
                 (directory / f"source-{sequence}.txt").write_text(
                     f"source {sequence}\n", encoding="utf-8"
@@ -933,6 +942,27 @@ class ReleasePlanningTests(unittest.TestCase):
             self.assertTrue((copied / capability_source.relative_to(root)).is_file())
             for path in generated:
                 self.assertFalse((copied / path.relative_to(root)).exists())
+
+    def test_tooling_identity_binds_reader_shell_and_rejects_links(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            for relative in TOOLING_SNAPSHOT_ENTRIES:
+                target = root / relative
+                if relative.suffix in {".lean", ".css"}:
+                    target.parent.mkdir(parents=True, exist_ok=True)
+                    target.write_text("version one\n")
+                else:
+                    target.mkdir(parents=True, exist_ok=True)
+            for relative in ("ReasBookWeb/ReasBookSite.lean", "ReasBookWeb/static_files/style.css"):
+                target = root / relative
+                before = tooling_source_digest(root)
+                target.write_text("version two\n")
+                self.assertNotEqual(before, tooling_source_digest(root))
+            shell = root / "ReasBookWeb/ReasBookSite.lean"
+            shell.unlink()
+            shell.symlink_to(root / "ReasBookWeb/static_files/style.css")
+            with self.assertRaisesRegex(DeployExecutionError, "invalid"):
+                tooling_source_digest(root)
 
     def test_duplicate_project_without_canonical_is_rejected(self) -> None:
         with tempfile.TemporaryDirectory() as temp:
