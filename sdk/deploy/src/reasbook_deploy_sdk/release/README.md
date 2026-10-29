@@ -73,6 +73,13 @@ remote build service. The aggregate result is copied into the release's `site/`
 directory and marked validated. GitHub Actions never receives Lean caches or
 build credentials.
 
+The tooling snapshot also binds the shared `ReasBookSite.lean` reader shell and
+`static_files/style.css`. Before generating pages, the pinned generator copies
+these two UI files from that snapshot into the branch workspace. Mathematical
+source, Lake files, and version-specific Verso compatibility modules stay on
+their version-branch pins; a newer generator must not silently render inside
+an older branch's sidebar/theme.
+
 After `release status` reports a completed aggregate `site` stage, package and
 inspect both target artifacts. Branch-level Lean caches without that aggregate
 site are not sufficient:

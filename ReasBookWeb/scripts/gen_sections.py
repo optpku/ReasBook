@@ -3738,6 +3738,27 @@ def write_source_overviews(source_root: Path, entries: list[Entry]) -> None:
         upsert_overview_block(section_file, body)
 
 
+def sync_reader_shell(tooling_web_root: Path, web_root: Path) -> None:
+    """Install only the shared UI, preserving version-specific runtime files."""
+    relatives = (Path("ReasBookSite.lean"), Path("static_files/style.css"))
+    sources: list[tuple[Path, str]] = []
+    for relative in relatives:
+        source, target = tooling_web_root / relative, web_root / relative
+        for root, path in ((tooling_web_root, source), (web_root, target)):
+            current = path
+            while True:
+                if current.is_symlink():
+                    raise ValueError(f"reader shell path must not be a symlink: {current}")
+                if current == root:
+                    break
+                current = current.parent
+        if not source.is_file():
+            raise ValueError(f"reader shell is absent from tooling snapshot: {source}")
+        sources.append((target, source.read_text(encoding="utf-8")))
+    for target, text in sources:
+        write_text_if_changed(target, text, log=False, generated_lean_header=False)
+
+
 def main() -> None:
     args = parse_args()
     if args.repo_root is not None and args.repo_root_option is not None:
@@ -3771,6 +3792,11 @@ def main() -> None:
         fragment_project = validate_project_selection(source_root)
     except ValueError as exc:
         raise SystemExit(str(exc)) from exc
+
+    # Version branches own Lean/Verso compatibility and mathematical source;
+    # the immutable tooling snapshot owns the shared reader UI. Keep these
+    # two files aligned with the generator, including in remote finalizers.
+    sync_reader_shell(TOOLING_ROOT / "ReasBookWeb", web_root)
 
     if SKIP_MODULES:
         print(f"INFO: skipping {len(SKIP_MODULES)} module(s) from site generation")

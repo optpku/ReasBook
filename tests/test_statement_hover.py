@@ -14,6 +14,32 @@ from reasbook_build_sdk.statement_docs import statement_excerpts, statement_sour
 
 
 class StatementHoverTests(unittest.TestCase):
+    def test_remote_generator_syncs_snapshot_shell_without_replacing_version_runtime(self):
+        with tempfile.TemporaryDirectory() as directory:
+            tooling, target = Path(directory) / "tooling", Path(directory) / "version"
+            for root in (tooling, target):
+                (root / "static_files").mkdir(parents=True)
+                (root / "ReasBookSite.lean").write_text("old shell")
+                (root / "static_files/style.css").write_text("old styles")
+            header = "/- Authors: Verified UI Author -/\n"
+            (tooling / "ReasBookSite.lean").write_text(header + "new shell")
+            (tooling / "static_files/style.css").write_text("new styles")
+            compatibility = target / "LiterateModule.lean"
+            compatibility.write_text("version-pinned compatibility")
+            generator.sync_reader_shell(tooling, target)
+            self.assertEqual((target / "ReasBookSite.lean").read_text(), header + "new shell")
+            self.assertEqual((target / "static_files/style.css").read_text(), "new styles")
+            self.assertEqual(compatibility.read_text(), "version-pinned compatibility")
+            before = (target / "ReasBookSite.lean").stat().st_mtime_ns
+            generator.sync_reader_shell(tooling, target)
+            self.assertEqual((target / "ReasBookSite.lean").stat().st_mtime_ns, before)
+            (target / "static_files/style.css").unlink()
+            (target / "static_files/style.css").symlink_to(tooling / "static_files/style.css")
+            (tooling / "ReasBookSite.lean").write_text("must not copy before validation")
+            with self.assertRaisesRegex(ValueError, "symlink"):
+                generator.sync_reader_shell(tooling, target)
+            self.assertEqual((target / "ReasBookSite.lean").read_text(), header + "new shell")
+
     def test_source_links_follow_selected_heading_not_helper_or_context(self):
         source = ('/- 作者 -/\nnamespace Demo\nvariable (α : Type)\n'
                   '/-- Helper for Definition 1.1 -/\ndef helper := 0\n'

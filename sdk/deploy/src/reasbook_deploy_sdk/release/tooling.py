@@ -17,6 +17,8 @@ TOOLING_SNAPSHOT_ENTRIES = (
     Path("scripts/build"),
     Path("scripts/pages"),
     Path("ReasBookWeb/scripts"),
+    Path("ReasBookWeb/ReasBookSite.lean"),
+    Path("ReasBookWeb/static_files/style.css"),
 )
 TOOLING_DIGEST_SUFFIX = "+tooling-sha256:"
 _DIGEST_RE = re.compile(r"^[0-9a-f]{64}$")
@@ -113,8 +115,11 @@ def tooling_source_digest(repo_root: Path) -> str:
     files: list[Path] = []
     for relative in TOOLING_SNAPSHOT_ENTRIES:
         source = root / relative
-        if source.is_symlink() or not source.is_dir():
+        if source.is_symlink() or not (source.is_dir() or source.is_file()):
             raise DeployExecutionError(f"tooling snapshot source is invalid: {source}")
+        if source.is_file():
+            files.append(source)
+            continue
         for path in source.rglob("*"):
             relative_path = path.relative_to(root)
             if snapshot_ignored_relative(relative_path):
