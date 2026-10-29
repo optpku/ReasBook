@@ -943,7 +943,10 @@ class ReleasePlanningTests(unittest.TestCase):
             for path in generated:
                 self.assertFalse((copied / path.relative_to(root)).exists())
 
-    def test_tooling_identity_binds_reader_shell_and_rejects_links(self) -> None:
+    def test_tooling_identity_binds_reader_runtime_and_rejects_missing_or_linked_files(self) -> None:
+        runtime_path = Path("ReasBookWeb/ReasBookSite/LiterateModule.lean")
+        self.assertIn(runtime_path, TOOLING_SNAPSHOT_ENTRIES)
+        self.assertTrue((REPO_ROOT / runtime_path).is_file())
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
             for relative in TOOLING_SNAPSHOT_ENTRIES:
@@ -953,11 +956,24 @@ class ReleasePlanningTests(unittest.TestCase):
                     target.write_text("version one\n")
                 else:
                     target.mkdir(parents=True, exist_ok=True)
-            for relative in ("ReasBookWeb/ReasBookSite.lean", "ReasBookWeb/static_files/style.css"):
+            for relative in (
+                "ReasBookWeb/ReasBookSite.lean",
+                str(runtime_path),
+                "ReasBookWeb/static_files/style.css",
+            ):
                 target = root / relative
                 before = tooling_source_digest(root)
                 target.write_text("version two\n")
                 self.assertNotEqual(before, tooling_source_digest(root))
+            runtime = root / runtime_path
+            runtime.unlink()
+            with self.assertRaisesRegex(DeployExecutionError, "invalid"):
+                tooling_source_digest(root)
+            runtime.symlink_to(root / "ReasBookWeb/ReasBookSite.lean")
+            with self.assertRaisesRegex(DeployExecutionError, "invalid"):
+                tooling_source_digest(root)
+            runtime.unlink()
+            runtime.write_text("version two\n")
             shell = root / "ReasBookWeb/ReasBookSite.lean"
             shell.unlink()
             shell.symlink_to(root / "ReasBookWeb/static_files/style.css")

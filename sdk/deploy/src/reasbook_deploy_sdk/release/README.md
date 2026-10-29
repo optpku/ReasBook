@@ -75,10 +75,14 @@ build credentials.
 
 The tooling snapshot also binds the shared `ReasBookSite.lean` reader shell and
 `static_files/style.css`. Before generating pages, the pinned generator copies
-these two UI files from that snapshot into the branch workspace. Mathematical
-source, Lake files, and version-specific Verso compatibility modules stay on
-their version-branch pins; a newer generator must not silently render inside
-an older branch's sidebar/theme.
+these two UI files from that snapshot into the branch workspace. The snapshot
+also includes `ReasBookSite/LiterateModule.lean`, which the finalizer overlays
+only for its explicitly supported runtime branches (currently v4.26.0 and
+v4.30.0). Its contents are bound to the tooling identity, so missing or changed
+runtime files cannot silently reuse an earlier release or web cache.
+Mathematical source, Lake files, and other version-specific Verso compatibility
+modules stay on their version-branch pins; a newer generator must not silently
+render inside an older branch's sidebar/theme.
 
 After `release status` reports a completed aggregate `site` stage, package and
 inspect both target artifacts. Branch-level Lean caches without that aggregate
