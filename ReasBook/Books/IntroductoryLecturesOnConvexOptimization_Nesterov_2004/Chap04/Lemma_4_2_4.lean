@@ -512,6 +512,7 @@ private theorem powerDistanceThreeSndFDerivQuadraticSubLe (x0 x y z : E) :
             gcongr
       _ = 2 * ‖x - y‖ * ‖z‖ ^ (2 : ℕ) := by ring
 
+set_option synthInstance.maxHeartbeats 200000 in
 /-- Helper for Lemma 4.2.4: the cubic second derivative is globally `2`-Lipschitz in operator
 norm. -/
 private theorem powerDistanceThreeSndFDerivNormSubLe (x0 x y : E) :

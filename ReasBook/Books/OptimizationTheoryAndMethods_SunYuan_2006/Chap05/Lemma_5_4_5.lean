@@ -84,10 +84,7 @@ lemma normSubSqReal (x y : E) :
       symm
       exact realInnerSelfEqNormSq (x - y)
     _ = ⟪x, x⟫_ℝ - ⟪x, y⟫_ℝ - ⟪y, x⟫_ℝ + ⟪y, y⟫_ℝ := by
-      rw [InnerProductSpace.Core.inner_sub_left (𝕜 := ℝ),
-        InnerProductSpace.Core.inner_sub_right (𝕜 := ℝ),
-        InnerProductSpace.Core.inner_sub_right (𝕜 := ℝ)]
-      ring
+      exact InnerProductSpace.Core.inner_sub_sub_self (𝕜 := ℝ) x y
     _ = ‖x‖ ^ (2 : ℕ) - 2 * ⟪x, y⟫_ℝ + ‖y‖ ^ (2 : ℕ) := by
       rw [realInnerSelfEqNormSq, realInnerSelfEqNormSq, realInnerComm]
       ring
