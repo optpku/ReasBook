@@ -27,6 +27,56 @@ and artifact hashes still match. Successful batches are committed to a second,
 identity-bound progress marker, so a retry schedules only unfinished modules.
 Both local and remote callers are serialized by a cache-local lock.
 
+ReasBook's generated statement readers use this same semantic cache for native
+Lean term/type hovers. The module manifest includes checked excerpt owners as
+well as full literate pages; it is not a page inventory. The generator copies
+`ReasBookWeb/scripts/statement_code.lean` into the private Web source tree. Its
+code block selects original SubVerso tokens by exact source ranges, verifies the
+source and displayed text, and renders with Verso's native hover support. Proofs
+stay omitted. Files outside the public documentation root remain source-only.
+The bundled `statement_code.css` is installed in an owned block of the private
+Web tree's stylesheet, preserving each version branch's theme while ensuring
+native code scrolls within its block on mobile and contributor lists wrap.
+The palette uses Verso's semantic token classes for keywords, constants, and
+local variables, including inside type popovers. Plain-source snapshots do not
+gain type information from this stylesheet; rebuild their chapter modules and
+semantic inputs before testing hover on the actual reading routes.
+The generator also installs `recall_info.lean` in three owned blocks of the
+version's `LiterateExtract.lean`. It preserves original parser positions before
+SubVerso adjusts trailing source information. It enriches the recalled-name
+or bare global `#check` identifier's
+span with a native constant token, using that command's recorded Lean environment,
+namespace, open declarations, and Lean's pretty-printed type; the text is unchanged.
+Section-local `#check` variables keep their native term metadata.
+It does not guess names or types, replace Mathlib, or change the mathematical
+source. Existing version-specific compatibility code is retained; an unsupported
+extractor shape fails generation instead of silently omitting the fix.
+Source/config fingerprints in generated pages prevent reusing old hovers after
+imported types change. A first build requires more extraction work; use the
+existing bounded parallel cache stage, not per-item nested Lake invocations.
+
+Project catalogs and homes share `reasbook_sdk_common/project_contributors.json`;
+its rosters must match both main READMEs, including upstream contribution roles.
+Statement cards instead read the actual selected source file's opening author
+header. Missing authors stay explicitly unrecorded; a project roster is never
+silently substituted. Project-level attribution remains labeled as such.
+The generator also emits `.reader-attributions.json` from the actual route
+bindings. After rendering, `scripts/build/verso.sh` applies
+`ReasBookWeb/scripts/reader_attributions.py` to full literate pages (and aliases)
+before fragment validation. This adds source credit beneath the title without
+changing native hover markup. Missing pages, unsafe targets or ambiguous markers
+fail the build. Direct SDK-only renders must run this post-step before publishing.
+
+The opt-in `tests/test_statement_hover_native.py` acceptance test runs a real
+matching Lean extractor and Verso renderer, then checks visible type popups in
+Chromium, stale-data failures, and mobile layout. Set `REASBOOK_HOVER_LEAN`,
+`REASBOOK_HOVER_WEB_CACHE` (built dependency packages), and
+`REASBOOK_HOVER_EXTRACTOR` (that version's `LiterateExtract.lean`); run
+`python -m unittest tests.test_statement_hover_native -v` with Playwright
+available. Set `TMPDIR` to a private persistent workspace directory, or preserve
+the result with `REASBOOK_HOVER_OUTPUT` pointing to a new directory. No shared
+dependency cache is modified. Normal unit-test runs skip this native canary.
+
 ## CLI
 
 ```bash

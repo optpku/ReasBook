@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 from functools import lru_cache
+import hashlib
 import json
 import os
 import posixpath
@@ -14,8 +15,9 @@ import tempfile
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Iterable
+from urllib.parse import quote
 
-from lean_headers import author_field, header_span
+from lean_headers import author_field, header_span, opening_header, outer_header_text
 from statement_previews import ITEM_PREVIEWS
 from site_config import (
     PROJECT_FRAGMENT,
@@ -35,7 +37,10 @@ for sdk_source in (
     if value not in sys.path:
         sys.path.insert(0, value)
 
-from reasbook_build_sdk.statement_docs import module_label, source_reading, statement_excerpts  # noqa: E402
+from reasbook_build_sdk.statement_docs import (  # noqa: E402
+    module_label, source_reading, statement_excerpts, statement_source_url,
+)
+from reasbook_sdk_common.attribution import project_credit  # noqa: E402
 
 
 SITE_CONFIG: SiteConfig = load_site_config()
@@ -58,6 +63,9 @@ GENERATED_LEAN_HEADER = (
     "Generated website code; mathematical source authors are credited separately.\n"
     "-/\n\n"
 )
+
+# Match the existing full-literate page budgets for large chapter documents.
+STATEMENT_PAGE_OPTIONS = "set_option maxHeartbeats 100000000\nset_option maxRecDepth 20000\n"
 
 
 def with_generated_lean_header(content: str, previous: str | None) -> str:
@@ -96,14 +104,15 @@ def generated_body_first_line(path: Path) -> list[str]:
     return source.splitlines()[:1]
 
 
-def write_text_if_changed(path: Path, content: str, *, log: bool = True) -> bool:
+def write_text_if_changed(path: Path, content: str, *, log: bool = True,
+                          generated_lean_header: bool = True) -> bool:
     old_content: str | None
     try:
         old_content = path.read_text(encoding="utf-8")
     except FileNotFoundError:
         old_content = None
 
-    if path.suffix == ".lean":
+    if path.suffix == ".lean" and generated_lean_header:
         content = with_generated_lean_header(content, old_content)
 
     if old_content == content:
@@ -438,8 +447,8 @@ class BookItem:
 
     Item-style books can contain hundreds or thousands of modules named like
     ``Definition_1_2_3``.  They are deliberately not :class:`Entry` objects:
-    entries become literate targets, while items only contribute lightweight
-    links to a generated chapter reader.
+    entries own separate literate pages, while items share a chapter reader.
+    Checked excerpt owners are added separately to the semantic input manifest.
     """
 
     book: str
@@ -754,7 +763,7 @@ def section_title_from_stem(stem: str) -> str:
             return f"{base} -- Part {part}"
         return base
 
-    return humanize_identifier(stem)
+    return humanize_identifier(re.sub(r"(?<=\d)_(?=\d)", ".", stem))
 
 
 def entry_label(e: Entry) -> str:
@@ -1511,7 +1520,8 @@ def collect_entries(
             Entry(
                 category="papers",
                 module=module,
-                title=f"{paper_title(paper)} -- {sec_title}",
+                title=(sec_title if ITEM_STEM_RE.fullmatch(path.stem)
+                       else f"{paper_title(paper)} -- {sec_title}"),
                 route=route_from_module(module),
                 book_or_paper=paper,
                 chapter_num=0,
@@ -1681,12 +1691,13 @@ def lean_string(s: str) -> str:
 # ---------------------------------------------------------------------------
 
 
-def emit_literate_manifest(entries: list[Entry]) -> str:
+def emit_literate_manifest(entries: list[Entry], statement_sources: dict[str, str] | None = None) -> str:
     """Return the deterministic machine-readable input for literate caching."""
 
     modules = [entry.module for entry in entries]
     if len(modules) != len(set(modules)):
         raise ValueError("site entry discovery returned duplicate Lean modules")
+    modules.extend(sorted(set(statement_sources or {}) - set(modules)))
     return (
         json.dumps(
             {"schema_version": 1, "modules": modules},
@@ -1698,7 +1709,8 @@ def emit_literate_manifest(entries: list[Entry]) -> str:
     )
 
 
-def emit_literate_source_map(entries: list[Entry], source_root: Path) -> str:
+def emit_literate_source_map(entries: list[Entry], source_root: Path,
+                             statement_sources: dict[str, str] | None = None) -> str:
     """Bind logical literate names to their actual, possibly nested srcDir files."""
     projects: dict[tuple[str, str], dict[str, Path]] = {}
     result: dict[str, str] = {}
@@ -1724,6 +1736,14 @@ def emit_literate_source_map(entries: list[Entry], source_root: Path) -> str:
         if entry.module in result:
             raise ValueError(f"duplicate literate module: {entry.module}")
         result[entry.module] = relative
+    for module, relative in (statement_sources or {}).items():
+        path = source_root / relative
+        actual = path.resolve().relative_to(source_root.resolve()).as_posix()
+        if not path.is_file() or to_module(source_root, path) != module:
+            raise ValueError(f"invalid statement source for {module}")
+        if module in result and result[module] != actual:
+            raise ValueError(f"ambiguous statement source for {module}")
+        result[module] = actual
     return json.dumps(result, ensure_ascii=True, sort_keys=True, indent=2) + "\n"
 
 
@@ -1955,6 +1975,7 @@ def emit_sections(
                 "title": work["title"],
                 "home": work["home"],
                 "chapters": chapters_payload,
+                "routes": [e.route for e in entries if e.category == "books" and e.book_or_paper == book],
             }
         )
 
@@ -1983,6 +2004,14 @@ def emit_sections(
                 "title": work["title"],
                 "home": work["home"],
                 "sections": sections_payload,
+                "routes": [e.route for e in entries if e.category == "papers" and e.book_or_paper == paper],
+                "files": [
+                    {"title": section_title_from_stem(e.module.rsplit('.', 1)[-1]),
+                     "route": e.route, "module": e.module}
+                    for e in sorted(entries, key=reading_file_order)
+                    if e.category == "papers" and e.book_or_paper == paper
+                    and e.section_num == 0 and e.part_num == 0 and e.stem not in {"paper", "main"}
+                ],
             }
         )
 
@@ -2021,6 +2050,12 @@ def emit_sections(
     return "\n".join(lines)
 
 
+def reading_file_order(entry: Entry) -> tuple:
+    """Order numbered paper files by reference number, not declaration kind."""
+    numbers = tuple(int(number) for number in re.findall(r"\d+", entry.module.rsplit('.', 1)[-1]))
+    return not bool(numbers), numbers, entry.module.casefold()
+
+
 def reader_chapter_module(reader: ReaderChapter) -> str:
     return (
         f"ReasBookSite.WorkPages.Books.{lean_module_name(reader.book)}."
@@ -2039,12 +2074,12 @@ def paper_section_index_module(index: PaperSectionIndex) -> str:
     )
 
 
-def emit_route_table(
+def site_route_bindings(
     entries: list[Entry],
     reader_chapters: Iterable[ReaderChapter] = (),
     paper_readers: Iterable[PaperReader] = (),
     paper_section_indexes: Iterable[PaperSectionIndex] = (),
-) -> str:
+) -> tuple[set[str], list[tuple[str, str]]]:
     intro_book_slug = "introductiontorealanalysisvolumei_jirilebl_2025"
     readers = list(reader_chapters)
     item_paper_readers = list(paper_readers)
@@ -2142,6 +2177,17 @@ def emit_route_table(
             raise ValueError(f"generated route collision for {route!r}: {detail}")
         owner_by_route[route] = target
 
+    return work_page_imports, bindings
+
+
+def emit_route_table(
+    entries: list[Entry],
+    reader_chapters: Iterable[ReaderChapter] = (),
+    paper_readers: Iterable[PaperReader] = (),
+    paper_section_indexes: Iterable[PaperSectionIndex] = (),
+) -> str:
+    work_page_imports, bindings = site_route_bindings(
+        entries, reader_chapters, paper_readers, paper_section_indexes)
     lines: list[str] = []
     lines.append("-- This file is generated by scripts/gen_sections.py")
     lines.append("-- Do not edit manually.")
@@ -2490,11 +2536,11 @@ def lean_module_name(s: str) -> str:
 
 
 @lru_cache(maxsize=None)
-def paper_documentation_modules(source_root: Path, paper: str) -> frozenset[str]:
+def project_documentation_modules(source_root: Path, category: str, project: str) -> frozenset[str]:
     """Use the same public root and closure as the documentation builder."""
     from reasbook_build_sdk import library_target, plan_reachable_project_modules
 
-    target = library_target(source_root, paper, "paper")
+    target = library_target(source_root, project, category)
     return frozenset(entry.name for entry in
                      plan_reachable_project_modules(source_root, [target]).entries)
 
@@ -2502,7 +2548,7 @@ def paper_documentation_modules(source_root: Path, paper: str) -> frozenset[str]
 def statement_reading_links(source_root: Path, module: str, source_path: str,
                             category: str, project: str) -> str:
     source_link = f"([Lean source]({github_blob_link(source_path)}))"
-    if category == "papers" and module not in paper_documentation_modules(source_root, project):
+    if module not in project_documentation_modules(source_root, category, project):
         return f"— source only (outside the published documentation root) {source_link}"
     docs_path = _module_to_docs_path(source_root, module)
     return (f"([Documentation]({portable_site_link(f'docs/ReasBook/{docs_path}.html')})) "
@@ -2523,6 +2569,46 @@ def item_reading_links(source_root: Path, item: BookItem | PaperItem) -> str:
 
 def item_anchor(item: BookItem | PaperItem) -> str:
     return item.stem.casefold().replace("_", "-")
+
+
+def verso_text(text: str) -> str:
+    """Render metadata as text, never as executable Verso markup."""
+    escaped = re.sub(r"([\\`*{}\[\]<>_#~$|])", r"\\\1", " ".join(text.split()))
+    return '\\' + escaped if escaped.startswith((':::', '%%%')) else escaped
+
+
+def source_attribution(source: str, source_path: str) -> dict[str, str]:
+    header = opening_header(source) or ""
+    authors = author_field(header, allow_singular=True) or ""
+    fields = re.findall(r"^\s*(Project|Chapter|File)-level attribution:\s*(.+)$",
+                        outer_header_text(header), re.M)
+    if len(fields) > 1:
+        raise ValueError(f"ambiguous source attribution: {source_path}")
+    scope, provenance = (fields[0][0].lower(), fields[0][1].strip()) if fields else ("file", "")
+    evidence = re.fullmatch(r"([\w.-]+/[\w.-]+)@([0-9a-f]{40}):([^\s]+)(?:\s+.*)?", provenance)
+    evidence_url = (f"https://github.com/{evidence[1]}/blob/{evidence[2]}/"
+                    + quote(evidence[3], safe="/") if evidence else "")
+    return dict(authors=authors, scope=scope, provenance=provenance,
+                evidence_url=evidence_url,
+                source_url=github_blob_link(source_path) + "#L1" if source_path else "")
+
+
+def source_attribution_blocks(source: str, source_path: str) -> list[str]:
+    credit = source_attribution(source, source_path)
+    label = ("Lean authors" if credit["scope"] == "file" else
+             f'Lean contributors ({credit["scope"]}-level attribution)')
+    lines = [':::html div (class := "reader-attribution")',
+             f'{label}: {verso_text(credit["authors"]) or "not recorded"}.', '']
+    links = []
+    if credit["source_url"]:
+        links.append(f'[Source header]({credit["source_url"]})')
+    if credit["evidence_url"]:
+        links.append(f'[Attribution source]({credit["evidence_url"]})')
+    elif credit["provenance"]:
+        links.append(verso_text(credit["provenance"]))
+    if links:
+        lines.extend([' · '.join(links), ''])
+    return [*lines, ':::', '']
 
 
 def item_statement_blocks(source_root: Path, item: BookItem | PaperItem) -> list[str]:
@@ -2547,29 +2633,33 @@ def item_statement_blocks(source_root: Path, item: BookItem | PaperItem) -> list
             lines.extend(statement_blocks(
                 target.read_text(encoding="utf-8"), label, selected_links, anchor,
                 declaration=declaration,
+                module=module, source_path=actual_source,
                 note=f"Selected defining clause {index} of {len(selection)}; not the complete item."))
         return lines
     if statement_excerpts(source):
-        return statement_blocks(source, label, links, item_anchor(item))
+        return statement_blocks(source, label, links, item_anchor(item),
+                                module=item.module, source_path=item.source_path)
     category, project = (('books', item.book) if isinstance(item, BookItem) else ('papers', item.paper))
     targets = statement_sources(item.module, project_sources(source_root, category, project))
     if targets:
         name, target = next((target for target in targets if target[0].startswith(item.module + '.')), targets[0])
         actual_source = target.relative_to(source_root.parent).as_posix()
         links = statement_reading_links(source_root, name, actual_source, category, project)
-        return statement_blocks(target.read_text(encoding="utf-8"), label, links, item_anchor(item))
+        return statement_blocks(target.read_text(encoding="utf-8"), label, links, item_anchor(item),
+                                module=name, source_path=actual_source)
     if "no statement yet" in links:
-        return [f"- {label} {links}", ""]
+        return [f"- {label} {links}", "", *source_attribution_blocks(source, item.source_path)]
     # Unknown/custom commands are not silently called an empty mathematical
     # item. Keep the anchor valid, with an honest indication of preview limits.
-    return [f':::html div (id := {lean_string(item_anchor(item))})',
-            f"{label} — statement preview unavailable {links}", ":::" , ""]
+    return [f'::::html div (id := {lean_string(item_anchor(item))})',
+            f"{label} — statement preview unavailable {links}", "",
+            *source_attribution_blocks(source, item.source_path), "::::" , ""]
 
 
 def statement_blocks(source: str, label: str, links: str, anchor: str,
                      *, limit: int | None = 1, declaration: str | None = None,
-                     note: str = "") -> list[str]:
-    """Render inert source excerpts with stable item anchors, never Lean proofs."""
+                     note: str = "", module: str | None = None, source_path: str = "") -> list[str]:
+    """Select source excerpts; checked modules retain their native Lean hovers."""
     excerpts = statement_excerpts(source, label=label)
     if declaration is not None:
         matches = tuple(item for item in excerpts if item.name == declaration)
@@ -2579,7 +2669,13 @@ def statement_blocks(source: str, label: str, links: str, anchor: str,
     else:
         selected = excerpts if limit is None else excerpts[:limit]
     if not excerpts:
-        return [f"- {label} {links}", ""]
+        return [f"- {label} {links}", "", *source_attribution_blocks(source, source_path)]
+    # Bind the card's source link to the same declaration as its excerpt, after
+    # numbered-heading/explicit-clause selection. Attribution links stay at L1.
+    if selected:
+        links = re.sub(r"\[Lean source\]\(([^)]+)\)",
+                       lambda match: "[Lean source](" +
+                       statement_source_url(source, match[1], selected[0]) + ")", links)
     # Verso requires outer directive fences to be wider than nested fences.
     lines = [f':::::html div (id := {lean_string(anchor)}) '
              '(«data-reasbook-statement» := "true") '
@@ -2590,9 +2686,13 @@ def statement_blocks(source: str, label: str, links: str, anchor: str,
              label, ':::',
              ':::html div (class := "reader-statement-links")',
              links, ':::', '::::', ""]
+    lines.extend(source_attribution_blocks(source, source_path))
     if note:
         lines.extend([note, ""])
-    for excerpt in selected:
+    for index, excerpt in enumerate(selected):
+        if index and source_path:
+            target = statement_source_url(source, github_blob_link(source_path), excerpt)
+            lines.extend([f"[Lean source]({target})", ""])
         if excerpt.prose:
             # Treat upstream prose as text, not executable Verso directives.
             prose = ''.join(part if re.fullmatch(r'`[^`\n]+`', part)
@@ -2604,7 +2704,13 @@ def statement_blocks(source: str, label: str, links: str, anchor: str,
             lines.extend([prose, ""])
         snippet = "\n".join((*excerpt.context, excerpt.signature))
         fence = "`" * max(3, 1 + max((len(run) for run in re.findall(r"`+", snippet)), default=0))
-        lines.extend([fence, snippet, fence, ""])
+        opening = fence
+        if module and "[Documentation]" in links:
+            selection = dict(module=module, source_path=source_path.removeprefix("ReasBook/"),
+                             source_sha256=hashlib.sha256(source.encode("utf-8")).hexdigest(),
+                             ranges=excerpt.source_ranges)
+            opening += " reasbookStatement " + lean_string(json.dumps(selection, separators=(",", ":")))
+        lines.extend([opening, snippet, fence, ""])
     lines.extend([":::::" , ""])
     return lines
 
@@ -2651,7 +2757,8 @@ def module_statement_blocks(source_root: Path, module: str, category: str,
         links = statement_reading_links(source_root, name, source_path, category, project)
         lines.extend(statement_blocks(path.read_text(encoding="utf-8"),
                                       label if name == module else module_label(name), links,
-                                      name.casefold().replace(".", "-"), limit=limit))
+                                      name.casefold().replace(".", "-"), limit=limit,
+                                      module=name, source_path=source_path))
     return lines
 
 
@@ -2689,6 +2796,131 @@ def chapter_reading_modules(
     return tuple(result)
 
 
+def project_contributor_blocks(key: str, *, heading: bool = True) -> list[str]:
+    """Published project-level credits, not textbook or individual-file authors.
+
+    Bundle the catalog roster with the generator: release tooling snapshots do
+    not carry main's README, and a version branch may have an older roster.
+    test_catalog_attribution enforces exact parity with both main catalogs.
+    """
+    credit = project_credit(key)
+    if credit is None:
+        return []
+    lines = ['# Formalization contributors', ''] if heading else []
+    lines += [':::html div (class := "reader-contributors")',
+              ('' if heading else 'Formalization contributors: ') + verso_text(', '.join(credit.names)), '']
+    for role, names in credit.additional:
+        lines += [f'{verso_text(role)}: {verso_text(", ".join(names))}', '']
+    return [*lines, f'Project-level credit · [Source roster]({credit.source})', ':::', '']
+
+
+def book_contributor_blocks(book: str) -> list[str]:
+    return project_contributor_blocks(f"books/{book}")
+
+
+def emit_reader_attributions(source_root: Path, bindings: list[tuple[str, str]],
+                             source_map: dict[str, str]) -> str:
+    """Credit the source of every full literate page, including route aliases.
+
+    Generated chapter cards already credit their individual source owners. Never
+    attribute those whole chapters to an aggregator or to the website generator.
+    """
+    records = {}
+    for route, target in bindings:
+        if not target.startswith("Book."):
+            continue
+        module = target.removeprefix("Book.")
+        relative = source_map[module]
+        source = (source_root / relative).read_text(encoding="utf-8")
+        records[route] = source_attribution(source, f"ReasBook/{relative}")
+    return json.dumps(dict(schema_version=1, pages=records), ensure_ascii=True, indent=2) + "\n"
+
+
+def statement_environment_digest(source_root: Path) -> str:
+    """Invalidate elaborated pages when imported types or locked inputs change.
+
+    Lake cannot see the elaborator's external JSON reads. Embed a deterministic
+    source/config identity in page syntax, even when the visible statement has
+    not changed. Do not include caches, generated JSON, or absolute paths.
+    """
+    digest = hashlib.sha256()
+    for directory, directories, files in os.walk(source_root, followlinks=False):
+        directories[:] = sorted(name for name in directories if not name.startswith(".")
+                                and name not in {"__pycache__", "node_modules"})
+        for name in directories:
+            if (Path(directory) / name).is_symlink():
+                raise ValueError(f"statement source directory must not be a symlink: {name}")
+        for name in sorted(files):
+            if not (name.endswith(".lean") or name in {"lakefile.toml", "lake-manifest.json", "lean-toolchain"}):
+                continue
+            path = Path(directory) / name
+            if path.is_symlink() or not path.is_file():
+                raise ValueError(f"statement source must be a regular file: {path}")
+            digest.update(path.relative_to(source_root).as_posix().encode("utf-8") + b"\0")
+            digest.update(hashlib.sha256(path.read_bytes()).digest())
+    return digest.hexdigest()
+
+
+def write_statement_styles(web_root: Path) -> None:
+    """Carry hover/mobile/attribution styles in the release tooling snapshot.
+
+    A release reads its base CSS from a version branch, not main. Patch only
+    this owned block in the generated Web tree, retaining that branch's theme.
+    """
+    begin, end = "/* BEGIN REASBOOK STATEMENT READER */", "/* END REASBOOK STATEMENT READER */"
+    path = web_root / "static_files/style.css"
+    content = path.read_text(encoding="utf-8") if path.exists() else ""
+    styles = Path(__file__).with_name("statement_code.css").read_text(encoding="utf-8").rstrip()
+    block = f"{begin}\n{styles}\n{end}"
+    if begin in content or end in content:
+        if content.count(begin) != 1 or content.count(end) != 1 or content.index(begin) > content.index(end):
+            raise ValueError("ambiguous generated statement stylesheet markers")
+        content = content[:content.index(begin)] + block + content[content.index(end) + len(end):]
+    else:
+        content = content.rstrip() + "\n\n" + block + "\n"
+    write_text_if_changed(path, content, log=False)
+
+
+def write_recall_support(source_root: Path) -> None:
+    """Install scoped recall metadata support into a version's extractor.
+
+    The release uses its version-branch extractor, not main's. Keep its
+    compatibility code intact and change only uniquely owned blocks.
+    Source-only generator fixtures need not contain an extraction program.
+    """
+    path = source_root / "LiterateExtract.lean"
+    if not path.exists():
+        return
+    if path.is_symlink() or not path.is_file():
+        raise ValueError("Lean extractor must be a regular source file")
+    content = path.read_text(encoding="utf-8")
+    support = Path(__file__).with_name("recall_info.lean").read_text(encoding="utf-8").rstrip()
+    blocks = (
+        ("SUPPORT", support + "\n\n", "unsafe def go ("),
+        # updateLeading may extend an identifier's end position to EOF.
+        # Retain the parser's original ranges for semantic enrichment.
+        ("PARSED", "    let reasbookParsed := res\n", "    let res := res.updateLeading contents"),
+        ("HOOK", "    let hls ← reasbookRecallCodes reasbookParsed contents hls\n",
+         "    let env := (← cmdSt.get).commandState.env"),
+    )
+    for name, body, anchor in blocks:
+        begin, end = f"-- BEGIN REASBOOK RECALL {name}", f"-- END REASBOOK RECALL {name}"
+        block = begin + "\n" + body + end + "\n"
+        if begin in content or end in content:
+            if content.count(begin) != 1 or content.count(end) != 1 or content.index(begin) > content.index(end):
+                raise ValueError("ambiguous generated recall support markers")
+            stop = content.index(end) + len(end)
+            if content[stop:stop + 1] == "\n":
+                stop += 1
+            content = content[:content.index(begin)] + content[stop:]
+        if content.count(anchor) != 1:
+            raise ValueError(f"unsupported Lean extractor: missing or ambiguous {name.lower()} anchor")
+        content = content.replace(anchor, block + anchor, 1)
+    # This is a partial edit of an authored extractor, not a generated page.
+    # Preserve its own header exactly; do not assign website authors to it.
+    write_text_if_changed(path, content, log=False, generated_lean_header=False)
+
+
 def write_work_pages(
     repo_root: Path,
     source_root: Path,
@@ -2697,12 +2929,41 @@ def write_work_pages(
     paper_readers: Iterable[PaperReader] = (),
     paper_section_indexes: Iterable[PaperSectionIndex] = (),
     fragment_project: str | None = None,
-) -> None:
+) -> dict[str, str]:
     pages_root = repo_root / "ReasBookWeb" / "ReasBookSite" / "WorkPages"
     books_root = pages_root / "Books"
     papers_root = pages_root / "Papers"
     books_root.mkdir(parents=True, exist_ok=True)
     papers_root.mkdir(parents=True, exist_ok=True)
+    semantic_sources: dict[str, str] = {}
+    environment_digest: str | None = None
+    write_recall_support(source_root)
+
+    def write_page(path: Path, content: str) -> None:
+        nonlocal environment_digest
+
+        def register(match: re.Match[str]) -> str:
+            nonlocal environment_digest
+            record = json.loads(json.loads(match[2]))
+            module, relative = record["module"], record["source_path"]
+            if module in semantic_sources and semantic_sources[module] != relative:
+                raise ValueError(f"ambiguous statement source for {module}")
+            semantic_sources[module] = relative
+            if environment_digest is None:
+                environment_digest = statement_environment_digest(source_root)
+            record["environment_sha256"] = environment_digest
+            return match[1] + lean_string(json.dumps(record, separators=(",", ":")))
+
+        content = re.sub(r'^(`{3,} reasbookStatement )(.+)$', register, content, flags=re.M)
+        if " reasbookStatement " in content:
+            content = content.replace("import VersoBlog\n", "import VersoBlog\nimport ReasBookSite.StatementCode\n", 1)
+            content = content.replace("#doc (Page)", STATEMENT_PAGE_OPTIONS + "\n#doc (Page)", 1)
+        write_text_if_changed(path, content, log=True)
+
+    runtime = Path(__file__).with_name("statement_code.lean")
+    write_text_if_changed(repo_root / "ReasBookWeb/ReasBookSite/StatementCode.lean",
+                          runtime.read_text(encoding="utf-8"), log=False)
+    write_statement_styles(repo_root / "ReasBookWeb")
 
     readers = list(reader_chapters)
     item_paper_readers = list(paper_readers)
@@ -2856,7 +3117,8 @@ def write_work_pages(
             lines.append("No separate reading sections are published for this version.")
             lines.append("")
 
-        write_text_if_changed(page_file, "\n".join(lines), log=True)
+        lines.extend(book_contributor_blocks(book))
+        write_page(page_file, "\n".join(lines))
 
     for reader in readers:
         chapter_items = reader.items
@@ -2882,7 +3144,7 @@ def write_work_pages(
             ':::',
             "",
             ':::html div (class := "reader-scope-note")',
-            "Proofs omitted. A `#check` excerpt shows the checked expression, not its inferred type.",
+            "Proofs omitted. Hover over highlighted terms to see their Lean types.",
             ':::',
             "",
         ]
@@ -2894,10 +3156,13 @@ def write_work_pages(
                     links = statement_reading_links(source_root, module, source_path, "books", reader.book)
                     lines.extend(statement_blocks(
                         (source_root.parent / source_path).read_text(encoding="utf-8"), label, links,
-                        module.casefold().replace(".", "-"), limit=None))
+                        module.casefold().replace(".", "-"), limit=None,
+                        module=module, source_path=source_path))
                 else:
                     lines.append(f"- {label} — no statement yet "
                                  f"([Lean source]({github_blob_link(source_path)}))")
+                    lines.extend(['', *source_attribution_blocks(
+                        (source_root.parent / source_path).read_text(encoding="utf-8"), source_path)])
             lines.append("")
         by_section: dict[int, list[BookItem]] = {}
         for item in chapter_items:
@@ -2928,8 +3193,10 @@ def write_work_pages(
                     f"([Documentation]({portable_site_link(f'docs/ReasBook/{docs_path}.html')})) "
                     f"([Lean source]({github_blob_link(source.source_path)}))"
                 )
+                lines.extend(['', *source_attribution_blocks(
+                    (source_root.parent / source.source_path).read_text(encoding="utf-8"), source.source_path)])
             lines.append("")
-        write_text_if_changed(page_file, "\n".join(lines), log=True)
+        write_page(page_file, "\n".join(lines))
 
     # Remove only files carrying our exact generated marker.  This keeps a
     # regenerated branch/fragment from retaining routes for deleted chapters,
@@ -2972,7 +3239,7 @@ def write_work_pages(
                 if e.section_num == 0
                 and e.part_num == 0
             ],
-            key=lambda e: (e.module.casefold(), e.stem),
+            key=reading_file_order,
         )
         module_name = lean_module_name(paper)
         page_file = papers_root / f"{module_name}.lean"
@@ -2997,7 +3264,7 @@ def write_work_pages(
         if item_reader is not None:
             lines.append("# Statements")
             lines.extend(["", ':::html div (class := "reader-scope-note")',
-                          "Proofs omitted. A `#check` excerpt shows the checked expression, not its inferred type.", ':::'])
+                          "Proofs omitted. Hover over highlighted terms to see their Lean types.", ':::'])
             lines.append("")
             for item in item_reader.items:
                 lines.extend(item_statement_blocks(source_root, item))
@@ -3030,7 +3297,8 @@ def write_work_pages(
                                                      seen=seen_modules, limit=1))
             lines.append("")
 
-        write_text_if_changed(page_file, "\n".join(lines), log=True)
+        lines.extend(project_contributor_blocks(f"papers/{paper}"))
+        write_page(page_file, "\n".join(lines))
 
     for reader in item_paper_readers:
         page_file = papers_root / lean_module_name(reader.paper) / "Items.lean"
@@ -3069,7 +3337,7 @@ def write_work_pages(
             for item in by_section[section_token]:
                 lines.extend(item_statement_blocks(source_root, item))
             lines.append("")
-        write_text_if_changed(page_file, "\n".join(lines), log=True)
+        write_page(page_file, "\n".join(lines))
 
     for index in section_indexes:
         page_file = (
@@ -3111,7 +3379,7 @@ def write_work_pages(
             lines.extend(module_statement_blocks(source_root, part.module, "papers", index.paper,
                                                  f"Part {part.part_num}"))
         lines.append("")
-        write_text_if_changed(page_file, "\n".join(lines), log=True)
+        write_page(page_file, "\n".join(lines))
 
     if PROJECT_FRAGMENT:
         selected_paper = (
@@ -3145,6 +3413,8 @@ def write_work_pages(
         except OSError:
             pass
 
+    return semantic_sources
+
 
 def write_home_page(repo_root: Path, entries: list[Entry], fragment_project: str | None = None) -> None:
     """Keep the generated release home focused on published reader paths."""
@@ -3173,9 +3443,14 @@ def write_home_page(repo_root: Path, entries: list[Entry], fragment_project: str
         f"- [Theorem dependency maps]({portable_site_link('theorem-maps/')})",
         "",
     ]
+    current_category = None
     for category, project in sorted({(e.category, e.book_or_paper) for e in entries}):
+        if category != current_category:
+            current_category = category
+            lines.extend([f"# {category.title()}", ''])
         title = book_title(project) if category == "books" else paper_title(project)
-        lines.append(f"- [{title}]({portable_site_link(f'{category}/{project.lower()}/')})")
+        lines.extend([f"## [{title}]({portable_site_link(f'{category}/{project.lower()}/')})", ''])
+        lines.extend(project_contributor_blocks(f"{category}/{project}", heading=False))
     lines.append("")
     write_text_if_changed(home, "\n".join(lines), log=False)
 
@@ -3527,14 +3802,21 @@ def main() -> None:
         ),
         log=False,
     )
-    write_text_if_changed(
-        literate_manifest,
-        emit_literate_manifest(entries),
-        log=False,
+    semantic_sources = write_work_pages(
+        repo_root, source_root, entries, reader_chapters, paper_readers,
+        paper_section_indexes, fragment_project,
     )
     write_text_if_changed(
-        web_root / ".literate-sources.json",
-        emit_literate_source_map(entries, source_root),
+        literate_manifest,
+        emit_literate_manifest(entries, semantic_sources),
+        log=False,
+    )
+    source_map_json = emit_literate_source_map(entries, source_root, semantic_sources)
+    write_text_if_changed(web_root / ".literate-sources.json", source_map_json, log=False)
+    _, bindings = site_route_bindings(entries, reader_chapters, paper_readers, paper_section_indexes)
+    write_text_if_changed(
+        web_root / ".reader-attributions.json",
+        emit_reader_attributions(source_root, bindings, json.loads(source_map_json)),
         log=False,
     )
     update_literate_source_lookup(web_root)
@@ -3560,15 +3842,6 @@ def main() -> None:
             + "\n",
             log=False,
         )
-    write_work_pages(
-        repo_root,
-        source_root,
-        entries,
-        reader_chapters,
-        paper_readers,
-        paper_section_indexes,
-        fragment_project,
-    )
     write_home_page(repo_root, entries, fragment_project)
     if not PROJECT_FRAGMENT:
         write_book_readmes(source_root, entries)
@@ -3578,7 +3851,8 @@ def main() -> None:
         print(f"Wrote isolated project fragment inputs for {fragment_project}")
     print(f"Wrote {out_file} with {len(entries)} sections")
     print(f"Wrote {route_file} with generated route macro")
-    print(f"Wrote {literate_manifest} with {len(entries)} modules")
+    count = len({entry.module for entry in entries} | set(semantic_sources))
+    print(f"Wrote {literate_manifest} with {count} modules (including statement hover inputs)")
     if reader_chapters:
         item_count = sum(len(reader.items) for reader in reader_chapters)
         print(

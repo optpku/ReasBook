@@ -1,0 +1,57 @@
+/* Use Verso's semantic token classes: never guess term types from spelling.
+   Verso injects its default :root variables after the theme. Set them on each
+   native code container too, including popovers, so that order cannot erase
+   the theme's colors. */
+:root, .hl.lean {
+    --verso-code-keyword-color: #743a87;
+    --verso-code-keyword-weight: 600;
+    --verso-code-const-color: #225e91;
+    --verso-code-var-color: #17685d;
+    --verso-code-var-style: normal;
+    --verso-code-color: #25232d;
+    --verso-code-font-family: var(--reader-mono, monospace);
+}
+.hl.lean { font-family: var(--reader-mono, monospace); }
+.hl.lean .literal.string, .hl.lean .literal.number { color: #91451e; }
+.hl.lean .sort, .hl.lean .level-var, .hl.lean .level-const { color: #743a87; }
+.hl.lean [data-verso-hover] { cursor: help; }
+body .hl.lean a { text-decoration: none; }
+body .hl.lean a:hover, .hl.lean [data-verso-hover]:hover {
+    text-decoration: underline dotted; text-underline-offset: .2em;
+}
+.hl.lean .token.binding-hl { background: #e5e1ef; border-radius: 2px; }
+/* Native Verso blocks are <code>, not <pre>. Keep their overflow local. */
+div.main code.hl.lean.block {
+    display: block;
+    box-sizing: border-box; max-width: 100%; padding: 1rem;
+    margin-block: 1rem; white-space: pre; overflow-x: auto;
+    background: var(--reader-code); color: var(--reader-ink);
+    border-radius: var(--reader-radius);
+    font-size: 0.875rem; line-height: 1.65; tab-size: 2;
+}
+div.main code.hl.lean.block span { font-size: inherit; }
+div.main code.hl.lean.block:focus-visible {
+    outline: 2px solid var(--reader-link); outline-offset: 3px;
+}
+/* A type popup is reading content too, including long dependent types. */
+.tippy-box .hl.lean {
+    font-family: var(--reader-mono, monospace);
+    font-size: .8125rem; line-height: 1.65;
+    white-space: pre-wrap; overflow-wrap: anywhere;
+}
+.tippy-box { max-width: min(44rem, calc(100vw - 2rem)) !important; }
+@media (prefers-reduced-motion: reduce) {
+    .hl.lean .token { transition: none; }
+}
+/* Full project credit stays visible, including long contributor rosters. */
+div.main .reader-contributors p {
+    margin: 0 0 0.65rem; font-size: 1rem; line-height: 1.75; overflow-wrap: anywhere;
+}
+div.main .reader-contributors p:last-child { color: var(--reader-muted); font-size: 0.875rem; }
+div.main .reader-attribution { margin: .75rem 0 1.25rem; color: var(--reader-muted);
+    overflow-wrap: anywhere; }
+div.main .reader-attribution p { margin: .25rem 0; font: .875rem/1.65 var(--reader-sans, system-ui, sans-serif); }
+div.main .reader-attribution p:last-child:not(:first-child) { font-size: .8125rem; }
+@media (max-width: 640px) {
+    div.main code.hl.lean.block { padding: 0.875rem; font-size: 0.8125rem; }
+}

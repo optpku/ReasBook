@@ -50,7 +50,7 @@ def sidebarItemStateScript : String := r##"
     const current = nav.querySelector("a.is-current");
     const work = nav.querySelector(".nav-work-title");
     const heading = document.querySelector(".main h1");
-    if (work && heading && /^Chapter\s+\d/.test(heading.textContent.trim())) {
+    if (work && heading && !heading.textContent.includes(work.textContent.trim())) {
       document.title = work.textContent.trim() + " — " + heading.textContent.trim() + " — ReasBook";
     }
     if (current && nav.clientHeight > 0 && nav.scrollHeight > nav.clientHeight) {
@@ -69,10 +69,10 @@ def sidebarItemStateScript : String := r##"
     const skip = document.querySelector(".reader-skip-link");
     // Keep this fragment on the current page despite the project-level base.
     if (skip) skip.href = window.location.pathname + window.location.search + "#main-content";
-    for (const pre of document.querySelectorAll(".main pre")) {
+    for (const pre of document.querySelectorAll(".main pre, .main code.hl.lean.block")) {
       pre.tabIndex = 0;
       pre.setAttribute("role", "region");
-      pre.setAttribute("aria-label", "Lean statement excerpt");
+      pre.setAttribute("aria-label", "Lean code");
       pre.setAttribute("translate", "no");
     }
     const nav = document.getElementById("sidebar-nav-root");
@@ -239,6 +239,10 @@ def sidebarFallbackScript : String := r##"
     }
     // A project fragment renders its own home at / as well as the named route.
     // Do not turn that landing page back into an all-projects navigation tree.
+    const owners = (navData.books || []).map(work => ({kind: "book", work}))
+      .concat((navData.papers || []).map(work => ({kind: "paper", work})))
+      .filter(({work}) => (work.routes || []).some(candidate => sameRoute(candidate, route)));
+    if (owners.length === 1) return {...owners[0], route: route};
     if (!rel && document.querySelector(".reader-home-links")) {
       const works = (navData.books || []).map(work => ({kind: "book", work}))
         .concat((navData.papers || []).map(work => ({kind: "paper", work})));
@@ -323,6 +327,13 @@ def sidebarFallbackScript : String := r##"
       }
     }
 
+    for (const file of (work.files || [])) {
+      if (!file.route) continue;
+      const href = siteRoot + trimSlashes(file.route) + "/";
+      html += '<li class="nav-file-item"><a href="' + escapeHtml(href) + '"'
+        + (sameRoute(file.route, route) ? ' class="is-current" aria-current="page"' : '')
+        + ' title="' + escapeHtml(file.module || "") + '">' + escapeHtml(file.title) + '</a></li>';
+    }
     html += "</ul></li>";
     return html;
   }
@@ -488,6 +499,10 @@ def navLinkRewriteScript : String := r##"
     if (parts.length >= 3 && p0 === "docs" && p1 === "papers") {
       return { kind: "paper", work: findWork(navData.papers, parts[2]), route: currentRoute };
     }
+    const owners = (navData.books || []).map(work => ({kind: "book", work}))
+      .concat((navData.papers || []).map(work => ({kind: "paper", work})))
+      .filter(({work}) => (work.routes || []).some(route => sameRoute(route, currentRoute)));
+    if (owners.length === 1) return {...owners[0], route: currentRoute};
     if (!rel && document.querySelector(".reader-home-links")) {
       const works = (navData.books || []).map(work => ({kind: "book", work}))
         .concat((navData.papers || []).map(work => ({kind: "paper", work})));
@@ -701,6 +716,13 @@ def navLinkRewriteScript : String := r##"
       if (!section.route) continue;
       sectionList.appendChild(mkSectionNode(section, currentRoute, 0));
     }
+    for (const file of (work.files || [])) {
+      if (!file.route) continue;
+      const item = mkItem(routeHref(file.route), file.title, sameRoute(file.route, currentRoute));
+      item.classList.add("nav-file-item");
+      item.firstChild.title = file.module || "";
+      sectionList.appendChild(item);
+    }
 
     li.appendChild(sectionList);
     return li;
@@ -770,6 +792,8 @@ def navLinkRewriteScript : String := r##"
 
   function rewriteAllAnchors() {
     for (const a of document.querySelectorAll("a[href]")) {
+      // A collection link may intentionally leave a project-mounted reader.
+      if (a.hasAttribute("data-reader-collection")) continue;
       const oldHref = (a.getAttribute("href") || "").trim();
       const newHref = normalizeInternalHref(oldHref);
       if (newHref && newHref !== oldHref) a.setAttribute("href", newHref);
@@ -780,6 +804,7 @@ def navLinkRewriteScript : String := r##"
     if (ev.defaultPrevented || ev.button !== 0 || ev.metaKey || ev.ctrlKey || ev.shiftKey || ev.altKey) return;
     const a = ev.target && ev.target.closest ? ev.target.closest("a[href]") : null;
     if (!a) return;
+    if (a.hasAttribute("data-reader-collection")) return;
     if ((a.getAttribute("target") || "").toLowerCase() === "_blank") return;
 
     const oldHref = (a.getAttribute("href") || "").trim();

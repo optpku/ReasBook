@@ -138,6 +138,10 @@ class RepositoryScriptTests(unittest.TestCase):
             (chapter_root / f"{stem}.lean").write_text(
                 "import Mathlib\n#check Nat\n", encoding="utf-8"
             )
+        with (book_root / "Chap01.lean").open("a", encoding="utf-8") as handle:
+            handle.write("".join(f"import MayLike.Chap01.{path.stem}\n"
+                                 for path in sorted(chapter_root.glob("*.lean"))))
+        (lean_root / "lean-toolchain").write_text('leanprover/lean4:v4.30.0\n')
         return repo, lean_root, web_root
 
     def test_project_docs_honors_and_validates_release_target_boundary(self) -> None:
@@ -350,6 +354,9 @@ class RepositoryScriptTests(unittest.TestCase):
         self.assertLess(generated, cached)
         self.assertLess(cached, enabled)
         self.assertLess(enabled, built)
+        credited = script.index('scripts/reader_attributions.py')
+        self.assertLess(built, credited)
+        self.assertLess(credited, script.index('rm -f -- "$VERSO_OUTPUT_DIR/index.html"'))
         self.assertIn('export VERSO_GENERATOR=""', script)
         self.assertIn("export VERSO_ENV_REASBOOK_LITERATE_PREBUILT=1", script)
 
@@ -544,6 +551,7 @@ class RepositoryScriptTests(unittest.TestCase):
             chapter.mkdir(parents=True)
             (repo / 'ReasBook/Papers').mkdir()
             (repo / 'ReasBook/lakefile.lean').write_text('import Lake\nlean_lib Books where\n')
+            (repo / 'ReasBook/lean-toolchain').write_text('leanprover/lean4:v4.30.0\n')
             (chapter.parent.parent / 'Book.lean').write_text('import Books.Demo.Chapters.Chap01\n')
             chapter.with_suffix('.lean').write_text('import Books.Demo.Chapters.Chap01.Section01\n')
             (chapter / 'Section01.lean').write_text('import Books.Demo.Chapters.Chap01.Section01_part1\n')
@@ -612,11 +620,12 @@ class RepositoryScriptTests(unittest.TestCase):
 
             literate_path = web_root / ".literate-modules.json"
             literate = json.loads(literate_path.read_text(encoding="utf-8"))
-            self.assertEqual(literate["modules"], ["MayLike.Book", "MayLike.Chap01"])
-            self.assertFalse(
+            self.assertEqual(literate["modules"][:2], ["MayLike.Book", "MayLike.Chap01"])
+            self.assertEqual(len(literate["modules"]), 195)
+            self.assertTrue(
                 any("Definition_" in module for module in literate["modules"])
             )
-            self.assertFalse(
+            self.assertTrue(
                 any("ProofStep_" in module for module in literate["modules"])
             )
 
@@ -648,7 +657,7 @@ class RepositoryScriptTests(unittest.TestCase):
             self.assertNotIn("## Section", chapter)
             self.assertEqual(chapter.count("([Documentation]"), 193)
             self.assertEqual(chapter.count('«data-reasbook-statement» := "true"'), 193)
-            self.assertIn('```\n#check Nat\n```', chapter)
+            self.assertRegex(chapter, r'``` reasbookStatement [^\n]+\n#check Nat\n```')
             self.assertIn(
                 "/ReasBook/docs/ReasBook/MayLike/Chap01/Definition_1_1_1.html",
                 chapter,
@@ -781,7 +790,8 @@ class RepositoryScriptTests(unittest.TestCase):
                 / "MayLike"
                 / "Chap01.lean"
             ).read_text(encoding="utf-8")
-            self.assertEqual(chapter_page.count("([Documentation]"), 5)
+            self.assertEqual(chapter_page.count("([Documentation]"), 0)
+            self.assertEqual(chapter_page.count("source only (outside the published documentation root)"), 5)
             self.assertIn("/ReasBook/Books/MayLike/Parts/Chap01", chapter_page)
 
     def test_gen_sections_classifies_mixed_item_inventory_without_partial_takeover(
@@ -797,6 +807,7 @@ class RepositoryScriptTests(unittest.TestCase):
             chapter_two = book_root / "Chap02"
             chapter_one.mkdir(parents=True)
             chapter_two.mkdir()
+            (lean_root / "lean-toolchain").write_text('leanprover/lean4:v4.30.0\n')
             (lean_root / "Papers").mkdir()
             (web_root / "ReasBookSite").mkdir(parents=True)
             (lean_root / "lakefile.lean").write_text(
@@ -1051,9 +1062,10 @@ class RepositoryScriptTests(unittest.TestCase):
             manifest = json.loads(
                 (web_root / ".literate-modules.json").read_text(encoding="utf-8")
             )["modules"]
-            self.assertEqual(manifest, ["TR_LALM_theory.Algorithm_2_1.Iteration", "TR_LALM_theory.Paper"])
-            for stem in item_stems:
-                self.assertNotIn(f"TR_LALM_theory.{stem}", manifest)
+            self.assertEqual(manifest, ["TR_LALM_theory.Algorithm_2_1.Iteration", "TR_LALM_theory.Paper",
+                                        "TR_LALM_theory.Algorithm_2_1.Model",
+                                        "TR_LALM_theory.Corollary_3_8", "TR_LALM_theory.Theorem_2_9"])
+            self.assertNotIn("TR_LALM_theory.Remark_C_1", manifest)
 
             home_path = (
                 web_root
@@ -1420,7 +1432,7 @@ class RepositoryScriptTests(unittest.TestCase):
             self.assertNotIn("Demo.Results.theorem_9_9_9", manifest["modules"])
             landing = (repo / "ReasBookWeb/ReasBookSite/WorkPages/Papers/Demo.lean").read_text()
             self.assertNotIn("No separate reading sections", landing)
-            self.assertIn("theorem 2.1.4", landing)
+            self.assertIn("Theorem 2.1.4", landing)
             self.assertIn("theorem result : True", landing)
             self.assertNotIn("by trivial", landing)
 
@@ -1746,6 +1758,8 @@ class RepositoryScriptTests(unittest.TestCase):
             lean = repo / "ReasBook"
             web.mkdir()
             lean.mkdir()
+            (web / "scripts").mkdir()
+            shutil.copy2(ROOT / "ReasBookWeb/scripts/reader_attributions.py", web / "scripts/reader_attributions.py")
 
             common_python = repo / "sdk" / "common" / "bin" / "python"
             common_python.parent.mkdir(parents=True)
@@ -1808,6 +1822,7 @@ class RepositoryScriptTests(unittest.TestCase):
                 "import json, os\nfrom pathlib import Path\n"
                 'web = Path(os.environ["REASBOOK_WEB_ROOT"])\n'
                 '(web / ".literate-modules.json").write_text("{}\\n")\n'
+                '(web / ".reader-attributions.json").write_text(json.dumps({"schema_version": 1, "pages": {}}))\n'
                 '(web / ".project-fragment.json").write_text(json.dumps({'
                 '"schema_version": 1, "project": "books/Selected", '
                 '"modules": ["Books.Selected.Book"], '

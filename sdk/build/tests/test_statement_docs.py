@@ -245,6 +245,7 @@ class StatementDocumentationTests(unittest.TestCase):
             self.assertNotIn('<script>', page)
             self.assertIn(original, page)
             self.assertIn(args[3]['Demo.Item'], page)
+            self.assertIn(args[3]['Demo.Item'] + '#L3', page)
             self.assertEqual(args[1][0][1].read_text(), source)
             style = (args[0] / 'style.css').read_text()
             self.assertEqual(enrich_documentation(*args), 0)

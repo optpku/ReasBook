@@ -96,6 +96,11 @@ reasbook_log "running sdk/verso pipeline"
 REASBOOK_RUNTIME_CACHE_PREFIX=web- \
   reasbook_run_runtime "$REASBOOK_WEB_ROOT" "$VERSO_SDK" "$REASBOOK_WEB_ROOT"
 
+reasbook_log "adding Lean source attribution to full literate reading pages"
+"$REASBOOK_TOOLING_ROOT/sdk/common/bin/python" \
+  "$REASBOOK_TOOLING_ROOT/ReasBookWeb/scripts/reader_attributions.py" \
+  --site "$VERSO_OUTPUT_DIR" --manifest "$REASBOOK_WEB_ROOT/.reader-attributions.json"
+
 if [[ -n "$fragment_project" ]]; then
   # Root index is shared catalog ownership and is intentionally excluded.
   # Static assets remain beside the project routes so the fragment is locally

@@ -31,6 +31,17 @@ def sidebar_scripts():
 
 
 class SidebarInventoryTests(unittest.TestCase):
+    def test_flat_paper_files_have_explicit_ownership_and_numeric_navigation(self):
+        entries = [generator.Entry('papers', f'Book.{stem}', stem, f'book/{stem.lower()}/',
+                                   'FlatPaper', 0, 0, 0, stem.lower())
+                   for stem in ('Definition_2_1', 'Theorem_1_10', 'Lemma_1_2', 'Paper')]
+        payload = sidebar_payload(generator.emit_sections(entries, source_root=self.source))
+        paper = payload['papers'][0]
+        self.assertEqual([file['title'] for file in paper['files']],
+                         ['Lemma 1.2', 'Theorem 1.10', 'Definition 2.1'])
+        self.assertIn('book/lemma_1_2/', paper['routes'])
+        self.assertEqual(paper['home'], 'papers/flatpaper/')
+
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory()
         self.addCleanup(self.temp.cleanup)
@@ -39,10 +50,13 @@ class SidebarInventoryTests(unittest.TestCase):
         self.chapter = self.source / "Books/SidebarDemo/Chap01"
         self.chapter.mkdir(parents=True)
         (self.source / "Papers").mkdir()
+        (self.source / "lean-toolchain").write_text('leanprover/lean4:v4.30.0\n')
         (self.source / "lakefile.lean").write_text('lean_lib SidebarDemo where\n  srcDir := "Books"\n')
         (self.chapter.parent / "Book.lean").write_text("import SidebarDemo.Chap01\n")
 
     def generate(self):
+        self.chapter.with_suffix('.lean').write_text(''.join(
+            f'import SidebarDemo.Chap01.{path.stem}\n' for path in sorted(self.chapter.glob('*.lean'))))
         inventories = generator.collect_chapter_inventories(self.source)
         entries = generator.collect_entries(self.source, inventories)
         readers = generator.collect_reader_chapters(entries, inventories)
@@ -159,6 +173,36 @@ class SidebarInventoryTests(unittest.TestCase):
 @unittest.skipUnless(os.environ.get("REASBOOK_SIDEBAR_BROWSER_TEST") == "1",
                      "Set REASBOOK_SIDEBAR_BROWSER_TEST=1 to run browser checks")
 class SidebarBrowserTests(unittest.TestCase):
+    def test_flat_paper_pages_keep_file_navigation_in_main_and_fallback(self):
+        from playwright.sync_api import sync_playwright
+
+        scripts = sidebar_scripts()
+        data = {'books': [], 'papers': [{'slug': 'demo', 'title': 'Demo paper',
+            'home': 'papers/demo/', 'sections': [], 'routes': ['book/theorem_1_1/'],
+            'files': [{'title': 'Theorem 1.1', 'route': 'book/theorem_1_1/', 'module': 'Book.Theorem_1_1'}]}]}
+        with sync_playwright() as p:
+            browser = p.chromium.launch(headless=True)
+            for fallback in (False, True):
+                selected = [scripts['sidebarItemStateScript']]
+                if not fallback:
+                    selected.append(scripts['navLinkRewriteScript'])
+                selected.append(scripts['sidebarFallbackScript'])
+                init = 'window.__versoSiteRoot="/ReasBook/native/";window.__reasbookSidebarData=' + json.dumps(data) + ';'
+                html = ('<html><head><base href="/ReasBook/native/">' +
+                        ''.join('<script>' + script + '</script>' for script in [init, *selected]) +
+                        '</head><body><nav id="sidebar-nav-root"></nav><div class="main"><h1>Theorem 1.1</h1></div></body></html>')
+                page = browser.new_page()
+                errors = []
+                page.on('pageerror', lambda error: errors.append(str(error)))
+                page.route('**/*', lambda route: route.fulfill(status=200, content_type='text/html', body=html))
+                page.goto('https://preview.test/ReasBook/native/book/theorem_1_1/')
+                self.assertEqual(page.locator('.nav-work-title').inner_text(), 'Demo paper')
+                self.assertEqual(page.locator('.nav-file-item [aria-current="page"]').inner_text(), 'Theorem 1.1')
+                self.assertEqual(page.locator('#sidebar-nav-root').get_by_role('link', name='Home', exact=True).count(), 0)
+                self.assertEqual(errors, [])
+                page.close()
+            browser.close()
+
     def test_home_typography_and_contents_are_responsive_without_javascript(self):
         from playwright.sync_api import expect, sync_playwright
 
@@ -241,11 +285,16 @@ class SidebarBrowserTests(unittest.TestCase):
                                 + "".join(f"<script>{s}</script>" for s in [script, *selected])
                                 + '</head><body><header><nav id="sidebar-nav-root"></nav></header><div class="main">'
                                 + '<div class="reader-home-links"></div>'
+                                + '<a href="/all-books/" data-reader-collection>All books and papers</a>'
+                                + '<code class="hl lean block">theorem example : True</code>'
                                 + "".join(f'<div data-reasbook-statement="true" id="lemma-1-{i}" style="height:250px">Statement {i}</div>'
                                           for i in range(1, 81)) + "</div></body></html>")
                         page.route("**/*", lambda route: route.fulfill(status=200, content_type="text/html", body=html))
                         base = "https://preview.test" + prefix + chapter_route
                         page.goto(base + "#lemma-1-70")
+                        expect(page.locator('[data-reader-collection]')).to_have_attribute('href', '/all-books/')
+                        expect(page.locator('code.hl.lean.block')).to_have_attribute('tabindex', '0')
+                        expect(page.locator('code.hl.lean.block')).to_have_attribute('aria-label', 'Lean code')
                         nav = page.locator("#sidebar-nav-root")
                         self.assertEqual(nav.locator(".nav-file-item").count(), 81)
                         self.assertEqual(nav.get_by_role("link", name="Home", exact=True).count(), 0)

@@ -41,11 +41,27 @@ and then a documentation link which could lead to that empty page.
   statement kinds, within their chapter/module groups.
 - README reading links go to the named project page. A single-project build's
   root contains that same page and project title, not the shared ReasBook hub.
-- Book home pages link to stable item anchors in chapters. Chapters contain
+- Book home pages have a compact chapter directory, followed by the published
+  **Formalization contributors** roster with its catalog source. This is
+  project-level credit, distinct from textbook authors and file-level Lean
+  headers. Bundle the shared roster in the common SDK for isolated release workers;
+  consistency tests require exact parity with both main README catalogs.
+  The aggregate catalog uses the same roster and preserves distinct upstream
+  roles. Each statement card reads the actual selected source's header, not its
+  facade's or the generator's authors. Full literate routes receive the same
+  source credit below the title in a validated, idempotent post-render step.
+  Explicit project-level attribution and its evidence remain visible; missing
+  file metadata is not replaced with guessed project membership.
+  Catalogs group books and papers and accept explicit project identities so
+  attribution survives custom local routes. Flat paper reading routes retain
+  their owning project sidebar and a numerically ordered file list. Numbered
+  file headings stay short; the browser title retains the project context.
+  Native highlighted blocks are keyboard-focusable like plain excerpts.
+  Chapters contain
   numbered source statement previews with secondary Documentation/source links.
   Section-oriented chapters inline their sections' statement excerpts, including
   split parts, instead of adding another aggregation hop. The sidebar links
-  directly to these real chapter pages and stays at chapter depth. Legacy
+  directly to these real chapter pages and their per-file statement anchors. Legacy
   chapter routes remain compatible real pages, not required redirect hops.
 - Item papers show statements directly on their home page. Papers without
   separate sections expose excerpts from reachable project-owned modules, so
@@ -70,11 +86,39 @@ and then a documentation link which could lead to that empty page.
   names start with `Section`. Keep explicitly configured reading modules and
   imported facades; check generated Documentation links against the public
   root's actual documentation closure.
-- Paper statement links use the Build SDK's public-root closure, not the mere
+- Book and paper statement links use the Build SDK's public-root closure, not the mere
   existence of a source file. Keep source excerpts for numbered legacy items
   outside that closure, label them `source only`, and link to Lean source rather
   than nonexistent Documentation (for example TR-LALM's legacy remarks C.1/C.2).
   Apply the same check to the actual owner of a selected or imported clause.
+- Verso statement excerpts slice native SubVerso token trees by exact Unicode
+  source ranges. Keep tokens' term/type hovers, structure fields, constructors,
+  and source context; exclude proof bodies and proof-state panels. The lexical
+  selector chooses the excerpt but never fabricates semantic information.
+  Register checked excerpt owners as literate inputs without creating another
+  reading page per item. Load only prebuilt JSON, validate it against the actual
+  source and displayed excerpt, and fail on stale data instead of quietly
+  downgrading checked excerpts to text. Bound the decoded cache to one module.
+  Include source/config identity in generated pages so imported type changes
+  invalidate Lake's page cache even when the visible signature is unchanged.
+  Bundle the runtime and a scoped stylesheet patch with the release tooling so
+  private version-branch builds receive the same hover and mobile behavior.
+  Set Verso's own semantic color variables for keywords, constants, and local
+  variables; keep popovers in the same readable monospace palette. Do not pass
+  already highlighted HTML through a second lexical highlighter. A plain-text
+  snapshot has no term types: it must be rebuilt from its source's semantic
+  data, not described as hover-enabled after a CSS-only refresh. Acceptance
+  must exercise actual book chapters, including recall/`#check` entries, and
+  check visible variable/constant type popups as well as token colors.
+  Older Mathlib/Lean combinations can omit term metadata for the name at the
+  head of a `recall` command or for a bare global `#check` identifier. Preserve
+  original parser positions before SubVerso adjusts trailing source information,
+  then enrich that exact parser span with a native
+  constant token, using the recorded command environment, namespace, and open
+  declarations and Lean's pretty-printed type. Verify the text is unchanged.
+  Never resolve it in a different command's final namespace or
+  assign a type based on its spelling. Install this small compatibility hook in
+  the private version extractor using owned, validated, idempotent markers.
 - Use bibliographic project titles and the same root module passed to the
   documentation builder. Explicit Lake `roots` are not a reliable substitute:
   BFGS retains a real `BFGSMinimumQOrder_Liu_2026` aggregate module selected for
@@ -106,7 +150,10 @@ and then a documentation link which could lead to that empty page.
 ## Consequences
 
 Both supported doc-gen modes can show referenced mathematics without building
-all mathlib documentation or creating an additional literate target per item.
+all mathlib documentation. Native Verso hovers additionally require semantic
+extraction for each rendered, checked source module; the existing bounded,
+incremental literate stage handles these inputs. This increases first-build
+work, but adds no extra navigation layer or per-item reading page.
 `#check` expressions remain exact source evidence; this change does not extract
 the inferred type from Lean's diagnostic output. Ordinary declaration pages keep
 their existing rendering. New releases must be built and promoted for the live
