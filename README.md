@@ -29,41 +29,6 @@ paper and inspect its definitions, theorems, and proofs.
 - Post review comments on individual declarations after signing in with ReasLab;
   reading does not require an account.
 
-Docs means **Documentation**: its reading focus is mathematical **Statements**
-(definitions and theorem statements). Use a project's Docs or Verso link in the
-tables below to open its reading entry directly; the source-directory links are
-for browsing Lean files.
-Generated reading pages use project → chapter → statement anchors; chapter pages
-show source statement excerpts with proofs omitted, and mark unfinished items explicitly.
-Book home pages use a compact chapter directory, without counts or repeated items.
-Below it, **Formalization contributors** lists the published project-level
-credits with a source-roster link, separately from the textbook's authors.
-The collection catalog groups books and papers and lists each project's
-contributors from the same roster.
-Each Verso statement credits the actual Lean source header; full reading pages
-show that credit below the title. Project-level attribution is labeled explicitly,
-not presented as verified individual-file authorship; original credit sources and
-separate upstream contributions are preserved.
-Catalogs, homes, and chapters share a mathematical-reference reading style:
-clear numbered statements, restrained navigation, and secondary source/documentation links.
-The book title in the sidebar returns home; Documentation on the home page opens
-that project's documentation directly, without the all-projects directory.
-Statement-level **Lean source** links highlight the corresponding declaration's
-lines, while **Source header** stays at the authorship notice. When local previews
-reuse older Documentation, its snapshot revision is shown explicitly.
-The Verso sidebar expands each chapter into one entry per reading file, linking
-directly to its statement excerpt; unfinished items are labeled without an empty-page link.
-On mobile, use **Show contents** to open the navigation; selecting an item returns to the text.
-Numbered previews prioritize the matching statement heading; definition fields and
-inductive constructors remain visible. Documentation contents follow item-number order.
-In Verso, checked statement excerpts retain native Lean term/type hovers without
-showing proof bodies. Historical files outside the published build remain clearly
-marked **source only**, with source links and no inferred hover data.
-Semantic highlighting distinguishes keywords, constants, and local variables;
-plain-source preview snapshots need a native rebuild to provide type popups.
-Lean code blocks are keyboard-focusable for horizontal scrolling. Flat-layout
-paper reading files keep their project navigation and reference-number order.
-
 Available documentation and graph evidence vary by project and declaration.
 [Static Docs and Verso](https://reasbook.reaslab.io/artifacts/) are also available
 as a separate entry point. For self-hosting, see
