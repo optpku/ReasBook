@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+import json
 import tempfile
 import unittest
 
@@ -9,6 +10,127 @@ from reasbook_build_sdk.statement_docs import enrich_documentation, source_readi
 
 
 class StatementDocumentationTests(unittest.TestCase):
+    def reference_file(self, root, source, entries, *, module='Demo.Item', version=5):
+        references = {}
+        for spelling, owner, name in entries:
+            start = source.index(spelling)
+            row = source.count('\n', 0, start)
+            before = source[source.rfind('\n', 0, start) + 1:start]
+            column = len(before.encode('utf-16-le')) // 2
+            length = len(spelling.encode('utf-16-le')) // 2
+            key = json.dumps({'c': {'m': owner, 'n': name}})
+            references[key] = {'definition': None, 'usages': [[row, column, row, column + length]]}
+        path = root / 'Item.ilean'
+        path.write_text(json.dumps(dict(version=version, module=module, references=references)))
+        return path
+
+    def test_recall_and_check_link_resolved_constants_in_both_metadata_formats(self):
+        for version in (4, 5):
+            with self.subTest(version=version), tempfile.TemporaryDirectory() as temp:
+                root = Path(temp)
+                source = ('import Mathlib\nopen ContinuousMap.Homotopy\n'
+                          'recall evalAt : True\n#check Nat.succ\n')
+                args = self.fixture(root, {'Demo.Item': source})
+                metadata = self.reference_file(root, source, [
+                    ('evalAt', 'Mathlib.Topology.Homotopy.Path', 'ContinuousMap.Homotopy.evalAt'),
+                    ('Nat.succ', 'Init.Prelude', 'Nat.succ'),
+                ], version=version)
+                enrich_documentation(*args, reference_files={'Demo.Item': metadata})
+                page = (args[0] / 'Demo/Item.html').read_text()
+                self.assertIn('href="https://leanprover-community.github.io/mathlib4_docs/'
+                              'Mathlib/Topology/Homotopy/Path.html#ContinuousMap.Homotopy.evalAt"', page)
+                self.assertIn('>evalAt</a> : True', page)
+                self.assertIn('Init/Prelude.html#Nat.succ', page)
+                self.assertIn('Upstream documentation (current version)', page)
+                self.assertEqual(page.count('class="statement-reference"'), 2)
+                self.assertIn(args[3]['Demo.Item'] + '#L3', page)
+                self.assertEqual(enrich_documentation(*args, reference_files={'Demo.Item': metadata}), 0)
+
+    def test_local_documentation_uses_exact_existing_anchor(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            source = '#check Demo.result\n'
+            args = self.fixture(root, {'Demo.Item': source, 'Demo.Result': 'theorem Demo.result : True := trivial'},
+                                contents={'Demo.Result': '<div class="decl" id="Demo.result">result</div>'})
+            metadata = self.reference_file(root, source, [('Demo.result', 'Demo.Result', 'Demo.result')])
+            enrich_documentation(*args, reference_files={'Demo.Item': metadata})
+            page = (args[0] / 'Demo/Item.html').read_text()
+            self.assertIn('href="Result.html#Demo.result"', page)
+            self.assertNotIn('mathlib4_docs', page)
+
+    def test_utf16_ranges_link_multiline_checks_without_linking_local_variables(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            source = 'variable (n : Nat)\n#check\n  ("𝕏 <script>\u2028", Nat.succ n)\n'
+            args = self.fixture(root, {'Demo.Item': source})
+            metadata = self.reference_file(root, source, [('Nat.succ', 'Init.Prelude', 'Nat.succ')])
+            data = json.loads(metadata.read_text())
+            data['references'][json.dumps({'f': {'m': 'Demo.Item', 'n': 'n'}})] = {
+                'usages': [[2, 28, 2, 29]]}
+            metadata.write_text(json.dumps(data))
+            enrich_documentation(*args, reference_files={'Demo.Item': metadata})
+            page = (args[0] / 'Demo/Item.html').read_text()
+            self.assertIn('>Nat.succ</a> n)', page)
+            self.assertIn('&lt;script&gt;', page)
+            self.assertNotIn('<script>', page)
+            self.assertEqual(page.count('class="statement-reference"'), 1)
+
+    def test_missing_unknown_stale_or_ambiguous_metadata_does_not_guess_links(self):
+        for case in ('missing', 'unknown-version', 'wrong-module', 'stale-range', 'ambiguous'):
+            with self.subTest(case=case), tempfile.TemporaryDirectory() as temp:
+                root = Path(temp)
+                source = 'open A B\n#check foo\n'
+                args = self.fixture(root, {'Demo.Item': source})
+                entries = [('foo', 'Mathlib.A', 'A.foo')]
+                if case == 'ambiguous':
+                    entries.append(('foo', 'Mathlib.B', 'B.foo'))
+                path = self.reference_file(root, source, entries)
+                data = json.loads(path.read_text())
+                if case == 'unknown-version':
+                    data['version'] = 999
+                if case == 'wrong-module':
+                    data['module'] = 'Other.Item'
+                if case == 'stale-range':
+                    next(iter(data['references'].values()))['usages'] = [[0, 0, 0, 3]]
+                path.write_text(json.dumps(data))
+                enrich_documentation(*args, reference_files={} if case == 'missing' else {'Demo.Item': path})
+                page = (args[0] / 'Demo/Item.html').read_text()
+                self.assertIn('#check foo', page)
+                self.assertNotIn('class="statement-reference"', page)
+
+    def test_dependency_stubs_and_missing_local_anchors_are_not_link_targets(self):
+        for owner, contents, upstream in (
+            ('Demo.Other', '<div id="different"></div>', False),
+            ('Demo.Other', '<div data-reasbook-doc-stub="true" id="foo"></div>', False),
+            ('Mathlib.Other', '<div data-reasbook-doc-stub="true" id="foo"></div>', True),
+            ('Unknown.Package', '', False),
+        ):
+            with self.subTest(owner=owner, contents=contents), tempfile.TemporaryDirectory() as temp:
+                root = Path(temp)
+                source = '#check foo\n'
+                args = self.fixture(root, {'Demo.Item': source})
+                target = args[0] / Path(*owner.split('.')).with_suffix('.html')
+                target.parent.mkdir(parents=True, exist_ok=True)
+                target.write_text(contents)
+                metadata = self.reference_file(root, source, [('foo', owner, 'foo')])
+                enrich_documentation(*args, reference_files={'Demo.Item': metadata})
+                page = (args[0] / 'Demo/Item.html').read_text()
+                self.assertEqual('class="statement-reference"' in page, upstream)
+                self.assertNotIn('href="Other.html#foo"', page)
+
+    def test_reference_metadata_malformed_or_symlinked_fails_closed(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            args = self.fixture(root, {'Demo.Item': '#check Nat'})
+            invalid = root / 'bad.ilean'
+            invalid.write_text('{')
+            with self.assertRaises(BuildFailed):
+                enrich_documentation(*args, reference_files={'Demo.Item': invalid})
+            link = root / 'link.ilean'
+            link.symlink_to(invalid)
+            with self.assertRaises(BuildFailed):
+                enrich_documentation(*args, reference_files={'Demo.Item': link})
+
     def test_mutual_end_preserves_outer_scope_and_does_not_pollute_notation(self):
         for indent in ('', '  '):
             with self.subTest(indent=indent):

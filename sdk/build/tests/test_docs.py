@@ -759,6 +759,80 @@ class ProjectDocumentationTests(unittest.TestCase):
             self.assertFalse(any('--run' in command.argv for command in runner.commands))
             self.assertIn('statement_renderer_sha256', json.loads(marker.read_text()))
 
+    def test_reference_metadata_invalidates_html_without_repeating_analysis(self) -> None:
+        for modern in (True, False):
+            with self.subTest(modern=modern), tempfile.TemporaryDirectory() as temp:
+                root = Path(temp)
+                project = self._project(root, modern=modern)
+                (project / 'Books/Demo/Chapter.lean').write_text('import Mathlib\n#check Nat.succ\n')
+                output = root / 'output'
+                builder = ProjectDocumentationBuilder(runner=_DocsRunner())
+                builder.build(project, ('Books.Demo.Book',), output)
+                page = output / 'doc/Books/Demo/Chapter.html'
+                self.assertNotIn('statement-reference', page.read_text())
+                metadata = project / '.lake/build/lib/lean/Books/Demo/Chapter.ilean'
+
+                def write_metadata(owner):
+                    metadata.write_text(json.dumps({
+                        'version': 5 if modern else 4, 'module': 'Books.Demo.Chapter',
+                        'references': {json.dumps({'c': {'m': owner, 'n': 'Nat.succ'}}):
+                                       {'definition': None, 'usages': [[1, 7, 1, 15]]}},
+                    }))
+
+                write_metadata('Init.Prelude')
+                for owner in ('Init.Prelude', 'Init.Data.Nat.Basic'):
+                    write_metadata(owner)
+                    runner = _DocsRunner()
+                    builder = ProjectDocumentationBuilder(runner=runner)
+                    result = builder.build(project, ('Books.Demo.Book',), output)
+                    self.assertFalse(result.reused)
+                    self.assertIn(owner.replace('.', '/') + '.html#Nat.succ', page.read_text())
+                    if modern:
+                        self.assertFalse(any('--run' in command.argv for command in runner.commands))
+                    self.assertTrue(builder.build(project, ('Books.Demo.Book',), output).reused)
+                metadata.unlink()
+                self.assertFalse(builder.build(project, ('Books.Demo.Book',), output).reused)
+                self.assertNotIn('statement-reference', page.read_text())
+
+    def test_reference_metadata_symlink_is_rejected(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            project = self._project(root, modern=True)
+            source = project / 'Books/Demo/Chapter.lean'
+            source.write_text('#check Nat.succ\n')
+            outside = root / 'outside.ilean'
+            outside.write_text('{}')
+            metadata = project / '.lake/build/lib/lean/Books/Demo/Chapter.ilean'
+            metadata.symlink_to(outside)
+            with self.assertRaisesRegex(BuildFailed, 'unsafe reference metadata'):
+                ProjectDocumentationBuilder(runner=_DocsRunner()).build(
+                    project, ('Books.Demo.Book',), root / 'output')
+
+    def test_metadata_changed_during_render_does_not_replace_published_docs(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            project = self._project(root, modern=True)
+            (project / 'Books/Demo/Chapter.lean').write_text('import Mathlib\n#check Nat.succ\n')
+            metadata = project / '.lake/build/lib/lean/Books/Demo/Chapter.ilean'
+            metadata.write_text('{}')
+            output = root / 'output'
+            ProjectDocumentationBuilder(runner=_DocsRunner()).build(project, ('Books.Demo.Book',), output)
+            page = output / 'doc/Books/Demo/Chapter.html'
+            original = page.read_bytes()
+            metadata.write_text('{"version": 999}')
+
+            class MutatingRunner(_DocsRunner):
+                def run(self, command):
+                    result = super().run(command)
+                    if 'fromDb' in command.argv:
+                        metadata.write_text('{}')
+                    return result
+
+            with self.assertRaisesRegex(BuildFailed, 'reference metadata changed'):
+                ProjectDocumentationBuilder(runner=MutatingRunner()).build(
+                    project, ('Books.Demo.Book',), output)
+            self.assertEqual(page.read_bytes(), original)
+
     def test_compiled_artifact_changes_invalidate_docs_and_analysis(self) -> None:
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
