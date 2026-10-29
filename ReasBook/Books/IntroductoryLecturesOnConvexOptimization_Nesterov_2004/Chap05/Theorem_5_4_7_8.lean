@@ -154,7 +154,16 @@ private theorem standardLogarithmicBarrierAmbient_hasFDerivAt_gradient
         ext y
         simp [L, ContinuousLinearMap.mulLeftRight_apply, pow_two, mul_comm, mul_left_comm]
       exact hcomp.congr_fderiv hL
-    simpa [H, H'] using hinv.neg
+    have hneg :
+        HasFDerivAt
+          (fun y : Eₙ ↦ -(y i)⁻¹)
+          (((((x : Eₙ) i) ^ (2 : ℕ))⁻¹ : ℝ) •
+            (PiLp.proj (2 : ENNReal) (fun _ : Fin n ↦ ℝ) i : Eₙ →L[ℝ] ℝ))
+          (x : Eₙ) := by
+      refine hinv.neg.congr_fderiv ?_
+      ext y
+      simp
+    simpa [H, H'] using hneg
   have hToLp :
       HasFDerivAt
         (WithLp.toLp 2 : (Fin n → ℝ) → Eₙ)

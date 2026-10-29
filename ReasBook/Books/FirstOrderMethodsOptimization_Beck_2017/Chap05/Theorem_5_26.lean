@@ -1166,7 +1166,7 @@ theorem is_l_smooth_on_toReal_conjugate_function_strongDual_of_proper_closed_str
           = ‖NormedSpace.inclusionInDoubleDual ℝ E (T y - T z)‖ := by
               simp
       _ = ‖T y - T z‖ := by
-            simpa using
+            exact
               (NormedSpace.inclusionInDoubleDualLi (𝕜 := ℝ) (E := E)).norm_map (T y - T z)
       _ ≤ (1 / σ) * ‖y - z‖ := hT_lip y z
       _ = ((Real.toNNReal (1 / σ) : NNReal) : ℝ) * ‖y - z‖ := by
