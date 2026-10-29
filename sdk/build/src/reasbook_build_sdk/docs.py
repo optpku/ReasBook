@@ -407,6 +407,7 @@ class ProjectDocumentationBuilder:
             if mode == "database"
             else None
         )
+        reference_files = self._reference_files(project.root, module_sources)
         identity = {
             "schema_version": 2,
             "profile": _PROFILE,
@@ -429,6 +430,10 @@ class ProjectDocumentationBuilder:
             "mode": mode,
             "link_policy": _LINK_POLICY,
             "statement_renderer_sha256": self._sha256(Path(statement_docs.__file__)),
+            "reference_inputs": [
+                {"module": module, "sha256": self._sha256(path)}
+                for module, path in sorted(reference_files.items())
+            ],
         }
         if compiled_artifacts is not None:
             identity["compiled_artifacts"] = compiled_artifacts
@@ -460,8 +465,37 @@ class ProjectDocumentationBuilder:
                 repository=repository,
                 revision=revision,
                 module_owners=module_owners,
+                reference_files=reference_files,
                 timeout_seconds=timeout_seconds,
             )
+
+    @classmethod
+    def _reference_files(
+        cls, project_root: Path, module_sources: tuple[tuple[str, Path], ...],
+    ) -> dict[str, Path]:
+        """Use only metadata beside the same checked artifact used by docs.
+
+        This shares the existing compiler/cache trust boundary; no source-name
+        guessing or additional Lean compilation is performed. Metadata changes,
+        including a previously absent .ilean appearing, invalidate rendered docs.
+        """
+        result: dict[str, Path] = {}
+        for module, source in module_sources:
+            if not statement_docs.source_reading(source.read_text(encoding='utf-8')).references:
+                continue
+            inspection = cls.inspect_project_olean(
+                project_root, project_root / '.lake/build/lib/lean', module, source,
+            )
+            if inspection.status == 'unsafe':
+                raise BuildFailed(inspection.detail)
+            if not inspection.succeeded or inspection.artifact is None:
+                continue
+            path = inspection.artifact.with_suffix('.ilean')
+            if path.is_symlink() or (path.exists() and not path.is_file()):
+                raise BuildFailed(f'unsafe reference metadata: {path}')
+            if path.is_file():
+                result[module] = path
+        return result
 
     def _build_fresh(
         self,
@@ -477,6 +511,7 @@ class ProjectDocumentationBuilder:
         repository: str,
         revision: str,
         module_owners: dict[str, frozenset[str]],
+        reference_files: dict[str, Path],
         timeout_seconds: float,
     ) -> ProjectDocsResult:
         stage = Path(
@@ -643,10 +678,16 @@ class ProjectDocumentationBuilder:
 
                     pages = self._expected_pages(stage, modules)
                     self._validate_pages(pages)
+                    if identity['reference_inputs'] != [
+                        {'module': module, 'sha256': self._sha256(path)}
+                        for module, path in sorted(reference_files.items())
+                    ]:
+                        raise BuildFailed('reference metadata changed during documentation build')
                     statement_docs.enrich_documentation(
                         stage / "doc", module_sources, module_owners,
                         {module: self._source_uri(project_root, source, repository, revision)
                          for module, source in module_sources},
+                        reference_files=reference_files,
                     )
                     stub_count = self._close_documentation_links(
                         stage / "doc",

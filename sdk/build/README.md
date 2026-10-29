@@ -68,7 +68,13 @@ Project pages also display source-backed **Statements** for modules containing
 context, with proof bodies and unrelated implementation code omitted. These commands reuse existing mathematics and do not create declarations
 for doc-gen to list. The renderer preserves the source expression; it does not
 invent a type for `#check` or treat it as a new theorem. Existing declaration
-anchors and source attribution remain intact. Imports-only contents pages link
+anchors and source attribution remain intact. When matching compiled `.ilean`
+metadata is available, referenced constants link to an existing local declaration
+anchor or to the upstream current-version Mathlib documentation (labelled as such).
+Missing or ambiguous references remain plain text; empty dependency stubs are
+never used as these links' targets. The metadata is part of the rendered-cache
+identity and does not require additional Lean compilation.
+Imports-only contents pages link
 directly to reachable content, skipping intermediate import aggregators and empty
 leaves, ordered by item number within each chapter rather than declaration kind.
 Numbered reader previews prefer item-heading comments over citations, accept both

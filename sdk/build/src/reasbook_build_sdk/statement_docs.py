@@ -5,6 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 import html
 from html.parser import HTMLParser
+import json
 import os
 from pathlib import Path
 import re
@@ -40,6 +41,9 @@ _STYLE = """
   padding: 1em; border: 1px solid #8886; border-radius: .4em; }
 .reasbook-statements .statement-note { font-size: .9em; }
 .reasbook-statements li { margin: .4em 0; }
+.reasbook-statements .statement-reference { text-decoration: underline;
+  text-underline-offset: .15em; }
+.reasbook-statements .statement-reference:focus-visible { outline: 2px solid currentColor; }
 """
 
 
@@ -348,11 +352,143 @@ def prose_html(prose: str) -> str:
     return re.sub(r'`([^`\n]+)`', r'<code>\1</code>', html.escape(prose))
 
 
+@dataclass(frozen=True, order=True)
+class _Reference:
+    start: int
+    stop: int
+    module: str
+    name: str
+
+
+def _compiled_references(source: str, module: str, path: Path | None) -> tuple[_Reference, ...]:
+    """Read Lean's resolved constants, not guesses from `open` or short names.
+
+    The caller supplies the .ilean beside the checked module's .olean and binds
+    it into the documentation cache identity. Lean 4.26 uses format 4; 4.30+
+    uses format 5. Both store zero-based UTF-16 LSP ranges (not UTF-8 offsets).
+    Missing/unknown metadata leaves the source text intact without fake links.
+    """
+    if path is None:
+        return ()
+    if path.is_symlink() or not path.is_file():
+        raise BuildFailed(f"unsafe reference metadata: {path}")
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, ValueError) as exc:
+        raise BuildFailed(f"invalid reference metadata: {path}") from exc
+    if not isinstance(data, dict) or data.get('module') != module or data.get('version') not in (4, 5):
+        return ()
+    references = data.get('references')
+    if not isinstance(references, dict):
+        return ()
+    # Lean's LSP character positions count supplementary Unicode characters
+    # twice. Only real codepoint boundaries are accepted.
+    positions: dict[tuple[int, int], int] = {}
+    offset = 0
+    # LSP lines end at LF, not at Unicode separators inside Lean strings.
+    for row, line in enumerate(source.split('\n')):
+        column = 0
+        positions[row, column] = offset
+        for char in line:
+            column += 2 if ord(char) > 0xFFFF else 1
+            offset += 1
+            positions[row, column] = offset
+        offset += 1  # LF; the final row has no following range to map.
+    result: set[_Reference] = set()
+    for encoded, info in references.items():
+        try:
+            ident = json.loads(encoded)
+        except (TypeError, ValueError):
+            continue
+        constant = ident.get('c') if isinstance(ident, dict) else None
+        if not isinstance(constant, dict) or not isinstance(info, dict):
+            continue  # local variables are encoded as `f`, not `c`
+        owner, name = constant.get('m'), constant.get('n')
+        if not (isinstance(owner, str) and isinstance(name, str) and owner and name
+                and all(part and part not in {'.', '..'} for part in owner.split('.'))
+                and not any(char in owner for char in '/\\\x00\r\n')
+                and not name.startswith('_private.')):
+            continue
+        usages = info.get('usages', [])
+        if not isinstance(usages, list):
+            continue
+        for location in usages:
+            if not (isinstance(location, list) and len(location) in {4, 5}
+                    and all(type(n) is int and n >= 0 for n in location[:4])):
+                continue
+            start = positions.get(tuple(location[:2]))
+            stop = positions.get(tuple(location[2:4]))
+            if start is None or stop is None or not start < stop:
+                continue
+            spelling = source[start:stop].removeprefix('_root_.')
+            # Reject stale/misaligned ranges and notation expansion ranges.
+            # A resolved short name is valid even when an `open` made it short.
+            if spelling and (spelling == name or name.endswith('.' + spelling)):
+                result.add(_Reference(start, stop, owner, name))
+    return tuple(sorted(result))
+
+
+class _Anchors(HTMLParser):
+    def __init__(self, source: str) -> None:
+        super().__init__(convert_charrefs=True)
+        self.ids: set[str] = set()
+        self.stub = False
+        self.feed(source)
+
+    def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+        attributes = dict(attrs)
+        if identifier := attributes.get('id'):
+            self.ids.add(identifier)
+        self.stub |= attributes.get('data-reasbook-doc-stub') == 'true'
+
+
+def _reference_html(item: Statement, references: tuple[_Reference, ...],
+                    page: Path, doc_root: Path, anchors: dict[str, _Anchors]) -> str:
+    if not item.reference or not item.source_ranges:
+        return html.escape(item.signature)
+    start, stop = item.source_ranges[-1]
+    candidates = [ref for ref in references if start <= ref.start < ref.stop <= stop]
+    # Ambiguous/overlapping semantic ranges must never produce nested links or
+    # choose an arbitrary declaration. Leave that part of the source unlinked.
+    clean = [ref for index, ref in enumerate(candidates)
+             if not any(other.start < ref.stop and ref.start < other.stop
+                        for other in candidates[:index] + candidates[index + 1:])]
+    output: list[str] = []
+    cursor = start
+    for ref in clean:
+        relative = Path(*ref.module.split('.')).with_suffix('.html')
+        target = doc_root / relative
+        if ref.module not in anchors:
+            safe = (target.is_file() and not target.is_symlink()
+                    and doc_root.resolve() in target.resolve().parents)
+            anchors[ref.module] = _Anchors(target.read_text(encoding='utf-8') if safe else '')
+        probe = anchors[ref.module]
+        url = ''
+        title = 'Documentation: ' + ref.name
+        fragment = '#' + quote(ref.name, safe='')
+        if not probe.stub and ref.name in probe.ids:
+            url = quote(Path(os.path.relpath(target, page.parent)).as_posix(), safe='/') + fragment
+        elif ref.module.split('.')[0] in {'Mathlib', 'Init', 'Std', 'Lean', 'Batteries'}:
+            url = 'https://leanprover-community.github.io/mathlib4_docs/' + quote(relative.as_posix(), safe='/') + fragment
+            title = 'Upstream documentation (current version): ' + ref.name
+        if not url:
+            continue  # no empty dependency stubs, unknown-package guesses, or search pages
+        output.append(html.escape(item.signature[cursor - start:ref.start - start]))
+        output.append(f'<a class="statement-reference" href="{html.escape(url, quote=True)}" '
+                      f'title="{html.escape(title, quote=True)}">'
+                      f'{html.escape(item.signature[ref.start - start:ref.stop - start])}</a>')
+        cursor = ref.stop
+    output.append(html.escape(item.signature[cursor - start:]))
+    return ''.join(output)
+
+
 def enrich_documentation(
     doc_root: Path,
     module_sources: tuple[tuple[str, Path], ...],
     module_owners: dict[str, frozenset[str]],
     source_urls: dict[str, str],
+    *,
+    reference_files: dict[str, Path] | None = None,
 ) -> int:
     """Enrich a fresh, private doc-gen stage; preserve declarations and anchors.
 
@@ -396,6 +532,7 @@ def enrich_documentation(
         return sorted(found, key=_module_order)
 
     changed = 0
+    anchors: dict[str, _Anchors] = {}
     for module, page in pages.items():
         original = page.read_text(encoding="utf-8")
         if _MARKER in original:
@@ -405,6 +542,7 @@ def enrich_documentation(
         sections: list[str] = []
         if reading.references or (not reading.imports_only and not "".join(probe.text).strip()):
             source = sources[module].read_text(encoding="utf-8")
+            references = _compiled_references(source, module, (reference_files or {}).get(module))
             excerpts = statement_excerpts(source)
             if probe.declarations:
                 excerpts = tuple(item for item in excerpts if item.reference)
@@ -420,7 +558,8 @@ def enrich_documentation(
             for item in excerpts:
                 if item.prose:
                     sections.append(f'<p>{prose_html(item.prose)}</p>')
-                sections.append(f'<pre><code class="language-lean">{html.escape(item.signature)}</code></pre>')
+                signature = _reference_html(item, references, page, doc_root, anchors)
+                sections.append(f'<pre><code class="language-lean">{signature}</code></pre>')
                 if url := source_urls.get(module):
                     if url != "#":
                         target = statement_source_url(source, url, item)
