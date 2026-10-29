@@ -30,7 +30,7 @@ from pathlib import Path
 from urllib.parse import unquote, urlsplit
 
 from reader_entrypoints import write_reader_entrypoints
-from reasbook_sdk_common.catalog import catalog_page as render_catalog_page
+from reasbook_sdk_common.catalog import CatalogEntry, catalog_page as render_catalog_page
 
 
 ASSETS_DIR = Path(__file__).resolve().parent / "assets"
@@ -597,10 +597,11 @@ def project_page(
 
 
 def catalog_page(projects: list[dict[str, str]], *, has_versions: bool) -> str:
-    entries = [(display_name(project["name"]), f'./sites/{project["slug"]}/')
+    entries = [CatalogEntry(display_name(project["name"]), f'./sites/{project["slug"]}/',
+                            f'{project["kind"]}/{project["name"]}')
                for project in sorted(projects, key=lambda item: (item["kind"], item["name"].lower()))]
     if has_versions:
-        entries.append(("Published versions", "./versions/"))
+        entries.append(CatalogEntry("Published versions", "./versions/"))
     return render_catalog_page("ReasBook — Statements and Documentation", entries)
 
 

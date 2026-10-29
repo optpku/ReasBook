@@ -108,6 +108,8 @@ class SelectedStatementPreviewTests(unittest.TestCase):
             self.assertIn(f'docs/ReasBook/TR_LALM_theory/Algorithm_2_1/{owner}.html', text)
             self.assertIn(f'ReasBook/Papers/TR_LALM_theory/Algorithm_2_1/{owner}.lean', text)
         self.assertNotIn('Algorithm_2_1.html', text)
+        self.assertIn('Model.lean#L3)', text)
+        self.assertIn('Iteration.lean#L4-L6)', text)
         self.assertIn('namespace KKT', self.render('Definition_2_2'))
 
     def test_missing_selected_declaration_fails_instead_of_falling_back(self):

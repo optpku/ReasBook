@@ -11,6 +11,7 @@ ReasBookWeb/-verso-*/
 ReasBookWeb/Book/
 /ReasBookWeb/.literate-modules.json
 /ReasBookWeb/.literate-sources.json
+/ReasBookWeb/.reader-attributions.json
 /ReasBookWeb/.literate_modules.txt
 /ReasBookWeb/.literate_manifest.json
 /ReasBookWeb/.literate_failed.txt

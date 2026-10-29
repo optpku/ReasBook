@@ -15,7 +15,7 @@ from urllib.parse import unquote, urljoin, urlsplit
 import uuid
 
 from reasbook_sdk_common import atomic_write_json
-from reasbook_sdk_common.catalog import catalog_page
+from reasbook_sdk_common.catalog import CatalogEntry, catalog_page
 
 from ..errors import DeployExecutionError
 from ..git import version_key
@@ -584,8 +584,8 @@ class PagesSiteProjector:
         site: Path,
         routes: dict[str, tuple[Path | None, Path | None]],
     ) -> None:
-        catalog: list[tuple[str, str]] = []
-        docs_catalog: list[tuple[str, str]] = []
+        catalog: list[CatalogEntry] = []
+        docs_catalog: list[CatalogEntry] = []
         for project in spec.canonical_projects():
             route = routes.get(project.key)
             if route is None:
@@ -599,7 +599,7 @@ class PagesSiteProjector:
                 title = _reader_title(site / docs, title)
             if primary is not None:
                 url = spec.base_path + primary.as_posix() + ('/' if pages is not None else '')
-                catalog.append((url, title))
+                catalog.append(CatalogEntry(title, url, project.key))
                 self._write_redirect(site / "sites" / project.slug / "index.html",
                                      url, title, spec.base_path)
             if pages is not None:
@@ -610,7 +610,7 @@ class PagesSiteProjector:
                     spec.base_path,
                 )
             if docs is not None:
-                docs_catalog.append((spec.base_path + docs.as_posix(), title))
+                docs_catalog.append(CatalogEntry(title, spec.base_path + docs.as_posix(), project.key))
                 self._write_redirect(
                     site / "sites" / project.slug / "docs" / "index.html",
                     spec.base_path + docs.as_posix(),
@@ -663,10 +663,11 @@ class PagesSiteProjector:
     @staticmethod
     def _branch_index(
         branch: str,
-        routes: list[tuple[str, str]],
+        routes: list[tuple[str, str]] | list[CatalogEntry],
     ) -> str:
         return catalog_page(f"ReasBook — {branch}",
-                            [(label, url) for url, label in routes])
+                            [entry if isinstance(entry, CatalogEntry) else CatalogEntry(entry[1], entry[0])
+                             for entry in routes])
 
     def _close_internal_references(
         self,

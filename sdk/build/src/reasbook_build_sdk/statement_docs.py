@@ -8,7 +8,7 @@ from html.parser import HTMLParser
 import os
 from pathlib import Path
 import re
-from urllib.parse import quote
+from urllib.parse import quote, urldefrag
 
 from .errors import BuildFailed
 
@@ -115,6 +115,28 @@ class Statement:
     reference: bool
     # The declaration identifier as written, not an elaborated/qualified name.
     name: str = ""
+    # Unicode-codepoint offsets into the original source, in display order:
+    # active context commands followed by the selected signature. Presentation
+    # consumers can slice checked semantic data without re-elaborating a copy.
+    source_ranges: tuple[tuple[int, int], ...] = ()
+
+
+def statement_source_url(source: str, url: str, statement: Statement) -> str:
+    """Link the selected signature, not preceding context or a helper command.
+
+    Ranges are Unicode offsets into this exact source. A stale range must not
+    silently send the reader to another declaration. The URL's revision is
+    preserved; callers must provide source from that revision.
+    """
+    if not statement.source_ranges:
+        raise ValueError("statement has no source range")
+    start, stop = statement.source_ranges[-1]
+    if not (0 <= start < stop <= len(source)) or source[start:stop] != statement.signature:
+        raise ValueError("statement range does not match source")
+    first = source.count("\n", 0, start) + 1
+    last = source.count("\n", 0, stop - 1) + 1
+    fragment = f"L{first}" + (f"-L{last}" if last != first else "")
+    return urldefrag(url)[0] + "#" + fragment
 
 
 def _signature(command: str, kind: str) -> str:
@@ -164,7 +186,7 @@ def statement_excerpts(source: str, *, label: str = "") -> tuple[Statement, ...]
     """
     mask = _code_mask(source)
     commands = list(_COMMAND.finditer(mask))
-    frames: list[list[str]] = [[]]
+    frames: list[list[tuple[str, int]]] = [[]]
     statements: list[Statement] = []
     comments = list(re.finditer(r"/-(?:!|-)?(.*?)-/", source, re.DOTALL))
     command_end = 0
@@ -182,7 +204,9 @@ def statement_excerpts(source: str, *, label: str = "") -> tuple[Statement, ...]
         for comment in reversed(comments):
             if match.end() < comment.start() < code_end and not mask[comment.end():code_end].strip():
                 code_end = comment.start()
-        command = source[match.start():code_end].strip()
+        raw_command = source[match.start():code_end]
+        command_start = match.start() + len(raw_command) - len(raw_command.lstrip())
+        command = raw_command.strip()
         kind = match['kind']
         command_end = end
         # A mutual block owns an `end`, but is not namespace/notation context.
@@ -194,7 +218,7 @@ def statement_excerpts(source: str, *, label: str = "") -> tuple[Statement, ...]
                 frames.pop()
             continue
         if kind in _CONTEXT_KINDS and not re.search(r"\bin\s*$", command):
-            frames[-1].append(command)
+            frames[-1].append((command, command_start))
         if kind not in _STATEMENT_KINDS or re.search(r"\bprivate\b", mask[match.start():match.start('kind')]):
             continue
         prose = ""
@@ -211,9 +235,12 @@ def statement_excerpts(source: str, *, label: str = "") -> tuple[Statement, ...]
                 identifier = re.match(r"\s+((?:«[^»]+»|[^\s([{:=])+)", source[match.end():])
                 if identifier:
                     name = identifier[1]
+            context = tuple(item for frame in frames for item in frame)
+            ranges = tuple((start, start + len(text)) for text, start in context)
             statements.append(Statement(signature, prose,
-                                        tuple(line for frame in frames for line in frame),
-                                        kind in {"recall", "#check"}, name))
+                                        tuple(text for text, _ in context),
+                                        kind in {"recall", "#check"}, name,
+                                        (*ranges, (command_start, command_start + len(signature)))))
     if label:
         # A citation in helper prose is not the item itself. Magnus uses hyphens
         # in numbers; other books use dots, sometimes after a Chapter10 prefix.
@@ -377,7 +404,8 @@ def enrich_documentation(
         probe = _Main(original)
         sections: list[str] = []
         if reading.references or (not reading.imports_only and not "".join(probe.text).strip()):
-            excerpts = statement_excerpts(sources[module].read_text(encoding="utf-8"))
+            source = sources[module].read_text(encoding="utf-8")
+            excerpts = statement_excerpts(source)
             if probe.declarations:
                 excerpts = tuple(item for item in excerpts if item.reference)
             if excerpts:
@@ -393,6 +421,10 @@ def enrich_documentation(
                 if item.prose:
                     sections.append(f'<p>{prose_html(item.prose)}</p>')
                 sections.append(f'<pre><code class="language-lean">{html.escape(item.signature)}</code></pre>')
+                if url := source_urls.get(module):
+                    if url != "#":
+                        target = statement_source_url(source, url, item)
+                        sections.append(f'<p><a href="{html.escape(target, quote=True)}">Lean source</a></p>')
                 if item.context:
                     context = html.escape('\n'.join(item.context))
                     sections.append(f'<details><summary>Source context</summary><pre>{context}</pre></details>')
@@ -425,7 +457,7 @@ def enrich_documentation(
             continue
         url = source_urls.get(module)
         if url and url != "#":
-            sections.append(f'<p><a href="{html.escape(url, quote=True)}">Lean source</a></p>')
+            sections.append(f'<p><a href="{html.escape(url, quote=True)}">Module source</a></p>')
         block = f'<section class="reasbook-statements" {_MARKER}>' + "\n".join(sections) + '</section>'
         if probe.start is not None:
             offset = probe.start

@@ -13,4 +13,4 @@ dependencies = []
 where = ["src"]
 
 [tool.setuptools.package-data]
-reasbook_sdk_common = ["py.typed"]
+reasbook_sdk_common = ["py.typed", "project_contributors.json"]

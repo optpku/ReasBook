@@ -1,0 +1,33 @@
+{
+  "source": "https://github.com/optpku/ReasBook/blob/main/README.md#books",
+  "scope": "project",
+  "books": {
+    "AlgebraicTopology_May_1999": ["Ze Yuan", "Zichen Wang"],
+    "Analysis2_Tao_2022": ["Chenyi Li", "Min Cui", "Qiming Dai", "Shu Miao", "Wanli Ma", "Yi Yuan", "Zichen Wang", "Ziyu Wang", "Zaiwen Wen"],
+    "CombinatorialGroupTheory_Magnus_2004": ["Zichen Wang"],
+    "ConvexAnalysis_Rockafellar_1970": ["Changyu Zou", "Chenyi Li", "Guangxuan Pan", "Pengfei Hao", "Qiming Dai", "Shu Miao", "Siyuan Shao", "Suwu Wu", "Wanli Ma", "Weiran Shi", "Xinyi Guo", "Xuran Sun", "Yifan Bai", "Yijie Wang", "Yunfei Zhang", "Yunxi Duan", "Yuhao Jiang", "Zebo Liu", "Zhiyan Wang", "Zichen Wang", "Zaiwen Wen", "xdedlhqhw"],
+    "ConvexAnalysisMonotoneOperators_BauschkeCombettes_2017": ["Yifan Bai", "Zichen Wang", "Zaiwen Wen"],
+    "FirstOrderMethodsOptimization_Beck_2017": ["Shu Miao", "Zichen Wang", "Zaiwen Wen", "Zhiyan Wang", "Suwan Wu", "Changyu Zou", "Xinyi Guo", "Yunxi Duan", "Wanli Ma"],
+    "IntegerProgramming_Conforti_2014": ["Binghe Huang", "Chenglin Li", "Chenrui Yang", "Chenxi Liu", "Congyuan Lei", "Dongye Song", "Fuzhi Wang", "Haodong Zhang", "Jiangnan Song", "Jinmin Song", "Junze Qiao", "Junzhe Lai", "Kaiwen He", "Liming Han", "Lurong Yang", "Meng Zhou", "Pengqi Lei", "Renran Luo", "Siyan Chen", "Wangqi Liu", "Wenxin Zeng", "Wanli Ma", "Wenxuan Wu", "Xinru Zhu", "Xu Han", "Xutianshi Tao", "Yichao Guo", "Youyou Qin", "Yuhan Zhang", "Yushen Guo", "Yutong Zhang", "Ze Zhai", "Zheng Ma", "Zhiyong Chen", "Zichen Wang", "Zichen Xu", "Zihao Liu", "Zaiwen Wen"],
+    "IntroductiontoRealAnalysisVolumeI_JiriLebl_2025": ["Zichen Wang", "Zaiwen Wen"],
+    "IntroductoryLecturesOnConvexOptimization_Nesterov_2004": ["Chenyi Li", "Siyuan Shao", "Yijie Wang", "Feiming Wang", "Weiran Shi", "Yuhao Jiang", "Zebo Liu", "Wentao Long"],
+    "OptimizationTheoryAndMethods_SunYuan_2006": ["Chenyi Li", "Wanli Ma", "Zichen Wang"],
+    "ProbabilityTheory_Klenke_2020": ["Xuanzhi Ren", "Zichen Wang"],
+    "RiemannSurfaces_Forster_1981": ["Zichen Wang"],
+    "ComputationalMethodsInverseProblems_Vogel_2002": ["Yifan Bai", "Wanli Ma", "Zichen Wang"]
+  },
+  "papers": {
+    "DFP_wolfe_local": ["Zichen Wang"],
+    "TR_LALM_theory": ["Zichen Wang", "Zaiwen Wen"],
+    "BFGSMinimumQOrder_Liu_2026": ["Chenyi Li"],
+    "RockafellarSum_2026": ["Zichen Wang"],
+    "glowinski_admm_counterexample": ["Qiming Dai"],
+    "SmoothMinimization_Nesterov_2004": ["Wanli Ma", "Zichen Wang", "Zaiwen Wen"],
+    "OnSomeLocalRings_Maassaran_2025": ["Liang Xiao", "Haochen Ju", "Zichen Wang", "Zaiwen Wen"]
+  },
+  "additional_credits": {
+    "papers/BFGSMinimumQOrder_Liu_2026": {
+      "Imported DFP infrastructure": ["Zichen Wang"]
+    }
+  }
+}
