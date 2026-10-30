@@ -140,6 +140,66 @@ class SidebarInventoryTests(unittest.TestCase):
         self.assertIn('class := "reader-statement-links"', page)
         self.assertIn('Proofs omitted.', page)
 
+    def test_named_chapter_agrees_across_home_sidebar_and_item_reader(self):
+        book = "FirstOrderMethodsOptimization_Beck_2017"
+        chapter = self.source / "Books" / book / "Chap01"
+        chapter.mkdir(parents=True)
+        (chapter.parent / "Book.lean").write_text(f"import {book}.Chap01\n")
+        # Old aggregators repeat the book name instead of identifying the chapter.
+        (chapter.with_suffix('.lean')).write_text(
+            f"import {book}.Chap01.Definition_1_1\n"
+            "/-!\n# Chapter 01 — First-Order Methods in Optimization (Beck, 2017)\n-/\n")
+        (chapter / "Definition_1_1.lean").write_text("import Mathlib\n#check Nat\n")
+        lakefile = self.source / "lakefile.lean"
+        lakefile.write_text(lakefile.read_text() + f'lean_lib {book} where\n  srcDir := "Books"\n')
+        inventories = generator.collect_chapter_inventories(self.source)
+        entries = generator.collect_entries(self.source, inventories)
+        readers = generator.collect_reader_chapters(entries, inventories)
+        payload = sidebar_payload(generator.emit_sections(entries, readers, source_root=self.source))
+        generator.write_work_pages(self.repo, self.source, entries, readers)
+        named = next(item for item in payload['books'] if item['slug'] == book.lower())
+        title = "Chapter 01 — Vector Spaces"
+        route = named['chapters'][0]['route']
+        self.assertEqual(named['chapters'][0]['title'], title)
+        pages = self.repo / "ReasBookWeb/ReasBookSite/WorkPages/Books"
+        home = (pages / f"{book}.lean").read_text()
+        page = (pages / book / "Chap01.lean").read_text()
+        self.assertIn(f"- [{title}]({generator.portable_site_link(route)})", home)
+        self.assertIn(f'#doc (Page) "{title}"', page)
+        self.assertNotIn('1 items', home)
+        self.assertEqual(generator.chapter_title_for_book('UnknownBook', 1), 'Chapter 01')
+
+    def test_introduction_chapter_zero_keeps_its_title_and_sections(self):
+        book = "IntroductiontoRealAnalysisVolumeI_JiriLebl_2025"
+        chapter = self.source / "Books" / book / "Chap00"
+        chapter.mkdir(parents=True)
+        (chapter.parent / "Book.lean").write_text(f"import {book}.Chap00\n")
+        chapter.with_suffix('.lean').write_text(f"import {book}.Chap00.section01\n")
+        (chapter / "section01.lean").write_text("import Mathlib\n/-!\n# Section 0.1\n-/\n")
+        lakefile = self.source / "lakefile.lean"
+        lakefile.write_text(lakefile.read_text() + f'lean_lib {book} where\n  srcDir := "Books"\n')
+        entries = generator.collect_entries(self.source)
+        payload = sidebar_payload(generator.emit_sections(entries, source_root=self.source))
+        generator.write_work_pages(self.repo, self.source, entries)
+        named = next(item for item in payload['books'] if item['slug'] == book.lower())
+        self.assertEqual(named['chapters'][0]['title'], "Chapter 00 — Introduction")
+        self.assertEqual(len(named['chapters'][0]['sections']), 1)
+        home = (self.repo / f"ReasBookWeb/ReasBookSite/WorkPages/Books/{book}.lean").read_text()
+        self.assertIn("[Chapter 00 — Introduction]", home)
+        aggregation = next(entry for entry in entries if generator.is_chapter_entry(entry))
+        self.assertEqual(aggregation.title, "Chapter 00 — Introduction")
+
+    def test_nesterov_legacy_identifier_does_not_override_2018_bibliography(self):
+        book = "IntroductoryLecturesOnConvexOptimization_Nesterov_2004"
+        self.assertEqual(generator.BOOK_TITLES[book],
+                         "Lectures on Convex Optimization (Nesterov, 2018)")
+        self.assertEqual(sorted(generator.BOOK_CHAPTER_TITLES[book]), list(range(1, 8)))
+        self.assertEqual(generator.chapter_title_for_book(book, 4),
+                         "Chapter 04 — Second-Order Methods")
+        self.assertEqual(generator.chapter_title_for_book(book, 7),
+                         "Chapter 07 — Optimization in Relative Scale")
+        self.assertIn("2004", generator.PAPER_TITLES["SmoothMinimization_Nesterov_2004"])
+
     def test_theme_has_bypass_and_reading_semantics(self):
         source = (ROOT / 'ReasBookWeb/ReasBookSite.lean').read_text()
         self.assertIn('<html lang="en">', source)
@@ -214,8 +274,11 @@ class SidebarBrowserTests(unittest.TestCase):
             for tag in ('article', 'div class="frontpage"'):
                 for count in (1, 3, 20):
                     closing_tag = tag.split()[0]
-                    chapters = ''.join(f'<li><p><a href="chapter{i}/">Chapter {i:02d}</a></p></li>'
-                                       for i in range(1, count + 1))
+                    labels = [generator.chapter_title_for_book(
+                        "ConvexAnalysisMonotoneOperators_BauschkeCombettes_2017", i)
+                        for i in range(1, count + 1)]
+                    chapters = ''.join(f'<li><p><a href="chapter{i}/">{label}</a></p></li>'
+                                       for i, label in enumerate(labels, 1))
                     page.set_content(f'''<html><head><style>{css}</style></head><body>
                         <div class="main"><div class="wrap"><{tag}><h1>{title}</h1>
                         <div class="reader-home-links"><ul>
@@ -236,7 +299,7 @@ class SidebarBrowserTests(unittest.TestCase):
                             links = grid.get_by_role('link')
                             expect(links).to_have_count(count)
                             for index, link in enumerate(links.all(), 1):
-                                expect(link).to_have_text(f'Chapter {index:02d}')
+                                expect(link).to_have_text(labels[index - 1])
                                 self.assertGreaterEqual(link.bounding_box()['height'], 44)
                             docs = page.get_by_role('link', name='Documentation', exact=True)
                             self.assertEqual(docs.evaluate('n => getComputedStyle(n).color'), 'rgb(81, 64, 119)')
@@ -263,8 +326,9 @@ class SidebarBrowserTests(unittest.TestCase):
                   "source": f"ReasBook/Books/Demo/Chap01/Lemma_1_{i}.lean"}
                  for i in range(1, 81)]
         items.append({"title": 'Empty <item> "quoted"', "anchor": "", "source": "Empty.lean"})
+        chapter_title = "Chapter 01 — The Fundamental Group and Some of Its Applications"
         data = {"books": [{"slug": "demo", "title": "Demo", "home": "books/demo/", "chapters": [
-            {"title": "Chapter 01", "route": chapter_route, "items": items, "sections": []},
+            {"title": chapter_title, "route": chapter_route, "items": items, "sections": []},
             {"title": "Chapter 02", "route": "books/demo/chapters/chap02/", "items": [], "sections": []},
         ]}], "papers": []}
         with sync_playwright() as p:
@@ -302,7 +366,7 @@ class SidebarBrowserTests(unittest.TestCase):
                         expect(nav.locator("a.nav-work-title")).to_have_attribute("href", prefix + "books/demo/")
                         self.assertEqual(nav.locator(".nav-count, .nav-work, .nav-group-label").count(), 0)
                         self.assertEqual(nav.get_by_role("link", name="Documentation", exact=True).count(), 0)
-                        expect(nav.locator(".nav-chapter > summary").first).to_have_text("Chapter 01")
+                        expect(nav.locator(".nav-chapter > summary").first).to_have_text(chapter_title)
                         # Every navigation level must keep the same sans family.
                         for selector in (".nav-work-title", ".nav-chapter > summary",
                                          ".nav-chapter a[data-chapter-target]", ".nav-file-item > a"):

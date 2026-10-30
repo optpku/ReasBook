@@ -80,6 +80,9 @@ def display_name(identifier: str) -> str:
 
     if identifier == "TR_LALM_theory":
         return "TR-LALM Theory"
+    if identifier == "IntroductoryLecturesOnConvexOptimization_Nesterov_2004":
+        # Keep the historical identifier in URLs, not in the bibliography.
+        return "Lectures on Convex Optimization (Nesterov, 2018)"
 
     def humanize(value: str) -> str:
         words = value.replace("_", " ")

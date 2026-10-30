@@ -431,6 +431,14 @@ class RepositoryScriptTests(unittest.TestCase):
 
     def test_catalog_display_names_preserve_bibliographic_structure(self) -> None:
         self.assertEqual(
+            assemble.display_name("IntroductoryLecturesOnConvexOptimization_Nesterov_2004"),
+            "Lectures on Convex Optimization (Nesterov, 2018)",
+        )
+        self.assertEqual(
+            assemble.display_name("SmoothMinimization_Nesterov_2004"),
+            "Smooth Minimization (Nesterov, 2004)",
+        )
+        self.assertEqual(
             assemble.display_name("RiemannSurfaces_Forster_1981"),
             "Riemann Surfaces (Forster, 1981)",
         )
