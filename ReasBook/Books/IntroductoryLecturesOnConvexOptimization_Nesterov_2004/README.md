@@ -1,6 +1,11 @@
-# Introductory Lectures on Convex Optimization: A Basic Course
+# Lectures on Convex Optimization
 
-Yurii Nesterov, first edition (2004), Springer.
+Yurii Nesterov, second edition (2018), Springer.
+
+The seven-chapter layout follows the [2018 second edition](https://link.springer.com/book/10.1007/978-3-319-91578-4),
+not the four-chapter 2004 first edition. The historical directory and module ID
+`IntroductoryLecturesOnConvexOptimization_Nesterov_2004` is retained for link and
+import compatibility; it is not the bibliographic title or publication year.
 
 Lean 4 formalization of the definitions, algorithms, lemmas, and main complexity
 results across Chapters 1–7. The imported source is adapted to the stable Lean and
