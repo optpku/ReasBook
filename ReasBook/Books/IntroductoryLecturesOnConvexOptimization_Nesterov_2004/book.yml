@@ -1,12 +1,12 @@
 schema_version: 1
 id: IntroductoryLecturesOnConvexOptimization_Nesterov_2004
-title: "Introductory Lectures on Convex Optimization: A Basic Course"
+title: "Lectures on Convex Optimization"
 authors:
 - Yurii Nesterov
-edition: 1st ed.
+edition: 2nd ed.
 publisher: Springer
-year: 2004
-isbn: null
+year: 2018
+isbn: "978-3-319-91577-7"
 toolchain: leanprover/lean4:v4.30.0
 mathlib: v4.30.0
 branch: v4.30.0
