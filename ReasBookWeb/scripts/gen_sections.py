@@ -150,7 +150,7 @@ BOOK_TITLES = {
     "CombinatorialGroupTheory_Magnus_2004": "Combinatorial Group Theory (Magnus, Karrass and Solitar, 2004)",
     "ConvexAnalysisMonotoneOperators_BauschkeCombettes_2017": "Convex Analysis and Monotone Operator Theory in Hilbert Spaces (Bauschke and Combettes, 2017)",
     "FirstOrderMethodsOptimization_Beck_2017": "First-Order Methods in Optimization (Beck, 2017)",
-    "IntroductoryLecturesOnConvexOptimization_Nesterov_2004": "Introductory Lectures on Convex Optimization (Nesterov, 2004)",
+    "IntroductoryLecturesOnConvexOptimization_Nesterov_2004": "Lectures on Convex Optimization (Nesterov, 2018)",
     "OptimizationTheoryAndMethods_SunYuan_2006": "Optimization Theory and Methods: Nonlinear Programming (Sun and Yuan, 2006)",
     "RiemannSurfaces_Forster_1981": "Lectures on Riemann Surfaces (Forster, 1981)",
     "ConvexAnalysis_Rockafellar_1970": "Convex Analysis (Rockafellar, 1970)",
@@ -250,8 +250,8 @@ BOOK_CHAPTER_TITLES = {
     "IntroductoryLecturesOnConvexOptimization_Nesterov_2004": {
         # This project's actual seven-chapter layout matches the 2018 edition,
         # including Ch. 4 (Hessian methods), 6 (Fenchel smoothing) and 7 (relative
-        # accuracy). The 2004 edition has four chapters. Preserve its existing
-        # project ID; correcting the bibliographic metadata is a separate task.
+        # accuracy). The 2004 edition has four chapters. Bibliographic metadata
+        # uses the 2018 edition; the existing project ID is compatibility-only.
         # https://doi.org/10.1007/978-3-319-91578-4
         1: "Nonlinear Optimization",
         2: "Smooth Convex Optimization",

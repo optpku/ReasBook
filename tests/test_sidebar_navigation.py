@@ -189,6 +189,17 @@ class SidebarInventoryTests(unittest.TestCase):
         aggregation = next(entry for entry in entries if generator.is_chapter_entry(entry))
         self.assertEqual(aggregation.title, "Chapter 00 — Introduction")
 
+    def test_nesterov_legacy_identifier_does_not_override_2018_bibliography(self):
+        book = "IntroductoryLecturesOnConvexOptimization_Nesterov_2004"
+        self.assertEqual(generator.BOOK_TITLES[book],
+                         "Lectures on Convex Optimization (Nesterov, 2018)")
+        self.assertEqual(sorted(generator.BOOK_CHAPTER_TITLES[book]), list(range(1, 8)))
+        self.assertEqual(generator.chapter_title_for_book(book, 4),
+                         "Chapter 04 — Second-Order Methods")
+        self.assertEqual(generator.chapter_title_for_book(book, 7),
+                         "Chapter 07 — Optimization in Relative Scale")
+        self.assertIn("2004", generator.PAPER_TITLES["SmoothMinimization_Nesterov_2004"])
+
     def test_theme_has_bypass_and_reading_semantics(self):
         source = (ROOT / 'ReasBookWeb/ReasBookSite.lean').read_text()
         self.assertIn('<html lang="en">', source)
