@@ -304,6 +304,98 @@ lemma gaussMarkovTraceCompletion
   rw [hTraceRight, hTraceLeft] at hRemainder
   linarith
 
+/-- The Gauss-Markov estimator belongs to the Chapter 4 BLUE admissible class under the
+hypotheses of Theorem 4.32. -/
+theorem isBestLinearUnbiasedEstimator_gaussMarkov_mem_blueAdmissibleSet
+    {μ : MeasureTheory.Measure Ω} [MeasureTheory.IsProbabilityMeasure μ]
+    {x : EuclideanSpace ℝ n} {K : Matrix m n ℝ} {C_N : Matrix m m ℝ}
+    {N Z : Ω → EuclideanSpace ℝ m}
+    (h_fullRank : Function.Injective K.toEuclideanLin)
+    (hC_N : IsUnit C_N)
+    (hN_memLp : MeasureTheory.MemLp N 2 μ)
+    (hN_mean_zero : μ[N] = 0)
+    (hN_cov : covarianceMatrix μ N = C_N)
+    (h_model : Z = fun ω ↦ K.toEuclideanLin x + N ω) :
+    linearEstimator (gaussMarkovOperator K C_N) Z ∈ blueAdmissibleSet K μ x Z := by
+  have hC_N_posDef : C_N.PosDef := covarianceMatrixPosDef_of_isUnit hN_memLp hN_cov hC_N
+  set B : Matrix n m ℝ := gaussMarkovOperator K C_N with hB
+  have hBK : B * K = 1 := gaussMarkovOperator_mul h_fullRank hC_N_posDef
+  rw [mem_blueAdmissibleSet_iff]
+  refine ⟨⟨B, rfl, hBK⟩, ?_, ?_⟩
+  · -- Unbiasedness: split the deterministic signal from the zero-mean noise.
+    have hNint : MeasureTheory.Integrable N μ := hN_memLp.integrable (by norm_num)
+    have hBNint : MeasureTheory.Integrable (fun ω => B.toEuclideanLin (N ω)) μ :=
+      (hN_memLp.continuousLinearMap_comp
+        B.toEuclideanLin.toContinuousLinearMap).integrable (by norm_num)
+    have hsplit : linearEstimator B Z =
+        fun ω => B.toEuclideanLin (K.toEuclideanLin x) + B.toEuclideanLin (N ω) := by
+      funext ω
+      rw [linearEstimator_apply, h_model]
+      simp
+    rw [hsplit, MeasureTheory.integral_add (MeasureTheory.integrable_const _) hBNint,
+      MeasureTheory.integral_const]
+    have hBNzero : ∫ ω, B.toEuclideanLin (N ω) ∂μ = 0 := by
+      have hcomm : ∫ ω, B.toEuclideanLin (N ω) ∂μ =
+          B.toEuclideanLin (∫ ω, N ω ∂μ) :=
+        ContinuousLinearMap.integral_comp_comm
+          (B.toEuclideanLin : EuclideanSpace ℝ m →ₗ[ℝ] EuclideanSpace ℝ n).toContinuousLinearMap hNint
+      rw [hcomm, hN_mean_zero, map_zero]
+    rw [hBNzero, add_zero]
+    have hμuniv : μ.real Set.univ = 1 := by simp
+    rw [hμuniv, one_smul]
+    rw [toEuclideanLin_mul_apply, hBK]
+    simp
+  · -- Finite second moment: a continuous linear image of an `L²` vector.
+    have hZ_memLp : MeasureTheory.MemLp Z 2 μ := by
+      rw [h_model]
+      have hconst : MeasureTheory.MemLp (fun _ : Ω => K.toEuclideanLin x) 2 μ :=
+        MeasureTheory.memLp_const _
+      exact hconst.add hN_memLp
+    have hcomp : MeasureTheory.MemLp (fun ω => B.toEuclideanLin (Z ω)) 2 μ :=
+      hZ_memLp.continuousLinearMap_comp B.toEuclideanLin.toContinuousLinearMap
+    have hEqfun : linearEstimator B Z = fun ω => B.toEuclideanLin (Z ω) := rfl
+    rw [hEqfun]
+    exact hcomp
+
+/-- The Gauss-Markov estimator minimizes `blueObjective μ x` on the Chapter 4 BLUE admissible
+class under the hypotheses of Theorem 4.32. -/
+theorem isBestLinearUnbiasedEstimator_gaussMarkov_optimal
+    {μ : MeasureTheory.Measure Ω} [MeasureTheory.IsProbabilityMeasure μ]
+    {x : EuclideanSpace ℝ n} {K : Matrix m n ℝ} {C_N : Matrix m m ℝ}
+    {N Z : Ω → EuclideanSpace ℝ m}
+    (h_fullRank : Function.Injective K.toEuclideanLin)
+    (hC_N : IsUnit C_N)
+    (hN_memLp : MeasureTheory.MemLp N 2 μ)
+    (hN_mean_zero : μ[N] = 0)
+    (hN_cov : covarianceMatrix μ N = C_N)
+    (h_model : Z = fun ω ↦ K.toEuclideanLin x + N ω) :
+    IsMinOn (blueObjective μ x) (blueAdmissibleSet K μ x Z)
+      (linearEstimator (gaussMarkovOperator K C_N) Z) := by
+  have hC_N_posDef : C_N.PosDef := covarianceMatrixPosDef_of_isUnit hN_memLp hN_cov hC_N
+  set B0 : Matrix n m ℝ := gaussMarkovOperator K C_N with hB0
+  have hB0K : B0 * K = 1 := gaussMarkovOperator_mul h_fullRank hC_N_posDef
+  intro Xhat hX
+  simp only [Set.mem_setOf_eq]
+  -- Every admissible estimator is `B Z` with `B * K = 1`.
+  rw [mem_blueAdmissibleSet_iff] at hX
+  obtain ⟨⟨B, hXeq, hBK⟩, _hmean, _hmem⟩ := hX
+  subst hXeq
+  have hB : blueObjective μ x (linearEstimator B Z) =
+      Matrix.trace (B * C_N * Bᵀ) :=
+    blueObjective_eq_trace_of_unbiasedLinearEstimator B hBK hN_memLp hN_mean_zero hN_cov h_model
+  have hB0eq : blueObjective μ x (linearEstimator B0 Z) =
+      Matrix.trace (B0 * C_N * B0ᵀ) :=
+    blueObjective_eq_trace_of_unbiasedLinearEstimator B0 hB0K hN_memLp hN_mean_zero hN_cov h_model
+  rw [hB, hB0eq]
+  -- Completion of squares: the remainder trace is nonnegative.
+  have hcomp := gaussMarkovTraceCompletion B h_fullRank hC_N_posDef hBK
+  have hpsd : ((B - B0) * C_N * (B - B0)ᵀ).PosSemidef := by
+    have h := hC_N_posDef.posSemidef.mul_mul_conjTranspose_same (B - B0)
+    simpa using h
+  have hnn : 0 ≤ Matrix.trace ((B - B0) * C_N * (B - B0)ᵀ) :=
+    Matrix.PosSemidef.trace_nonneg hpsd
+  linarith
+
 /-- thm_4_32 (Theorem 4.32, Gauss-Markov). Under the linear observation model
 `Z = fun ω ↦ K.toEuclideanLin x + N ω` with zero-mean noise of covariance `C_N`,
 nonsingular `C_N`, and full-rank `K`, the estimator
@@ -319,37 +411,12 @@ theorem isBestLinearUnbiasedEstimator_gaussMarkov
     (hN_mean_zero : μ[N] = 0)
     (hN_cov : covarianceMatrix μ N = C_N)
     (h_model : Z = fun ω ↦ K.toEuclideanLin x + N ω) :
-    IsBestLinearUnbiasedEstimator μ x Z
-      (linearEstimator (gaussMarkovOperator K C_N) Z) := sorry
-
-/-- The Gauss-Markov estimator belongs to the Chapter 4 BLUE admissible class under the
-hypotheses of Theorem 4.32. -/
-theorem isBestLinearUnbiasedEstimator_gaussMarkov_mem_blueAdmissibleSet
-    {μ : MeasureTheory.Measure Ω} [MeasureTheory.IsProbabilityMeasure μ]
-    {x : EuclideanSpace ℝ n} {K : Matrix m n ℝ} {C_N : Matrix m m ℝ}
-    {N Z : Ω → EuclideanSpace ℝ m}
-    (h_fullRank : Function.Injective K.toEuclideanLin)
-    (hC_N : IsUnit C_N)
-    (hN_memLp : MeasureTheory.MemLp N 2 μ)
-    (hN_mean_zero : μ[N] = 0)
-    (hN_cov : covarianceMatrix μ N = C_N)
-    (h_model : Z = fun ω ↦ K.toEuclideanLin x + N ω) :
-    linearEstimator (gaussMarkovOperator K C_N) Z ∈ blueAdmissibleSet μ x Z := sorry
-
-/-- The Gauss-Markov estimator minimizes `blueObjective μ x` on the Chapter 4 BLUE admissible
-class under the hypotheses of Theorem 4.32. -/
-theorem isBestLinearUnbiasedEstimator_gaussMarkov_optimal
-    {μ : MeasureTheory.Measure Ω} [MeasureTheory.IsProbabilityMeasure μ]
-    {x : EuclideanSpace ℝ n} {K : Matrix m n ℝ} {C_N : Matrix m m ℝ}
-    {N Z : Ω → EuclideanSpace ℝ m}
-    (h_fullRank : Function.Injective K.toEuclideanLin)
-    (hC_N : IsUnit C_N)
-    (hN_memLp : MeasureTheory.MemLp N 2 μ)
-    (hN_mean_zero : μ[N] = 0)
-    (hN_cov : covarianceMatrix μ N = C_N)
-    (h_model : Z = fun ω ↦ K.toEuclideanLin x + N ω) :
-    IsMinOn (blueObjective μ x) (blueAdmissibleSet μ x Z)
-      (linearEstimator (gaussMarkovOperator K C_N) Z) := sorry
+    IsBestLinearUnbiasedEstimator K μ x Z
+      (linearEstimator (gaussMarkovOperator K C_N) Z) :=
+  ⟨isBestLinearUnbiasedEstimator_gaussMarkov_mem_blueAdmissibleSet
+      h_fullRank hC_N hN_memLp hN_mean_zero hN_cov h_model,
+    isBestLinearUnbiasedEstimator_gaussMarkov_optimal
+      h_fullRank hC_N hN_memLp hN_mean_zero hN_cov h_model⟩
 
 end
 

@@ -24,7 +24,7 @@ variable {m : Type w} [Fintype m] [DecidableEq m]
 
 /-- The estimator obtained by applying the coefficient matrix `B` to the observed random vector
 `Z`. -/
-def linearEstimator (B : Matrix n m ℝ) (Z : Ω → EuclideanSpace ℝ m) :
+@[expose] def linearEstimator (B : Matrix n m ℝ) (Z : Ω → EuclideanSpace ℝ m) :
     Ω → EuclideanSpace ℝ n :=
   fun ω ↦ B.toEuclideanLin (Z ω)
 
