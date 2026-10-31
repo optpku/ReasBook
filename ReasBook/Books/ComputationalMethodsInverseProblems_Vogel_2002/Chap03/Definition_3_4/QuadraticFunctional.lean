@@ -55,7 +55,34 @@ theorem hasFDerivAt_quadraticMatrixTerm
     (A : Matrix n n ℝ) (hA : A.IsSymm) (f : EuclideanSpace ℝ n) :
     HasFDerivAt
       (fun x : EuclideanSpace ℝ n ↦ (1 / 2 : ℝ) * inner ℝ (A.toEuclideanLin x) x)
-      ((InnerProductSpace.toDual ℝ (EuclideanSpace ℝ n)) (A.toEuclideanLin f)) f := sorry
+      ((InnerProductSpace.toDual ℝ (EuclideanSpace ℝ n)) (A.toEuclideanLin f)) f := by
+  -- `A.toEuclideanLin` is self-adjoint because `A` is symmetric.
+  have hadj : A.toEuclideanLin.adjoint = A.toEuclideanLin := by
+    rw [(Matrix.toEuclideanLin_conjTranspose_eq_adjoint A).symm]
+    have hA' : A.conjTranspose = A := by simpa [Matrix.IsSymm] using hA
+    rw [hA']
+  have hsymm : ∀ x y : EuclideanSpace ℝ n,
+      inner ℝ (A.toEuclideanLin x) y = inner ℝ x (A.toEuclideanLin y) := by
+    intro x y
+    conv_lhs => rw [← hadj]
+    exact LinearMap.adjoint_inner_left A.toEuclideanLin y x
+  have hM : HasFDerivAt (fun x : EuclideanSpace ℝ n ↦ A.toEuclideanLin x)
+      (A.toEuclideanLin : EuclideanSpace ℝ n →ₗ[ℝ] EuclideanSpace ℝ n).toContinuousLinearMap f :=
+    (A.toEuclideanLin : EuclideanSpace ℝ n →ₗ[ℝ] EuclideanSpace ℝ n).toContinuousLinearMap.hasFDerivAt
+  have hid : HasFDerivAt (fun x : EuclideanSpace ℝ n ↦ x)
+      (1 : EuclideanSpace ℝ n →L[ℝ] EuclideanSpace ℝ n) f := hasFDerivAt_id f
+  have hprod := HasFDerivAt.inner (𝕜 := ℝ) hM hid
+  refine (hprod.const_mul (1 / 2 : ℝ)).congr_fderiv ?_
+  ext h
+  -- Evaluate both sides on a test direction.
+  simp only [ContinuousLinearMap.coe_comp, Function.comp_apply, ContinuousLinearMap.prod_apply,
+    ContinuousLinearMap.smul_apply, ContinuousLinearMap.one_apply, fderivInnerCLM_apply,
+    InnerProductSpace.toDual_apply_apply, smul_eq_mul]
+  show (1 / 2 : ℝ) *
+      (inner ℝ (A.toEuclideanLin f) h + inner ℝ (A.toEuclideanLin h) f) =
+    inner ℝ (A.toEuclideanLin f) h
+  rw [hsymm h f, real_inner_comm (A.toEuclideanLin f) h]
+  ring
 
 /-- Helper for Definition 3.4: the Fréchet derivative of a symmetric quadratic
 functional is the Riesz functional represented by `b + A.toEuclideanLin f`. -/
@@ -63,19 +90,61 @@ theorem fderiv_quadraticFunctional
     (c : ℝ) (b : EuclideanSpace ℝ n) (A : Matrix n n ℝ)
     (hA : A.IsSymm) (f : EuclideanSpace ℝ n) :
     fderiv ℝ (quadraticFunctional c b A) f =
-      (InnerProductSpace.toDual ℝ (EuclideanSpace ℝ n)) (b + A.toEuclideanLin f) := sorry
+      (InnerProductSpace.toDual ℝ (EuclideanSpace ℝ n)) (b + A.toEuclideanLin f) := by
+  have hconst : HasFDerivAt (fun _ : EuclideanSpace ℝ n => c) (0 : EuclideanSpace ℝ n →L[ℝ] ℝ) f :=
+    hasFDerivAt_const c f
+  have hlin : HasFDerivAt (fun x : EuclideanSpace ℝ n => inner ℝ b x)
+      ((InnerProductSpace.toDual ℝ (EuclideanSpace ℝ n)) b) f :=
+    (InnerProductSpace.toDual ℝ (EuclideanSpace ℝ n) b).hasFDerivAt
+  have hquad := hasFDerivAt_quadraticMatrixTerm A hA f
+  have hsum : HasFDerivAt
+      (fun x : EuclideanSpace ℝ n =>
+        c + inner ℝ b x + (1 / 2 : ℝ) * inner ℝ (A.toEuclideanLin x) x)
+      (0 + (InnerProductSpace.toDual ℝ (EuclideanSpace ℝ n)) b +
+        (InnerProductSpace.toDual ℝ (EuclideanSpace ℝ n)) (A.toEuclideanLin f)) f :=
+    (hconst.add hlin).add hquad
+  have hfun : (fun x : EuclideanSpace ℝ n =>
+        c + inner ℝ b x + (1 / 2 : ℝ) * inner ℝ (A.toEuclideanLin x) x) =
+      quadraticFunctional c b A := rfl
+  rw [← hfun, hsum.fderiv]
+  simp [map_add]
 
 /-- If `A` is symmetric, then the gradient of `quadraticFunctional c b A` is
 `f ↦ b + A.toEuclideanLin f`. -/
 theorem gradient_quadraticFunctional (c : ℝ) (b : EuclideanSpace ℝ n) (A : Matrix n n ℝ)
     (hA : A.IsSymm) (f : EuclideanSpace ℝ n) :
-    gradient (quadraticFunctional c b A) f = b + A.toEuclideanLin f := sorry
+    gradient (quadraticFunctional c b A) f = b + A.toEuclideanLin f := by
+  rw [gradient, fderiv_quadraticFunctional c b A hA f]
+  exact (InnerProductSpace.toDual ℝ (EuclideanSpace ℝ n)).symm_apply_apply _
 
 /-- If `A` is symmetric, then the Hessian of `quadraticFunctional c b A`
 applied to any vector agrees with `A.toEuclideanLin`. -/
 theorem hessian_quadraticFunctional (c : ℝ) (b : EuclideanSpace ℝ n) (A : Matrix n n ℝ)
     (hA : A.IsSymm) (f h : EuclideanSpace ℝ n) :
-    hessian (quadraticFunctional c b A) f h = A.toEuclideanLin h := sorry
+    hessian (quadraticFunctional c b A) f h = A.toEuclideanLin h := by
+  refine ext_inner_right (𝕜 := ℝ) (fun k => ?_)
+  rw [hessian_inner]
+  -- The first derivative is `x ↦ toDual (b + A x)`, hence the second derivative is `h ↦ toDual (A h)`.
+  have hJ : fderiv ℝ (quadraticFunctional c b A) =
+      fun x => (InnerProductSpace.toDual ℝ (EuclideanSpace ℝ n)) (b + A.toEuclideanLin x) := by
+    funext x
+    exact fderiv_quadraticFunctional c b A hA x
+  rw [hJ]
+  have hM : HasFDerivAt (fun x : EuclideanSpace ℝ n => A.toEuclideanLin x)
+      (A.toEuclideanLin : EuclideanSpace ℝ n →ₗ[ℝ] EuclideanSpace ℝ n).toContinuousLinearMap f :=
+    (A.toEuclideanLin : EuclideanSpace ℝ n →ₗ[ℝ] EuclideanSpace ℝ n).toContinuousLinearMap.hasFDerivAt
+  have hinner : HasFDerivAt (fun x : EuclideanSpace ℝ n => b + A.toEuclideanLin x)
+      (A.toEuclideanLin : EuclideanSpace ℝ n →ₗ[ℝ] EuclideanSpace ℝ n).toContinuousLinearMap f := by
+    fun_prop
+  let T : EuclideanSpace ℝ n →L[ℝ] (EuclideanSpace ℝ n →L[ℝ] ℝ) :=
+    (InnerProductSpace.toDual ℝ (EuclideanSpace ℝ n)).toLinearIsometry.toContinuousLinearMap
+  have hcomp : HasFDerivAt
+      (fun x : EuclideanSpace ℝ n =>
+        (InnerProductSpace.toDual ℝ (EuclideanSpace ℝ n)) (b + A.toEuclideanLin x))
+      (T.comp (A.toEuclideanLin : EuclideanSpace ℝ n →ₗ[ℝ] EuclideanSpace ℝ n).toContinuousLinearMap) f :=
+    T.hasFDerivAt.comp f hinner
+  rw [hcomp.fderiv]
+  rfl
 
 /-- The canonical minimizer of `quadraticFunctional c b A` is the solution of
 `A f = -b`. -/
