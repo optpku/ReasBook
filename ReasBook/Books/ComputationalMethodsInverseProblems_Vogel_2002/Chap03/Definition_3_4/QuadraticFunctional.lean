@@ -49,6 +49,18 @@ theorem isQuadraticFunctional_iff (J : EuclideanSpace ℝ n → ℝ) :
       ∃ (c : ℝ) (b : EuclideanSpace ℝ n) (A : Matrix n n ℝ), A.IsSymm ∧
         J = quadraticFunctional c b A := Iff.rfl
 
+/-- Helper for Definition 3.4: a symmetric matrix induces a self-adjoint Euclidean linear map,
+so the associated quadratic form satisfies `⟪A x, y⟫ = ⟪x, A y⟫`. -/
+theorem inner_toEuclideanLin_eq (A : Matrix n n ℝ) (hA : A.IsSymm)
+    (x y : EuclideanSpace ℝ n) :
+    inner ℝ (A.toEuclideanLin x) y = inner ℝ x (A.toEuclideanLin y) := by
+  have hadj : A.toEuclideanLin.adjoint = A.toEuclideanLin := by
+    rw [(Matrix.toEuclideanLin_conjTranspose_eq_adjoint A).symm]
+    have hA' : A.conjTranspose = A := by simpa [Matrix.IsSymm] using hA
+    rw [hA']
+  conv_lhs => rw [← hadj]
+  exact LinearMap.adjoint_inner_left A.toEuclideanLin y x
+
 /-- Helper for Definition 3.4: the pure quadratic matrix term has derivative
 `InnerProductSpace.toDual ℝ (A.toEuclideanLin f)` when `A` is symmetric. -/
 theorem hasFDerivAt_quadraticMatrixTerm
@@ -56,16 +68,9 @@ theorem hasFDerivAt_quadraticMatrixTerm
     HasFDerivAt
       (fun x : EuclideanSpace ℝ n ↦ (1 / 2 : ℝ) * inner ℝ (A.toEuclideanLin x) x)
       ((InnerProductSpace.toDual ℝ (EuclideanSpace ℝ n)) (A.toEuclideanLin f)) f := by
-  -- `A.toEuclideanLin` is self-adjoint because `A` is symmetric.
-  have hadj : A.toEuclideanLin.adjoint = A.toEuclideanLin := by
-    rw [(Matrix.toEuclideanLin_conjTranspose_eq_adjoint A).symm]
-    have hA' : A.conjTranspose = A := by simpa [Matrix.IsSymm] using hA
-    rw [hA']
   have hsymm : ∀ x y : EuclideanSpace ℝ n,
-      inner ℝ (A.toEuclideanLin x) y = inner ℝ x (A.toEuclideanLin y) := by
-    intro x y
-    conv_lhs => rw [← hadj]
-    exact LinearMap.adjoint_inner_left A.toEuclideanLin y x
+      inner ℝ (A.toEuclideanLin x) y = inner ℝ x (A.toEuclideanLin y) :=
+    inner_toEuclideanLin_eq A hA
   have hM : HasFDerivAt (fun x : EuclideanSpace ℝ n ↦ A.toEuclideanLin x)
       (A.toEuclideanLin : EuclideanSpace ℝ n →ₗ[ℝ] EuclideanSpace ℝ n).toContinuousLinearMap f :=
     (A.toEuclideanLin : EuclideanSpace ℝ n →ₗ[ℝ] EuclideanSpace ℝ n).toContinuousLinearMap.hasFDerivAt
@@ -157,7 +162,12 @@ def quadraticFunctionalMinimizer (b : EuclideanSpace ℝ n) (A : Matrix n n ℝ)
 stationary equation for the quadratic gradient. -/
 theorem quadraticFunctionalCriticalPoint
     (b : EuclideanSpace ℝ n) (A : Matrix n n ℝ) (hspd : A.PosDef) :
-    b + A.toEuclideanLin (-(A⁻¹).toEuclideanLin b) = 0 := sorry
+    b + A.toEuclideanLin (-(A⁻¹).toEuclideanLin b) = 0 := by
+  have hdet : IsUnit A.det := isUnit_iff_ne_zero.mpr (ne_of_gt (Matrix.PosDef.det_pos hspd))
+  have hmap : A.toEuclideanLin ((A⁻¹).toEuclideanLin b) = b := by
+    rw [Matrix.toEuclideanLin_apply, Matrix.toEuclideanLin_apply]
+    simp [Matrix.mulVec_mulVec, Matrix.mul_nonsing_inv (A := A) hdet]
+  rw [map_neg, hmap, add_neg_cancel]
 
 /-- The canonical minimizer satisfies the stationary equation for the quadratic
 gradient. -/
@@ -173,7 +183,11 @@ theorem quadraticFunctional_increment_eq_base_add_linear_add_half_inner
     {f0 h : EuclideanSpace ℝ n} (hA : A.IsSymm) :
     quadraticFunctional c b A (f0 + h) =
       quadraticFunctional c b A f0 + inner ℝ (b + A.toEuclideanLin f0) h +
-        (1 / 2 : ℝ) * inner ℝ (A.toEuclideanLin h) h := sorry
+        (1 / 2 : ℝ) * inner ℝ (A.toEuclideanLin h) h := by
+  rw [quadraticFunctional_def, quadraticFunctional_def, map_add]
+  simp only [inner_add_left, inner_add_right]
+  rw [inner_toEuclideanLin_eq A hA h f0, real_inner_comm (A.toEuclideanLin f0) h]
+  ring
 
 /-- Helper for Definition 3.4: translating a symmetric quadratic functional by
 any critical point leaves only the pure quadratic remainder. -/
@@ -182,7 +196,9 @@ theorem quadraticFunctional_translate_eq_base_add_half_inner
     {f0 h : EuclideanSpace ℝ n} (hA : A.IsSymm)
     (hcrit : b + A.toEuclideanLin f0 = 0) :
     quadraticFunctional c b A (f0 + h) =
-      quadraticFunctional c b A f0 + (1 / 2 : ℝ) * inner ℝ (A.toEuclideanLin h) h := sorry
+      quadraticFunctional c b A f0 + (1 / 2 : ℝ) * inner ℝ (A.toEuclideanLin h) h := by
+  rw [quadraticFunctional_increment_eq_base_add_linear_add_half_inner c b A hA]
+  rw [hcrit, inner_zero_left, add_zero]
 
 /-- If `A` is positive definite, then `quadraticFunctional c b A` is strictly
 convex on `Set.univ`. -/
@@ -230,7 +246,25 @@ theorem profile_quadraticFunctional_negGradient
     LineSearch.profile (quadraticFunctional c b A) f (-g) =
       fun τ : ℝ ↦
         quadraticFunctional c b A f - τ * ‖g‖ ^ 2 +
-          (1 / 2 : ℝ) * τ ^ 2 * inner ℝ (A.toEuclideanLin g) g := sorry
+          (1 / 2 : ℝ) * τ ^ 2 * inner ℝ (A.toEuclideanLin g) g := by
+  dsimp only
+  funext τ
+  rw [LineSearch.profile_apply]
+  rw [quadraticFunctional_increment_eq_base_add_linear_add_half_inner c b A
+    (f0 := f) (h := τ • (-(b + A.toEuclideanLin f))) hA]
+  have h1 : inner ℝ (b + A.toEuclideanLin f) (τ • (-(b + A.toEuclideanLin f))) =
+      -(τ * ‖b + A.toEuclideanLin f‖ ^ 2) := by
+    rw [inner_smul_right, inner_neg_right, real_inner_self_eq_norm_sq]
+    ring
+  have h2 : inner ℝ (A.toEuclideanLin (τ • (-(b + A.toEuclideanLin f))))
+        (τ • (-(b + A.toEuclideanLin f))) =
+      τ ^ 2 * inner ℝ (A.toEuclideanLin (b + A.toEuclideanLin f))
+        (b + A.toEuclideanLin f) := by
+    rw [map_smul, map_neg, inner_smul_left, inner_smul_right, inner_neg_left, inner_neg_right]
+    simp only [starRingEnd_apply, star_trivial]
+    ring
+  rw [h1, h2]
+  ring
 
 /-- For the steepest-descent direction `-(b + A.toEuclideanLin f)`, the exact
 line-search step of a positive-definite quadratic functional is
