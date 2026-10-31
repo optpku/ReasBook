@@ -8,6 +8,7 @@ module
 
 public import ComputationalMethodsInverseProblems_Vogel_2002.Chap04.Definition_4_31.BestLinearUnbiased
 public import ComputationalMethodsInverseProblems_Vogel_2002.Chap04.Definition_4_12.Covariance
+public import ComputationalMethodsInverseProblems_Vogel_2002.Chap04.Exercise_4_1
 public import ComputationalMethodsInverseProblems_Vogel_2002.Chap04.Prop_4_35
 public import ComputationalMethodsInverseProblems_Vogel_2002.Chap04.Theorem_4_32.Operator
 public import Mathlib.Analysis.Matrix.Order
@@ -53,7 +54,11 @@ semidefinite. -/
 lemma covarianceMatrix_posSemidef_of_memLp
     {μ : MeasureTheory.Measure Ω} [MeasureTheory.IsProbabilityMeasure μ]
     {X : Ω → EuclideanSpace ℝ n} (hX : MeasureTheory.MemLp X 2 μ) :
-    (covarianceMatrix μ X).PosSemidef := sorry
+    (covarianceMatrix μ X).PosSemidef := by
+  -- Reduce the vector hypothesis to the coordinatewise one used by Exercise 4.1.
+  have hcoord : ∀ i, MeasureTheory.MemLp (fun ω ↦ X ω i) 2 μ :=
+    MeasureTheory.memLp_piLp_iff.mp hX
+  exact covarianceMatrix_posSemidef hcoord
 
 /-- Helper for Theorem 4.32: an invertible covariance matrix is positive definite once the
 noise covariance is known to be positive semidefinite. -/
@@ -77,7 +82,18 @@ lemma weightedGramianPosDef
     {K : Matrix m n ℝ} {C_N : Matrix m m ℝ}
     (h_fullRank : Function.Injective K.toEuclideanLin)
     (hC_N_posDef : C_N.PosDef) :
-    (Kᵀ * C_N⁻¹ * K).PosDef := sorry
+    (Kᵀ * C_N⁻¹ * K).PosDef := by
+  -- Full column rank of `K` becomes injectivity of the matrix-vector map.
+  have hinj : Function.Injective K.mulVec := by
+    intro x y hxy
+    have heq : K.toEuclideanLin (WithLp.toLp 2 x) = K.toEuclideanLin (WithLp.toLp 2 y) := by
+      rw [show K.toEuclideanLin (WithLp.toLp 2 x) = WithLp.toLp 2 (K *ᵥ x) from rfl,
+        show K.toEuclideanLin (WithLp.toLp 2 y) = WithLp.toLp 2 (K *ᵥ y) from rfl, hxy]
+    have h := h_fullRank heq
+    simpa using h
+  -- The conjugated Gram matrix of a positive definite matrix is positive definite.
+  have hconj := Matrix.PosDef.conjTranspose_mul_mul_same (A := C_N⁻¹) hC_N_posDef.inv hinj
+  simpa using hconj
 
 omit [DecidableEq n] in
 /-- Helper for Theorem 4.32: a centered random vector has second moment matrix equal to its
@@ -108,7 +124,14 @@ lemma gaussMarkovOperator_mul
     {K : Matrix m n ℝ} {C_N : Matrix m m ℝ}
     (h_fullRank : Function.Injective K.toEuclideanLin)
     (hC_N_posDef : C_N.PosDef) :
-    gaussMarkovOperator K C_N * K = 1 := sorry
+    gaussMarkovOperator K C_N * K = 1 := by
+  have hGpos := weightedGramianPosDef h_fullRank hC_N_posDef
+  have hG : IsUnit (Kᵀ * C_N⁻¹ * K).det :=
+    isUnit_iff_ne_zero.mpr (ne_of_gt hGpos.det_pos)
+  rw [gaussMarkovOperator_def,
+    show (Kᵀ * C_N⁻¹ * K)⁻¹ * Kᵀ * C_N⁻¹ * K = (Kᵀ * C_N⁻¹ * K)⁻¹ * (Kᵀ * C_N⁻¹ * K) by
+      simp only [Matrix.mul_assoc],
+    Matrix.nonsing_inv_mul (A := Kᵀ * C_N⁻¹ * K) hG]
 
 /-- Helper for Theorem 4.32: transposing the Gauss-Markov coefficient gives the clean covariance
 identity `C_N * B̂ᵀ = K * (Kᵀ * C_N⁻¹ * K)⁻¹`. -/
@@ -117,7 +140,26 @@ lemma covarianceMul_gaussMarkovOperator_transpose
     (h_fullRank : Function.Injective K.toEuclideanLin)
     (hC_N_posDef : C_N.PosDef) :
     C_N * (gaussMarkovOperator K C_N)ᵀ =
-      K * (Kᵀ * C_N⁻¹ * K)⁻¹ := sorry
+      K * (Kᵀ * C_N⁻¹ * K)⁻¹ := by
+  have hCN : C_Nᵀ = C_N := by simpa using hC_N_posDef.1.eq
+  have hCNinv : (C_N⁻¹)ᵀ = C_N⁻¹ := by
+    rw [Matrix.transpose_nonsing_inv, hCN]
+  have hGsymm : (Kᵀ * C_N⁻¹ * K)ᵀ = Kᵀ * C_N⁻¹ * K := by
+    rw [Matrix.transpose_mul, Matrix.transpose_mul, Matrix.transpose_transpose, hCNinv]
+    simp only [Matrix.mul_assoc]
+  have hGinvT : ((Kᵀ * C_N⁻¹ * K)⁻¹)ᵀ = (Kᵀ * C_N⁻¹ * K)⁻¹ := by
+    rw [Matrix.transpose_nonsing_inv, hGsymm]
+  have hBtrans : (gaussMarkovOperator K C_N)ᵀ =
+      C_N⁻¹ * K * (Kᵀ * C_N⁻¹ * K)⁻¹ := by
+    rw [gaussMarkovOperator_def, Matrix.transpose_mul, Matrix.transpose_mul,
+      Matrix.transpose_transpose, hCNinv, hGinvT]
+    simp only [Matrix.mul_assoc]
+  have hCNunit : IsUnit C_N.det :=
+    isUnit_iff_ne_zero.mpr (ne_of_gt hC_N_posDef.det_pos)
+  rw [hBtrans,
+    show C_N * (C_N⁻¹ * K * (Kᵀ * C_N⁻¹ * K)⁻¹) =
+      C_N * C_N⁻¹ * K * (Kᵀ * C_N⁻¹ * K)⁻¹ by simp only [Matrix.mul_assoc],
+    Matrix.mul_nonsing_inv (A := C_N) hCNunit, Matrix.one_mul]
 
 /-- Helper for Theorem 4.32: every unbiased coefficient matrix rewrites the BLUE objective to the
 deterministic trace `trace (B * C_N * Bᵀ)`. -/
