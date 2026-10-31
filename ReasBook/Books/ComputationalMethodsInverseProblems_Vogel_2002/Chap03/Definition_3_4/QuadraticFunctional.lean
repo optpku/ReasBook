@@ -211,11 +211,54 @@ theorem inner_toEuclideanLin_self_nonneg {A : Matrix n n ℝ} (hspd : A.PosDef)
     rw [EuclideanSpace.inner_eq_star_dotProduct]
     simpa using hpos.le
 
+/-- Helper for Definition 3.4: the quadratic form of a positive definite matrix is strictly
+positive on nonzero vectors. -/
+theorem inner_toEuclideanLin_self_pos {A : Matrix n n ℝ} (hspd : A.PosDef)
+    {h : EuclideanSpace ℝ n} (hh : h ≠ 0) :
+    0 < inner ℝ (A.toEuclideanLin h) h := by
+  have hx : WithLp.ofLp h ≠ 0 := by simpa using hh
+  have hpos := Matrix.PosDef.re_dotProduct_pos hspd hx
+  rw [EuclideanSpace.inner_eq_star_dotProduct]
+  simpa using hpos
+
+/-- Helper for Definition 3.4: the quadratic functional is differentiable everywhere. -/
+theorem differentiableAt_quadraticFunctional (c : ℝ) (b : EuclideanSpace ℝ n)
+    (A : Matrix n n ℝ) (hA : A.IsSymm) (f : EuclideanSpace ℝ n) :
+    DifferentiableAt ℝ (quadraticFunctional c b A) f := by
+  have hconst : HasFDerivAt (fun _ : EuclideanSpace ℝ n => c) (0 : EuclideanSpace ℝ n →L[ℝ] ℝ) f :=
+    hasFDerivAt_const c f
+  have hlin : HasFDerivAt (fun x : EuclideanSpace ℝ n => inner ℝ b x)
+      ((InnerProductSpace.toDual ℝ (EuclideanSpace ℝ n)) b) f :=
+    (InnerProductSpace.toDual ℝ (EuclideanSpace ℝ n) b).hasFDerivAt
+  have hquad := hasFDerivAt_quadraticMatrixTerm A hA f
+  have hsum : HasFDerivAt
+      (fun x : EuclideanSpace ℝ n =>
+        c + inner ℝ b x + (1 / 2 : ℝ) * inner ℝ (A.toEuclideanLin x) x)
+      (0 + (InnerProductSpace.toDual ℝ (EuclideanSpace ℝ n)) b +
+        (InnerProductSpace.toDual ℝ (EuclideanSpace ℝ n)) (A.toEuclideanLin f)) f :=
+    (hconst.add hlin).add hquad
+  have hfun : (fun x : EuclideanSpace ℝ n =>
+        c + inner ℝ b x + (1 / 2 : ℝ) * inner ℝ (A.toEuclideanLin x) x) =
+      quadraticFunctional c b A := rfl
+  rw [← hfun]
+  exact hsum.differentiableAt
+
 /-- If `A` is positive definite, then `quadraticFunctional c b A` is strictly
 convex on `Set.univ`. -/
 theorem strictConvexOn_quadraticFunctional_of_posDef
     (c : ℝ) (b : EuclideanSpace ℝ n) (A : Matrix n n ℝ) (hspd : A.PosDef) :
-    StrictConvexOn ℝ Set.univ (quadraticFunctional c b A) := sorry
+    StrictConvexOn ℝ Set.univ (quadraticFunctional c b A) := by
+  have hA : A.IsSymm := by simpa using hspd.isHermitian
+  rw [strictConvexOn_iff_inner_gradient_sub_pos (quadraticFunctional c b A) convex_univ
+    (fun x _ => differentiableAt_quadraticFunctional c b A hA x)]
+  intro f1 f2 _ _ hne
+  rw [gradient_quadraticFunctional c b A hA f1, gradient_quadraticFunctional c b A hA f2]
+  have hsub : b + A.toEuclideanLin f1 - (b + A.toEuclideanLin f2) =
+      A.toEuclideanLin (f1 - f2) := by
+    rw [map_sub]
+    abel
+  rw [hsub]
+  exact inner_toEuclideanLin_self_pos hspd (sub_ne_zero.mpr hne)
 
 /-- If `A` is positive definite, then `quadraticFunctional c b A` attains its
 minimum at `-(A⁻¹).toEuclideanLin b`. -/
@@ -248,7 +291,31 @@ theorem eq_minimizer_of_isMinOn_quadraticFunctional_of_posDef
     (c : ℝ) (b : EuclideanSpace ℝ n) (A : Matrix n n ℝ) (hspd : A.PosDef)
     {fStar : EuclideanSpace ℝ n}
     (hmin : IsMinOn (quadraticFunctional c b A) Set.univ fStar) :
-    fStar = -(A⁻¹).toEuclideanLin b := sorry
+    fStar = -(A⁻¹).toEuclideanLin b := by
+  have hA : A.IsSymm := by simpa using hspd.isHermitian
+  have hcrit := quadraticFunctionalCriticalPoint b A hspd
+  have hle : quadraticFunctional c b A fStar ≤
+      quadraticFunctional c b A (-(A⁻¹).toEuclideanLin b) := hmin (Set.mem_univ _)
+  have hge : quadraticFunctional c b A (-(A⁻¹).toEuclideanLin b) ≤
+      quadraticFunctional c b A fStar :=
+    isMinOn_quadraticFunctional_of_posDef c b A hspd (Set.mem_univ _)
+  have heq : quadraticFunctional c b A fStar =
+      quadraticFunctional c b A (-(A⁻¹).toEuclideanLin b) := le_antisymm hle hge
+  -- Translate the functional at the critical point and compare.
+  have htr := quadraticFunctional_translate_eq_base_add_half_inner c b A
+    (f0 := -(A⁻¹).toEuclideanLin b)
+    (h := fStar - (-(A⁻¹).toEuclideanLin b)) hA hcrit
+  have hms : -(A⁻¹).toEuclideanLin b + (fStar - (-(A⁻¹).toEuclideanLin b)) = fStar := by abel
+  rw [hms] at htr
+  have hzero : inner ℝ (A.toEuclideanLin (fStar - (-(A⁻¹).toEuclideanLin b)))
+      (fStar - (-(A⁻¹).toEuclideanLin b)) = 0 := by
+    nlinarith
+  have hsub : fStar - (-(A⁻¹).toEuclideanLin b) = 0 := by
+    by_contra hne
+    have hpos := inner_toEuclideanLin_self_pos hspd hne
+    linarith
+  have := sub_eq_zero.mp hsub
+  exact this
 
 /-- A positive-definite quadratic functional has `quadraticFunctionalMinimizer b A`
 as its unique minimizer. -/
@@ -299,8 +366,26 @@ theorem exactLineSearchStep_quadraticFunctional
     (f : EuclideanSpace ℝ n) :
     IsMinOn
       (LineSearch.profile (quadraticFunctional c b A) f (-(b + A.toEuclideanLin f)))
-      (Set.Ioi (0 : ℝ))
+      (Set.Ici (0 : ℝ))
       (‖b + A.toEuclideanLin f‖ ^ 2 /
-        inner ℝ (A.toEuclideanLin (b + A.toEuclideanLin f)) (b + A.toEuclideanLin f)) := sorry
+        inner ℝ (A.toEuclideanLin (b + A.toEuclideanLin f)) (b + A.toEuclideanLin f)) := by
+  have hA : A.IsSymm := by simpa using hspd.isHermitian
+  intro τ hτ
+  rw [profile_quadraticFunctional_negGradient c b A hA f]
+  simp only [Set.mem_setOf_eq]
+  set g : EuclideanSpace ℝ n := b + A.toEuclideanLin f with hgdef
+  by_cases hg : g = 0
+  · simp [hg]
+  · set q : ℝ := inner ℝ (A.toEuclideanLin g) g with hqdef
+    have hqpos : 0 < q := inner_toEuclideanLin_self_pos hspd hg
+    have hkey : quadraticFunctional c b A f - (‖g‖ ^ 2 / q) * ‖g‖ ^ 2 +
+          (1 / 2 : ℝ) * (‖g‖ ^ 2 / q) ^ 2 * q =
+        quadraticFunctional c b A f - τ * ‖g‖ ^ 2 + (1 / 2 : ℝ) * τ ^ 2 * q -
+          (1 / 2 : ℝ) * q * (τ - ‖g‖ ^ 2 / q) ^ 2 := by
+      field_simp
+      ring
+    have hnn : 0 ≤ (1 / 2 : ℝ) * q * (τ - ‖g‖ ^ 2 / q) ^ 2 :=
+      mul_nonneg (mul_nonneg (by norm_num) hqpos.le) (sq_nonneg _)
+    linarith
 
 end QuadraticOptimization
