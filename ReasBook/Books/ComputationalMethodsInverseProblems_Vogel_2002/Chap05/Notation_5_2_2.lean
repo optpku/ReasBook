@@ -179,7 +179,7 @@ abbrev fourierSpectrum (n : ℕ) [NeZero n] : ℂ^[n] :=
 /-- Helper for Notation 5.2.2-extra-3: the local Fourier spectrum abbreviation evaluates to the
 corresponding power of `Matrix.fourierRoot`. -/
 theorem fourierSpectrum_apply (n : ℕ) [NeZero n] (k : Fin n) :
-    Matrix.fourierSpectrum n k = Matrix.fourierRoot n ^ (k : ℕ) := sorry
+    Matrix.fourierSpectrum n k = Matrix.fourierRoot n ^ (k : ℕ) := rfl
 
 /-- Helper for Notation 5.2.2-extra-3: the complex right-shift matrix sends the `k`th standard
 basis vector to the basis vector at `finRotate n k`. -/

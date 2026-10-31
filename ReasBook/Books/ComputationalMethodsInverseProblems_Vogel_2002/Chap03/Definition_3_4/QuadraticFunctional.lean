@@ -26,7 +26,7 @@ variable {n : Type u} [Fintype n] [DecidableEq n]
 
 /-- The affine quadratic functional `f ↦ c + inner ℝ b f + (1 / 2) * inner ℝ (A f) f`
 associated to the vector `b` and matrix `A`. -/
-def quadraticFunctional (c : ℝ) (b : EuclideanSpace ℝ n) (A : Matrix n n ℝ) :
+@[expose] def quadraticFunctional (c : ℝ) (b : EuclideanSpace ℝ n) (A : Matrix n n ℝ) :
     EuclideanSpace ℝ n → ℝ :=
   fun f ↦ c + inner ℝ b f + (1 / 2 : ℝ) * inner ℝ (A.toEuclideanLin f) f
 
@@ -34,11 +34,11 @@ def quadraticFunctional (c : ℝ) (b : EuclideanSpace ℝ n) (A : Matrix n n ℝ
 theorem quadraticFunctional_def (c : ℝ) (b : EuclideanSpace ℝ n) (A : Matrix n n ℝ)
     (f : EuclideanSpace ℝ n) :
     quadraticFunctional c b A f =
-      c + inner ℝ b f + (1 / 2 : ℝ) * inner ℝ (A.toEuclideanLin f) f := sorry
+      c + inner ℝ b f + (1 / 2 : ℝ) * inner ℝ (A.toEuclideanLin f) f := rfl
 
 /-- A map `J` is a quadratic functional when it admits a representation
 `J = quadraticFunctional c b A` with symmetric matrix part `A`. -/
-def IsQuadraticFunctional (J : EuclideanSpace ℝ n → ℝ) : Prop :=
+@[expose] def IsQuadraticFunctional (J : EuclideanSpace ℝ n → ℝ) : Prop :=
   ∃ (c : ℝ) (b : EuclideanSpace ℝ n) (A : Matrix n n ℝ), A.IsSymm ∧
     J = quadraticFunctional c b A
 
@@ -47,7 +47,7 @@ quadratic representation. -/
 theorem isQuadraticFunctional_iff (J : EuclideanSpace ℝ n → ℝ) :
     IsQuadraticFunctional J ↔
       ∃ (c : ℝ) (b : EuclideanSpace ℝ n) (A : Matrix n n ℝ), A.IsSymm ∧
-        J = quadraticFunctional c b A := sorry
+        J = quadraticFunctional c b A := Iff.rfl
 
 /-- Helper for Definition 3.4: the pure quadratic matrix term has derivative
 `InnerProductSpace.toDual ℝ (A.toEuclideanLin f)` when `A` is symmetric. -/
