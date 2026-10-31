@@ -200,6 +200,17 @@ theorem quadraticFunctional_translate_eq_base_add_half_inner
   rw [quadraticFunctional_increment_eq_base_add_linear_add_half_inner c b A hA]
   rw [hcrit, inner_zero_left, add_zero]
 
+/-- Helper for Definition 3.4: the quadratic form of a positive definite matrix is nonnegative. -/
+theorem inner_toEuclideanLin_self_nonneg {A : Matrix n n ℝ} (hspd : A.PosDef)
+    (h : EuclideanSpace ℝ n) :
+    0 ≤ inner ℝ (A.toEuclideanLin h) h := by
+  rcases eq_or_ne h 0 with rfl | hh
+  · simp
+  · have hx : WithLp.ofLp h ≠ 0 := by simpa using hh
+    have hpos := Matrix.PosDef.dotProduct_mulVec_pos hspd hx
+    rw [EuclideanSpace.inner_eq_star_dotProduct]
+    simpa using hpos.le
+
 /-- If `A` is positive definite, then `quadraticFunctional c b A` is strictly
 convex on `Set.univ`. -/
 theorem strictConvexOn_quadraticFunctional_of_posDef
@@ -210,7 +221,19 @@ theorem strictConvexOn_quadraticFunctional_of_posDef
 minimum at `-(A⁻¹).toEuclideanLin b`. -/
 theorem isMinOn_quadraticFunctional_of_posDef
     (c : ℝ) (b : EuclideanSpace ℝ n) (A : Matrix n n ℝ) (hspd : A.PosDef) :
-    IsMinOn (quadraticFunctional c b A) Set.univ (-(A⁻¹).toEuclideanLin b) := sorry
+    IsMinOn (quadraticFunctional c b A) Set.univ (-(A⁻¹).toEuclideanLin b) := by
+  have hA : A.IsSymm := by simpa using hspd.isHermitian
+  have hcrit := quadraticFunctionalCriticalPoint b A hspd
+  intro x _
+  change quadraticFunctional c b A (-(A⁻¹).toEuclideanLin b) ≤ quadraticFunctional c b A x
+  -- Every point is the canonical minimizer plus an increment.
+  have hx : x = -(A⁻¹).toEuclideanLin b + (x - (-(A⁻¹).toEuclideanLin b)) := by abel
+  rw [hx, quadraticFunctional_increment_eq_base_add_linear_add_half_inner c b A hA]
+  rw [show b + A.toEuclideanLin (-(A⁻¹).toEuclideanLin b) = 0 from hcrit, inner_zero_left, add_zero]
+  have hnn : 0 ≤ inner ℝ (A.toEuclideanLin (x - (-(A⁻¹).toEuclideanLin b)))
+      (x - (-(A⁻¹).toEuclideanLin b)) :=
+    inner_toEuclideanLin_self_nonneg hspd _
+  nlinarith
 
 /-- If `A` is positive definite, then `quadraticFunctional c b A` attains its
 minimum at `quadraticFunctionalMinimizer b A`. -/
