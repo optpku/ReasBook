@@ -18,7 +18,7 @@ namespace ContinuousLinearMap
 
 /-- A bounded operator `L` on a real Hilbert space is strongly positive if there exists
 `c0 > 0` such that `c0 * ‖f‖ ^ 2 ≤ inner ℝ (L f) f` for every `f`. -/
-def IsStronglyPositive (L : H →L[ℝ] H) : Prop :=
+@[expose] def IsStronglyPositive (L : H →L[ℝ] H) : Prop :=
   ∃ c0 : ℝ, 0 < c0 ∧ ∀ f : H, c0 * ‖f‖ ^ 2 ≤ inner ℝ (L f) f
 
 /-- Rewrites `L.IsStronglyPositive` as the source lower-bound condition on `inner ℝ (L f) f`. -/
