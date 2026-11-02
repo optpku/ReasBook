@@ -1,0 +1,1 @@
+-- The target is self-contained; this former private import index remains as an inert stub.

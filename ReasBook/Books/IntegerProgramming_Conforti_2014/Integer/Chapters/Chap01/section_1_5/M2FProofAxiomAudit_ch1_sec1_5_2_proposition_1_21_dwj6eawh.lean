@@ -1,0 +1,35 @@
+module
+
+public import IntegerProgramming_Conforti_2014.Integer.Chapters.Chap01.section_1_5.ch1_sec1_5_2_lemma_1_3.RowOperations
+
+@[expose] public section
+
+namespace Matrix
+
+section Proposition21
+
+variable {n : ℕ}
+
+/-- remote integer-programming sorry cleanup Integer/Chapters/Chap01/section_1_5/ch1_sec1_5_2_proposition_1_21.lean.
+Proposition 1.21: if `U` is obtained from the identity matrix by a unimodular row operation, then
+`U` is unimodular. -/
+theorem isUnit_det_of_isElementaryUnimodularRowMatrix
+    {U : Matrix (Fin n) (Fin n) ℤ}
+    (hU : IsElementaryUnimodularRowMatrix U) :
+    IsUnit U.det := by
+  -- Decompose the elementary row operation into the three defining cases.
+  rcases hU with ⟨i, j, hij, rfl⟩ | ⟨i, rfl⟩ | ⟨i, j, c, hij, rfl⟩
+  · -- Normalize to the row-swap matrix and reuse its determinant-unit lemma.
+    simpa using isUnit_det_rowSwapMatrix i j
+  · -- Normalize to the row-negation matrix and reuse its determinant-unit lemma.
+    simpa using isUnit_det_rowNegMatrix i
+  · -- Normalize to the row-addition matrix and pass along the distinct-row hypothesis.
+    simpa using isUnit_det_rowAddMatrix i j c hij
+
+end Proposition21
+
+end Matrix
+
+#eval IO.println "M2F_PROOF_AXIOM_AUDIT_BEGIN_3bd5ca8c858daa0311cf"
+#print axioms _root_.Matrix.isUnit_det_of_isElementaryUnimodularRowMatrix
+#eval IO.println "M2F_PROOF_AXIOM_AUDIT_END_3bd5ca8c858daa0311cf"

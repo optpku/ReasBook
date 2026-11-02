@@ -89,3 +89,7 @@ library_facet literate lib : Array System.FilePath := do
 
 lean_lib IntroductoryLecturesOnConvexOptimization_Nesterov_2004 where
   srcDir := "Books"
+
+-- Integer Programming (Conforti, Cornuejols, Zambelli, 2014)
+lean_lib IntegerProgramming_Conforti_2014 where
+  srcDir := "Books"

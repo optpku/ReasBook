@@ -1,0 +1,2 @@
+-- The support declarations now live in the target file so its remote validation does not depend
+-- on a theorem-local compiled artifact.

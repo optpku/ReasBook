@@ -1,0 +1,64 @@
+# Integer Programming (Conforti, Cornuejols, Zambelli, 2014)
+
+**Lean 4.30.0 review candidate.** Book: Integer Programming, Michele Conforti,
+Gerard Cornuejols, Giacomo Zambelli, Springer, Graduate Texts in Mathematics 271,
+2014; ISBN 978-3-319-11007-3. Edition unknown. Bibliography follows the existing
+v4.26.0 book.yml; bibliographic authors are distinct from Lean code authors.
+
+## Source and toolchain
+
+- [Complete import root](Book.lean)
+- [Chapter source](Integer/Chapters/)
+- [Validation evidence and pending checks](VALIDATION.md)
+- [Metadata](book.yml)
+- Exact toolchain: leanprover/lean4:v4.30.0; mathlib v4.30.0
+- Original mathlib commit: c5ea00351c28e24afc9f0f84379aa41082b1188f
+
+Source is the terminal M2F Job 2907 snapshot, archive SHA256
+f3012f19df9a9ec24b75703566016068893bfe542edc8d839b765c3a23b948ee.
+Internal import paths are prefixed with IntegerProgramming_Conforti_2014 for the branch's Books layout.
+Proof bodies, theorem names and mathematical statements are preserved; 14 pre-existing trailing-whitespace lines were trimmed.
+Book.lean imports all 1064 chapter modules; the library uses srcDir := "Books".
+
+## Contributors and attribution
+
+- Submission/integration account: [TropicalFatFish](https://github.com/TropicalFatFish).
+  No human name is inferred from that account; its GitHub display name is unset.
+- Historical contributor records remain in the existing v4.26.0 README and main catalog.
+  They have not been assigned to these individual source files without verification.
+- **Code-author attribution is unresolved.** All 1064 received chapter files lack
+  opening Authors: headers; the generated root also awaits verified attribution.
+  The official author-header checker reports 1065 files checked, 1065 invalid.
+  This candidate does not satisfy the repository's author-header requirement.
+- Existing source comments and repository LICENSE are retained. No uploader, textbook
+  author, or automated tool is substituted for verified human code authors.
+
+## Coverage
+
+All received source modules under Chap01 through Chap10 are included. No module
+from that tree is intentionally omitted. An independent comparison with every
+statement/exercise of the printed textbook has not been performed; coverage of
+unrepresented textbook material is unknown. Documentation, Verso and theorem-map
+publication for this candidate is not claimed.
+
+## Statistics and proof status
+
+- Source command declarations: 17,080; theorem/lemma/example: 13,030; other: 4,050.
+- Lean source: 1065 files, 462,723 lines (1064 chapter modules plus Book.lean).
+- Counts are commands beginning on a line after masking nested comments/strings,
+  not expanded kernel declarations or generated structure fields/constructors.
+- Source code tokens: sorry=0, admit=0, direct sorryAx=0, axiom=0, constant=0.
+  Raw words in comments are excluded.
+- Original unfinished targets: 5/5 have proof bodies; all 3 edited files passed
+  remote Lean compilation and were published before import-path relocation.
+- Explicit final axiom outputs cover **2/5 original targets**. Three outputs are
+  missing, as listed in VALIDATION.md; this is not a claim that those targets failed.
+- Full-book kernel proof completion is not established; metadata proof_completion
+  is null. The relocated Book.lean root has not been compiled. Original default
+  roots imported only Mathlib and covered no chapters.
+
+## Validation
+
+See VALIDATION.md for remote compile/axiom evidence and integration checks.
+Metadata/schema, static import closure and placeholder checks are performed locally.
+No new proof task or local proof-search pipeline is started by this contribution.
