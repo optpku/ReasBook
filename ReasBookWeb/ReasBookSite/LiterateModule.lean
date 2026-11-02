@@ -118,7 +118,7 @@ def loadModuleContent (mod : String) (leanProject : System.FilePath := "../ReasB
       match findModuleItemArray? parsed with
       | some json => pure json
       | none =>
-        let sample := if jsonFile.length > 400 then jsonFile.take 400 ++ " ..." else jsonFile
+        let sample := if jsonFile.length > 400 then String.ofList (jsonFile.toList.take 400) ++ " ..." else jsonFile
         throw <| IO.userError s!"Couldn't find a module-item JSON array in literate output. Sample:\n{sample}"
     match json.mapM deJson with
     | .error err =>
