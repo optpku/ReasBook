@@ -652,7 +652,8 @@ class RepositoryScriptTests(unittest.TestCase):
             self.assertIn('class := "reader-chapter-grid"', home)
             self.assertEqual(home.count("([Documentation]"), 0)
             self.assertNotIn("#definition-1-1-1", home)
-            self.assertIn("\n- [Chapter 01](/ReasBook/books/maylike/chapters/chap01/)", home)
+            self.assertIn("\n- [Chapter 01 — A deliberately descriptive chapter heading that is "
+                          "longer than the title heuristic permits](/ReasBook/books/maylike/chapters/chap01/)", home)
             self.assertLess(len(home.splitlines()), 25)
 
             chapter_page = home_page.parent / "MayLike" / "Chap01.lean"

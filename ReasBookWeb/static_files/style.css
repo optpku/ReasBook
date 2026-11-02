@@ -54,7 +54,21 @@ a:focus-visible, button:focus-visible, summary:focus-visible, pre:focus-visible,
 #sidebar-nav-root .nav-work-title { font-size: 1rem; font-weight: 650; line-height: 1.5; padding-block: 0.625rem; }
 #sidebar-nav-root .nav-work-tree { margin-top: 1.25rem; }
 #sidebar-nav-root details ul { margin: 0.25rem 0 0.5rem 0.75rem; }
-#sidebar-nav-root .nav-chapter > summary { font-size: 0.9375rem; }
+#sidebar-nav-root .nav-chapter-row { display: flex; align-items: start; }
+#sidebar-nav-root .nav-chapter-title { flex: 1; min-width: 0; font-size: 0.9375rem; font-weight: 550; }
+#sidebar-nav-root .nav-chapter-toggle {
+    flex: 0 0 2.75rem; min-height: 44px; padding: 0.375rem 0.5rem;
+    border: 0; border-radius: var(--reader-radius); background: transparent;
+    color: var(--reader-muted); font: 1.5rem/1 var(--reader-sans); cursor: pointer;
+}
+#sidebar-nav-root .nav-chapter-toggle:hover { background: var(--reader-hover); color: var(--reader-link); }
+#sidebar-nav-root .nav-chapter-toggle span { display: inline-block; }
+#sidebar-nav-root .nav-chapter-toggle[aria-expanded="true"] span { transform: rotate(90deg); }
+#sidebar-nav-root .nav-chapter > .nav-section-list { margin: 0.25rem 0 0.5rem 0.75rem; }
+#sidebar-nav-root .nav-reading-section { margin-block: 0.5rem; }
+#sidebar-nav-root .nav-section-title { display: block; font-size: 0.8125rem; font-weight: 600; }
+#sidebar-nav-root .nav-item-list { margin-left: 0.5rem; }
+#sidebar-nav-root [hidden] { display: none !important; }
 #sidebar-nav-root .nav-file-item > a { font-size: 0.8125rem; }
 #sidebar-nav-root .nav-file-item > span[aria-disabled] {
     display: block; padding: 0.375rem 0.5rem; color: var(--reader-muted);
@@ -127,6 +141,7 @@ div.main .reader-statement-links p { font: 0.75rem/1.75 var(--reader-sans); colo
 .reader-statement-links a { display: inline-block; padding-block: 0.25rem; }
 [data-reasbook-statement] > p { margin: 0.875rem 0; }
 [data-reasbook-statement] > :last-child { margin-bottom: 0; }
+.reader-section-heading { scroll-margin-top: 4.5rem; }
 div.declaration { border-top: 1px solid var(--reader-rule); padding-block: 1rem; margin-block: 1rem; }
 @media (max-width: 1000px) {
     .reader-navigation { position: sticky; top: 0; z-index: 100; background: var(--reader-navigation); border-bottom: 1px solid var(--reader-rule); }

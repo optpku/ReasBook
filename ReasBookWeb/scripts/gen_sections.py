@@ -147,7 +147,7 @@ def write_text_if_changed(path: Path, content: str, *, log: bool = True,
 
 BOOK_TITLES = {
     "AlgebraicTopology_May_1999": "A Concise Course in Algebraic Topology (May, 1999)",
-    "CombinatorialGroupTheory_Magnus_2004": "Combinatorial Group Theory (Magnus, Karrass and Solitar, 2004)",
+    "CombinatorialGroupTheory_Magnus_2004": "Combinatorial Group Theory (Lyndon and Schupp, 1977)",
     "ConvexAnalysisMonotoneOperators_BauschkeCombettes_2017": "Convex Analysis and Monotone Operator Theory in Hilbert Spaces (Bauschke and Combettes, 2017)",
     "FirstOrderMethodsOptimization_Beck_2017": "First-Order Methods in Optimization (Beck, 2017)",
     "IntroductoryLecturesOnConvexOptimization_Nesterov_2004": "Lectures on Convex Optimization (Nesterov, 2018)",
@@ -169,285 +169,11 @@ PAPER_TITLES = {
     "TR_LALM_theory": "TR-LALM Theory",
 }
 
-BOOK_CHAPTER_TITLES = {
-    # Author's contents: https://www.math.uchicago.edu/~may/CONCISE/ConciseRevised.pdf
-    "AlgebraicTopology_May_1999": {
-        1: "The Fundamental Group and Some of Its Applications",
-        2: "Categorical Language and the van Kampen Theorem",
-        3: "Covering Spaces",
-    },
-    "Analysis2_Tao_2022": {
-        1: "Metric Spaces",
-        2: "Continuous Functions on Metric Spaces",
-        3: "Uniform Convergence",
-        4: "Power Series",
-        5: "Fourier Series",
-        6: "Several Variable Differential Calculus",
-        7: "Lebesgue Measure",
-        8: "Lebesgue Integration",
-    },
-    "ConvexAnalysis_Rockafellar_1970": {
-        # The source directories group sections by the book's eight parts.
-        # https://doi.org/10.1515/9781400873173-toc
-        1: "Part I: Basic Concepts",
-        2: "Part II: Topological Properties",
-        3: "Part III: Duality Correspondences",
-        4: "Part IV: Representation and Inequalities",
-        5: "Part V: Differential Theory",
-        6: "Part VI: Constrained Extremum Problems",
-        7: "Part VII: Saddle-Functions and Minimax Theory",
-        8: "Part VIII: Convex Algebra",
-    },
-    # Original contents, pp. ix-x: Magnus, Karrass and Solitar, Dover reprint (2004).
-    "CombinatorialGroupTheory_Magnus_2004": {
-        1: "Basic Concepts",
-        2: "Factor Groups and Subgroups",
-        3: "Nielsen Transformations",
-        4: "Free Products and Free Products with Amalgamations",
-        5: "Commutator Calculus",
-    },
-    # Publisher's contents: https://doi.org/10.1007/978-3-319-48311-5
-    "ConvexAnalysisMonotoneOperators_BauschkeCombettes_2017": {
-        1: "Background",
-        2: "Hilbert Spaces",
-        3: "Convex Sets",
-        4: "Convexity and Notions of Nonexpansiveness",
-        5: "Fejér Monotonicity and Fixed Point Iterations",
-        6: "Convex Cones and Generalized Interiors",
-        7: "Support Functions and Polar Sets",
-        8: "Convex Functions",
-        9: "Lower Semicontinuous Convex Functions",
-        10: "Convex Functions: Variants",
-        11: "Convex Minimization Problems",
-        12: "Infimal Convolution",
-        13: "Conjugation",
-        14: "Further Conjugation Results",
-        15: "Fenchel–Rockafellar Duality",
-        16: "Subdifferentiability of Convex Functions",
-        17: "Differentiability of Convex Functions",
-        18: "Further Differentiability Results",
-        19: "Duality in Convex Optimization",
-        20: "Monotone Operators",
-    },
-    # Publisher's contents: https://doi.org/10.1137/1.9781611974997.fm
-    "FirstOrderMethodsOptimization_Beck_2017": {
-        1: "Vector Spaces",
-        2: "Extended Real-Valued Functions",
-        3: "Subgradients",
-        4: "Conjugate Functions",
-        5: "Smoothness and Strong Convexity",
-        6: "The Proximal Operator",
-        7: "Spectral Functions",
-        8: "Primal and Dual Projected Subgradient Methods",
-        9: "Mirror Descent",
-        10: "The Proximal Gradient Method",
-        11: "The Block Proximal Gradient Method",
-        12: "Dual-Based Proximal Gradient Methods",
-        13: "The Generalized Conditional Gradient Method",
-        14: "Alternating Minimization",
-        15: "ADMM",
-    },
-    "IntroductoryLecturesOnConvexOptimization_Nesterov_2004": {
-        # This project's actual seven-chapter layout matches the 2018 edition,
-        # including Ch. 4 (Hessian methods), 6 (Fenchel smoothing) and 7 (relative
-        # accuracy). The 2004 edition has four chapters. Bibliographic metadata
-        # uses the 2018 edition; the existing project ID is compatibility-only.
-        # https://doi.org/10.1007/978-3-319-91578-4
-        1: "Nonlinear Optimization",
-        2: "Smooth Convex Optimization",
-        3: "Nonsmooth Convex Optimization",
-        4: "Second-Order Methods",
-        5: "Polynomial-Time Interior-Point Methods",
-        6: "The Primal-Dual Model of an Objective Function",
-        7: "Optimization in Relative Scale",
-    },
-    # Publisher's contents: https://doi.org/10.1007/b106451
-    "OptimizationTheoryAndMethods_SunYuan_2006": {
-        1: "Introduction",
-        2: "Line Search",
-        3: "Newton’s Methods",
-        4: "Conjugate Gradient Method",
-        5: "Quasi-Newton Methods",
-        6: "Trust-Region Methods and Conic Model Methods",
-        7: "Solving Nonlinear Least-Squares Problems",
-        8: "Theory of Constrained Optimization",
-        9: "Quadratic Programming",
-        10: "Penalty Function Methods",
-        11: "Feasible Direction Methods",
-        12: "Sequential Quadratic Programming",
-        13: "Trust-Region Methods for Constrained Problems",
-        14: "Nonsmooth Optimization",
-    },
-    # Publisher's contents: https://doi.org/10.1007/978-1-4612-5961-9
-    "RiemannSurfaces_Forster_1981": {
-        1: "Covering Spaces",
-        2: "Compact Riemann Surfaces",
-        3: "Non-compact Riemann Surfaces",
-    },
-    # Publisher's contents: https://doi.org/10.1007/978-3-319-11008-0
-    "IntegerProgramming_Conforti_2014": {1: "Getting Started"},
-    "IntroductiontoRealAnalysisVolumeI_JiriLebl_2025": {
-        0: "Introduction",
-        1: "Real Numbers",
-        2: "Sequences and Series",
-        3: "Continuous Functions",
-        4: "The Derivative",
-        5: "The Riemann Integral",
-        6: "Sequences of Functions",
-        7: "Metric Spaces",
-    },
-}
+# Shared by page generation and lightweight reader-shell previews.
+from book_contents import (  # noqa: E402
+    BOOK_CHAPTER_TITLES, BOOK_SECTION_TITLES, CHAPTER_NUMBERED_ITEMS,
+)
 
-BOOK_SECTION_TITLES = {
-    "Analysis2_Tao_2022": {
-        1: {
-            1: "Definitions and Examples",
-            2: "Some Point-Set Topology of Metric Spaces",
-            3: "Relative Topology",
-            4: "Cauchy Sequences and Complete Metric Spaces",
-            5: "Compact Metric Spaces",
-        },
-        2: {
-            1: "Continuous Functions",
-            2: "Continuity and Product Spaces",
-            3: "Continuity and Compactness",
-            4: "Continuity and Connectedness",
-            5: "Topological Spaces",
-        },
-        3: {
-            1: "Limiting Values of Functions",
-            2: "Pointwise and Uniform Convergence",
-            3: "Uniform Convergence and Continuity",
-            4: "The Metric of Uniform Convergence",
-            5: "Series of Functions; the Weierstrass M-Test",
-            6: "Uniform Convergence and Integration",
-            7: "Uniform Convergence and Derivatives",
-            8: "Uniform Approximation by Polynomials",
-        },
-        4: {
-            1: "Formal Power Series",
-            2: "Real Analytic Functions",
-            3: "Abel's Theorem",
-            4: "Multiplication of Power Series",
-            5: "The Exponential and Logarithm Functions",
-            6: "A Digression on Complex Numbers",
-            7: "Trigonometric Functions",
-        },
-        5: {
-            1: "Periodic Functions",
-            2: "Inner Products on Periodic Functions",
-            3: "Trigonometric Polynomials",
-            4: "Periodic Convolutions",
-            5: "The Fourier and Plancherel Theorems",
-        },
-        6: {
-            1: "Linear Transformations",
-            2: "Derivatives in Several Variable Calculus",
-            3: "Partial and Directional Derivatives",
-            4: "The Several Variable Calculus Chain Rule",
-            5: "Double Derivatives and Clairaut's Theorem",
-            6: "The Contraction Mapping Theorem",
-            7: "The Inverse Function Theorem in Several Variable Calculus",
-            8: "The Implicit Function Theorem",
-        },
-        7: {
-            1: "The Goal: Lebesgue Measure",
-            2: "First Attempt: Outer Measure",
-            3: "Outer Measure Is not Additive",
-            4: "Measurable Sets",
-            5: "Measurable Functions",
-        },
-        8: {
-            1: "Simple Functions",
-            2: "Integration of Non-negative Measurable Functions",
-            3: "Integration of Absolutely Integrable Functions",
-            4: "Comparison with the Riemann Integral",
-            5: "Fubini's Theorem",
-        },
-    },
-    "ConvexAnalysis_Rockafellar_1970": {
-        1: {
-            1: "Affine Sets",
-            2: "Convex Sets and Cones",
-            3: "The Algebra of Convex Sets",
-            4: "Convex Functions",
-            5: "Functional Operations",
-        },
-        2: {
-            5: "Functional Operations",
-            6: "Relative Interiors of Convex Sets",
-            7: "Closures of Convex Functions",
-            8: "Recession Cones and Unboundedness",
-            9: "Some Closedness Criteria",
-            10: "Continuity of Convex Functions",
-        },
-        3: {
-            11: "Separation Theorems",
-            12: "Conjugates of Convex Functions",
-            13: "Support Functions",
-            14: "Polars of Convex Sets",
-            15: "Polars of Convex Functions",
-            16: "Dual Operations",
-        },
-        4: {
-            17: "Caratheodory's Theorem",
-            18: "Extreme Points and Faces of Convex Sets",
-            19: "Polyhedral Convex Sets and Functions",
-            20: "Some Applications of Polyhedral Convexity",
-        },
-    },
-    "IntroductiontoRealAnalysisVolumeI_JiriLebl_2025": {
-        1: {
-            1: "Basic Properties",
-            2: "The Set of Real Numbers",
-            3: "Absolute Value and Bounded Functions",
-            4: "Intervals and the Size of R",
-            5: "Decimal Representation of the Reals",
-        },
-        2: {
-            1: "Sequences and Limits",
-            2: "Facts About Limits of Sequences",
-            3: "Limit Superior, Limit Inferior, and Bolzano-Weierstrass",
-            4: "Cauchy Sequences",
-            5: "Series",
-            6: "More on Series",
-        },
-        3: {
-            1: "Limits of Functions",
-            2: "Continuous Functions",
-            3: "Extreme and Intermediate Value Theorems",
-            4: "Uniform Continuity",
-            5: "Limits at Infinity",
-            6: "Monotone Functions and Continuity",
-        },
-        4: {
-            1: "The Derivative",
-            2: "Mean Value Theorem",
-            3: "Taylor's Theorem",
-            4: "Inverse Function Theorem",
-        },
-        5: {
-            1: "The Riemann Integral",
-            2: "Properties of the Integral",
-            3: "Fundamental Theorem of Calculus",
-            4: "The Logarithm and the Exponential",
-            5: "Improper Integrals",
-        },
-        6: {
-            1: "Pointwise and Uniform Convergence",
-            2: "Interchange of Limits",
-            3: "Picard's Theorem",
-        },
-        7: {
-            1: "Metric Spaces",
-            2: "Open and Closed Sets",
-            3: "Sequences and Convergence",
-            4: "Completeness and Compactness",
-            5: "Continuous Functions",
-            6: "Fixed Point Theorem and Picard's Theorem Again",
-        },
-    },
-}
 
 PAPER_SECTION_TITLES = {
     "SmoothMinimization_Nesterov_2004": {
@@ -772,10 +498,13 @@ def load_book_metadata_titles(source_root: Path) -> None:
 
 def module_doc_title(path: Path) -> str | None:
     text = path.read_text(encoding="utf-8", errors="ignore")
-    m = re.search(r"/(?:-!|--)\s*(.*?)\s*-/", text, re.DOTALL)
+    m = re.search(r"/(-!|--)\s*(.*?)\s*-/", text, re.DOTALL)
     if not m:
         return None
-    body = m.group(1)
+    body = m.group(2)
+    if m.group(1) == "--" and not body.lstrip().startswith("#"):
+        # A declaration docstring discussing a section is not a module heading.
+        return None
     lines = []
     for raw in body.splitlines():
         line = raw.strip().lstrip("#").strip()
@@ -787,16 +516,14 @@ def module_doc_title(path: Path) -> str | None:
     if not lines:
         return None
     first = lines[0]
-    if len(first) > 60:
+    if len(first) > 240:
         return None
-    if "`" in first or ":" in first or "." in first:
+    if "`" in first:
         return None
     # Chapter headings often include a short book subtitle (for example,
     # "Chapter 01 — Lectures on Riemann Surfaces (Forster, 1981)").
     # Keep the prose guard, but leave room for those descriptive headings.
-    if len(first.split()) > 12:
-        return None
-    if not re.match(r"^(Section|Chapter|Appendix)\b", first, re.IGNORECASE):
+    if not re.match(r"^(Section|Chapter|Appendix)\s+(?:\d+(?:\.\d+)*|[A-Z])(?:\b|$)", first, re.IGNORECASE):
         return None
     return first
 
@@ -819,11 +546,36 @@ def chapter_title(parts: Iterable[str]) -> str | None:
     return None
 
 
-def chapter_title_for_book(book: str, chapter_num: int) -> str:
+def chapter_title_for_book(book: str, chapter_num: int, source_title: str = "") -> str:
     named = BOOK_CHAPTER_TITLES.get(book, {}).get(chapter_num)
+    if book == "ConvexAnalysis_Rockafellar_1970" and named:
+        # The eight source ChapNN groups are the book's parts, not chapters.
+        return named.replace(": ", " — ", 1)
+    if not named and source_title:
+        match = re.match(r"Chapter\s+\d+\s*(?:—|–|--|:|-)\s*(.+)$", source_title, re.I)
+        if match and match[1] != book_title(book):
+            named = match[1]
     if named:
         return f"Chapter {chapter_num:02d} — {named}"
     return f"Chapter {chapter_num:02d}"
+
+
+def book_section_heading(book: str, chapter: int, section: int, title: str = "") -> str:
+    """Use the book's actual numbering, including Rockafellar's global §§."""
+    if section == 0:
+        return "Statements"
+    named = title or BOOK_SECTION_TITLES.get(book, {}).get(chapter, {}).get(section, "")
+    if named in {"Problems", "Exercises"}:
+        return named
+    if book == "ConvexAnalysis_Rockafellar_1970":
+        return f"§{section} — {named}" if named else f"§{section}"
+    if not named or re.fullmatch(r"Section\s+[\d.]+", named):
+        return f"Section {chapter}.{section}"
+    return f"{chapter}.{section} — {named}"
+
+
+def section_anchor(chapter: int, section: int) -> str:
+    return f"section-{chapter}-{section}" if section else f"statements-{chapter}"
 
 
 def parse_section_part(stem: str) -> tuple[int, int]:
@@ -880,6 +632,11 @@ def entry_label(e: Entry) -> str:
             return paper_titles[e.section_num]
     if e.part_num > 0:
         return ""
+    # An authored heading may have a real topic even for a book not yet in
+    # the curated contents. Do not replace it with a directory-name label.
+    match = re.search(r"(?:^| -- )Section\s+\d+(?:\.\d+)*\s*(?:—|–|--|:|-)\s*(.+)$", e.title, re.I)
+    if match:
+        return match[1]
     return section_title_from_stem(e.stem)
 
 
@@ -888,12 +645,7 @@ def readme_label(e: Entry) -> str:
     if not base:
         return ""
     if e.category == "books":
-        # If title fell back to a generic stem-derived "Section NN", avoid
-        # duplicated labels like "0.3 Section 03".
-        default_base = section_title_from_stem(e.stem)
-        if base == default_base and re.fullmatch(r"Section \d{2}", base):
-            return f"Section {e.chapter_num}.{e.section_num}"
-        return f"{e.chapter_num}.{e.section_num} {base}"
+        return book_section_heading(e.book_or_paper, e.chapter_num, e.section_num, base)
     if e.category == "papers":
         return f"Section {e.section_num}: {base}"
     return base
@@ -1233,6 +985,11 @@ def parse_book_item(path: Path, source_root: Path) -> BookItem | None:
     if module in SKIP_MODULES:
         return None
     section_num = int(tail[0]) if len(tail) >= 2 and tail[0].isdigit() else 0
+    if book in CHAPTER_NUMBERED_ITEMS:
+        section_num = 0
+    elif book in BOOK_SECTION_TITLES and section_num not in BOOK_SECTION_TITLES[book].get(stem_chapter, {}):
+        # Known book contents are stronger evidence than a clause suffix.
+        section_num = 0
     return BookItem(
         book=book,
         module=module,
@@ -1575,12 +1332,18 @@ def collect_entries(
         if book in TBD_BOOKS:
             continue
         ch_title = chapter_title(rel.parts)
+        sec_num, part_num = parse_section_part(path.stem)
+        named_section = BOOK_SECTION_TITLES.get(book, {}).get(chapter_number(rel.parts), {}).get(sec_num)
         structural_chapter = CHAPTER_RE.fullmatch(path.stem) is not None
         sec_title = (
             chapter_title_for_book(book, chapter_number(rel.parts))
             if structural_chapter
             else module_doc_title(path) or section_title_from_stem(path.stem)
         )
+        if named_section and not structural_chapter:
+            sec_title = book_section_heading(book, chapter_number(rel.parts), sec_num, named_section)
+            if part_num:
+                sec_title += f" — Part {part_num}"
         if structural_chapter and chapter_number(rel.parts) not in BOOK_CHAPTER_TITLES.get(book, {}):
             # Preserve explicit headings in new projects until their contents
             # are registered; known titles must beat old book-name aggregators.
@@ -1590,12 +1353,11 @@ def collect_entries(
             title_parts.append(ch_title)
         if not (ch_title and sec_title.strip().lower() == ch_title.strip().lower()):
             title_parts.append(sec_title)
-        sec_num, part_num = parse_section_part(path.stem)
         entries.append(
             Entry(
                 category="books",
                 module=module,
-                title=sec_title if structural_chapter else " -- ".join(title_parts),
+                title=sec_title if structural_chapter or named_section else " -- ".join(title_parts),
                 route=route_from_module(module),
                 book_or_paper=book,
                 chapter_num=chapter_number(rel.parts),
@@ -1915,6 +1677,10 @@ def emit_sections(
     reader_chapters = tuple(reader_chapters)
     books: dict[str, dict] = {}
     papers: dict[str, dict] = {}
+    chapter_headings = {
+        (entry.book_or_paper, entry.chapter_num): entry.title
+        for entry in entries if is_chapter_entry(entry)
+    }
 
     def ensure_book(book: str) -> dict:
         if book not in books:
@@ -1931,7 +1697,7 @@ def emit_sections(
         if chapter_num not in chapters:
             chapters[chapter_num] = {
                 "number": chapter_num,
-                "title": chapter_title_for_book(book, chapter_num),
+                "title": chapter_title_for_book(book, chapter_num, chapter_headings.get((book, chapter_num), "")),
                 "route": f"books/{book.lower()}/chapters/chap{chapter_num:02d}/",
                 "sections": {},
             }
@@ -1962,7 +1728,8 @@ def emit_sections(
             chapter = ensure_chapter(work, e.book_or_paper, e.chapter_num)
 
             if e.section_num <= 0 and e.part_num == 0:
-                chapter["route"] = e.route
+                if is_chapter_entry(e):
+                    chapter["route"] = e.route
                 continue
             if e.section_num <= 0:
                 continue
@@ -2038,9 +1805,18 @@ def emit_sections(
         chapter["items"].extend(
             {"title": book_item_label(item), "module": item.module,
              "anchor": "" if "no statement yet" in item_reading_links(source_root, item) else item_anchor(item),
-             "source": item.source_path}
+             "source": item.source_path, "section": item.section_num}
             for item in sorted(reader.items, key=book_item_sort_key)
         )
+        groups = sorted({item.section_num for item in reader.items})
+        chapter["item_sections"] = [
+            {"number": number,
+             "label": book_section_heading(reader.book, reader.chapter_num, number),
+             "anchor": section_anchor(reader.chapter_num, number) if any(
+                 item.get("section") == number and item["anchor"] for item in chapter["items"]
+             ) else ""}
+            for number in groups
+        ] if any(groups) else []
 
     books_payload: list[dict] = []
     for book in sorted(books):
@@ -2063,6 +1839,7 @@ def emit_sections(
                     {
                         "number": section_num,
                         "title": section_title,
+                        "label": book_section_heading(book, chapter_num, section_num, section_title),
                         "route": section_route,
                         "parts": parts_payload,
                     }
@@ -2074,6 +1851,7 @@ def emit_sections(
                     "route": chapter["route"],
                     "sections": sections_payload,
                     "items": chapter.get("items", []),
+                    "item_sections": chapter.get("item_sections", []),
                 }
             )
         books_payload.append(
@@ -2897,7 +2675,10 @@ def chapter_reading_modules(
             seen.add(source.module)
         for name, path in targets:
             if name not in seen:
-                result.append((name, label if name == source.module else module_label(name),
+                part_num = parse_section_part(path.stem)[1]
+                target_label = label if name == source.module else (
+                    f"{label} — Part {part_num}" if part_num else module_label(name))
+                result.append((name, target_label,
                                path.relative_to(source_root.parent).as_posix(), True))
                 seen.add(name)
     return tuple(result)
@@ -3076,6 +2857,11 @@ def write_work_pages(
     item_paper_readers = list(paper_readers)
     section_indexes = list(paper_section_indexes)
     readers_by_book: dict[str, list[ReaderChapter]] = {}
+    chapter_titles = {
+        (entry.book_or_paper, entry.chapter_num): chapter_title_for_book(
+            entry.book_or_paper, entry.chapter_num, entry.title)
+        for entry in entries if is_chapter_entry(entry)
+    }
     for reader in readers:
         readers_by_book.setdefault(reader.book, []).append(reader)
 
@@ -3196,8 +2982,9 @@ def write_work_pages(
             lines.append("")
             lines.append(':::html div (class := "reader-chapter-grid")')
             for chapter_num, route in sorted(chapters.items()):
+                heading = chapter_titles.get((book, chapter_num), chapter_title_for_book(book, chapter_num))
                 lines.append(
-                    f"- [{chapter_title_for_book(book, chapter_num)}]({portable_site_link(route)})"
+                    f"- [{heading}]({portable_site_link(route)})"
                 )
             lines.append(":::")
             lines.append("")
@@ -3242,7 +3029,8 @@ def write_work_pages(
             "open Verso Genre Blog",
             "",
             "#doc (Page) "
-            + lean_string(chapter_title_for_book(reader.book, reader.chapter_num))
+            + lean_string(chapter_titles.get((reader.book, reader.chapter_num),
+                                            chapter_title_for_book(reader.book, reader.chapter_num)))
             + " =>",
             "",
             ':::html div (class := "reader-chapter-links")',
@@ -3275,13 +3063,11 @@ def write_work_pages(
         for item in chapter_items:
             by_section.setdefault(item.section_num, []).append(item)
         for section_num, section_items in sorted(by_section.items()):
-            section_title = (
-                f"Section {reader.chapter_num}.{section_num}"
-                if section_num > 0
-                else "Statements"
-            )
-            lines.append(f"# {section_title}")
-            lines.append("")
+            section_title = book_section_heading(reader.book, reader.chapter_num, section_num)
+            lines.extend([
+                f':::html div (id := "{section_anchor(reader.chapter_num, section_num)}") (class := "reader-section-heading")',
+                f"# {verso_text(section_title)}", ":::", "",
+            ])
             for item in section_items:
                 lines.extend(item_statement_blocks(source_root, item))
             lines.append("")
