@@ -141,6 +141,7 @@ div.main .reader-statement-links p { font: 0.75rem/1.75 var(--reader-sans); colo
 .reader-statement-links a { display: inline-block; padding-block: 0.25rem; }
 [data-reasbook-statement] > p { margin: 0.875rem 0; }
 [data-reasbook-statement] > :last-child { margin-bottom: 0; }
+[data-reasbook-statement] { content-visibility: auto; contain-intrinsic-size: auto 28rem; }
 .reader-section-heading { scroll-margin-top: 4.5rem; }
 div.declaration { border-top: 1px solid var(--reader-rule); padding-block: 1rem; margin-block: 1rem; }
 @media (max-width: 1000px) {

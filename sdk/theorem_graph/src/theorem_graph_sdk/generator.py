@@ -6,6 +6,7 @@ import os
 import math
 import shutil
 import subprocess
+import time
 import re
 import tempfile
 import uuid
@@ -139,13 +140,22 @@ class GraphGenerator:
         extractor: DeclarationExtractor | None = None,
         project_discoverer: Callable[..., list[Project]] = discover_projects,
         commit_reader: CommitReader = read_git_commit,
+        progress: Callable[[Mapping[str, Any]], None] | None = None,
     ) -> None:
         self.config = config.resolved()
         self.extractor = extractor
         self.project_discoverer = project_discoverer
         self.commit_reader = commit_reader
+        self.progress = progress
         self._source_fallback_ids: set[str] = set()
         self._source_fallback_reasons: dict[str, str] = {}
+
+    def _progress(self, phase: str, project: Project | None = None, **details: Any) -> None:
+        if self.progress is not None:
+            event = {"phase": phase, **details}
+            if project is not None:
+                event["project"] = f"{project.kind}/{project.project_id}"
+            self.progress(event)
 
     def discover(self) -> list[Project]:
         projects = self.project_discoverer(
@@ -194,10 +204,13 @@ class GraphGenerator:
         if isinstance(extractor, LeanEnvironmentExtractor):
             extracted = {}
             for project in targets:
+                started = time.monotonic()
+                self._progress("extract-start", project)
                 if not project.root_module:
                     self._source_fallback_reasons[project.project_id] = (
                         "compiled-root-unavailable"
                     )
+                    self._progress("extract-source-fallback", project, reason="compiled-root-unavailable")
                     continue
                 try:
                     project_result = extractor.extract_project(
@@ -210,10 +223,16 @@ class GraphGenerator:
                     self._source_fallback_reasons[project.project_id] = (
                         "compiled-extraction-failed"
                     )
+                    self._progress("extract-source-fallback", project,
+                                   reason="compiled-extraction-failed",
+                                   elapsed_seconds=round(time.monotonic() - started, 3))
                     continue
                 declarations = project_result.get(project.project_id)
                 if declarations is not None:
                     extracted[project.project_id] = declarations
+                self._progress("extract-complete", project,
+                               declarations=len(declarations or []),
+                               elapsed_seconds=round(time.monotonic() - started, 3))
         else:
             try:
                 extracted = dict(extractor.extract(self.config.repo_root, targets))
@@ -276,6 +295,7 @@ class GraphGenerator:
 
         entries: list[dict[str, Any]] = []
         for project in projects:
+            self._progress("render-start", project)
             output = destination / project.kind / project.slug
             curated_static = project.root / "theorem-map"
             if has_curated_map(project):
@@ -335,6 +355,7 @@ class GraphGenerator:
             entry = entry_base(project)
             entry.update({"nodes": nodes, "edges": edges, "mode": mode})
             entries.append(entry)
+            self._progress("render-complete", project, nodes=nodes, edges=edges)
         return entries
 
     @staticmethod
@@ -399,6 +420,7 @@ class GraphGenerator:
         self._source_fallback_ids.clear()
         self._source_fallback_reasons.clear()
         projects = self.discover()
+        self._progress("discovered", projects=len(projects))
         self.config.site_root.mkdir(parents=True, exist_ok=True)
         parent = self.config.site_root
         temporary = Path(tempfile.mkdtemp(prefix=".theorem-maps-stage-", dir=parent))
@@ -414,11 +436,14 @@ class GraphGenerator:
                 and project.project_id in raw_by_project
                 and project.project_id not in self._source_fallback_ids
             ]
-            source_inventory_by_project = (
-                SourceExtractor().extract(self.config.repo_root, compiled_projects)
-                if compiled_projects
-                else {}
-            )
+            source_inventory_by_project: dict[str, list[dict[str, Any]]] = {}
+            for project in compiled_projects:
+                started = time.monotonic()
+                self._progress("source-inventory-start", project)
+                source_inventory_by_project.update(
+                    SourceExtractor().extract(self.config.repo_root, [project]))
+                self._progress("source-inventory-complete", project,
+                               elapsed_seconds=round(time.monotonic() - started, 3))
             entries = self._render_tree(
                 projects,
                 raw_by_project,
@@ -429,6 +454,7 @@ class GraphGenerator:
             # the post-merge catalog renderer adds the branch column.
             write_catalog(temporary, entries, include_branch=False)
             self._publish(staged_maps, parent)
+            self._progress("published", projects=len(entries))
             generated = sum(entry["mode"] != "skipped" for entry in entries)
             skipped = len(entries) - generated
             return GenerationReport(

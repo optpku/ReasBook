@@ -1287,6 +1287,25 @@ class ReleasePlanningTests(unittest.TestCase):
             )
             self.assertIn("Demo.Book", environment["REASBOOK_LAKE_TARGETS"])
 
+    def test_graph_batch_deadline_covers_every_project_extraction(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            spec = self._spec(root)
+            branch = spec.branch("v4.26.0")
+            first = next(p for p in spec.projects if p.branch == branch.name)
+            projects = (first, replace(first, key="books/Another", project_id="Another",
+                                       slug="another", source_path="ReasBook/Books/Another"))
+            options = ReleaseBuildOptions(graph_timeout_seconds=90)
+            factory = BranchPlanFactory(REPO_ROOT, root / "cache",
+                                        ReleaseLayout(root / "cache", spec.release_id), options)
+            step = factory._graph_step(spec, branch, projects, root, {})
+            self.assertEqual(step.timeout, 270)
+            i = step.argv.index("--extractor-timeout-seconds")
+            self.assertEqual(step.argv[i + 1], "90")
+            self.assertEqual(step.argv.count("--project"), 2)
+            with self.assertRaises(DeployExecutionError):
+                options.graph_batch_timeout(0)
+
     def test_release_store_and_bundle_round_trip(self) -> None:
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
