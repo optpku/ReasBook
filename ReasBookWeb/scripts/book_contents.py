@@ -560,3 +560,24 @@ CHAPTER_NUMBERED_ITEMS = frozenset(
         "RiemannSurfaces_Forster_1981",
     }
 )
+
+# Editorial reading groups, grounded in the pinned project's Scope and
+# Article-to-Lean Map. These are not claimed as verbatim manuscript headings.
+PAPER_READING_SECTION_TITLES = {
+    "TR_LALM_theory": {
+        "2": "Deterministic method and convergence",
+        "3": "Stochastic method",
+        "4": "Second-order correction",
+        "C": "Remarks",
+    },
+}
+
+# Presentation only: the canonical bibliographic title and source identity stay
+# unchanged. Paper authors/year are separate from Lean formalization credits.
+PAPER_TITLE_LAYOUT = {
+    "BFGSMinimumQOrder_Liu_2026": {
+        "display_title": "The Minimum Q-Order of BFGS with Exact Line Search Is One",
+        "citation": "Liu et al., 2026",
+        "navigation_title": "BFGS: Minimum Q-Order",
+    },
+}

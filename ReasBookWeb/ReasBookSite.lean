@@ -21,6 +21,237 @@ def siteRootScript : String := s!"window.__versoSiteRoot=\"{siteRoot}\""
 def sidebarDataScript : String := s!"window.__reasbookSidebarData={ReasBookSite.Sections.sidebarDataJson};"
 def sidebarItemStateScript : String := r##"
 (function () {
+  // One title rule for chapters, sections, directory links and both sidebars.
+  // Keep canonical labels/routes intact and move rich title nodes, never flatten
+  // mathematical markup or copy type information into replacement text.
+  const numberedTitle = /^(\s*)((?:(?:Chapter|Part|Section|Appendix)\s+(?:\d+(?:\.\d+)*|[IVXLCDM]+|[A-Z])|§+\s*\d+(?:\.\d+)*|\d+(?:\.\d+)+|[A-Z]\.\d+(?:\.\d+)*|(?:Definition|Theorem|Lemma|Corollary|Proposition|Remark|Example|Problem|Exercise|Algorithm|Assumption|Notation|Construction)\s+\d+(?:\.\d+)*))(\s*(?:—|–|--|:)\s*|\s+-\s+|\.\s+)(\S[\s\S]*?)\s*$/i;
+  window.__reasbookFormatReadingTitle = function (node) {
+    if (!node || node.classList.contains("reader-numbered-title") || node.closest("pre, code, [aria-disabled]")) return;
+    const raw = node.textContent;
+    const parts = raw.match(numberedTitle);
+    if (!parts) return;
+    const start = parts[1].length + parts[2].length + parts[3].length;
+    const walker = document.createTreeWalker(node, NodeFilter.SHOW_TEXT);
+    const range = document.createRange();
+    range.setStart(node, 0);
+    let offset = 0, foundStart = false, text;
+    while ((text = walker.nextNode())) {
+      const next = offset + text.length;
+      if (start <= next) {
+        range.setEnd(text, start - offset);
+        foundStart = true;
+        break;
+      }
+      offset = next;
+    }
+    if (!foundStart || range.cloneContents().querySelector("code, .katex, [data-verso-hover]")) return;
+    // Delete only the plain numbering prefix, then move the original name
+    // subtree intact, including links, listeners and native inline math nodes.
+    const originalIds = Array.from(node.querySelectorAll("[id]"), element => element.id);
+    range.deleteContents();
+    const remainingIds = new Set(Array.from(node.querySelectorAll("[id]"), element => element.id));
+    const number = document.createElement("span");
+    number.className = "reader-title-number";
+    for (const id of originalIds) {
+      if (remainingIds.has(id)) continue;
+      const anchor = document.createElement("span");
+      anchor.id = id;
+      anchor.setAttribute("aria-hidden", "true");
+      number.appendChild(anchor);
+    }
+    number.appendChild(document.createTextNode(parts[2]));
+    const name = document.createElement("span");
+    name.className = "reader-title-name";
+    while (node.firstChild) name.appendChild(node.firstChild);
+    if (node.tagName === "A" && !node.hasAttribute("aria-label")) node.setAttribute("aria-label", raw.trim());
+    node.replaceChildren(number, document.createTextNode(" "), name);
+    node.classList.add("reader-numbered-title");
+  };
+  window.__reasbookFormatReadingTitles = function () {
+    for (const heading of document.querySelectorAll(".main h2, .main h3")) {
+      if (heading.textContent.trim() !== "Statements") continue;
+      const section = heading.closest("section");
+      if (heading.id) {
+        const anchor = document.createElement("div");
+        anchor.id = heading.id;
+        anchor.className = "reader-section-heading";
+        heading.replaceWith(anchor);
+      } else heading.remove();
+      if (section && !section.querySelector("h2")) {
+        for (const item of section.querySelectorAll('[role="heading"][aria-level="3"]')) item.setAttribute("aria-level", "2");
+      }
+    }
+    const headings = ".main h1, .main h2, .main h3, .main h4, .main h5, .main h6, .main [role='heading']";
+    const links = ".reader-chapter-grid a, .main li > p > a, #sidebar-nav-root a, #sidebar-nav-root .nav-section-title, #sidebar-nav-root .nav-chapter-title";
+    for (const node of document.querySelectorAll(headings + ", " + links)) {
+      if (node.matches("a")) {
+        if (node.closest("[data-reasbook-statement], .reader-attribution, .reader-contributors")) continue;
+        // A stand-alone directory entry may be formatted, an inline citation
+        // surrounded by prose must retain the paragraph's reading flow.
+        if (node.matches(".main li > p > a") && Array.from(node.parentNode.childNodes).some(
+            sibling => sibling !== node && sibling.textContent.trim())) continue;
+      }
+      window.__reasbookFormatReadingTitle(node);
+    }
+  };
+  // Article-level contents are shared by the primary and fallback sidebar.
+  window.__reasbookBuildPaperNavigation = function (work) {
+    if (!(work.items || []).length) return null;
+    const root = window.__versoSiteRoot || "/";
+    const href = (route, anchor) => root + String(route || "").replace(/^\/+|\/+$/g, "") + "/" + (anchor ? "#" + encodeURIComponent(anchor) : "");
+    const list = document.createElement("ul");
+    list.className = "nav-work-tree";
+    function link(label, route, anchor) {
+      const a = document.createElement("a");
+      a.textContent = label;
+      a.href = href(route, anchor);
+      if (anchor) a.setAttribute("data-chapter-target", "true");
+      else if (pathKey(a.pathname) === pathKey(window.location.pathname)) {
+        a.classList.add("is-current");
+        a.setAttribute("aria-current", "page");
+      }
+      return a;
+    }
+    for (const group of (work.item_sections || [])) {
+      const section = document.createElement("li");
+      section.className = "nav-reading-section";
+      const chapter = document.createElement("div");
+      chapter.className = "nav-chapter";
+      const row = document.createElement("div");
+      row.className = "nav-chapter-row";
+      const title = link(group.label, work.reader_route, group.anchor);
+      title.className = "nav-section-title nav-chapter-title";
+      row.appendChild(title);
+      const items = document.createElement("ul");
+      items.className = "nav-section-list nav-item-list";
+      items.id = "paper-contents-" + work.slug + "-" + group.anchor;
+      const hash = fragment(window.location.hash.slice(1));
+      const onReader = pathKey(new URL(href(work.reader_route), window.location.origin).pathname) === pathKey(window.location.pathname);
+      const ownsHash = hash === group.anchor || work.items.some(item => String(item.section) === String(group.number)
+        && item.anchor && (hash === item.anchor || hash.startsWith(item.anchor + "-clause-")));
+      const open = onReader && (ownsHash || (!hash && group === work.item_sections[0]));
+      items.hidden = !open;
+      chapter.classList.toggle("is-open", open);
+      const toggle = document.createElement("button");
+      toggle.type = "button";
+      toggle.className = "nav-chapter-toggle";
+      toggle.setAttribute("aria-controls", items.id);
+      toggle.setAttribute("aria-expanded", String(open));
+      toggle.setAttribute("aria-label", "Toggle contents for " + group.label);
+      const chevron = document.createElement("span");
+      chevron.setAttribute("aria-hidden", "true");
+      chevron.textContent = "›";
+      toggle.appendChild(chevron);
+      row.appendChild(toggle);
+      chapter.appendChild(row);
+      for (const item of work.items.filter(item => String(item.section) === String(group.number))) {
+        const row = document.createElement("li");
+        row.className = "nav-file-item";
+        let label;
+        if (item.anchor) label = link(item.title, work.reader_route, item.anchor);
+        else {
+          label = document.createElement("span");
+          label.textContent = item.title + " — no statement yet";
+          label.setAttribute("aria-disabled", "true");
+        }
+        label.title = item.source || item.module || "";
+        row.appendChild(label);
+        items.appendChild(row);
+      }
+      chapter.appendChild(items);
+      section.appendChild(chapter);
+      list.appendChild(section);
+    }
+    if ((work.files || []).length) {
+      const row = document.createElement("li");
+      const details = document.createElement("details");
+      details.className = "nav-secondary nav-supporting-files";
+      const title = document.createElement("summary");
+      title.textContent = "Supporting Lean files";
+      details.appendChild(title);
+      const files = document.createElement("ul");
+      for (const file of work.files) {
+        if (!file.route) continue;
+        const item = document.createElement("li");
+        item.className = "nav-file-item";
+        const a = link(file.title, file.route);
+        a.title = file.module || "";
+        if (pathKey(a.pathname) === pathKey(window.location.pathname)) details.open = true;
+        item.appendChild(a);
+        files.appendChild(item);
+      }
+      details.appendChild(files);
+      row.appendChild(details);
+      list.appendChild(row);
+    }
+    return list;
+  };
+  function appendWorkName(node, name) {
+    for (const part of name.split(/(Q-Order)/g)) {
+      if (part === "Q-Order") {
+        const term = document.createElement("span");
+        term.className = "reader-title-term";
+        term.textContent = part;
+        node.appendChild(term);
+      } else node.appendChild(document.createTextNode(part));
+    }
+  }
+  window.__reasbookFormatWorkHeader = function (node, work) {
+    if (!node || !work || !work.navigation_title || node.dataset.workTitle) return;
+    node.dataset.workTitle = work.title;
+    node.setAttribute("aria-label", work.title);
+    const name = document.createElement("span");
+    name.className = "nav-work-name";
+    appendWorkName(name, work.navigation_title);
+    const citation = document.createElement("span");
+    citation.className = "nav-work-citation";
+    citation.textContent = work.citation || "";
+    node.replaceChildren(name, document.createTextNode(" "), citation);
+    node.classList.add("reader-bibliographic-title");
+  };
+  window.__reasbookFormatWorkHeading = function (current) {
+    if (!current || !current.work || !current.work.display_title) return;
+    const work = current.work;
+    const heading = document.querySelector(".main h1");
+    if (!heading || heading.dataset.readerTitle) return;
+    const original = heading.textContent.trim();
+    const home = original === work.title;
+    const prefix = work.title + " -- ";
+    const fullDetail = original.startsWith(prefix);
+    const ownFile = (work.files || []).some(file => pathKey(file.route || "") === pathKey(current.route || "") && file.title === original);
+    if (!home && !fullDetail && !ownFile) return;
+    const name = home ? work.display_title : fullDetail ? original.slice(prefix.length) : original;
+    heading.replaceChildren();
+    appendWorkName(heading, name);
+    heading.classList.add("reader-work-heading");
+    heading.dataset.readerTitle = home ? work.title : name;
+    const bibliography = document.createElement("p");
+    bibliography.className = "reader-bibliography";
+    if (!home) {
+      const paper = document.createElement("a");
+      paper.href = (window.__versoSiteRoot || "/") + work.home;
+      paper.textContent = work.navigation_title || work.display_title;
+      paper.setAttribute("aria-label", work.title);
+      bibliography.append(paper, document.createTextNode(" · "));
+    }
+    bibliography.appendChild(document.createTextNode(work.citation));
+    heading.after(bibliography);
+  };
+  let forwardedPaperURL = "";
+  window.__reasbookForwardPaperFragment = function (current) {
+    if (!current || current.kind !== "paper" || !current.work || !current.work.reader_route
+        || pathKey(current.work.home || "") !== pathKey(current.route || "") || !window.location.hash) return false;
+    const hash = fragment(window.location.hash.slice(1));
+    if (!(current.work.items || []).some(item => item.anchor
+        && (hash === item.anchor || hash.startsWith(item.anchor + "-clause-")))) return false;
+    const root = window.__versoSiteRoot || "/";
+    const target = root + current.work.reader_route.replace(/^\/+|\/+$/g, "") + "/" + window.location.hash;
+    if (forwardedPaperURL !== target) {
+      forwardedPaperURL = target;
+      window.location.replace(target);
+    }
+    return true;
+  };
   function pathKey(path) {
     return path.replace(/index\.html$/i, "").replace(/\/+$/, "");
   }
@@ -59,7 +290,11 @@ def sidebarItemStateScript : String := r##"
     const current = nav.querySelector("a.is-current");
     const work = nav.querySelector(".nav-work-title");
     const heading = document.querySelector(".main h1");
-    if (work && heading && !heading.textContent.includes(work.textContent.trim())) {
+    if (work && heading && work.dataset.workTitle) {
+      const title = work.dataset.workTitle;
+      const page = heading.dataset.readerTitle || heading.textContent.trim();
+      document.title = (page === title ? title : title + " — " + page) + " — ReasBook";
+    } else if (work && heading && !heading.textContent.includes(work.textContent.trim())) {
       document.title = work.textContent.trim() + " — " + heading.textContent.trim() + " — ReasBook";
     }
     if (current && nav.clientHeight > 0 && nav.scrollHeight > nav.clientHeight) {
@@ -84,6 +319,7 @@ def sidebarItemStateScript : String := r##"
       pre.setAttribute("aria-label", "Lean code");
       pre.setAttribute("translate", "no");
     }
+    window.__reasbookFormatReadingTitles();
     const nav = document.getElementById("sidebar-nav-root");
     if (!nav) return;
     nav.addEventListener("click", (event) => {
@@ -291,6 +527,10 @@ def sidebarFallbackScript : String := r##"
     } else {
       html += '<div class="nav-work-title">' + escapeHtml(work.title) + '</div>';
     }
+    if (current.kind === "paper") {
+      const contents = window.__reasbookBuildPaperNavigation(work);
+      if (contents) return html + contents.outerHTML + "</li>";
+    }
     html += '<ul class="nav-work-tree">';
 
     if (current.kind === "book" && Array.isArray(work.chapters) && work.chapters.length > 0) {
@@ -303,7 +543,7 @@ def sidebarFallbackScript : String := r##"
         if (chapter.route) {
           const href = siteRoot + trimSlashes(chapter.route) + "/";
           html += '<a class="nav-chapter-title" data-chapter-target="true" href="' + escapeHtml(href)
-            + '">' + escapeHtml(chapter.title || "") + '</a>';
+            + '" aria-label="' + escapeHtml(chapter.title || "") + '">' + escapeHtml(chapter.title || "") + '</a>';
         } else {
           html += '<span class="nav-chapter-title">' + escapeHtml(chapter.title || "") + '</span>';
         }
@@ -407,8 +647,13 @@ def sidebarFallbackScript : String := r##"
   function ensureSidebarFallback() {
     var navRoot = document.getElementById("sidebar-nav-root");
     if (!navRoot) return;
+    const current = findCurrentWork(window.__reasbookSidebarData || { books: [], papers: [] });
+    if (window.__reasbookForwardPaperFragment(current)) return;
+    window.__reasbookFormatWorkHeading(current);
     if (navRoot.children && navRoot.children.length > 0) return;
     navRoot.innerHTML = fallbackHtml();
+    window.__reasbookFormatWorkHeader(navRoot.querySelector(".nav-work-title"), current && current.work);
+    window.__reasbookFormatReadingTitles();
     window.__reasbookSyncChapterItems();
   }
 
@@ -764,6 +1009,7 @@ def navLinkRewriteScript : String := r##"
     if (!work.home) title.textContent = work.title || label;
     title.classList.add("nav-work-title");
     title.title = label;
+    window.__reasbookFormatWorkHeader(title, work);
     li.appendChild(title);
     return li;
   }
@@ -791,6 +1037,11 @@ def navLinkRewriteScript : String := r##"
 
   function mkPaperTree(work, currentRoute) {
     const li = mkWorkHeader(work, currentRoute, "Paper home");
+    const contents = window.__reasbookBuildPaperNavigation(work);
+    if (contents) {
+      li.appendChild(contents);
+      return li;
+    }
     const sectionList = document.createElement("ul");
     sectionList.classList.add("nav-work-tree");
     for (const section of (work.sections || [])) {
@@ -901,6 +1152,7 @@ def navLinkRewriteScript : String := r##"
     const navData = window.__reasbookSidebarData || { books: [], papers: [] };
     const current = findCurrentWork(navData);
     const navRoot = document.getElementById("sidebar-nav-root");
+    window.__reasbookFormatWorkHeading(current);
 
     function renderSidebarNav() {
       if (!navRoot) return;
@@ -929,6 +1181,8 @@ def navLinkRewriteScript : String := r##"
     }
 
     renderSidebarNav();
+    if (window.__reasbookForwardPaperFragment(current)) return;
+    window.__reasbookFormatReadingTitles();
     rewriteAllAnchors();
     document.addEventListener("click", onClick, true);
   }
@@ -946,6 +1200,7 @@ def theme : Theme := { Theme.default with
       <html lang="en">
         <head>
           <meta charset="UTF-8"/>
+          <meta name="viewport" content="width=device-width, initial-scale=1"/>
           <meta name="theme-color" content="#ffffff"/>
           <base href={{siteRoot}}/>
           <title>{{ (← param (α := String) "title") }} " -- ReasBook "</title>

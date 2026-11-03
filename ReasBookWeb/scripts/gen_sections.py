@@ -563,7 +563,7 @@ def chapter_title_for_book(book: str, chapter_num: int, source_title: str = "") 
 def book_section_heading(book: str, chapter: int, section: int, title: str = "") -> str:
     """Use the book's actual numbering, including Rockafellar's global §§."""
     if section == 0:
-        return "Statements"
+        return ""
     named = title or BOOK_SECTION_TITLES.get(book, {}).get(chapter, {}).get(section, "")
     if named in {"Problems", "Exercises"}:
         return named
@@ -1672,9 +1672,10 @@ def update_literate_source_lookup(web_root: Path) -> None:
 
 def emit_sections(
     entries: list[Entry], reader_chapters: Iterable[ReaderChapter] = (),
-    *, source_root: Path,
+    *, source_root: Path, paper_readers: Iterable[PaperReader] = (),
 ) -> str:
     reader_chapters = tuple(reader_chapters)
+    paper_reader_map = {reader.paper: reader for reader in paper_readers}
     books: dict[str, dict] = {}
     papers: dict[str, dict] = {}
     chapter_headings = {
@@ -1858,11 +1859,15 @@ def emit_sections(
             {
                 "slug": work["slug"],
                 "title": work["title"],
+                **book_title_layout(book),
                 "home": work["home"],
                 "chapters": chapters_payload,
                 "routes": [e.route for e in entries if e.category == "books" and e.book_or_paper == book],
             }
         )
+
+    for reader in paper_reader_map.values():
+        ensure_paper(reader.paper)["home"] = f"papers/{reader.paper.lower()}/"
 
     papers_payload: list[dict] = []
     for paper in sorted(papers):
@@ -1883,8 +1888,11 @@ def emit_sections(
                     "parts": parts_payload,
                 }
             )
+        reader = paper_reader_map.get(paper)
         papers_payload.append(
             {
+                **(paper_reader_navigation(reader, source_root) if reader is not None else {}),
+                **paper_title_layout(paper),
                 "slug": work["slug"],
                 "title": work["title"],
                 "home": work["home"],
@@ -2174,6 +2182,57 @@ def paper_item_label(item: PaperItem) -> str:
     kind = re.sub(r"(?<=[a-z0-9])(?=[A-Z])", " ", item.kind).strip()
     number = ".".join((item.section_token, *item.tail_parts))
     return f"{kind} {number}"
+
+
+def book_title_layout(book: str) -> dict[str, str]:
+    """Split only registered bibliography metadata, never mathematical prose."""
+    match = re.fullmatch(r"(.+) \(([^()]+, \d{4})\)", BOOK_TITLES.get(book, ""))
+    if not match:
+        return {}
+    return {"display_title": match[1], "citation": match[2], "navigation_title": match[1]}
+
+
+def paper_title_layout(paper: str) -> dict[str, str]:
+    from book_contents import PAPER_TITLE_LAYOUT
+    layout = PAPER_TITLE_LAYOUT.get(paper, {})
+    if layout and f'{layout["display_title"]} ({layout["citation"]})' != paper_title(paper):
+        raise ValueError(f"Paper title presentation disagrees with its bibliography: {paper}")
+    return dict(layout)
+
+
+def paper_section_anchor(token: str) -> str:
+    return "paper-section-" + token.casefold()
+
+
+def paper_section_label(paper: str, token: str) -> str:
+    from book_contents import PAPER_READING_SECTION_TITLES
+    number = f"Section {token}" if token.isdigit() else f"Appendix {token}"
+    name = PAPER_READING_SECTION_TITLES.get(paper, {}).get(token)
+    return f"{number} — {name}" if name else number
+
+
+def paper_reader_groups(reader: PaperReader) -> list[tuple[str, tuple[PaperItem, ...]]]:
+    grouped: dict[str, list[PaperItem]] = {}
+    for item in sorted(reader.items, key=paper_item_sort_key):
+        grouped.setdefault(item.section_token, []).append(item)
+    return [(token, tuple(items)) for token, items in grouped.items()]
+
+
+def paper_reader_navigation(reader: PaperReader, source_root: Path) -> dict:
+    return {
+        "reader_route": reader.route,
+        "item_sections": [
+            {"number": token, "label": paper_section_label(reader.paper, token),
+             "anchor": paper_section_anchor(token)}
+            for token, _ in paper_reader_groups(reader)
+        ],
+        "items": [
+            {"title": paper_item_label(item), "module": item.module,
+             "anchor": "" if "no statement yet" in item_reading_links(source_root, item) else item_anchor(item),
+             "source": item.source_path, "section": item.section_token}
+            for item in sorted(reader.items, key=paper_item_sort_key)
+        ],
+    }
 
 
 # ---------------------------------------------------------------------------
@@ -3064,12 +3123,15 @@ def write_work_pages(
             by_section.setdefault(item.section_num, []).append(item)
         for section_num, section_items in sorted(by_section.items()):
             section_title = book_section_heading(reader.book, reader.chapter_num, section_num)
-            lines.extend([
-                f':::html div (id := "{section_anchor(reader.chapter_num, section_num)}") (class := "reader-section-heading")',
-                f"# {verso_text(section_title)}", ":::", "",
-            ])
+            lines.append(f':::html div (id := "{section_anchor(reader.chapter_num, section_num)}") (class := "reader-section-heading")')
+            if section_title:
+                lines.append(f"# {verso_text(section_title)}")
+            lines.extend([":::", ""])
             for item in section_items:
-                lines.extend(item_statement_blocks(source_root, item))
+                blocks = item_statement_blocks(source_root, item)
+                if not section_title:
+                    blocks = [line.replace('(«aria-level» := "3")', '(«aria-level» := "2")') for line in blocks]
+                lines.extend(blocks)
             lines.append("")
         if reader.support_modules:
             lines.append("# Supporting modules")
@@ -3155,13 +3217,11 @@ def write_work_pages(
         lines.append("")
         item_reader = paper_readers_by_paper.get(paper)
         if item_reader is not None:
-            lines.append("# Statements")
-            lines.extend(["", ':::html div (class := "reader-scope-note")',
-                          "Proofs omitted. Hover over highlighted terms to see their Lean types.", ':::'])
-            lines.append("")
-            for item in item_reader.items:
-                lines.extend(item_statement_blocks(source_root, item))
-            lines.append("")
+            lines.append(':::html div (class := "reader-chapter-grid reader-paper-contents")')
+            for token, _ in paper_reader_groups(item_reader):
+                target = portable_site_link(item_reader.route) + "#" + paper_section_anchor(token)
+                lines.append(f"- [{paper_section_label(paper, token)}]({target})")
+            lines.extend([":::", ""])
         if section_entries:
             lines.append("Section index:")
             lines.append("")
@@ -3178,7 +3238,6 @@ def write_work_pages(
                     lines.append(f"- [{label}]({portable_site_link(e.route)})")
             lines.append("")
         elif entry_points and item_reader is None:
-            lines.append("# Statements")
             lines.extend(["", ':::html div (class := "reader-scope-note")',
                           "Source excerpts; proofs omitted.", ':::'])
             lines.append("")
@@ -3196,38 +3255,20 @@ def write_work_pages(
     for reader in item_paper_readers:
         page_file = papers_root / lean_module_name(reader.paper) / "Items.lean"
         lines = [
-            GENERATED_PAPER_READER_MARKER,
-            "-- Do not edit manually.",
-            "import VersoBlog",
-            "open Verso Genre Blog",
-            "",
-            f"#doc (Page) {lean_string(f'{paper_title(reader.paper)} -- Formalized items')} =>",
-            "",
+            GENERATED_PAPER_READER_MARKER, "-- Do not edit manually.",
+            "import VersoBlog", "open Verso Genre Blog", "",
+            f"#doc (Page) {lean_string(paper_title(reader.paper))} =>", "",
+            ':::html div (class := "reader-chapter-links")',
             f"- [Paper home]({portable_site_link(f'papers/{reader.paper.lower()}/')})",
-            f"- [Lean source directory]({github_tree_link(reader.source_directory)})",
-            "",
-            f"This reader indexes {len(reader.items)} formalized items. "
-            f"The source tree also contains {reader.support_module_count} supporting modules.",
-            "",
+            f"- [Lean source]({github_tree_link(reader.source_directory)})",
+            ":::", "",
         ]
-        by_section: dict[str, list[PaperItem]] = {}
-        for item in reader.items:
-            by_section.setdefault(item.section_token, []).append(item)
-        section_order = sorted(
-            by_section,
-            key=lambda token: (0, int(token))
-            if token.isdigit()
-            else (1, token.casefold()),
-        )
-        for section_token in section_order:
-            heading = (
-                f"Section {section_token}"
-                if section_token.isdigit()
-                else f"Appendix {section_token}"
-            )
-            lines.append(f"# {heading}")
-            lines.append("")
-            for item in by_section[section_token]:
+        for token, items in paper_reader_groups(reader):
+            lines.extend([
+                f':::html div (id := "{paper_section_anchor(token)}") (class := "reader-section-heading")',
+                f"# {verso_text(paper_section_label(reader.paper, token))}", ":::", "",
+            ])
+            for item in items:
                 lines.extend(item_statement_blocks(source_root, item))
             lines.append("")
         write_page(page_file, "\n".join(lines))
@@ -3707,7 +3748,7 @@ def main() -> None:
     paper_readers = collect_paper_readers(paper_inventories)
     paper_section_indexes = collect_paper_section_indexes(source_root, entries)
     out_file.parent.mkdir(parents=True, exist_ok=True)
-    write_text_if_changed(out_file, emit_sections(entries, reader_chapters, source_root=source_root), log=False)
+    write_text_if_changed(out_file, emit_sections(entries, reader_chapters, source_root=source_root, paper_readers=paper_readers), log=False)
     write_text_if_changed(
         route_file,
         emit_route_table(

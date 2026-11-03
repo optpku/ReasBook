@@ -27,6 +27,16 @@ typography:
     fontSize: "2rem"
     fontWeight: 400
     lineHeight: 1.25
+  bibliographic-display:
+    fontFamily: 'Georgia, "Times New Roman", "DejaVu Serif", serif'
+    fontSize: "2rem"
+    fontWeight: 400
+    lineHeight: 1.3
+  bibliographic-display-mobile:
+    fontFamily: 'Georgia, "Times New Roman", "DejaVu Serif", serif'
+    fontSize: "1.75rem"
+    fontWeight: 400
+    lineHeight: 1.3
   headline:
     fontFamily: 'Georgia, "Times New Roman", "DejaVu Serif", serif'
     fontSize: "1.375rem"
@@ -44,8 +54,28 @@ typography:
     lineHeight: 1.75
   chapter-link:
     fontFamily: 'Georgia, "Times New Roman", "DejaVu Serif", serif'
-    fontSize: "1.125rem"
+    fontSize: "1rem"
     fontWeight: 400
+    lineHeight: 1.5
+  numbered-page-name:
+    fontFamily: 'Georgia, "Times New Roman", "DejaVu Serif", serif'
+    fontSize: "1.875rem"
+    fontWeight: 400
+    lineHeight: 1.25
+  numbered-page-name-mobile:
+    fontFamily: 'Georgia, "Times New Roman", "DejaVu Serif", serif'
+    fontSize: "1.5rem"
+    fontWeight: 400
+    lineHeight: 1.25
+  directory-number:
+    fontFamily: 'system-ui, "Segoe UI", "DejaVu Sans", sans-serif'
+    fontSize: "0.75rem"
+    fontWeight: 500
+    lineHeight: 1.5
+  navigation-number:
+    fontFamily: 'system-ui, "Segoe UI", "DejaVu Sans", sans-serif'
+    fontSize: "0.6875rem"
+    fontWeight: 500
     lineHeight: 1.5
   catalog-link:
     fontFamily: 'Georgia, "Times New Roman", "DejaVu Serif", serif'
@@ -224,12 +254,15 @@ The hierarchy is purpose-specific rather than a fixed modular ratio:
 
 | Role | Size / line height | Weight | Application |
 | --- | --- | --- | --- |
-| Display | 2.5rem / 1.25 | 400 | Book, chapter, paper, and catalog h1; at most 30ch |
+| Display | 2.5rem / 1.25 | 400 | Default book, paper, and catalog h1; at most 30ch |
+| Bibliographic title | 2rem / 1.3 | 400 | Registered book or curated paper title; at most 36ch; 1.75rem on narrow screens |
+| Bibliography | 0.875rem / 1.6 | 400 | Sans author/year below the title |
+| Numbered page title | 1.875rem / 1.25 | 400 | Chapter/section name below its separate 0.8125rem number; 1.5rem name on narrow screens |
 | Display, narrow | 2rem / 1.25 | 400 | h1 at widths up to 640px |
 | Headline | 1.375rem / 1.25 | 600 | Main h2, including chapter-directory headings |
 | Statement title | 1.1875rem / 1.5 | 600 | Numbered mathematical heading |
 | Body | 1.125rem / 1.75 | 400 | Mathematical prose, at most 72ch |
-| Chapter link | 1.125rem / 1.5 | 400 | Chapter directory with tabular numerals |
+| Directory name | 1rem / 1.5 | 400 | Chapter or paper-section name below its separate 0.75rem number |
 | Catalog link | 1.25rem / 1.5 | 400 | Project list entry |
 | Navigation base | 0.875rem / 1.45 | 400 | Contents rail |
 | Resource label | 0.875rem / 1.75 | 400 | Home/chapter resource links |
@@ -244,6 +277,26 @@ the mobile-navigation breakpoint. Current links use weight 650. Inline code in
 prose uses 0.85em. Main h3 uses 1.1875rem/1.25; the statement-title role above
 is its own explicitly styled heading pattern.
 
+Registered book names and curated paper navigation names use 0.9375rem/1.5,
+weight 600, with the author/year below at 0.75rem, weight 400. BFGS uses
+`BFGS: Minimum Q-Order` in navigation while keeping its complete canonical
+title in the main heading, browser title and accessible navigation name.
+Author/year is a separate bibliographic line on book and paper homes; it is
+distinct from the Lean formalization contributors. Only registered bibliography
+metadata is split; mathematical text and chapter headings are not parsed for
+author names. Mathematical terms such as `Q-Order` stay together
+without forcing fixed line breaks in the title. On a reading-file page, the
+file title leads and the bibliography links back to the paper home.
+
+**The Number and Name Rule.** Every named chapter, section, subsection, part,
+appendix or numbered mathematical heading uses a smaller number on its own
+line, followed by its name. Remove only their connecting separator; preserve
+mathematical punctuation, rich markup, native type metadata and all anchor IDs.
+Use this same shared formatter in directories, main headings and both sidebar
+renderers. Unnamed entries such as `Definition 1.1` stay on one line. Do not add
+`Statements` as a heading: an unsectioned sequence begins with its first item,
+with the appropriate heading level, while its historical fragment remains valid.
+
 **The Three Reading Roles Rule.** Preserve the serif/sans/monospace distinction:
 mathematical reading, navigation, and formal source each have a recognizable
 voice. Actual typeface selection follows the platform's available fonts.
@@ -255,6 +308,9 @@ viewport height, scrolls independently, and has a 1px right rule. Main content
 starts after that rail with `3rem 3rem 5rem` padding. Its inner wrapper is
 centered within the remaining space and capped at 54rem. Prose is additionally
 capped at 72ch. Main headings wrap long titles and balance their lines.
+
+The reader declares a device-width viewport with initial scale 1 and permits
+user zoom, so mobile breakpoints use the actual device width.
 
 At widths up to 1000px, navigation becomes a sticky top region. The contents
 control is at least 48px tall; expanded contents scroll within half the viewport
@@ -307,11 +363,31 @@ underline, and pale hover fill on interaction. The two-column and short-list
 rules are described in Layout; home directories do not repeat the item list
 or append item counts.
 
+### Item-structured paper overview
+
+A paper home lists its reading groups and formalization contributors, with
+Documentation and attributed Lean source as secondary resources. It does not
+duplicate the full statement reader. Group links open the existing Items reader
+directly at the corresponding section; old home-page statement fragments lead
+to those same items. Each clause retains its mathematics, native type hovers,
+source pin and attribution.
+
+The rail follows the paper's numbered article entries rather than displaying
+implementation-module names as its main outline. Section links navigate
+directly; the same separate button used by book chapters expands their items.
+Home groups start collapsed and the current reading group opens automatically.
+Existing supporting file pages remain available under a collapsed `Supporting
+Lean files` disclosure, which opens when one of those pages is selected.
+Editorial group names must be grounded in the source's actual content and
+must not be presented as verbatim manuscript headings without evidence.
+
 ### Contents navigation
 
-A sans-serif hierarchy of work, chapter/section, and file/item links. Native
-`details`/`summary` controls expose the hierarchy. Nested lists use a 0.75rem
-left inset. Hover adds a pale fill; current entries combine fill, underline,
+A sans-serif hierarchy of work, chapter/section, and file/item links. Each
+chapter or numbered paper section has a direct title link and a separate
+44px native button that expands its items through `aria-controls` and
+`aria-expanded`. Supporting-file groups use native `details`/`summary`.
+Nested lists use a 0.75rem left inset. Hover adds a pale fill; current entries combine fill, underline,
 weight, and `aria-current`. Following a statement fragment opens its ancestor
 groups and scrolls the navigation panel only when necessary. It does not move
 the mathematical target out of view. Unavailable entries are muted text.

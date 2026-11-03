@@ -56,6 +56,14 @@ a:focus-visible, button:focus-visible, summary:focus-visible, pre:focus-visible,
 #sidebar-nav-root details ul { margin: 0.25rem 0 0.5rem 0.75rem; }
 #sidebar-nav-root .nav-chapter-row { display: flex; align-items: start; }
 #sidebar-nav-root .nav-chapter-title { flex: 1; min-width: 0; font-size: 0.9375rem; font-weight: 550; }
+/* Numbered reading titles always separate the small number from the name. */
+.reader-title-number, .reader-title-name { display: block; }
+#sidebar-nav-root .reader-title-number {
+    font-size: 0.6875rem; font-weight: 500; line-height: 1.5; color: var(--reader-muted);
+}
+#sidebar-nav-root .reader-title-name {
+    margin-top: 0.125rem; font-size: 0.8125rem; font-weight: 500; line-height: 1.5;
+}
 #sidebar-nav-root .nav-chapter-toggle {
     flex: 0 0 2.75rem; min-height: 44px; padding: 0.375rem 0.5rem;
     border: 0; border-radius: var(--reader-radius); background: transparent;
@@ -87,6 +95,19 @@ div.main h1, div.main h2, div.main h3 {
     text-wrap: balance; overflow-wrap: anywhere; scroll-margin-top: 4.5rem;
 }
 div.main h1 { font-size: 2.5rem; font-weight: 400; margin: 0 0 1rem; max-width: 30ch; }
+div.main h1.reader-numbered-title { max-width: none; margin-bottom: 1.25rem; }
+div.main h1.reader-numbered-title .reader-title-number {
+    margin-bottom: 0.5rem; color: var(--reader-muted); font: 500 0.8125rem/1.5 var(--reader-sans);
+}
+div.main h1.reader-numbered-title .reader-title-name {
+    max-width: 32ch; font-size: 1.875rem; font-weight: 400; line-height: 1.25; text-wrap: pretty;
+}
+div.main :is(h2, h3, h4, h5, h6, [role="heading"]).reader-numbered-title .reader-title-number {
+    margin-bottom: 0.25rem; color: var(--reader-muted); font: 500 0.75rem/1.5 var(--reader-sans);
+}
+div.main :is(h2, h3, h4, h5, h6, [role="heading"]).reader-numbered-title .reader-title-name {
+    font-size: 1em; line-height: 1.35; text-wrap: pretty;
+}
 div.main h2 { font-size: 1.375rem; font-weight: 600; margin: 2.5rem 0 1rem; }
 div.main h3 { font-size: 1.1875rem; }
 div.main p { max-width: 72ch; font: 1.125rem/1.75 var(--reader-serif); overflow-wrap: anywhere; }
@@ -121,10 +142,16 @@ div.main .reader-chapter-grid ul {
 div.main .reader-chapter-grid ul:not(:has(li:nth-child(5))) { grid-template-columns: 1fr; }
 div.main .reader-chapter-grid a {
     display: block; min-height: 52px; box-sizing: border-box; padding: 0.75rem 0.5rem;
-    color: var(--reader-ink); font: 1.125rem/1.5 var(--reader-serif);
+    color: var(--reader-ink); font: 1rem/1.5 var(--reader-serif);
     font-variant-numeric: tabular-nums; text-decoration: none; border-radius: var(--reader-radius);
 }
-div.main .reader-chapter-grid a:hover { color: var(--reader-link); background: var(--reader-hover); text-decoration: underline; }
+div.main .reader-chapter-grid .reader-title-number {
+    font: 500 0.75rem/1.5 var(--reader-sans); color: var(--reader-muted);
+}
+div.main .reader-chapter-grid .reader-title-name { margin-top: 0.25rem; }
+div.main .reader-chapter-grid a:hover { color: var(--reader-link); background: var(--reader-hover); }
+div.main .reader-chapter-grid a:hover .reader-title-name { text-decoration: underline; }
+div.main .reader-chapter-grid a:not(.reader-numbered-title):hover { text-decoration: underline; }
 .reader-scope-note { margin: -0.75rem 0 2rem; }
 div.main .reader-scope-note p { font: 0.8125rem/1.6 var(--reader-sans); color: var(--reader-muted); max-width: 80ch; }
 [data-reasbook-statement] {
@@ -162,6 +189,7 @@ div.declaration { border-top: 1px solid var(--reader-rule); padding-block: 1rem;
 }
 @media (max-width: 640px) {
     div.main h1 { font-size: 2rem; }
+    div.main h1.reader-numbered-title .reader-title-name { font-size: 1.5rem; }
     div.main h2 { margin-top: 2rem; }
     div.main .reader-chapter-grid ul { grid-template-columns: 1fr; }
     div.main pre { padding: 0.875rem; font-size: 0.8125rem; }
@@ -173,3 +201,27 @@ div.declaration { border-top: 1px solid var(--reader-rule); padding-block: 1rem;
 }
 /* Keep upstream docstring diagnostics from obscuring mathematical text. */
 .hl.lean .has-info.error :not(.tactic-state):not(.tactic-state *) { text-decoration: none !important; }
+
+/* Paper overviews stay compact; supporting proof interfaces are secondary. */
+.reader-paper-contents { margin-bottom: 2.5rem; }
+#sidebar-nav-root .nav-supporting-files { margin-top: 1.5rem; }
+#sidebar-nav-root .nav-supporting-files > summary { color: var(--reader-muted); font-size: 0.8125rem; }
+
+/* Work names and bibliographic metadata have distinct reading roles. */
+div.main h1.reader-work-heading {
+    max-width: 36ch; margin-bottom: 0.75rem; font-size: 2rem; line-height: 1.3;
+}
+div.main p.reader-bibliography {
+    margin: 0 0 1.25rem; color: var(--reader-muted); font: 0.875rem/1.6 var(--reader-sans);
+}
+.reader-title-term { white-space: nowrap; }
+#sidebar-nav-root .nav-work-title.reader-bibliographic-title { font-size: 0.9375rem; font-weight: 600; }
+#sidebar-nav-root .nav-work-name, #sidebar-nav-root .nav-work-citation { display: block; }
+#sidebar-nav-root .nav-work-citation {
+    margin-top: 0.25rem; color: var(--reader-muted); font-size: 0.75rem; font-weight: 400;
+}
+#sidebar-nav-root .reader-bibliographic-title.is-current { text-decoration: none; }
+#sidebar-nav-root .reader-bibliographic-title.is-current .nav-work-name { text-decoration: underline; }
+@media (max-width: 640px) {
+    div.main h1.reader-work-heading { font-size: 1.75rem; }
+}

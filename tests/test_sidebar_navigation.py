@@ -31,6 +31,14 @@ def sidebar_scripts():
 
 
 class SidebarInventoryTests(unittest.TestCase):
+    def test_registered_book_titles_keep_their_bibliographic_identity(self):
+        for book, title in generator.BOOK_TITLES.items():
+            with self.subTest(book=book):
+                layout = generator.book_title_layout(book)
+                self.assertEqual(f'{layout["display_title"]} ({layout["citation"]})', title)
+                self.assertEqual(layout['navigation_title'], layout['display_title'])
+        self.assertEqual(generator.book_title_layout('UnknownBook'), {})
+
     def test_flat_paper_files_have_explicit_ownership_and_numeric_navigation(self):
         entries = [generator.Entry('papers', f'Book.{stem}', stem, f'book/{stem.lower()}/',
                                    'FlatPaper', 0, 0, 0, stem.lower())
@@ -147,7 +155,9 @@ class SidebarInventoryTests(unittest.TestCase):
         self.assertNotIn('This chapter indexes', page)
         self.assertIn('#doc (Page) "Chapter 01"', page)
         self.assertIn('class := "reader-statement-title"', page)
-        self.assertIn('(role := "heading") («aria-level» := "3")', page)
+        self.assertIn('(role := "heading") («aria-level» := "2")', page)
+        self.assertNotIn("# Statements", page)
+        self.assertIn('id := "statements-1"', page)
         self.assertIn('class := "reader-statement-links"', page)
         self.assertIn('Proofs omitted.', page)
 
@@ -169,6 +179,9 @@ class SidebarInventoryTests(unittest.TestCase):
         payload = sidebar_payload(generator.emit_sections(entries, readers, source_root=self.source))
         generator.write_work_pages(self.repo, self.source, entries, readers)
         named = next(item for item in payload['books'] if item['slug'] == book.lower())
+        self.assertEqual(named['title'], generator.BOOK_TITLES[book])
+        self.assertEqual(named['display_title'], 'First-Order Methods in Optimization')
+        self.assertEqual(named['citation'], 'Beck, 2017')
         title = "Chapter 01 — Vector Spaces"
         route = named['chapters'][0]['route']
         self.assertEqual(named['chapters'][0]['title'], title)
@@ -315,6 +328,193 @@ class SidebarInventoryTests(unittest.TestCase):
 @unittest.skipUnless(os.environ.get("REASBOOK_SIDEBAR_BROWSER_TEST") == "1",
                      "Set REASBOOK_SIDEBAR_BROWSER_TEST=1 to run browser checks")
 class SidebarBrowserTests(unittest.TestCase):
+    def test_book_bibliography_is_separate_and_repeated_enhancement_is_safe(self):
+        from playwright.sync_api import expect, sync_playwright
+
+        book = 'ConvexAnalysisMonotoneOperators_BauschkeCombettes_2017'
+        title = generator.BOOK_TITLES[book]
+        layout = generator.book_title_layout(book)
+        work = {'slug': 'bauschke', 'title': title, **layout,
+                'home': 'books/bauschke/', 'chapters': []}
+        scripts = sidebar_scripts()
+        with sync_playwright() as p:
+            browser = p.chromium.launch(headless=True)
+            for fallback in (False, True):
+                page = browser.new_page()
+                errors = []
+                page.on('pageerror', lambda error: errors.append(str(error)))
+                selected = [scripts['sidebarItemStateScript']]
+                if not fallback:
+                    selected.append(scripts['navLinkRewriteScript'])
+                selected.append(scripts['sidebarFallbackScript'])
+                init = 'window.__versoSiteRoot="/ReasBook/";window.__reasbookSidebarData=' + json.dumps({'books': [work], 'papers': []}) + ';'
+                html = ('<html><head>' + ''.join('<script>' + script + '</script>' for script in [init, *selected])
+                        + '</head><body><nav id="sidebar-nav-root"></nav><div class="main"><h1>' + title
+                        + '</h1><section id="credits">Formalization contributors: Yifan Bai, Zichen Wang, Zaiwen Wen</section></div></body></html>')
+                page.route('**/*', lambda route: route.fulfill(status=200, content_type='text/html', body=html))
+                page.goto('https://preview.test/ReasBook/' + work['home'])
+                expect(page.locator('.main h1')).to_have_text(layout['display_title'])
+                expect(page.locator('.reader-bibliography')).to_have_text(layout['citation'])
+                expect(page.locator('.nav-work-title')).to_have_attribute('aria-label', title)
+                expect(page.locator('.nav-work-citation')).to_have_text(layout['citation'])
+                self.assertEqual(page.title().count(title), 1)
+                page.evaluate(scripts['sidebarFallbackScript'])
+                expect(page.locator('.reader-bibliography')).to_have_count(1)
+                expect(page.locator('#credits')).to_have_text('Formalization contributors: Yifan Bai, Zichen Wang, Zaiwen Wen')
+                self.assertEqual(errors, [])
+                page.close()
+            browser.close()
+
+    def test_long_paper_title_keeps_canonical_identity_in_both_renderers(self):
+        from playwright.sync_api import expect, sync_playwright
+
+        scripts = sidebar_scripts()
+        title = generator.paper_title('BFGSMinimumQOrder_Liu_2026')
+        layout = generator.paper_title_layout('BFGSMinimumQOrder_Liu_2026')
+        paper = {'slug': 'bfgs', 'title': title, **layout, 'home': 'papers/bfgs/',
+                 'sections': [], 'routes': ['book/notation_1_1/'],
+                 'files': [{'title': 'Notation 1.1', 'route': 'book/notation_1_1/'}]}
+        data = {'books': [], 'papers': [paper]}
+        with sync_playwright() as p:
+            browser = p.chromium.launch(headless=True)
+            for fallback in (False, True):
+                for route, heading in (('papers/bfgs/', title),
+                                       ('book/notation_1_1/', 'Notation 1.1')):
+                    page = browser.new_page()
+                    errors = []
+                    page.on('pageerror', lambda error: errors.append(str(error)))
+                    selected = [scripts['sidebarItemStateScript']]
+                    if not fallback:
+                        selected.append(scripts['navLinkRewriteScript'])
+                    selected.append(scripts['sidebarFallbackScript'])
+                    init = 'window.__versoSiteRoot="/ReasBook/";window.__reasbookSidebarData=' + json.dumps(data) + ';'
+                    html = ('<html><head>' + ''.join('<script>' + script + '</script>' for script in [init, *selected])
+                            + '</head><body><nav id="sidebar-nav-root"></nav><div class="main"><h1>' + heading
+                            + '</h1><pre id="native"><code data-verso-hover="original">Nat</code></pre>'
+                            + '<p class="reader-attribution">Lean contributor: Chenyi Li</p></div></body></html>')
+                    page.route('**/*', lambda request: request.fulfill(status=200, content_type='text/html', body=html))
+                    page.goto('https://preview.test/ReasBook/' + route)
+                    expect(page.locator('.main h1')).to_have_text(layout['display_title'] if route == paper['home'] else heading)
+                    expect(page.locator('.nav-work-name')).to_have_text(layout['navigation_title'])
+                    expect(page.locator('.nav-work-title')).to_have_attribute('aria-label', title)
+                    expect(page.locator('.reader-bibliography')).to_contain_text(layout['citation'])
+                    self.assertEqual(page.title().count(title), 1)
+                    if route != paper['home']:
+                        expect(page.locator('.reader-bibliography a')).to_have_attribute('href', '/ReasBook/' + paper['home'])
+                    page.evaluate(scripts['sidebarFallbackScript'])
+                    expect(page.locator('.reader-bibliography')).to_have_count(1)
+                    expect(page.locator('#native code')).to_have_attribute('data-verso-hover', 'original')
+                    expect(page.locator('.reader-attribution')).to_have_text('Lean contributor: Chenyi Li')
+                    self.assertEqual(errors, [])
+                    page.close()
+            browser.close()
+
+    def test_actual_theme_metadata_uses_device_viewport_and_allows_text_zoom(self):
+        from playwright.sync_api import expect, sync_playwright
+
+        source = (ROOT / 'ReasBookWeb/ReasBookSite.lean').read_text()
+        metadata = ''.join(re.findall(r'<meta\b[^>]+/>', source))
+        css = (ROOT / 'ReasBookWeb/static_files/style.css').read_text()
+        scripts = sidebar_scripts()
+        init = 'window.__versoSiteRoot="/ReasBook/";window.__reasbookSidebarData={books:[],papers:[]};'
+        html = ('<html><head>' + metadata + '<style>' + css + '</style>'
+            + ''.join('<script>' + script + '</script>' for script in [init, *scripts.values()])
+            + '</head><body><nav id="sidebar-nav-root"></nav><div class="main"><h1>Convex Analysis and Monotone Operator Theory</h1>'
+            + '<div class="reader-chapter-grid"><ul><li><p><a href="#chapter">Chapter 01 — Background</a></p></li></ul></div></div></body></html>')
+        with sync_playwright() as p:
+            browser = p.chromium.launch(headless=True)
+            page = browser.new_page(viewport={'width': 390, 'height': 844}, is_mobile=True, has_touch=True)
+            page.route('**/*', lambda route: route.fulfill(status=200, content_type='text/html', body=html))
+            page.goto('https://preview.test/ReasBook/', wait_until='networkidle')
+            self.assertEqual(page.evaluate('innerWidth'), 390)
+            expect(page.locator('#reader-nav-toggle')).to_be_visible()
+            page.locator('#reader-nav-toggle').tap()
+            expect(page.locator('#sidebar-nav-root')).to_be_visible()
+            page.keyboard.press('Escape')
+            page.evaluate("document.documentElement.style.fontSize = '200%'")
+            self.assertEqual(page.evaluate('innerWidth'), 390)
+            self.assertTrue(page.evaluate('document.documentElement.scrollWidth <= innerWidth'))
+            browser.close()
+
+    def test_title_formatting_preserves_aliases_rich_nodes_and_inline_prose(self):
+        from playwright.sync_api import expect, sync_playwright
+
+        with sync_playwright() as p:
+            browser = p.chromium.launch(headless=True)
+            page = browser.new_page()
+            page.set_content('''<div class="main">
+                <h2 id="section"><a id="old-alias"></a>1.1 — <em>Topology</em>
+                  of <a href="#reference">spaces</a> <code data-test="math">ℝ</code></h2>
+                <ul><li><p>See <a href="#reference">1.1 — A reference</a> for details.</p></li></ul>
+                <div class="reader-chapter-grid"><ul><li><p><a href="#section">1.1 — Topology</a></p></li></ul></div>
+                </div>''')
+            page.evaluate('''() => {
+                window.originalTitleCode = document.querySelector('h2 code');
+                window.originalTitleLink = document.querySelector('h2 a[href]');
+                window.originalTitleLink.addEventListener('click', event => {
+                    event.preventDefault(); window.titleLinkClicked = true;
+                });
+            }''')
+            page.evaluate(sidebar_scripts()['sidebarItemStateScript'])
+            expect(page.locator('#old-alias')).to_have_count(1)
+            expect(page.locator('h2 > .reader-title-number')).to_have_text('1.1')
+            self.assertTrue(page.evaluate('document.querySelector("h2 code") === window.originalTitleCode'))
+            self.assertTrue(page.evaluate('document.querySelector("h2 a[href]") === window.originalTitleLink'))
+            page.locator('h2 a[href]').click()
+            self.assertTrue(page.evaluate('window.titleLinkClicked'))
+            expect(page.locator('.main > ul a')).not_to_have_class(re.compile('reader-numbered-title'))
+            expect(page.locator('.reader-chapter-grid a')).to_have_class(re.compile('reader-numbered-title'))
+            before = page.locator('h2').inner_html()
+            page.evaluate('window.__reasbookFormatReadingTitles()')
+            self.assertEqual(page.locator('h2').inner_html(), before)
+            browser.close()
+
+    def test_item_paper_bookmarks_and_support_fragments_in_both_renderers(self):
+        from playwright.sync_api import expect, sync_playwright
+
+        scripts = sidebar_scripts()
+        paper = {'slug': 'demo', 'title': 'Demo paper', 'home': 'papers/demo/',
+            'reader_route': 'papers/demo/items/', 'sections': [], 'routes': ['demo/support/'],
+            'items': [{'title': 'Theorem 2.1', 'anchor': 'theorem-2-1', 'section': '2'}],
+            'item_sections': [{'number': '2', 'label': 'Section 2 — Results', 'anchor': 'paper-section-2'}],
+            'files': [{'title': 'Support', 'route': 'demo/support/', 'module': 'Demo.Support'}]}
+        with sync_playwright() as p:
+            browser = p.chromium.launch(headless=True)
+            for fallback in (False, True):
+                for prefix in ('/ReasBook/', '/proxy/3009/ReasBook/versions/v4.32.2/sites/demo/'):
+                    page = browser.new_page()
+                    errors = []
+                    page.on('pageerror', lambda error: errors.append(str(error)))
+                    selected = [scripts['sidebarItemStateScript']]
+                    if not fallback:
+                        selected.append(scripts['navLinkRewriteScript'])
+                    selected.append(scripts['sidebarFallbackScript'])
+                    init = f'window.__versoSiteRoot={json.dumps(prefix)};window.__reasbookSidebarData=' + json.dumps({'books': [], 'papers': [paper]}) + ';'
+                    html = ('<html><head>' + ''.join('<script>' + script + '</script>' for script in [init, *selected])
+                        + '</head><body><nav id="sidebar-nav-root"></nav><div class="main"><h1>Demo paper</h1>'
+                        + '<div id="theorem-2-1"></div><div id="theorem-2-1-clause-2"></div></div></body></html>')
+                    page.route('**/*', lambda route: route.fulfill(status=200, content_type='text/html', body=html))
+                    base = 'https://preview.test' + prefix
+                    for path in ('demo/support/#declaration', 'demo/support/index.html#declaration'):
+                        page.goto(base + path, wait_until='networkidle')
+                        support = page.get_by_role('link', name='Support', exact=True)
+                        expect(support).to_have_attribute('aria-current', 'page')
+                        expect(page.locator('.nav-supporting-files')).to_have_attribute('open', '')
+                        page.evaluate('window.location.hash = "second-declaration"')
+                        expect(support).to_have_attribute('aria-current', 'page')
+                    page.goto(base + 'previous/', wait_until='networkidle')
+                    page.goto(base + 'papers/demo/#theorem-2-1-clause-2', wait_until='networkidle')
+                    page.wait_for_url(base + 'papers/demo/items/#theorem-2-1-clause-2')
+                    expect(page.get_by_role('link', name='Theorem 2.1', exact=True)).to_have_attribute('aria-current', 'location')
+                    page.go_back(wait_until='networkidle')
+                    self.assertEqual(page.url, base + 'previous/')
+                    for fragment in ('unknown-item', '%zz'):
+                        page.goto(base + 'papers/demo/#' + fragment, wait_until='networkidle')
+                        self.assertEqual(page.url, base + 'papers/demo/#' + fragment)
+                    self.assertEqual(errors, [])
+                    page.close()
+            browser.close()
+
     def test_named_chapter_links_and_contents_buttons_have_separate_actions(self):
         from playwright.sync_api import expect, sync_playwright
 
