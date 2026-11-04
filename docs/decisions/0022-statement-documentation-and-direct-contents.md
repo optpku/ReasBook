@@ -218,3 +218,17 @@ Documentation. It does not infer types, recreate dependencies or certify proofs.
 excluded. Missing deployments require separate publication work, not fabricated
 pages or changing project selection to make a catalog look complete. The mirror's
 external hosting inventory must likewise be regenerated from published artifacts.
+
+## Source-only supporting modules during assembly
+
+Supporting-module inventories use the same public documentation closure as item
+statements. Files outside that closure retain their pinned source link and
+attribution, without an empty Documentation link.
+
+When reusing historical native HTML, assembly may consume an operator-supplied
+`REASBOOK_VERIFIED_SOURCE_LINKS_FILE` map prepared from exact Git trees. Only an
+adjacent generated Documentation/Lean-source pair can be downgraded, and only
+when its missing documentation and verified source match the complete module
+path. Filename equality alone is insufficient. Existing documentation, doc-gen
+pages, and unrelated missing links retain strict validation. This repairs old
+reader links without changing their native Lean data or fabricating API pages.

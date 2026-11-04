@@ -42,7 +42,7 @@ class RepositoryScriptTests(unittest.TestCase):
             original = "https://github.com/acme/books/blob/v4.30.0/ReasBook/Demo/Item.lean"
             pinned = original.replace("v4.30.0", "a" * 40)
             doc = root / "index.html"
-            source = ('<main><p>Item (<a href="/ReasBook/docs/Item.html">API documentation</a>) '
+            source = ('<main><p>Item (<a href="/ReasBook/docs/Demo/Item.html">API documentation</a>) '
                       f'(<a href="{original}">Lean source</a>)</p>'
                       '<a href="/ReasBook/missing.html">Unrelated</a></main>')
             doc.write_text(source)
@@ -53,7 +53,7 @@ class RepositoryScriptTests(unittest.TestCase):
             self.assertIn("Documentation unavailable", text)
             self.assertIn(pinned, text)
             self.assertIn('href="/ReasBook/missing.html"', text)
-            self.assertFalse((root / "docs/Item.html").exists())
+            self.assertFalse((root / "docs/Demo/Item.html").exists())
             for invalid in (original, pinned.replace("Item.lean", "Other.lean")):
                 doc.write_text(source)
                 result = assemble.reconcile_documentation_links(root, verified_source_links={original: invalid})
@@ -62,10 +62,42 @@ class RepositoryScriptTests(unittest.TestCase):
             result = assemble.reconcile_documentation_links(root, verified_source_links={original: pinned})
             self.assertEqual(result["replacement_count"], 1)
             self.assertIn("Documentation unavailable", doc.read_text())
-            (root / "docs").mkdir()
-            (root / "docs/Item.html").write_text("Real documentation")
+            doc.write_text(source.replace("/docs/Demo/Item.html", "/docs/Other/Item.html"))
+            self.assertEqual(assemble.reconcile_documentation_links(
+                root, verified_source_links={original: pinned})["replacement_count"], 0)
+            api_page = root / "docs/Internal/Overview.html"
+            api_page.parent.mkdir(parents=True)
+            api_page.write_text(source)
+            self.assertEqual(assemble.reconcile_documentation_links(
+                root, verified_source_links={original: pinned})["replacement_count"], 0)
+            self.assertEqual(api_page.read_text(), source)
+            (root / "docs/Demo").mkdir(parents=True)
+            (root / "docs/Demo/Item.html").write_text("Real documentation")
             doc.write_text(source)
             self.assertEqual(assemble.reconcile_documentation_links(root, verified_source_links={original: pinned})["replacement_count"], 0)
+
+    def test_verified_source_evidence_is_optional_and_rejects_invalid_input(self):
+        with tempfile.TemporaryDirectory() as temp:
+            evidence = Path(temp) / "sources.json"
+            with patch.dict(os.environ, {"REASBOOK_VERIFIED_SOURCE_LINKS_FILE": ""}):
+                self.assertIsNone(assemble.load_verified_source_links())
+            with patch.dict(os.environ, {"REASBOOK_VERIFIED_SOURCE_LINKS_FILE": str(evidence)}):
+                for value in ([], {"source": "https://github.com/acme/book/blob/main/Item.lean"}):
+                    evidence.write_text(json.dumps(value))
+                    with self.assertRaises(ValueError):
+                        assemble.load_verified_source_links()
+                pinned = "https://github.com/acme/book/blob/" + "a" * 40 + "/ReasBook/Demo/Item.lean"
+                evidence.write_text(json.dumps({pinned: pinned}))
+                self.assertEqual(assemble.load_verified_source_links(), {pinned: pinned})
+
+    def test_documentation_source_matching_checks_full_module_path(self):
+        pinned = "https://github.com/acme/book/blob/" + "a" * 40 + "/ReasBook/Books/Demo/Chap01/Support.lean"
+        for prefix in ("docs/", "docs/ReasBook/", "docs/ReasBook/Books/"):
+            with self.subTest(prefix=prefix):
+                self.assertTrue(assemble._documentation_matches_source(
+                    "/ReasBook/versions/v4.30.0/" + prefix + "Demo/Chap01/Support.html", pinned))
+        for wrong in ("Other/Chap01/Support.html", "Demo/Chap02/Support.html", "Support.html"):
+            self.assertFalse(assemble._documentation_matches_source("/ReasBook/docs/" + wrong, pinned))
 
     @staticmethod
     def _project_docs_fixture(root: Path) -> tuple[Path, Path, Path, Path]:
@@ -550,6 +582,9 @@ class RepositoryScriptTests(unittest.TestCase):
             self.assertIn('theorem bound (n : Nat) : 0 ≤ n', chapter)
             self.assertNotIn('exact Nat.zero_le', chapter)
             self.assertNotIn('section13325', sidebar.lower())
+            self.assertNotIn('section13325.html', chapter)
+            self.assertIn('source only (outside the published documentation root)', chapter)
+            self.assertIn('section13325.lean', chapter)
             self.assertIn(r'\"route\":\"books/maylike/chapters/chap01/\"', sidebar)
 
     def test_section_chapter_contains_statements_and_home_skips_empty_aggregator(self):

@@ -3153,12 +3153,9 @@ def write_work_pages(
             )
             lines.append("")
             for source in reader.support_modules:
-                docs_path = _module_to_docs_path(source_root, source.module)
-                lines.append(
-                    f"- `{source.relative_path}` "
-                    f"([Documentation]({portable_site_link(f'docs/ReasBook/{docs_path}.html')})) "
-                    f"([Lean source]({github_blob_link(source.source_path)}))"
-                )
+                links = statement_reading_links(
+                    source_root, source.module, source.source_path, "books", reader.book)
+                lines.append(f"- `{source.relative_path}` {links}")
                 lines.extend(['', *source_attribution_blocks(
                     (source_root.parent / source.source_path).read_text(encoding="utf-8"), source.source_path)])
             lines.append("")

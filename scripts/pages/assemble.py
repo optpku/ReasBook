@@ -286,6 +286,49 @@ def _internal_link_target(
     return candidate
 
 
+def load_verified_source_links() -> dict[str, str] | None:
+    """Read optional operator evidence, prepared from pinned Git objects.
+
+    A URL's shape alone is not proof that its source file exists. The caller
+    must create this map from verified Git trees; absence keeps strict closure.
+    """
+    evidence = os.environ.get("REASBOOK_VERIFIED_SOURCE_LINKS_FILE")
+    if not evidence:
+        return None
+    path = Path(evidence)
+    if path.is_symlink() or not path.is_file():
+        raise ValueError("Verified source evidence must be a regular file")
+    mapping = json.loads(path.read_text(encoding="utf-8"))
+    if not isinstance(mapping, dict) or not all(
+        isinstance(source, str) and isinstance(pinned, str)
+        and re.fullmatch(r"https://github[.]com/[^/]+/[^/]+/blob/[0-9a-f]{40}/[^?#]+[.]lean", pinned)
+        for source, pinned in mapping.items()
+    ):
+        raise ValueError("Verified source evidence must map URLs to pinned Lean source URLs")
+    return mapping
+
+
+def _documentation_matches_source(docs_href: str, pinned: str) -> bool:
+    """Match the complete module path across supported historical layouts."""
+    source = unquote(urlsplit(pinned).path)
+    match = re.fullmatch(r"/[^/]+/[^/]+/blob/[0-9a-f]{40}/ReasBook/(.+)[.]lean", source)
+    if not match:
+        return False
+    source_parts = tuple(match.group(1).split("/"))
+    if any(part in {"", ".", ".."} for part in source_parts):
+        return False
+    documentation = unquote(urlsplit(docs_href).path)
+    if "/docs/" not in documentation or not documentation.endswith(".html"):
+        return False
+    doc_parts = tuple(documentation.rsplit("/docs/", 1)[1][:-5].split("/"))
+    if doc_parts[:1] == ("ReasBook",):
+        doc_parts = doc_parts[1:]
+    candidates = {source_parts}
+    if source_parts[:1] in {("Books",), ("Papers",)}:
+        candidates.add(source_parts[1:])
+    return doc_parts in candidates
+
+
 def reconcile_documentation_links(
     site_root: Path, *, verified_source_links: dict[str, str] | None = None,
 ) -> dict[str, object]:
@@ -372,7 +415,7 @@ def reconcile_documentation_links(
             ):
                 return match.group(0)
             target = _internal_link_target(site_root, document, docs_href, base_path=base_path)
-            if target is None or target.is_file() or target.stem != Path(urlsplit(pinned).path).stem:
+            if target is None or target.is_file() or not _documentation_matches_source(docs_href, pinned):
                 return match.group(0)
             replacement_count += 1
             source_occurrences[(docs_href, pinned)].append(relative_document)
@@ -619,6 +662,7 @@ def write_catalog_asset(dst_root: Path) -> None:
 
 def main() -> None:
     projects = json.loads(os.environ["PROJECTS_JSON"])
+    verified_source_links = load_verified_source_links()
     src_root = Path(".artifacts/monolith")
     dst_root = Path(".site")
 
@@ -832,7 +876,8 @@ def main() -> None:
         encoding="utf-8",
     )
 
-    documentation_audit = reconcile_documentation_links(dst_root)
+    documentation_audit = reconcile_documentation_links(
+        dst_root, verified_source_links=verified_source_links)
     unavailable = int(documentation_audit["replacement_count"])
     if unavailable:
         print(
