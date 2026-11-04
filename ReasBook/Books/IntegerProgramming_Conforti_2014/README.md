@@ -14,8 +14,11 @@ The v4.26.0 source remains above. The candidate contains 1064 chapter modules
 (Chap01–Chap10) and a complete Book.lean root. The original five admit bodies
 are replaced; source sorry/admit/direct sorryAx tokens are zero. Original remote
 compilation passed for the three edited files. Only 2/5 original targets have
-explicit final axiom outputs. Three outputs, the relocated root build, and verified
-per-file Authors: headers remain pending; see the candidate README/VALIDATION.md.
-Historical contributor records remain intact and are not assigned to individual
-candidate files without verification. Submission account: TropicalFatFish.
+explicit final axiom outputs. Three outputs and the relocated root build remain pending; see the candidate
+README/VALIDATION.md. All 1065 Lean opening author/license headers now pass the
+current main checker: 1010 files cite Ziyu Wang as the submitter-confirmed project
+formalization lead; 55 DPRM files retain Cameron Freer original copyright and author
+notices. Their project-level and upstream scopes are documented separately.
+Historical contributor records remain intact. Named candidate formalization lead:
+Ziyu Wang; upstream DPRM author: Cameron Freer. Submission account: TropicalFatFish.
 New documentation, Verso and theorem-map publication is not claimed.
