@@ -9,16 +9,16 @@ import re
 PROJECT = Path(__file__).resolve().parents[1]
 PROVENANCE = (
     "TropicalFatFish/ReasBook-integer-programming@"
-    "cd8690514e91159fccb6bfdf14ab167259196471:"
+    "d380aaa277a7a97379616d8bd2809e751c1052f4:"
     "ReasBook/Books/IntegerProgramming_Conforti_2014/README.md "
     "(Confirmed formalization attribution)."
 )
 HEADER = (
     "/-\n"
-    "Authors: Ziyu Wang\n"
+    "Authors: Ziyu Wang, Zaiwen Wen\n"
     "Released under Apache 2.0 license as described in the file LICENSE.\n"
     "Project-level attribution: " + PROVENANCE + "\n"
-    "Attribution scope: project formalization lead, confirmed by the submitter on 2026-11-04.\n"
+    "Attribution scope: project formalization contributors, confirmed by the submitter on 2026-11-04.\n"
     "-/\n\n"
 )
 
@@ -43,6 +43,11 @@ def with_header(source: str, path: Path) -> str:
     stripped = source.lstrip()
     end = ordinary_comment_end(stripped, 0)
     if end is not None and has_authors(stripped[:end]):
+        header = stripped[:end]
+        if ("Project-level attribution: TropicalFatFish/ReasBook-integer-programming@" in header
+                and "Attribution scope:" in header):
+            # Refresh only this candidate's explicitly managed project headers.
+            return HEADER + stripped[end:].lstrip("\r\n")
         return source
     module = re.match(r"module[ \t]*\r?\n\s*", stripped)
     if module:

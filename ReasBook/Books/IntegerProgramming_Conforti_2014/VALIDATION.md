@@ -40,7 +40,8 @@ Job success and lexical zero placeholders are not complete per-target axiom evid
 - Book.lean imports all 1064 chapter modules. Static import closure and metadata
   schema/toolchain checks are run; these are not Lean kernel validation.
 - Current main-branch author check passes: 1065 files checked, 0 invalid.
-  1010 first-party files use submitter-confirmed project formalization lead Ziyu Wang,
+  1010 first-party files use submitter-confirmed project formalization contributors
+  Ziyu Wang and Zaiwen Wen,
   with a pinned README attribution reference and explicit project-level scope.
   55 DPRM files preserve Cameron Freer copyright, Apache 2.0 and Authors fields,
   moved before module. See THIRD_PARTY_NOTICES.md.
