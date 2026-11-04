@@ -20,15 +20,11 @@
       "github": null
     },
     {
-      "name": "Cameron Freer",
-      "github": "cameronfreer"
-    },
-    {
-      "name": "TropicalFatFish",
-      "github": "TropicalFatFish"
+      "name": "Zaiwen Wen",
+      "github": null
     }
   ],
-  "coverage": "Review candidate containing all received chapter modules Chap01 through Chap10. Five original admit bodies replaced. Only 2/5 original target axiom outputs are available; root compilation remains pending. First-party project-level attribution to formalization lead Ziyu Wang was confirmed by the submitter; 55 modules preserve Cameron Freer notices. Textbook-to-source coverage has not been independently established.",
+  "coverage": "Review candidate containing all received chapter modules Chap01 through Chap10. Five original admit bodies replaced. Only 2/5 original target axiom outputs are available; root compilation remains pending. First-party project-level attribution to formalization contributors Ziyu Wang and Zaiwen Wen was confirmed by the submitter; 55 modules preserve Cameron Freer notices. Textbook-to-source coverage has not been independently established.",
   "statistics": {
     "declarations": 17080,
     "theorem_lemma_example": 13030,

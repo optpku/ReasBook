@@ -12,7 +12,8 @@ The PDF itself is not included in this contribution.
 
 ## First-party formalization
 
-Ziyu Wang was explicitly supplied as the project formalization lead on 2026-11-04.
+Ziyu Wang and Zaiwen Wen were explicitly confirmed as the project formalization
+contributors on 2026-11-04.
 Opening Authors fields in 1010 first-party chapter/support/integration modules use
 that project-level attribution and cite the README's Confirmed formalization
 attribution section. This records project responsibility, not sole authorship of

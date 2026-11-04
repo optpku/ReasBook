@@ -26,18 +26,18 @@ Book.lean imports all 1064 chapter modules; the library uses srcDir := "Books".
 
 ### Confirmed formalization attribution
 
-- **Ziyu Wang** — project formalization lead, explicitly confirmed by the submitter
-  on 2026-11-04. The 1010 first-party chapter/support/integration modules use this
-  confirmed project-level attribution; it identifies the formalization lead and is
-  not a claim of individual authorship of every line. A GitHub account and personal
-  copyright ownership were not supplied and have not been inferred.
+- **Ziyu Wang, Zaiwen Wen** — project formalization contributors, explicitly
+  confirmed by the submitter on 2026-11-04. The 1010 first-party chapter/support/
+  integration modules use this confirmed project-level attribution. It records
+  project contributions rather than individual authorship of every line. GitHub
+  accounts and personal copyright ownership have not been inferred.
 - **Cameron Freer** ([@cameronfreer](https://github.com/cameronfreer)) — original author
   and copyright holder named in the 55 received DPRM/Hilbert10 modules. Their existing
   copyright, Apache 2.0 and Authors notices are preserved, with the notices moved
-  before the module command. These files keep their upstream author; Ziyu Wang's
-  project role does not replace the upstream attribution.
+  before the module command. These files keep their upstream author; the project's
+  formalization contributors do not replace the upstream attribution.
 - **TropicalFatFish** — [submission/integration account](https://github.com/TropicalFatFish),
-  kept separate from the named human formalization lead.
+  kept separate from the named formalization contributors.
 
 The project-level attribution above is the submitter-confirmed scope for this candidate.
 It is documented here as evidence for the individual opening headers, following the
