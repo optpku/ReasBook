@@ -75,33 +75,45 @@ def loadModuleContent (mod : String) (leanProject : System.FilePath := "../ReasB
       "LEAN_GITHASH",
       "ELAN_TOOLCHAIN", "DYLD_LIBRARY_PATH", "LD_LIBRARY_PATH"]
 
-  let f ← IO.FS.Handle.mk lakeConfig .read
-  f.lock (exclusive := true)
+  -- The release builder validates the complete literate cache before enabling
+  -- this mode. Rendering must only read it: invoking Lake under a project-wide
+  -- lock here would serialize all pages and repeat dependency traversal twice
+  -- for every module. Missing/invalid prebuilt data is an error, never a rebuild.
+  let prebuilt := (← IO.getEnv "REASBOOK_LITERATE_PREBUILT")
   let jsonFile ←
-    try
+    if prebuilt == some "1" || prebuilt == some "true" then
+      let jsonPath := projectDir / ".lake" / "build" / "literate" /
+        (mod.replace "." "/" ++ ".json")
+      unless (← jsonPath.pathExists) do
+        throw <| IO.userError s!"Missing prebuilt literate JSON for {mod}: {jsonPath}"
+      IO.FS.readFile jsonPath
+    else
+      let f ← IO.FS.Handle.mk lakeConfig .read
+      f.lock (exclusive := true)
+      try
 
-      let cmd := "elan"
-      let args := #["run", "--install", toolchain, "lake", "build", s!"+{mod}:literate"]
+        let cmd := "elan"
+        let args := #["run", "--install", toolchain, "lake", "build", s!"+{mod}:literate"]
 
-      let res ← IO.Process.output {
-        cmd, args, cwd := projectDir
-        -- Unset Lake's environment variables
-        env := lakeVars.map (·, none)
-      }
-      if res.exitCode != 0 then
-        reportFail projectDir cmd args res
+        let res ← IO.Process.output {
+          cmd, args, cwd := projectDir
+          -- Unset Lake's environment variables
+          env := lakeVars.map (·, none)
+        }
+        if res.exitCode != 0 then
+          reportFail projectDir cmd args res
 
-      let args := #["run", "--install", toolchain, "lake", "query", s!"+{mod}:literate"]
+        let args := #["run", "--install", toolchain, "lake", "query", s!"+{mod}:literate"]
 
-      let res ← IO.Process.output {
-        cmd, args, cwd := projectDir
-        -- Unset Lake's environment variables
-        env := lakeVars.map (·, none)
-      }
-      if res.exitCode != 0 then
-        reportFail projectDir cmd args res
-      IO.FS.readFile res.stdout.trim
-    finally f.unlock
+        let res ← IO.Process.output {
+          cmd, args, cwd := projectDir
+          -- Unset Lake's environment variables
+          env := lakeVars.map (·, none)
+        }
+        if res.exitCode != 0 then
+          reportFail projectDir cmd args res
+        IO.FS.readFile res.stdout.trim
+      finally f.unlock
 
   let parsed ←
     match Json.parse jsonFile with
