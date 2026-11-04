@@ -31,6 +31,24 @@ def sidebar_scripts():
 
 
 class SidebarInventoryTests(unittest.TestCase):
+    def test_reading_headers_are_outside_html_directives(self):
+        for title in ('1.1 — What Is Algebraic Topology?',
+                      'Section 2 — Deterministic method and convergence',
+                      'Appendix C — Remarks', ''):
+            with self.subTest(title=title):
+                lines = generator.reading_section_heading('stable-reading-anchor', title)
+                self.assertIn('id := "stable-reading-anchor"', lines[0])
+                depth = 0
+                for line in lines:
+                    if line.startswith(':::html '):
+                        depth += 1
+                    elif line == ':::':
+                        depth -= 1
+                    elif line.startswith('# '):
+                        self.assertEqual(depth, 0, 'Verso headers cannot be children of html directives')
+                self.assertEqual(depth, 0)
+                self.assertEqual(sum(line.startswith('# ') for line in lines), bool(title))
+
     def test_registered_book_titles_keep_their_bibliographic_identity(self):
         for book, title in generator.BOOK_TITLES.items():
             with self.subTest(book=book):
@@ -260,6 +278,8 @@ class SidebarInventoryTests(unittest.TestCase):
         groups = named['chapters'][0]['item_sections']
         self.assertEqual([group['label'] for group in groups], ['1.2 — The Fundamental Group', 'Problems'])
         page = (self.repo / f'ReasBookWeb/ReasBookSite/WorkPages/Books/{book}/Chap01.lean').read_text()
+        self.assertNotRegex(page, r'(?m)^:{3,}html[^\n]*\n#+\s',
+                            'Generated book headings must not be nested in html directives')
         for group in groups:
             self.assertEqual(page.count(f'id := "{group["anchor"]}"'), 1)
             self.assertIn(f'# {group["label"]}', page)

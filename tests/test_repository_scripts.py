@@ -1107,6 +1107,8 @@ class RepositoryScriptTests(unittest.TestCase):
             self.assertIn("# Section 2", reader)
             self.assertIn("# Section 3", reader)
             self.assertIn("# Appendix C", reader)
+            self.assertNotRegex(reader, r'(?m)^:{3,}html[^\n]*\n#+\s',
+                                'Generated paper and appendix headings must be document sections')
             self.assertIn("Theorem 2.9", reader)
             self.assertIn("Remark C.1", reader)
             self.assertEqual(reader.count("[Documentation]"), 4)

@@ -2204,6 +2204,19 @@ def paper_section_anchor(token: str) -> str:
     return "paper-section-" + token.casefold()
 
 
+def reading_section_heading(anchor: str, title: str) -> list[str]:
+    """Keep stable anchors beside document headings, outside HTML directives.
+
+    Verso headers belong to the document's section tree. A header nested inside
+    an ``html`` block is rejected during native page elaboration.
+    """
+    lines = [f':::html div (id := {lean_string(anchor)}) (class := "reader-section-heading")',
+             ":::", ""]
+    if title:
+        lines.extend([f"# {verso_text(title)}", ""])
+    return lines
+
+
 def paper_section_label(paper: str, token: str) -> str:
     from book_contents import PAPER_READING_SECTION_TITLES
     number = f"Section {token}" if token.isdigit() else f"Appendix {token}"
@@ -3123,10 +3136,8 @@ def write_work_pages(
             by_section.setdefault(item.section_num, []).append(item)
         for section_num, section_items in sorted(by_section.items()):
             section_title = book_section_heading(reader.book, reader.chapter_num, section_num)
-            lines.append(f':::html div (id := "{section_anchor(reader.chapter_num, section_num)}") (class := "reader-section-heading")')
-            if section_title:
-                lines.append(f"# {verso_text(section_title)}")
-            lines.extend([":::", ""])
+            lines.extend(reading_section_heading(
+                section_anchor(reader.chapter_num, section_num), section_title))
             for item in section_items:
                 blocks = item_statement_blocks(source_root, item)
                 if not section_title:
@@ -3264,10 +3275,8 @@ def write_work_pages(
             ":::", "",
         ]
         for token, items in paper_reader_groups(reader):
-            lines.extend([
-                f':::html div (id := "{paper_section_anchor(token)}") (class := "reader-section-heading")',
-                f"# {verso_text(paper_section_label(reader.paper, token))}", ":::", "",
-            ])
+            lines.extend(reading_section_heading(
+                paper_section_anchor(token), paper_section_label(reader.paper, token)))
             for item in items:
                 lines.extend(item_statement_blocks(source_root, item))
             lines.append("")

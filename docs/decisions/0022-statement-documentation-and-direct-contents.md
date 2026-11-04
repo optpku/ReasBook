@@ -188,6 +188,12 @@ No source, proof, term-type data or author list is inferred or regenerated.
 
 ## Consequences
 
+Stable reading-section anchors are empty HTML directives immediately before
+document-level headings. Verso does not accept Markdown section headers inside
+an HTML directive. This rule applies to book subsections, paper sections and
+appendices; native compilation must validate the generated pages as well as
+the browser layout.
+
 Book homes separate the registered title from its author/year citation, using
 the same typography as curated paper titles. Navigation repeats this hierarchy
 and retains the canonical bibliography in its accessible name and browser title.
