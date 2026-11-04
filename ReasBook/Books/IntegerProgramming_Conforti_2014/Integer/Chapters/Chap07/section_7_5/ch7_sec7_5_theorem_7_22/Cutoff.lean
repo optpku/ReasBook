@@ -1,3 +1,10 @@
+/-
+Authors: Ziyu Wang
+Released under Apache 2.0 license as described in the file LICENSE.
+Project-level attribution: TropicalFatFish/ReasBook-integer-programming@cd8690514e91159fccb6bfdf14ab167259196471:ReasBook/Books/IntegerProgramming_Conforti_2014/README.md (Confirmed formalization attribution).
+Attribution scope: project formalization lead, confirmed by the submitter on 2026-11-04.
+-/
+
 import Mathlib.Algebra.Polynomial.Eval.Defs
 import IntegerProgramming_Conforti_2014.Integer.Chapters.Chap01.section_1_3.ch1_sec1_3_1_definition_1_12
 import IntegerProgramming_Conforti_2014.Integer.Chapters.Chap07.section_7_5.ch7_sec7_5_theorem_7_22.Ellipsoid

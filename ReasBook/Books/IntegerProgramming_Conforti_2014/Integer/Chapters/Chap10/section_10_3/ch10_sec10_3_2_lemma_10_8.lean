@@ -1,3 +1,10 @@
+/-
+Authors: Ziyu Wang
+Released under Apache 2.0 license as described in the file LICENSE.
+Project-level attribution: TropicalFatFish/ReasBook-integer-programming@cd8690514e91159fccb6bfdf14ab167259196471:ReasBook/Books/IntegerProgramming_Conforti_2014/README.md (Confirmed formalization attribution).
+Attribution scope: project formalization lead, confirmed by the submitter on 2026-11-04.
+-/
+
 import IntegerProgramming_Conforti_2014.Integer.Chapters.Chap05.section_5_4.ch5_sec5_4_definition_5_4_extra_1
 
 /- Lemma 10.8 rewrites the full-coordinate intersection `⋂_{j = 1}^n P_j` through the Chapter 5

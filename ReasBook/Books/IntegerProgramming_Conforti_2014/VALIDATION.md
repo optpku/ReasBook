@@ -39,8 +39,14 @@ Job success and lexical zero placeholders are not complete per-target axiom evid
 - Proof source is preserved modulo the internal import-prefix rewrite and trimming 14 pre-existing trailing-whitespace lines.
 - Book.lean imports all 1064 chapter modules. Static import closure and metadata
   schema/toolchain checks are run; these are not Lean kernel validation.
-- Official main-branch author check reports 1065 files checked, 1065 invalid:
-  verified opening Authors: headers are unresolved for the source and generated root.
+- Current main-branch author check passes: 1065 files checked, 0 invalid.
+  1010 first-party files use submitter-confirmed project formalization lead Ziyu Wang,
+  with a pinned README attribution reference and explicit project-level scope.
+  55 DPRM files preserve Cameron Freer copyright, Apache 2.0 and Authors fields,
+  moved before module. See THIRD_PARTY_NOTICES.md.
+- Header regeneration check: python3 scripts/sync_lean_headers.py --check passes.
+  Header insertion/relocation changes comments only; code-token comparison against
+  the original contribution commit passes for every Lean file.
 - Relocated-root compilation has not been run. Intended command, from ReasBook/:
   lake env lean Books/IntegerProgramming_Conforti_2014/Book.lean
 - No repository-wide build, new proof job, local proof-search pipeline, or budget increase
@@ -49,5 +55,6 @@ Job success and lexical zero placeholders are not complete per-target axiom evid
   in-flight call. Reported usage is below the original caps, but complete native/cached
   token usage cannot be certified; the old cached-input accounting issue is not claimed fixed.
 
-Full axiom coverage, the relocated root build and verified per-file attribution remain
-outstanding before this candidate can be described as fully validated.
+Full axiom coverage and the relocated root build remain outstanding before this
+candidate can be described as fully validated. Attribution scope is documented;
+the author-header checker verifies header structure rather than legal ownership.

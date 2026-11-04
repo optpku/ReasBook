@@ -45,7 +45,10 @@ existing Analysis II and Nesterov project-attribution format on ReasBook v4.30.0
 Historical contributor records in the v4.26.0 source and main catalog remain intact;
 they are not silently assigned to these candidate files.
 
-Every Lean file must have an opening Authors: and Apache 2.0 notice before module/imports.
+All 1065 Lean files now have an opening Authors: and Apache 2.0 notice before module/imports.
+The official current-main author-header checker passes: 1065 files checked, 0 invalid.
+Run python3 scripts/sync_lean_headers.py --check from this project directory to check
+that re-generated source retains the same headers; omit --check to restore them.
 First-party legacy files use Authors plus license and the cited project-level attribution.
 No new individual Copyright holder is invented where ownership was not supplied.
 See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) for the original DPRM notices,
@@ -62,7 +65,7 @@ publication for this candidate is not claimed.
 ## Statistics and proof status
 
 - Source command declarations: 17,080; theorem/lemma/example: 13,030; other: 4,050.
-- Lean source: 1065 files, 462,723 lines (1064 chapter modules plus Book.lean).
+- Lean source: 1065 files, 469,843 lines (1064 chapter modules plus Book.lean).
 - Counts are commands beginning on a line after masking nested comments/strings,
   not expanded kernel declarations or generated structure fields/constructors.
 - Source code tokens: sorry=0, admit=0, direct sorryAx=0, axiom=0, constant=0.
