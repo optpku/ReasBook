@@ -1,16 +1,25 @@
 # Introduction to Real Analysis, Volume I (Jiri Lebl, 2025)
 
-- Links: [Verso](https://optpku.github.io/ReasBook/books/introductiontorealanalysisvolumei_jirilebl_2025/) | [Documentation](https://optpku.github.io/ReasBook/docs/Books/IntroductiontoRealAnalysisVolumeI_JiriLebl_2025/Book.html) | [Lean source](./Chapters/)
+**Published reading (v4.30.0):** [Verso](https://optpku.github.io/ReasBook/versions/v4.30.0/books/introductiontorealanalysisvolumei_jirilebl_2025/) · [Documentation](https://optpku.github.io/ReasBook/versions/v4.30.0/docs/ReasBook/IntroductiontoRealAnalysisVolumeI_JiriLebl_2025/Book.html) · [Theorem map](https://optpku.github.io/ReasBook/versions/v4.30.0/theorem-maps/books/introductiontorealanalysisvolumei_jirilebl_2025/)
+
+These reading pages use the `v4.30.0` source; this branch retains its `v4.26.0` formalization.
+
+[Lean source root](Book.lean)
 
 ## Contributors
 
 - Zichen Wang
+- Zaiwen Wen
+
+Project-level formalization credit is recorded in the [catalog](https://github.com/optpku/ReasBook/blob/90ac3dd3a968313d0da7a3137680aa895af6a69a/README.md#books) and [`book.yml`](book.yml); it is separate from the original reference authors and per-file Lean authorship.
 
 ## Coverage
 
 Chapters 0–7 of Introduction to Real Analysis, Volume I (v6.2, May 2025).
 
-## Statistics
+## Recorded source statistics
+
+These retained source statistics are historical counts, not a new build report.
 
 - **Declarations:** 1202 (theorem/lemma/example: 951; other: 251)
 - **Lean code:** 57 `.lean` files, 34783 lines
@@ -21,55 +30,13 @@ Chapters 0–7 of Introduction to Real Analysis, Volume I (v6.2, May 2025).
 
 See [`book.yml`](book.yml).
 
-## Chapter 00
+## Published contents
 
-- Section 0.3 ([Verso](https://optpku.github.io/ReasBook/books/introductiontorealanalysisvolumei_jirilebl_2025/chapters/chap00/section03/)) ([Documentation](https://optpku.github.io/ReasBook/docs/Books/IntroductiontoRealAnalysisVolumeI_JiriLebl_2025/Chapters/Chap00/section03.html)) ([Lean source](./Chapters/Chap00/))
-## Chapter 01 -- Real Numbers
-
-- 1.1 Basic Properties ([Verso](https://optpku.github.io/ReasBook/books/introductiontorealanalysisvolumei_jirilebl_2025/chapters/chap01/section01/)) ([Documentation](https://optpku.github.io/ReasBook/docs/Books/IntroductiontoRealAnalysisVolumeI_JiriLebl_2025/Chapters/Chap01/section01.html)) ([Lean source](./Chapters/Chap01/))
-- 1.2 The Set of Real Numbers ([Verso](https://optpku.github.io/ReasBook/books/introductiontorealanalysisvolumei_jirilebl_2025/chapters/chap01/section02/)) ([Documentation](https://optpku.github.io/ReasBook/docs/Books/IntroductiontoRealAnalysisVolumeI_JiriLebl_2025/Chapters/Chap01/section02.html)) ([Lean source](./Chapters/Chap01/))
-- 1.3 Absolute Value and Bounded Functions ([Verso](https://optpku.github.io/ReasBook/books/introductiontorealanalysisvolumei_jirilebl_2025/chapters/chap01/section03/)) ([Documentation](https://optpku.github.io/ReasBook/docs/Books/IntroductiontoRealAnalysisVolumeI_JiriLebl_2025/Chapters/Chap01/section03.html)) ([Lean source](./Chapters/Chap01/))
-- 1.4 Intervals and the Size of R ([Verso](https://optpku.github.io/ReasBook/books/introductiontorealanalysisvolumei_jirilebl_2025/chapters/chap01/section04/)) ([Documentation](https://optpku.github.io/ReasBook/docs/Books/IntroductiontoRealAnalysisVolumeI_JiriLebl_2025/Chapters/Chap01/section04.html)) ([Lean source](./Chapters/Chap01/))
-- 1.5 Decimal Representation of the Reals ([Verso](https://optpku.github.io/ReasBook/books/introductiontorealanalysisvolumei_jirilebl_2025/chapters/chap01/section05/)) ([Documentation](https://optpku.github.io/ReasBook/docs/Books/IntroductiontoRealAnalysisVolumeI_JiriLebl_2025/Chapters/Chap01/section05.html)) ([Lean source](./Chapters/Chap01/))
-## Chapter 02 -- Sequences and Series
-
-- 2.1 Sequences and Limits ([Verso](https://optpku.github.io/ReasBook/books/introductiontorealanalysisvolumei_jirilebl_2025/chapters/chap02/section01/)) ([Documentation](https://optpku.github.io/ReasBook/docs/Books/IntroductiontoRealAnalysisVolumeI_JiriLebl_2025/Chapters/Chap02/section01.html)) ([Lean source](./Chapters/Chap02/))
-- 2.2 Facts About Limits of Sequences ([Verso](https://optpku.github.io/ReasBook/books/introductiontorealanalysisvolumei_jirilebl_2025/chapters/chap02/section02/)) ([Documentation](https://optpku.github.io/ReasBook/docs/Books/IntroductiontoRealAnalysisVolumeI_JiriLebl_2025/Chapters/Chap02/section02.html)) ([Lean source](./Chapters/Chap02/))
-- 2.3 Limit Superior, Limit Inferior, and Bolzano-Weierstrass ([Verso](https://optpku.github.io/ReasBook/books/introductiontorealanalysisvolumei_jirilebl_2025/chapters/chap02/section03/)) ([Documentation](https://optpku.github.io/ReasBook/docs/Books/IntroductiontoRealAnalysisVolumeI_JiriLebl_2025/Chapters/Chap02/section03.html)) ([Lean source](./Chapters/Chap02/))
-- 2.4 Cauchy Sequences ([Verso](https://optpku.github.io/ReasBook/books/introductiontorealanalysisvolumei_jirilebl_2025/chapters/chap02/section04/)) ([Documentation](https://optpku.github.io/ReasBook/docs/Books/IntroductiontoRealAnalysisVolumeI_JiriLebl_2025/Chapters/Chap02/section04.html)) ([Lean source](./Chapters/Chap02/))
-- 2.5 Series ([Verso](https://optpku.github.io/ReasBook/books/introductiontorealanalysisvolumei_jirilebl_2025/chapters/chap02/section05/)) ([Documentation](https://optpku.github.io/ReasBook/docs/Books/IntroductiontoRealAnalysisVolumeI_JiriLebl_2025/Chapters/Chap02/section05.html)) ([Lean source](./Chapters/Chap02/))
-- 2.6 More on Series ([Verso](https://optpku.github.io/ReasBook/books/introductiontorealanalysisvolumei_jirilebl_2025/chapters/chap02/section06/)) ([Documentation](https://optpku.github.io/ReasBook/docs/Books/IntroductiontoRealAnalysisVolumeI_JiriLebl_2025/Chapters/Chap02/section06.html)) ([Lean source](./Chapters/Chap02/))
-## Chapter 03 -- Continuous Functions
-
-- 3.1 Limits of Functions ([Verso](https://optpku.github.io/ReasBook/books/introductiontorealanalysisvolumei_jirilebl_2025/chapters/chap03/section01/)) ([Documentation](https://optpku.github.io/ReasBook/docs/Books/IntroductiontoRealAnalysisVolumeI_JiriLebl_2025/Chapters/Chap03/section01.html)) ([Lean source](./Chapters/Chap03/))
-- 3.2 Continuous Functions ([Verso](https://optpku.github.io/ReasBook/books/introductiontorealanalysisvolumei_jirilebl_2025/chapters/chap03/section02/)) ([Documentation](https://optpku.github.io/ReasBook/docs/Books/IntroductiontoRealAnalysisVolumeI_JiriLebl_2025/Chapters/Chap03/section02.html)) ([Lean source](./Chapters/Chap03/))
-- 3.3 Extreme and Intermediate Value Theorems ([Verso](https://optpku.github.io/ReasBook/books/introductiontorealanalysisvolumei_jirilebl_2025/chapters/chap03/section03/)) ([Documentation](https://optpku.github.io/ReasBook/docs/Books/IntroductiontoRealAnalysisVolumeI_JiriLebl_2025/Chapters/Chap03/section03.html)) ([Lean source](./Chapters/Chap03/))
-- 3.4 Uniform Continuity ([Verso](https://optpku.github.io/ReasBook/books/introductiontorealanalysisvolumei_jirilebl_2025/chapters/chap03/section04/)) ([Documentation](https://optpku.github.io/ReasBook/docs/Books/IntroductiontoRealAnalysisVolumeI_JiriLebl_2025/Chapters/Chap03/section04.html)) ([Lean source](./Chapters/Chap03/))
-- 3.5 Limits at Infinity ([Verso](https://optpku.github.io/ReasBook/books/introductiontorealanalysisvolumei_jirilebl_2025/chapters/chap03/section05/)) ([Documentation](https://optpku.github.io/ReasBook/docs/Books/IntroductiontoRealAnalysisVolumeI_JiriLebl_2025/Chapters/Chap03/section05.html)) ([Lean source](./Chapters/Chap03/))
-- 3.6 Monotone Functions and Continuity ([Verso](https://optpku.github.io/ReasBook/books/introductiontorealanalysisvolumei_jirilebl_2025/chapters/chap03/section06/)) ([Documentation](https://optpku.github.io/ReasBook/docs/Books/IntroductiontoRealAnalysisVolumeI_JiriLebl_2025/Chapters/Chap03/section06.html)) ([Lean source](./Chapters/Chap03/))
-## Chapter 04 -- The Derivative
-
-- 4.1 The Derivative ([Verso](https://optpku.github.io/ReasBook/books/introductiontorealanalysisvolumei_jirilebl_2025/chapters/chap04/section01/)) ([Documentation](https://optpku.github.io/ReasBook/docs/Books/IntroductiontoRealAnalysisVolumeI_JiriLebl_2025/Chapters/Chap04/section01.html)) ([Lean source](./Chapters/Chap04/))
-- 4.2 Mean Value Theorem ([Verso](https://optpku.github.io/ReasBook/books/introductiontorealanalysisvolumei_jirilebl_2025/chapters/chap04/section02/)) ([Documentation](https://optpku.github.io/ReasBook/docs/Books/IntroductiontoRealAnalysisVolumeI_JiriLebl_2025/Chapters/Chap04/section02.html)) ([Lean source](./Chapters/Chap04/))
-- 4.3 Taylor's Theorem ([Verso](https://optpku.github.io/ReasBook/books/introductiontorealanalysisvolumei_jirilebl_2025/chapters/chap04/section03/)) ([Documentation](https://optpku.github.io/ReasBook/docs/Books/IntroductiontoRealAnalysisVolumeI_JiriLebl_2025/Chapters/Chap04/section03.html)) ([Lean source](./Chapters/Chap04/))
-- 4.4 Inverse Function Theorem ([Verso](https://optpku.github.io/ReasBook/books/introductiontorealanalysisvolumei_jirilebl_2025/chapters/chap04/section04/)) ([Documentation](https://optpku.github.io/ReasBook/docs/Books/IntroductiontoRealAnalysisVolumeI_JiriLebl_2025/Chapters/Chap04/section04.html)) ([Lean source](./Chapters/Chap04/))
-## Chapter 05 -- The Riemann Integral
-
-- 5.1 The Riemann Integral ([Verso](https://optpku.github.io/ReasBook/books/introductiontorealanalysisvolumei_jirilebl_2025/chapters/chap05/section01/)) ([Documentation](https://optpku.github.io/ReasBook/docs/Books/IntroductiontoRealAnalysisVolumeI_JiriLebl_2025/Chapters/Chap05/section01.html)) ([Lean source](./Chapters/Chap05/))
-- 5.2 Properties of the Integral ([Verso](https://optpku.github.io/ReasBook/books/introductiontorealanalysisvolumei_jirilebl_2025/chapters/chap05/section02/)) ([Documentation](https://optpku.github.io/ReasBook/docs/Books/IntroductiontoRealAnalysisVolumeI_JiriLebl_2025/Chapters/Chap05/section02.html)) ([Lean source](./Chapters/Chap05/))
-- 5.3 Fundamental Theorem of Calculus ([Verso](https://optpku.github.io/ReasBook/books/introductiontorealanalysisvolumei_jirilebl_2025/chapters/chap05/section03/)) ([Documentation](https://optpku.github.io/ReasBook/docs/Books/IntroductiontoRealAnalysisVolumeI_JiriLebl_2025/Chapters/Chap05/section03.html)) ([Lean source](./Chapters/Chap05/))
-- 5.4 The Logarithm and the Exponential ([Verso](https://optpku.github.io/ReasBook/books/introductiontorealanalysisvolumei_jirilebl_2025/chapters/chap05/section04/)) ([Documentation](https://optpku.github.io/ReasBook/docs/Books/IntroductiontoRealAnalysisVolumeI_JiriLebl_2025/Chapters/Chap05/section04.html)) ([Lean source](./Chapters/Chap05/))
-- 5.5 Improper Integrals ([Verso](https://optpku.github.io/ReasBook/books/introductiontorealanalysisvolumei_jirilebl_2025/chapters/chap05/section05/)) ([Documentation](https://optpku.github.io/ReasBook/docs/Books/IntroductiontoRealAnalysisVolumeI_JiriLebl_2025/Chapters/Chap05/section05.html)) ([Lean source](./Chapters/Chap05/))
-## Chapter 06 -- Sequences of Functions
-
-- 6.1 Pointwise and Uniform Convergence ([Verso](https://optpku.github.io/ReasBook/books/introductiontorealanalysisvolumei_jirilebl_2025/chapters/chap06/section01/)) ([Documentation](https://optpku.github.io/ReasBook/docs/Books/IntroductiontoRealAnalysisVolumeI_JiriLebl_2025/Chapters/Chap06/section01.html)) ([Lean source](./Chapters/Chap06/))
-- 6.2 Interchange of Limits ([Verso](https://optpku.github.io/ReasBook/books/introductiontorealanalysisvolumei_jirilebl_2025/chapters/chap06/section02/)) ([Documentation](https://optpku.github.io/ReasBook/docs/Books/IntroductiontoRealAnalysisVolumeI_JiriLebl_2025/Chapters/Chap06/section02.html)) ([Lean source](./Chapters/Chap06/))
-- 6.3 Picard's Theorem ([Verso](https://optpku.github.io/ReasBook/books/introductiontorealanalysisvolumei_jirilebl_2025/chapters/chap06/section03/)) ([Documentation](https://optpku.github.io/ReasBook/docs/Books/IntroductiontoRealAnalysisVolumeI_JiriLebl_2025/Chapters/Chap06/section03.html)) ([Lean source](./Chapters/Chap06/))
-## Chapter 07 -- Metric Spaces
-
-- 7.1 Metric Spaces ([Verso](https://optpku.github.io/ReasBook/books/introductiontorealanalysisvolumei_jirilebl_2025/chapters/chap07/section01/)) ([Documentation](https://optpku.github.io/ReasBook/docs/Books/IntroductiontoRealAnalysisVolumeI_JiriLebl_2025/Chapters/Chap07/section01.html)) ([Lean source](./Chapters/Chap07/))
-- 7.2 Open and Closed Sets ([Verso](https://optpku.github.io/ReasBook/books/introductiontorealanalysisvolumei_jirilebl_2025/chapters/chap07/section02/)) ([Documentation](https://optpku.github.io/ReasBook/docs/Books/IntroductiontoRealAnalysisVolumeI_JiriLebl_2025/Chapters/Chap07/section02.html)) ([Lean source](./Chapters/Chap07/))
-- 7.3 Sequences and Convergence ([Verso](https://optpku.github.io/ReasBook/books/introductiontorealanalysisvolumei_jirilebl_2025/chapters/chap07/section03/)) ([Documentation](https://optpku.github.io/ReasBook/docs/Books/IntroductiontoRealAnalysisVolumeI_JiriLebl_2025/Chapters/Chap07/section03.html)) ([Lean source](./Chapters/Chap07/))
-- 7.4 Completeness and Compactness ([Verso](https://optpku.github.io/ReasBook/books/introductiontorealanalysisvolumei_jirilebl_2025/chapters/chap07/section04/)) ([Documentation](https://optpku.github.io/ReasBook/docs/Books/IntroductiontoRealAnalysisVolumeI_JiriLebl_2025/Chapters/Chap07/section04.html)) ([Lean source](./Chapters/Chap07/))
-- 7.5 Continuous Functions ([Verso](https://optpku.github.io/ReasBook/books/introductiontorealanalysisvolumei_jirilebl_2025/chapters/chap07/section05/)) ([Documentation](https://optpku.github.io/ReasBook/docs/Books/IntroductiontoRealAnalysisVolumeI_JiriLebl_2025/Chapters/Chap07/section05.html)) ([Lean source](./Chapters/Chap07/))
-- 7.6 Fixed Point Theorem and Picard's Theorem Again ([Verso](https://optpku.github.io/ReasBook/books/introductiontorealanalysisvolumei_jirilebl_2025/chapters/chap07/section06/)) ([Documentation](https://optpku.github.io/ReasBook/docs/Books/IntroductiontoRealAnalysisVolumeI_JiriLebl_2025/Chapters/Chap07/section06.html)) ([Lean source](./Chapters/Chap07/))
+- [Chapter 00 — Introduction](https://optpku.github.io/ReasBook/versions/v4.30.0/books/introductiontorealanalysisvolumei_jirilebl_2025/chapters/chap00/)
+- [Chapter 01 — Real Numbers](https://optpku.github.io/ReasBook/versions/v4.30.0/books/introductiontorealanalysisvolumei_jirilebl_2025/chapters/chap01/)
+- [Chapter 02 — Sequences and Series](https://optpku.github.io/ReasBook/versions/v4.30.0/books/introductiontorealanalysisvolumei_jirilebl_2025/chapters/chap02/)
+- [Chapter 03 — Continuous Functions](https://optpku.github.io/ReasBook/versions/v4.30.0/books/introductiontorealanalysisvolumei_jirilebl_2025/chapters/chap03/)
+- [Chapter 04 — The Derivative](https://optpku.github.io/ReasBook/versions/v4.30.0/books/introductiontorealanalysisvolumei_jirilebl_2025/chapters/chap04/)
+- [Chapter 05 — The Riemann Integral](https://optpku.github.io/ReasBook/versions/v4.30.0/books/introductiontorealanalysisvolumei_jirilebl_2025/chapters/chap05/)
+- [Chapter 06 — Sequences of Functions](https://optpku.github.io/ReasBook/versions/v4.30.0/books/introductiontorealanalysisvolumei_jirilebl_2025/chapters/chap06/)
+- [Chapter 07 — Metric Spaces](https://optpku.github.io/ReasBook/versions/v4.30.0/books/introductiontorealanalysisvolumei_jirilebl_2025/chapters/chap07/)

@@ -1,6 +1,8 @@
 # Convex Analysis (Rockafellar, 1970)
 
-- Links: [Verso](https://optpku.github.io/ReasBook/books/convexanalysis_rockafellar_1970/) | [Documentation](https://optpku.github.io/ReasBook/docs/Books/ConvexAnalysis_Rockafellar_1970/Book.html) | [Lean source](./Chapters/)
+**Published reading (v4.26.0):** [Verso](https://optpku.github.io/ReasBook/versions/v4.26.0/books/convexanalysis_rockafellar_1970/) · [Documentation](https://optpku.github.io/ReasBook/versions/v4.26.0/docs/ReasBook/Books/ConvexAnalysis_Rockafellar_1970/Book.html) · [Theorem map](https://optpku.github.io/ReasBook/versions/v4.26.0/theorem-maps/books/convexanalysis_rockafellar_1970/)
+
+[Lean source root](Book.lean)
 
 ## Contributors
 
@@ -25,6 +27,9 @@
 - Zhiyan Wang
 - Zichen Wang
 - xdedlhqhw (@xdedlhqhw)
+- Zaiwen Wen
+
+Project-level formalization credit is recorded in the [catalog](https://github.com/optpku/ReasBook/blob/90ac3dd3a968313d0da7a3137680aa895af6a69a/README.md#books) and [`book.yml`](book.yml); it is separate from the original reference authors and per-file Lean authorship.
 
 ## Coverage
 
@@ -32,7 +37,9 @@ Chapters 1–8: basic concepts, topological properties, duality correspondences,
 inequalities, differential theory, constrained extremum problems, saddle functions and minimax
 theory, and bifunction convolution/composition calculus.
 
-## Statistics
+## Recorded source statistics
+
+These retained source statistics are historical counts, not a new build report.
 
 - **Declarations:** 10,666 (theorem/lemma/example: 9,164; other: 1,502)
 - **Lean code:** 557 `.lean` files, 421,724 lines
@@ -49,51 +56,13 @@ theory, and bifunction convolution/composition calculus.
 
 See [`book.yml`](book.yml) for the complete metadata record.
 
+## Published contents
 
-
-## Chapter 01 -- Part I: Basic Concepts
-
-- 1.1 Affine Sets ([Verso](https://optpku.github.io/ReasBook/books/convexanalysis_rockafellar_1970/chapters/chap01/section01/)) ([Documentation](https://optpku.github.io/ReasBook/docs/Books/ConvexAnalysis_Rockafellar_1970/Chapters/Chap01/section01.html)) ([Lean source](./Chapters/Chap01/))
-- 1.2 Convex Sets and Cones ([Verso](https://optpku.github.io/ReasBook/books/convexanalysis_rockafellar_1970/chapters/chap01/section02/)) ([Documentation](https://optpku.github.io/ReasBook/docs/Books/ConvexAnalysis_Rockafellar_1970/Chapters/Chap01/section02.html)) ([Lean source](./Chapters/Chap01/))
-- 1.3 The Algebra of Convex Sets ([Verso](https://optpku.github.io/ReasBook/books/convexanalysis_rockafellar_1970/chapters/chap01/section03/)) ([Documentation](https://optpku.github.io/ReasBook/docs/Books/ConvexAnalysis_Rockafellar_1970/Chapters/Chap01/section03.html)) ([Lean source](./Chapters/Chap01/))
-- 1.4 Convex Functions ([Verso](https://optpku.github.io/ReasBook/books/convexanalysis_rockafellar_1970/chapters/chap01/section04/)) ([Documentation](https://optpku.github.io/ReasBook/docs/Books/ConvexAnalysis_Rockafellar_1970/Chapters/Chap01/section04.html)) ([Lean source](./Chapters/Chap01/))
-- 1.5 Functional Operations ([Verso](https://optpku.github.io/ReasBook/books/convexanalysis_rockafellar_1970/chapters/chap01/section05/)) ([Documentation](https://optpku.github.io/ReasBook/docs/Books/ConvexAnalysis_Rockafellar_1970/Chapters/Chap01/section05.html)) ([Lean source](./Chapters/Chap01/))
-## Chapter 02 -- Part II: Topological Properties
-
-- 2.5 Functional Operations ([Verso](https://optpku.github.io/ReasBook/books/convexanalysis_rockafellar_1970/chapters/chap02/section05/)) ([Documentation](https://optpku.github.io/ReasBook/docs/Books/ConvexAnalysis_Rockafellar_1970/Chapters/Chap02/section05.html)) ([Lean source](./Chapters/Chap02/))
-- 2.6 Relative Interiors of Convex Sets ([Verso](https://optpku.github.io/ReasBook/books/convexanalysis_rockafellar_1970/chapters/chap02/section06/)) ([Documentation](https://optpku.github.io/ReasBook/docs/Books/ConvexAnalysis_Rockafellar_1970/Chapters/Chap02/section06.html)) ([Lean source](./Chapters/Chap02/))
-- 2.7 Closures of Convex Functions ([Verso](https://optpku.github.io/ReasBook/books/convexanalysis_rockafellar_1970/chapters/chap02/section07/)) ([Documentation](https://optpku.github.io/ReasBook/docs/Books/ConvexAnalysis_Rockafellar_1970/Chapters/Chap02/section07.html)) ([Lean source](./Chapters/Chap02/))
-- 2.8 Recession Cones and Unboundedness ([Verso](https://optpku.github.io/ReasBook/books/convexanalysis_rockafellar_1970/chapters/chap02/section08/)) ([Documentation](https://optpku.github.io/ReasBook/docs/Books/ConvexAnalysis_Rockafellar_1970/Chapters/Chap02/section08.html)) ([Lean source](./Chapters/Chap02/))
-- 2.9 Some Closedness Criteria ([Verso](https://optpku.github.io/ReasBook/books/convexanalysis_rockafellar_1970/chapters/chap02/section09/)) ([Documentation](https://optpku.github.io/ReasBook/docs/Books/ConvexAnalysis_Rockafellar_1970/Chapters/Chap02/section09.html)) ([Lean source](./Chapters/Chap02/))
-- 2.10 Continuity of Convex Functions ([Verso](https://optpku.github.io/ReasBook/books/convexanalysis_rockafellar_1970/chapters/chap02/section10/)) ([Documentation](https://optpku.github.io/ReasBook/docs/Books/ConvexAnalysis_Rockafellar_1970/Chapters/Chap02/section10.html)) ([Lean source](./Chapters/Chap02/))
-## Chapter 03 -- Part III: Duality Correspondences
-
-- 3.11 Separation Theorems ([Verso](https://optpku.github.io/ReasBook/books/convexanalysis_rockafellar_1970/chapters/chap03/section11/)) ([Documentation](https://optpku.github.io/ReasBook/docs/Books/ConvexAnalysis_Rockafellar_1970/Chapters/Chap03/section11.html)) ([Lean source](./Chapters/Chap03/))
-- 3.12 Conjugates of Convex Functions ([Verso](https://optpku.github.io/ReasBook/books/convexanalysis_rockafellar_1970/chapters/chap03/section12/)) ([Documentation](https://optpku.github.io/ReasBook/docs/Books/ConvexAnalysis_Rockafellar_1970/Chapters/Chap03/section12.html)) ([Lean source](./Chapters/Chap03/))
-- 3.13 Support Functions ([Verso](https://optpku.github.io/ReasBook/books/convexanalysis_rockafellar_1970/chapters/chap03/section13/)) ([Documentation](https://optpku.github.io/ReasBook/docs/Books/ConvexAnalysis_Rockafellar_1970/Chapters/Chap03/section13.html)) ([Lean source](./Chapters/Chap03/))
-- 3.14 Polars of Convex Sets ([Verso](https://optpku.github.io/ReasBook/books/convexanalysis_rockafellar_1970/chapters/chap03/section14/)) ([Documentation](https://optpku.github.io/ReasBook/docs/Books/ConvexAnalysis_Rockafellar_1970/Chapters/Chap03/section14.html)) ([Lean source](./Chapters/Chap03/))
-- 3.15 Polars of Convex Functions ([Verso](https://optpku.github.io/ReasBook/books/convexanalysis_rockafellar_1970/chapters/chap03/section15/)) ([Documentation](https://optpku.github.io/ReasBook/docs/Books/ConvexAnalysis_Rockafellar_1970/Chapters/Chap03/section15.html)) ([Lean source](./Chapters/Chap03/))
-- 3.16 Dual Operations ([Verso](https://optpku.github.io/ReasBook/books/convexanalysis_rockafellar_1970/chapters/chap03/section16/)) ([Documentation](https://optpku.github.io/ReasBook/docs/Books/ConvexAnalysis_Rockafellar_1970/Chapters/Chap03/section16.html)) ([Lean source](./Chapters/Chap03/))
-## Chapter 04 -- Part IV: Representation and Inequalities
-
-- 4.17 Caratheodory's Theorem ([Verso](https://optpku.github.io/ReasBook/books/convexanalysis_rockafellar_1970/chapters/chap04/section17/)) ([Documentation](https://optpku.github.io/ReasBook/docs/Books/ConvexAnalysis_Rockafellar_1970/Chapters/Chap04/section17.html)) ([Lean source](./Chapters/Chap04/))
-- 4.18 Extreme Points and Faces of Convex Sets ([Verso](https://optpku.github.io/ReasBook/books/convexanalysis_rockafellar_1970/chapters/chap04/section18/)) ([Documentation](https://optpku.github.io/ReasBook/docs/Books/ConvexAnalysis_Rockafellar_1970/Chapters/Chap04/section18.html)) ([Lean source](./Chapters/Chap04/))
-- 4.19 Polyhedral Convex Sets and Functions ([Verso](https://optpku.github.io/ReasBook/books/convexanalysis_rockafellar_1970/chapters/chap04/section19/)) ([Documentation](https://optpku.github.io/ReasBook/docs/Books/ConvexAnalysis_Rockafellar_1970/Chapters/Chap04/section19.html)) ([Lean source](./Chapters/Chap04/))
-- 4.20 Some Applications of Polyhedral Convexity ([Verso](https://optpku.github.io/ReasBook/books/convexanalysis_rockafellar_1970/chapters/chap04/section20/)) ([Documentation](https://optpku.github.io/ReasBook/docs/Books/ConvexAnalysis_Rockafellar_1970/Chapters/Chap04/section20.html)) ([Lean source](./Chapters/Chap04/))
-- 4.21 Systems of Convex Inequalities ([Verso](https://optpku.github.io/ReasBook/books/convexanalysis_rockafellar_1970/chapters/chap04/section21/)) ([Documentation](https://optpku.github.io/ReasBook/docs/Books/ConvexAnalysis_Rockafellar_1970/Chapters/Chap04/section21.html)) ([Lean source](./Chapters/Chap04/))
-- 4.22 Theorems of the Alternative ([Verso](https://optpku.github.io/ReasBook/books/convexanalysis_rockafellar_1970/chapters/chap04/section22/)) ([Documentation](https://optpku.github.io/ReasBook/docs/Books/ConvexAnalysis_Rockafellar_1970/Chapters/Chap04/section22.html)) ([Lean source](./Chapters/Chap04/))
-## Chapter 05 -- Part V: Differential Theory
-
-- 5.23 Subgradient ([Verso](https://optpku.github.io/ReasBook/books/convexanalysis_rockafellar_1970/chapters/chap05/section23/)) ([Documentation](https://optpku.github.io/ReasBook/docs/Books/ConvexAnalysis_Rockafellar_1970/Chapters/Chap05/section23.html)) ([Lean source](./Chapters/Chap05/))
-- 5.24 Subdifferential Calculus ([Verso](https://optpku.github.io/ReasBook/books/convexanalysis_rockafellar_1970/chapters/chap05/section24/)) ([Documentation](https://optpku.github.io/ReasBook/docs/Books/ConvexAnalysis_Rockafellar_1970/Chapters/Chap05/section24.html)) ([Lean source](./Chapters/Chap05/))
-- 5.25 Directional Derivatives ([Verso](https://optpku.github.io/ReasBook/books/convexanalysis_rockafellar_1970/chapters/chap05/section25/)) ([Documentation](https://optpku.github.io/ReasBook/docs/Books/ConvexAnalysis_Rockafellar_1970/Chapters/Chap05/section25.html)) ([Lean source](./Chapters/Chap05/))
-- 5.26 Monotone Operators ([Verso](https://optpku.github.io/ReasBook/books/convexanalysis_rockafellar_1970/chapters/chap05/section26/)) ([Documentation](https://optpku.github.io/ReasBook/docs/Books/ConvexAnalysis_Rockafellar_1970/Chapters/Chap05/section26.html)) ([Lean source](./Chapters/Chap05/))
-## Chapter 06 -- Part VI: Constrained Extremum Problems
-
-- Sections 27–32: minimization, convex programs, perturbations, duality, and Kuhn–Tucker theory ([Lean source](./Chapters/Chap06/))
-## Chapter 07 -- Part VII: Saddle Functions and Minimax Theory
-
-- Sections 33–37: saddle functions, closures, adjoints, Lagrangians, and minimax theory ([Lean source](./Chapters/Chap07/))
-## Chapter 08 -- Part VIII: Infimal Convolution and Bifunction Calculus
-
-- Sections 38–39: bifunction convolution, composition, adjointness, and associated duality results ([Lean source](./Chapters/Chap08/))
+- [Part I — Basic Concepts](https://optpku.github.io/ReasBook/versions/v4.26.0/books/convexanalysis_rockafellar_1970/chapters/chap01/)
+- [Part II — Topological Properties](https://optpku.github.io/ReasBook/versions/v4.26.0/books/convexanalysis_rockafellar_1970/chapters/chap02/)
+- [Part III — Duality Correspondences](https://optpku.github.io/ReasBook/versions/v4.26.0/books/convexanalysis_rockafellar_1970/chapters/chap03/)
+- [Part IV — Representation and Inequalities](https://optpku.github.io/ReasBook/versions/v4.26.0/books/convexanalysis_rockafellar_1970/chapters/chap04/)
+- [Part V — Differential Theory](https://optpku.github.io/ReasBook/versions/v4.26.0/books/convexanalysis_rockafellar_1970/chapters/chap05/)
+- [Part VI — Constrained Extremum Problems](https://optpku.github.io/ReasBook/versions/v4.26.0/books/convexanalysis_rockafellar_1970/chapters/chap06/)
+- [Part VII — Saddle-Functions and Minimax Theory](https://optpku.github.io/ReasBook/versions/v4.26.0/books/convexanalysis_rockafellar_1970/chapters/chap07/)
+- [Part VIII — Convex Algebra](https://optpku.github.io/ReasBook/versions/v4.26.0/books/convexanalysis_rockafellar_1970/chapters/chap08/)
