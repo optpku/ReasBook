@@ -2,9 +2,9 @@
   "source": "https://github.com/optpku/ReasBook/blob/main/README.md#books",
   "scope": "project",
   "books": {
-    "AlgebraicTopology_May_1999": ["Ze Yuan", "Zichen Wang"],
+    "AlgebraicTopology_May_1999": ["Ze Yuan", "Zichen Wang", "Zaiwen Wen"],
     "Analysis2_Tao_2022": ["Chenyi Li", "Min Cui", "Qiming Dai", "Shu Miao", "Wanli Ma", "Yi Yuan", "Zichen Wang", "Ziyu Wang", "Zaiwen Wen"],
-    "CombinatorialGroupTheory_Magnus_2004": ["Zichen Wang"],
+    "CombinatorialGroupTheory_Magnus_2004": ["Zichen Wang", "Zaiwen Wen"],
     "ConvexAnalysis_Rockafellar_1970": ["Changyu Zou", "Chenyi Li", "Guangxuan Pan", "Pengfei Hao", "Qiming Dai", "Shu Miao", "Siyuan Shao", "Suwu Wu", "Wanli Ma", "Weiran Shi", "Xinyi Guo", "Xuran Sun", "Yifan Bai", "Yijie Wang", "Yunfei Zhang", "Yunxi Duan", "Yuhao Jiang", "Zebo Liu", "Zhiyan Wang", "Zichen Wang", "Zaiwen Wen", "xdedlhqhw"],
     "ConvexAnalysisMonotoneOperators_BauschkeCombettes_2017": ["Yifan Bai", "Zichen Wang", "Zaiwen Wen"],
     "FirstOrderMethodsOptimization_Beck_2017": ["Shu Miao", "Zichen Wang", "Zaiwen Wen", "Zhiyan Wang", "Suwan Wu", "Changyu Zou", "Xinyi Guo", "Yunxi Duan", "Wanli Ma"],
@@ -13,7 +13,7 @@
     "IntroductoryLecturesOnConvexOptimization_Nesterov_2004": ["Chenyi Li", "Siyuan Shao", "Yijie Wang", "Feiming Wang", "Weiran Shi", "Yuhao Jiang", "Zebo Liu", "Wentao Long"],
     "OptimizationTheoryAndMethods_SunYuan_2006": ["Chenyi Li", "Wanli Ma", "Zichen Wang"],
     "ProbabilityTheory_Klenke_2020": ["Xuanzhi Ren", "Zichen Wang"],
-    "RiemannSurfaces_Forster_1981": ["Zichen Wang"],
+    "RiemannSurfaces_Forster_1981": ["Zichen Wang", "Zaiwen Wen"],
     "ComputationalMethodsInverseProblems_Vogel_2002": ["Yifan Bai", "Wanli Ma", "Zichen Wang"]
   },
   "papers": {

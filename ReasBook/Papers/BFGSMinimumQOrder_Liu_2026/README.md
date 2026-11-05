@@ -1,5 +1,7 @@
 # The Minimum Q-Order of BFGS with Exact Line Search Is One
 
+**Published reading (v4.32.2):** [Verso](https://optpku.github.io/ReasBook/versions/v4.32.2/papers/bfgsminimumqorder_liu_2026/) · [Documentation](https://optpku.github.io/ReasBook/versions/v4.32.2/docs/ReasBook/BFGSMinimumQOrder_Liu_2026.html) · [Theorem map](https://optpku.github.io/ReasBook/versions/v4.32.2/theorem-maps/papers/bfgsminimumqorder_liu_2026/)
+
 This is a catalog link folder on `main`; the complete Lean formalization is
 kept on the version branch.
 
@@ -15,9 +17,6 @@ builds the registered public aggregate used by Documentation. The broader
 `BFGSMinimumQOrder_Implementation` library retains all imported infrastructure
 and compatibility roots.
 
-[Docs](https://reasbook.reaslab.io/artifacts/projects/bfgsminimumqorder_liu_2026/docs/ReasBook/BFGSMinimumQOrder_Liu_2026.html) ·
-[Verso](https://reasbook.reaslab.io/artifacts/projects/bfgsminimumqorder_liu_2026/papers/bfgsminimumqorder_liu_2026/) ·
-[Theorem map](https://reasbook.reaslab.io/artifacts/projects/bfgsminimumqorder_liu_2026/theorem-maps/papers/bfgsminimumqorder_liu_2026/) ·
 [Reviewer](https://reasbook.reaslab.io/review/books/bfgsminimumqorder_liu_2026/)
 
 Paper: [arXiv:2609.00596](https://arxiv.org/abs/2609.00596)

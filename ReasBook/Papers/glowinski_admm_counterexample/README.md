@@ -1,5 +1,11 @@
 # The multiplier step size of two-block ADMM: convergence and counterexamples
 
+**Published reading (v4.32.0):** [Verso](https://optpku.github.io/ReasBook/versions/v4.32.0/papers/glowinski_admm_counterexample/) · [Documentation](https://optpku.github.io/ReasBook/versions/v4.32.0/docs/ReasBook/glowinski_admm_counterexample/Paper.html) · [Theorem map](https://optpku.github.io/ReasBook/versions/v4.32.0/theorem-maps/papers/glowinski_admm_counterexample/)
+
+**Project-level formalization contributors:** Qiming Dai.
+
+Project-level formalization credit is recorded in the [catalog](https://github.com/optpku/ReasBook/blob/90ac3dd3a968313d0da7a3137680aa895af6a69a/README.md#papers); it is separate from the original reference authors and per-file Lean authorship.
+
 This is a catalog link folder on `main`; the complete Lean formalization is
 kept on the `v4.32.0` version branch.
 
@@ -42,10 +48,6 @@ toolchain. The version-branch source README records the validation commands and
 full coverage details.
 
 ## Documentation
-
-[API documentation](https://optpku.github.io/ReasBook/sites/glowinski_admm_counterexample/docs/) ·
-[Verso reading pages](https://optpku.github.io/ReasBook/sites/glowinski_admm_counterexample/pages/) ·
-[Theorem dependency map](https://optpku.github.io/ReasBook/theorem-maps/papers/glowinski_admm_counterexample/)
 
 The documentation covers the 480 reachable public API modules. The Verso guide
 links the public manuscript interfaces, and the theorem map provides 26 nodes

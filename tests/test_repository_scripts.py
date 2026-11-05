@@ -265,7 +265,10 @@ class RepositoryScriptTests(unittest.TestCase):
             "Source only (excluded from the current release profile)",
         )
         resource = update_readme.resource_cell(no_verso)
-        self.assertIn("Verso not published", resource)
+        self.assertIn("[Docs](https://optpku.github.io/ReasBook/versions/v4.26.0/", resource)
+        self.assertIn("Project skeleton; no statements", resource)
+        self.assertNotIn("[Verso](", resource)
+        self.assertNotIn("theorem-maps/", resource)
         self.assertNotIn("TBD", resource)
         linked_resource = update_readme.resource_cell(
             {
@@ -290,7 +293,9 @@ class RepositoryScriptTests(unittest.TestCase):
             "仅源代码（不包含在当前发布配置中）",
         )
         chinese_resource = update_readme.resource_cell(no_verso, language="zh-CN")
-        self.assertIn("尚未发布 Verso", chinese_resource)
+        self.assertIn("项目骨架；尚无命题", chinese_resource)
+        self.assertNotIn("[Verso](", chinese_resource)
+        self.assertNotIn("theorem-maps/", chinese_resource)
         self.assertNotIn("TBD", chinese_resource)
 
     def test_published_admm_resources_keep_real_module_routes_on_regeneration(self) -> None:
@@ -300,7 +305,7 @@ class RepositoryScriptTests(unittest.TestCase):
             "slug": "glowinski_admm_counterexample",
         }
         projects = {("papers", project["name"]): project}
-        base = "https://reasbook.reaslab.io/artifacts/projects/glowinski_admm_counterexample/"
+        base = "https://optpku.github.io/ReasBook/versions/v4.32.0/"
         for language in ("en", "zh-CN"):
             with self.subTest(language=language), tempfile.TemporaryDirectory() as temp:
                 resources = update_readme.resource_cell(project, language=language)
@@ -336,7 +341,8 @@ class RepositoryScriptTests(unittest.TestCase):
                 self.assertIn("/sections/main-theorems/", rows)
                 self.assertIn("/sections/v21-main/", rows)
                 self.assertIn("/dfp_wolfe_local/v21/?view=paper", rows)
-                self.assertNotIn("optpku.github.io", rows)
+                self.assertIn("https://optpku.github.io/ReasBook/versions/v4.32.0/", rows)
+                self.assertNotIn("reasbook.reaslab.io/artifacts", rows)
                 readme = Path(temp) / filename
                 readme.write_text(rows)
                 self.assertEqual(update_readme.update_resource_cells(
@@ -1597,12 +1603,12 @@ class RepositoryScriptTests(unittest.TestCase):
                     self.assertNotIn('Paper', modules)
 
     def test_bfgs_catalog_links_share_the_selected_documentation_root(self) -> None:
-        expected = 'projects/bfgsminimumqorder_liu_2026/docs/ReasBook/BFGSMinimumQOrder_Liu_2026.html'
+        expected = 'versions/v4.32.2/docs/ReasBook/BFGSMinimumQOrder_Liu_2026.html'
         for relative in ('README.md', 'README.zh-CN.md',
                          'ReasBook/Papers/BFGSMinimumQOrder_Liu_2026/README.md'):
             text = (ROOT / relative).read_text()
             self.assertIn(expected, text)
-            self.assertNotIn('projects/bfgsminimumqorder_liu_2026/docs/ReasBook/Paper.html', text)
+            self.assertNotIn('versions/v4.32.2/docs/ReasBook/Paper.html', text)
 
     def test_paper_home_documentation_stays_inside_public_root_closure(self) -> None:
         with tempfile.TemporaryDirectory() as temp:
