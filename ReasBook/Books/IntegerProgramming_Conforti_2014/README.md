@@ -1,6 +1,8 @@
 # Integer Programming (Conforti et al., 2014)
 
-- Links: Verso (TBD) | Documentation (TBD) | Lean source (TBD)
+**Published reading (v4.26.0):** Project skeleton · [Documentation](https://optpku.github.io/ReasBook/versions/v4.26.0/docs/ReasBook/Books/IntegerProgramming_Conforti_2014/Book.html) · No statements or Verso reading pages yet.
+
+[Lean source root](Book.lean)
 
 ## Contributors
 
@@ -41,20 +43,23 @@
 - Zichen Wang
 - Zichen Xu
 - Zihao Liu
+- Zaiwen Wen
+
+Project-level formalization credit is recorded in the [catalog](https://github.com/optpku/ReasBook/blob/90ac3dd3a968313d0da7a3137680aa895af6a69a/README.md#books) and [`book.yml`](book.yml); it is separate from the original reference authors and per-file Lean authorship.
 
 ## Coverage
 
 Skeleton only — no chapters formalized yet.
 
-## Statistics
+## Recorded source statistics
+
+These retained source statistics are historical counts, not a new build report.
 
 - **Declarations:** 0 (theorem/lemma/example: 0; other: 0)
-- **Lean code:** 1 `.lean` files, 2 lines
-- **Proof completion:** 0/0 (approx)
+- **Lean code:** 1 `.lean` file (project skeleton)
+- **Proof completion:** Not applicable; no mathematical declarations yet
 - **Remaining placeholders:** `sorry`: 0; `admit`: 0
 
 ## Metadata
 
 See [`book.yml`](book.yml).
-
-- (TODO: no chapter/section modules discovered yet)

@@ -1,6 +1,10 @@
 # Analysis II (Tao, 2022)
 
-- Links: [Verso](https://optpku.github.io/ReasBook/books/analysis2_tao_2022/) | [Documentation](https://optpku.github.io/ReasBook/docs/Books/Analysis2_Tao_2022/Book.html) | [Lean source](./Chapters/)
+**Published reading (v4.30.0):** [Verso](https://optpku.github.io/ReasBook/versions/v4.30.0/books/analysis2_tao_2022/) · [Documentation](https://optpku.github.io/ReasBook/versions/v4.30.0/docs/ReasBook/Analysis2_Tao_2022/Book.html) · [Theorem map](https://optpku.github.io/ReasBook/versions/v4.30.0/theorem-maps/books/analysis2_tao_2022/)
+
+These reading pages use the `v4.30.0` source; this branch retains its `v4.26.0` formalization.
+
+[Lean source root](Book.lean)
 
 ## Contributors
 
@@ -12,12 +16,17 @@
 - Yi Yuan
 - Zichen Wang
 - Ziyu Wang
+- Zaiwen Wen
+
+Project-level formalization credit is recorded in the [catalog](https://github.com/optpku/ReasBook/blob/90ac3dd3a968313d0da7a3137680aa895af6a69a/README.md#books) and [`book.yml`](book.yml); it is separate from the original reference authors and per-file Lean authorship.
 
 ## Coverage
 
 Chapters 1–8: metric spaces, continuity, uniform convergence, power series, Fourier series, and multivariate differential calculus.
 
-## Statistics
+## Recorded source statistics
+
+These retained source statistics are historical counts, not a new build report.
 
 - **Declarations:** 2557 (theorem/lemma/example: 2258; other: 299)
 - **Lean code:** 105 `.lean` files, 49279 lines
@@ -28,67 +37,13 @@ Chapters 1–8: metric spaces, continuity, uniform convergence, power series, Fo
 
 See [`book.yml`](book.yml).
 
-## Chapter 01 -- Metric Spaces
+## Published contents
 
-- 1.1 Definitions and Examples ([Verso](https://optpku.github.io/ReasBook/books/analysis2_tao_2022/chapters/chap01/section01/)) ([Documentation](https://optpku.github.io/ReasBook/docs/Books/Analysis2_Tao_2022/Chapters/Chap01/section01.html)) ([Lean source](./Chapters/Chap01/))
-- 1.2 Some Point-Set Topology of Metric Spaces ([Verso](https://optpku.github.io/ReasBook/books/analysis2_tao_2022/chapters/chap01/section02/)) ([Documentation](https://optpku.github.io/ReasBook/docs/Books/Analysis2_Tao_2022/Chapters/Chap01/section02.html)) ([Lean source](./Chapters/Chap01/))
-- 1.3 Relative Topology ([Verso](https://optpku.github.io/ReasBook/books/analysis2_tao_2022/chapters/chap01/section03/)) ([Documentation](https://optpku.github.io/ReasBook/docs/Books/Analysis2_Tao_2022/Chapters/Chap01/section03.html)) ([Lean source](./Chapters/Chap01/))
-- 1.4 Cauchy Sequences and Complete Metric Spaces ([Verso](https://optpku.github.io/ReasBook/books/analysis2_tao_2022/chapters/chap01/section04/)) ([Documentation](https://optpku.github.io/ReasBook/docs/Books/Analysis2_Tao_2022/Chapters/Chap01/section04.html)) ([Lean source](./Chapters/Chap01/))
-- 1.5 Compact Metric Spaces ([Verso](https://optpku.github.io/ReasBook/books/analysis2_tao_2022/chapters/chap01/section05/)) ([Documentation](https://optpku.github.io/ReasBook/docs/Books/Analysis2_Tao_2022/Chapters/Chap01/section05.html)) ([Lean source](./Chapters/Chap01/))
-## Chapter 02 -- Continuous Functions on Metric Spaces
-
-- 2.1 Continuous Functions ([Verso](https://optpku.github.io/ReasBook/books/analysis2_tao_2022/chapters/chap02/section01/)) ([Documentation](https://optpku.github.io/ReasBook/docs/Books/Analysis2_Tao_2022/Chapters/Chap02/section01.html)) ([Lean source](./Chapters/Chap02/))
-- 2.2 Continuity and Product Spaces ([Verso](https://optpku.github.io/ReasBook/books/analysis2_tao_2022/chapters/chap02/section02/)) ([Documentation](https://optpku.github.io/ReasBook/docs/Books/Analysis2_Tao_2022/Chapters/Chap02/section02.html)) ([Lean source](./Chapters/Chap02/))
-- 2.3 Continuity and Compactness ([Verso](https://optpku.github.io/ReasBook/books/analysis2_tao_2022/chapters/chap02/section03/)) ([Documentation](https://optpku.github.io/ReasBook/docs/Books/Analysis2_Tao_2022/Chapters/Chap02/section03.html)) ([Lean source](./Chapters/Chap02/))
-- 2.4 Continuity and Connectedness ([Verso](https://optpku.github.io/ReasBook/books/analysis2_tao_2022/chapters/chap02/section04/)) ([Documentation](https://optpku.github.io/ReasBook/docs/Books/Analysis2_Tao_2022/Chapters/Chap02/section04.html)) ([Lean source](./Chapters/Chap02/))
-- 2.5 Topological Spaces ([Verso](https://optpku.github.io/ReasBook/books/analysis2_tao_2022/chapters/chap02/section05/)) ([Documentation](https://optpku.github.io/ReasBook/docs/Books/Analysis2_Tao_2022/Chapters/Chap02/section05.html)) ([Lean source](./Chapters/Chap02/))
-## Chapter 03 -- Uniform Convergence
-
-- 3.1 Limiting Values of Functions ([Verso](https://optpku.github.io/ReasBook/books/analysis2_tao_2022/chapters/chap03/section01/)) ([Documentation](https://optpku.github.io/ReasBook/docs/Books/Analysis2_Tao_2022/Chapters/Chap03/section01.html)) ([Lean source](./Chapters/Chap03/))
-- 3.2 Pointwise and Uniform Convergence ([Verso](https://optpku.github.io/ReasBook/books/analysis2_tao_2022/chapters/chap03/section02/)) ([Documentation](https://optpku.github.io/ReasBook/docs/Books/Analysis2_Tao_2022/Chapters/Chap03/section02.html)) ([Lean source](./Chapters/Chap03/))
-- 3.3 Uniform Convergence and Continuity ([Verso](https://optpku.github.io/ReasBook/books/analysis2_tao_2022/chapters/chap03/section03/)) ([Documentation](https://optpku.github.io/ReasBook/docs/Books/Analysis2_Tao_2022/Chapters/Chap03/section03.html)) ([Lean source](./Chapters/Chap03/))
-- 3.4 The Metric of Uniform Convergence ([Verso](https://optpku.github.io/ReasBook/books/analysis2_tao_2022/chapters/chap03/section04/)) ([Documentation](https://optpku.github.io/ReasBook/docs/Books/Analysis2_Tao_2022/Chapters/Chap03/section04.html)) ([Lean source](./Chapters/Chap03/))
-- 3.5 Series of Functions; the Weierstrass M-Test ([Verso](https://optpku.github.io/ReasBook/books/analysis2_tao_2022/chapters/chap03/section05/)) ([Documentation](https://optpku.github.io/ReasBook/docs/Books/Analysis2_Tao_2022/Chapters/Chap03/section05.html)) ([Lean source](./Chapters/Chap03/))
-- 3.6 Uniform Convergence and Integration ([Verso](https://optpku.github.io/ReasBook/books/analysis2_tao_2022/chapters/chap03/section06/)) ([Documentation](https://optpku.github.io/ReasBook/docs/Books/Analysis2_Tao_2022/Chapters/Chap03/section06.html)) ([Lean source](./Chapters/Chap03/))
-- 3.7 Uniform Convergence and Derivatives ([Verso](https://optpku.github.io/ReasBook/books/analysis2_tao_2022/chapters/chap03/section07/)) ([Documentation](https://optpku.github.io/ReasBook/docs/Books/Analysis2_Tao_2022/Chapters/Chap03/section07.html)) ([Lean source](./Chapters/Chap03/))
-- 3.8 Uniform Approximation by Polynomials ([Verso](https://optpku.github.io/ReasBook/books/analysis2_tao_2022/chapters/chap03/section08/)) ([Documentation](https://optpku.github.io/ReasBook/docs/Books/Analysis2_Tao_2022/Chapters/Chap03/section08.html)) ([Lean source](./Chapters/Chap03/))
-## Chapter 04 -- Power Series
-
-- 4.1 Formal Power Series ([Verso](https://optpku.github.io/ReasBook/books/analysis2_tao_2022/chapters/chap04/section01/)) ([Documentation](https://optpku.github.io/ReasBook/docs/Books/Analysis2_Tao_2022/Chapters/Chap04/section01.html)) ([Lean source](./Chapters/Chap04/))
-- 4.2 Real Analytic Functions ([Verso](https://optpku.github.io/ReasBook/books/analysis2_tao_2022/chapters/chap04/section02/)) ([Documentation](https://optpku.github.io/ReasBook/docs/Books/Analysis2_Tao_2022/Chapters/Chap04/section02.html)) ([Lean source](./Chapters/Chap04/))
-- 4.3 Abel's Theorem ([Verso](https://optpku.github.io/ReasBook/books/analysis2_tao_2022/chapters/chap04/section03/)) ([Documentation](https://optpku.github.io/ReasBook/docs/Books/Analysis2_Tao_2022/Chapters/Chap04/section03.html)) ([Lean source](./Chapters/Chap04/))
-- 4.4 Multiplication of Power Series ([Verso](https://optpku.github.io/ReasBook/books/analysis2_tao_2022/chapters/chap04/section04/)) ([Documentation](https://optpku.github.io/ReasBook/docs/Books/Analysis2_Tao_2022/Chapters/Chap04/section04.html)) ([Lean source](./Chapters/Chap04/))
-- 4.5 The Exponential and Logarithm Functions ([Verso](https://optpku.github.io/ReasBook/books/analysis2_tao_2022/chapters/chap04/section05/)) ([Documentation](https://optpku.github.io/ReasBook/docs/Books/Analysis2_Tao_2022/Chapters/Chap04/section05.html)) ([Lean source](./Chapters/Chap04/))
-- 4.6 A Digression on Complex Numbers ([Verso](https://optpku.github.io/ReasBook/books/analysis2_tao_2022/chapters/chap04/section06/)) ([Documentation](https://optpku.github.io/ReasBook/docs/Books/Analysis2_Tao_2022/Chapters/Chap04/section06.html)) ([Lean source](./Chapters/Chap04/))
-- 4.7 Trigonometric Functions ([Verso](https://optpku.github.io/ReasBook/books/analysis2_tao_2022/chapters/chap04/section07/)) ([Documentation](https://optpku.github.io/ReasBook/docs/Books/Analysis2_Tao_2022/Chapters/Chap04/section07.html)) ([Lean source](./Chapters/Chap04/))
-## Chapter 05 -- Fourier Series
-
-- 5.1 Periodic Functions ([Verso](https://optpku.github.io/ReasBook/books/analysis2_tao_2022/chapters/chap05/section01/)) ([Documentation](https://optpku.github.io/ReasBook/docs/Books/Analysis2_Tao_2022/Chapters/Chap05/section01.html)) ([Lean source](./Chapters/Chap05/))
-- 5.2 Inner Products on Periodic Functions ([Verso](https://optpku.github.io/ReasBook/books/analysis2_tao_2022/chapters/chap05/section02/)) ([Documentation](https://optpku.github.io/ReasBook/docs/Books/Analysis2_Tao_2022/Chapters/Chap05/section02.html)) ([Lean source](./Chapters/Chap05/))
-- 5.3 Trigonometric Polynomials ([Verso](https://optpku.github.io/ReasBook/books/analysis2_tao_2022/chapters/chap05/section03/)) ([Documentation](https://optpku.github.io/ReasBook/docs/Books/Analysis2_Tao_2022/Chapters/Chap05/section03.html)) ([Lean source](./Chapters/Chap05/))
-- 5.4 Periodic Convolutions ([Verso](https://optpku.github.io/ReasBook/books/analysis2_tao_2022/chapters/chap05/section04/)) ([Documentation](https://optpku.github.io/ReasBook/docs/Books/Analysis2_Tao_2022/Chapters/Chap05/section04.html)) ([Lean source](./Chapters/Chap05/))
-- 5.5 The Fourier and Plancherel Theorems ([Verso](https://optpku.github.io/ReasBook/books/analysis2_tao_2022/chapters/chap05/section05/)) ([Documentation](https://optpku.github.io/ReasBook/docs/Books/Analysis2_Tao_2022/Chapters/Chap05/section05.html)) ([Lean source](./Chapters/Chap05/))
-## Chapter 06 -- Several Variable Differential Calculus
-
-- 6.1 Linear Transformations ([Verso](https://optpku.github.io/ReasBook/books/analysis2_tao_2022/chapters/chap06/section01/)) ([Documentation](https://optpku.github.io/ReasBook/docs/Books/Analysis2_Tao_2022/Chapters/Chap06/section01.html)) ([Lean source](./Chapters/Chap06/))
-- 6.2 Derivatives in Several Variable Calculus ([Verso](https://optpku.github.io/ReasBook/books/analysis2_tao_2022/chapters/chap06/section02/)) ([Documentation](https://optpku.github.io/ReasBook/docs/Books/Analysis2_Tao_2022/Chapters/Chap06/section02.html)) ([Lean source](./Chapters/Chap06/))
-- 6.3 Partial and Directional Derivatives ([Verso](https://optpku.github.io/ReasBook/books/analysis2_tao_2022/chapters/chap06/section03/)) ([Documentation](https://optpku.github.io/ReasBook/docs/Books/Analysis2_Tao_2022/Chapters/Chap06/section03.html)) ([Lean source](./Chapters/Chap06/))
-- 6.4 The Several Variable Calculus Chain Rule ([Verso](https://optpku.github.io/ReasBook/books/analysis2_tao_2022/chapters/chap06/section04/)) ([Documentation](https://optpku.github.io/ReasBook/docs/Books/Analysis2_Tao_2022/Chapters/Chap06/section04.html)) ([Lean source](./Chapters/Chap06/))
-- 6.5 Double Derivatives and Clairaut's Theorem ([Verso](https://optpku.github.io/ReasBook/books/analysis2_tao_2022/chapters/chap06/section05/)) ([Documentation](https://optpku.github.io/ReasBook/docs/Books/Analysis2_Tao_2022/Chapters/Chap06/section05.html)) ([Lean source](./Chapters/Chap06/))
-- 6.6 The Contraction Mapping Theorem ([Verso](https://optpku.github.io/ReasBook/books/analysis2_tao_2022/chapters/chap06/section06/)) ([Documentation](https://optpku.github.io/ReasBook/docs/Books/Analysis2_Tao_2022/Chapters/Chap06/section06.html)) ([Lean source](./Chapters/Chap06/))
-- 6.7 The Inverse Function Theorem in Several Variable Calculus ([Verso](https://optpku.github.io/ReasBook/books/analysis2_tao_2022/chapters/chap06/section07/)) ([Documentation](https://optpku.github.io/ReasBook/docs/Books/Analysis2_Tao_2022/Chapters/Chap06/section07.html)) ([Lean source](./Chapters/Chap06/))
-- 6.8 The Implicit Function Theorem ([Verso](https://optpku.github.io/ReasBook/books/analysis2_tao_2022/chapters/chap06/section08/)) ([Documentation](https://optpku.github.io/ReasBook/docs/Books/Analysis2_Tao_2022/Chapters/Chap06/section08.html)) ([Lean source](./Chapters/Chap06/))
-## Chapter 07 -- Lebesgue Measure
-
-- 7.1 The Goal: Lebesgue Measure ([Verso](https://optpku.github.io/ReasBook/books/analysis2_tao_2022/chapters/chap07/section01/)) ([Documentation](https://optpku.github.io/ReasBook/docs/Books/Analysis2_Tao_2022/Chapters/Chap07/section01.html)) ([Lean source](./Chapters/Chap07/))
-- 7.2 First Attempt: Outer Measure ([Verso](https://optpku.github.io/ReasBook/books/analysis2_tao_2022/chapters/chap07/section02/)) ([Documentation](https://optpku.github.io/ReasBook/docs/Books/Analysis2_Tao_2022/Chapters/Chap07/section02.html)) ([Lean source](./Chapters/Chap07/))
-- 7.3 Outer Measure Is not Additive ([Verso](https://optpku.github.io/ReasBook/books/analysis2_tao_2022/chapters/chap07/section03/)) ([Documentation](https://optpku.github.io/ReasBook/docs/Books/Analysis2_Tao_2022/Chapters/Chap07/section03.html)) ([Lean source](./Chapters/Chap07/))
-- 7.4 Measurable Sets ([Verso](https://optpku.github.io/ReasBook/books/analysis2_tao_2022/chapters/chap07/section04/)) ([Documentation](https://optpku.github.io/ReasBook/docs/Books/Analysis2_Tao_2022/Chapters/Chap07/section04.html)) ([Lean source](./Chapters/Chap07/))
-- 7.5 Measurable Functions ([Verso](https://optpku.github.io/ReasBook/books/analysis2_tao_2022/chapters/chap07/section05/)) ([Documentation](https://optpku.github.io/ReasBook/docs/Books/Analysis2_Tao_2022/Chapters/Chap07/section05.html)) ([Lean source](./Chapters/Chap07/))
-## Chapter 08 -- Lebesgue Integration
-
-- 8.1 Simple Functions ([Verso](https://optpku.github.io/ReasBook/books/analysis2_tao_2022/chapters/chap08/section01/)) ([Documentation](https://optpku.github.io/ReasBook/docs/Books/Analysis2_Tao_2022/Chapters/Chap08/section01.html)) ([Lean source](./Chapters/Chap08/))
-- 8.2 Integration of Non-negative Measurable Functions ([Verso](https://optpku.github.io/ReasBook/books/analysis2_tao_2022/chapters/chap08/section02/)) ([Documentation](https://optpku.github.io/ReasBook/docs/Books/Analysis2_Tao_2022/Chapters/Chap08/section02.html)) ([Lean source](./Chapters/Chap08/))
-- 8.3 Integration of Absolutely Integrable Functions ([Verso](https://optpku.github.io/ReasBook/books/analysis2_tao_2022/chapters/chap08/section03/)) ([Documentation](https://optpku.github.io/ReasBook/docs/Books/Analysis2_Tao_2022/Chapters/Chap08/section03.html)) ([Lean source](./Chapters/Chap08/))
-- 8.4 Comparison with the Riemann Integral ([Verso](https://optpku.github.io/ReasBook/books/analysis2_tao_2022/chapters/chap08/section04/)) ([Documentation](https://optpku.github.io/ReasBook/docs/Books/Analysis2_Tao_2022/Chapters/Chap08/section04.html)) ([Lean source](./Chapters/Chap08/))
-- 8.5 Fubini's Theorem ([Verso](https://optpku.github.io/ReasBook/books/analysis2_tao_2022/chapters/chap08/section05/)) ([Documentation](https://optpku.github.io/ReasBook/docs/Books/Analysis2_Tao_2022/Chapters/Chap08/section05.html)) ([Lean source](./Chapters/Chap08/))
+- [Chapter 01 — Metric Spaces](https://optpku.github.io/ReasBook/versions/v4.30.0/books/analysis2_tao_2022/chapters/chap01/)
+- [Chapter 02 — Continuous Functions on Metric Spaces](https://optpku.github.io/ReasBook/versions/v4.30.0/books/analysis2_tao_2022/chapters/chap02/)
+- [Chapter 03 — Uniform Convergence](https://optpku.github.io/ReasBook/versions/v4.30.0/books/analysis2_tao_2022/chapters/chap03/)
+- [Chapter 04 — Power Series](https://optpku.github.io/ReasBook/versions/v4.30.0/books/analysis2_tao_2022/chapters/chap04/)
+- [Chapter 05 — Fourier Series](https://optpku.github.io/ReasBook/versions/v4.30.0/books/analysis2_tao_2022/chapters/chap05/)
+- [Chapter 06 — Several Variable Differential Calculus](https://optpku.github.io/ReasBook/versions/v4.30.0/books/analysis2_tao_2022/chapters/chap06/)
+- [Chapter 07 — Lebesgue Measure](https://optpku.github.io/ReasBook/versions/v4.30.0/books/analysis2_tao_2022/chapters/chap07/)
+- [Chapter 08 — Lebesgue Integration](https://optpku.github.io/ReasBook/versions/v4.30.0/books/analysis2_tao_2022/chapters/chap08/)

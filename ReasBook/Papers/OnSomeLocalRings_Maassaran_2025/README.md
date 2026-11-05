@@ -1,5 +1,13 @@
 # On Some Local Rings
 
+**Published reading (v4.30.0):** [Verso](https://optpku.github.io/ReasBook/versions/v4.30.0/papers/onsomelocalrings_maassaran_2025/) · [Documentation](https://optpku.github.io/ReasBook/versions/v4.30.0/docs/ReasBook/OnSomeLocalRings_Maassaran_2025/Paper.html) · [Theorem map](https://optpku.github.io/ReasBook/versions/v4.30.0/theorem-maps/papers/onsomelocalrings_maassaran_2025/)
+
+These reading pages use the `v4.30.0` source; this branch retains its `v4.26.0` formalization.
+
+**Project-level formalization contributors:** Liang Xiao, Haochen Ju, Zichen Wang, Zaiwen Wen.
+
+Project-level formalization credit is recorded in the [catalog](https://github.com/optpku/ReasBook/blob/90ac3dd3a968313d0da7a3137680aa895af6a69a/README.md#papers); it is separate from the original reference authors and per-file Lean authorship.
+
 - **Author:** Mohamad Maassarani
 - **Venue:** arXiv:2512.19197v1 [math.AC], 2025
 - **Paper ID:** `OnSomeLocalRings_Maassaran_2025`
@@ -30,9 +38,7 @@ cd ReasBook
 lake build Papers.OnSomeLocalRings_Maassaran_2025.Paper
 ```
 
-- Links: [Verso](https://optpku.github.io/ReasBook/papers/onsomelocalrings_maassaran_2025/) | [Documentation](https://optpku.github.io/ReasBook/docs/Papers/OnSomeLocalRings_Maassaran_2025/Paper.html) | [Lean source](./Sections/)
+## Published contents
 
-## Sections
-
-- Section 1: Separable Case ([Verso](https://optpku.github.io/ReasBook/papers/onsomelocalrings_maassaran_2025/sections/section01/)) ([Documentation](https://optpku.github.io/ReasBook/docs/Papers/OnSomeLocalRings_Maassaran_2025/Sections/section01.html)) ([Lean source](./Sections/))
-- Section 2: Lifting the Isomorphisms ([Verso](https://optpku.github.io/ReasBook/papers/onsomelocalrings_maassaran_2025/sections/section02/)) ([Documentation](https://optpku.github.io/ReasBook/docs/Papers/OnSomeLocalRings_Maassaran_2025/Sections/section02.html)) ([Lean source](./Sections/))
+- [1. Separable Case](https://optpku.github.io/ReasBook/versions/v4.30.0/onsomelocalrings_maassaran_2025/section01/)
+- [2. Lifting the Isomorphisms](https://optpku.github.io/ReasBook/versions/v4.30.0/onsomelocalrings_maassaran_2025/section02/)
