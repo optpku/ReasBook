@@ -11,7 +11,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts" / "pages"))
 
 from reader_entrypoints import write_reader_entrypoints  # noqa: E402
-from update_readme import resource_cell, update_resource_cells  # noqa: E402
+from update_readme import PUBLISHED_VERSIONS, resource_cell, update_resource_cells  # noqa: E402
 
 
 class ReaderEntrypointsTests(unittest.TestCase):
@@ -95,14 +95,13 @@ class ReaderEntrypointsTests(unittest.TestCase):
                 with self.subTest(readme=readme.relative_to(ROOT), path=path):
                     self.assertRegex(
                         path,
-                        r"^(?:docs/ReasBook/(?:Books|Papers)/[^/]+/(?:Book|Paper)\.html"
-                        r"|sites/[^/]+/(?:pages|docs)/"
-                        r"|theorem-maps/(?:books|papers)/[^/]+/(?:v[0-9]+/)?(?:\?view=(?:paper|lean))?"
-                        r"|versions/v[0-9]+\.[0-9]+\.[0-9]+/"
+                        r"^versions/v[0-9]+\.[0-9]+\.[0-9]+/"
                         r"(?:docs/[A-Za-z0-9_]+/(?:[A-Za-z0-9_]+/)*[A-Za-z0-9_]+\.html"
-                        r"|(?:books|papers)/[^/]+/sections/[^/]+/))$",
+                        r"|(?:books|papers)/[^/]+/(?:sections/[^/]+/|chapters/chap[0-9]+/)?"
+                        r"|[a-z0-9_]+/(?:paper|section[0-9]+(?:_part[0-9]+)?)/"
+                        r"|theorem-maps/(?:books|papers)/[^/]+/(?:v[0-9]+/)?(?:\?view=(?:paper|lean))?)$",
                     )
-            self.assertNotIn("https://optpku.github.io/ReasBook/)", text)
+            self.assertNotIn("https://reasbook.reaslab.io/artifacts/", text)
             self.assertNotIn("https://reasbook.reaslab.io/ReasBook", text)
             self.assertNotIn("https://reasbook-reviewer.reaslab.io", text)
             for path in re.findall(r"https://reasbook[.]reaslab[.]io([^\s)\[\]<>\"']*)", text):
@@ -124,7 +123,7 @@ class ReaderEntrypointsTests(unittest.TestCase):
                 self.assertLess(text.index(heading), text.index(toolchains))
                 introduction = text.split(heading, 1)[1].split("\n## ", 1)[0]
                 for url in ("https://reasbook.reaslab.io/", "https://reasbook.reaslab.io/review/",
-                            "https://reasbook.reaslab.io/artifacts/"):
+                            "https://optpku.github.io/ReasBook/"):
                     self.assertIn(f"]({url})", introduction)
                 for feature in ("Lean", "Docs", "Verso", "ReasLab"):
                     self.assertIn(feature, introduction)
@@ -144,7 +143,8 @@ class ReaderEntrypointsTests(unittest.TestCase):
             for name in ("DFP_wolfe_local", "TR_LALM_theory", "glowinski_admm_counterexample"):
                 with self.subTest(language=language, paper=name):
                     project = {"kind": "papers", "name": name, "slug": name.lower()}
-                    url = (f"https://reasbook.reaslab.io/artifacts/projects/{name.lower()}/"
+                    version = PUBLISHED_VERSIONS[("papers", name)]
+                    url = (f"https://optpku.github.io/ReasBook/versions/{version}/"
                            f"theorem-maps/papers/{name.lower()}/")
                     lines = original.splitlines()
                     index = next(i for i, line in enumerate(lines) if line.startswith("| **[") and f"ReasBook/Papers/{name}/" in line)
@@ -189,7 +189,7 @@ class ReaderEntrypointsTests(unittest.TestCase):
         ):
             with self.subTest(project=name):
                 resource = resource_cell({"kind": "papers", "name": name, "slug": name.lower()})
-                self.assertIn(f"/projects/{name.lower()}/docs/{entry}", resource)
+                self.assertIn(f"/versions/{PUBLISHED_VERSIONS[('papers', name)]}/docs/{entry}", resource)
                 self.assertNotIn("/sites/", resource)
 
     def test_rejects_symlinked_catalog_outside_site(self):
