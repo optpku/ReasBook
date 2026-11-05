@@ -1,5 +1,7 @@
 # The Minimum Q-Order of BFGS with Exact Line Search Is One
 
+**Published reading (v4.32.2):** [Verso](https://optpku.github.io/ReasBook/versions/v4.32.2/papers/bfgsminimumqorder_liu_2026/) · [Documentation](https://optpku.github.io/ReasBook/versions/v4.32.2/docs/ReasBook/BFGSMinimumQOrder_Liu_2026.html) · [Theorem map](https://optpku.github.io/ReasBook/versions/v4.32.2/theorem-maps/papers/bfgsminimumqorder_liu_2026/)
+
 Lean 4 formalization of the paper-facing results in *The Minimum Q-Order of
 BFGS with Exact Line Search Is One* by Benqi Liu, Chenyi Li, and Zaiwen Wen.
 The paper is available as arXiv:2609.00596 (2026).

@@ -1,5 +1,11 @@
 # A Fixed-Penalty Linearized Augmented Lagrangian Method with Classical Multiplier Updates
 
+**Published reading (v4.32.2):** [Verso](https://optpku.github.io/ReasBook/versions/v4.32.2/papers/tr_lalm_theory/) · [Documentation](https://optpku.github.io/ReasBook/versions/v4.32.2/docs/ReasBook/TR_LALM_theory.html) · [Theorem map](https://optpku.github.io/ReasBook/versions/v4.32.2/theorem-maps/papers/tr_lalm_theory/)
+
+**Project-level formalization contributors:** Zichen Wang, Zaiwen Wen.
+
+Project-level formalization credit is recorded in the [catalog](https://github.com/optpku/ReasBook/blob/90ac3dd3a968313d0da7a3137680aa895af6a69a/README.md#papers); it is separate from the original reference authors and per-file Lean authorship.
+
 Lean 4 formalization of the theoretical results in *A Fixed-Penalty Linearized
 Augmented Lagrangian Method with Classical Multiplier Updates* by Benqi Liu,
 Kangkang Deng, Zichen Wang, and Zaiwen Wen.
@@ -7,7 +13,7 @@ Kangkang Deng, Zichen Wang, and Zaiwen Wen.
 [Lean source](https://github.com/optpku/ReasBook/tree/v4.32.2/ReasBook/Papers/TR_LALM_theory/)
 | [aggregate module](https://github.com/optpku/ReasBook/blob/v4.32.2/ReasBook/Papers/TR_LALM_theory.lean)
 | [paper module](https://github.com/optpku/ReasBook/blob/v4.32.2/ReasBook/Papers/TR_LALM_theory/Paper.lean)
-| [interactive theorem map](https://optpku.github.io/ReasBook/theorem-maps/papers/tr_lalm_theory/)
+| [interactive theorem map](https://optpku.github.io/ReasBook/versions/v4.32.2/theorem-maps/papers/tr_lalm_theory/)
 | [numerical code](https://github.com/bqliu815/NR-LALM)
 
 Contributor: Zichen Wang ([@imathwy](https://github.com/imathwy)). The
@@ -15,7 +21,7 @@ formalization uses Lean and mathlib `v4.32.2`.
 
 ## Start with the Dependency Graph
 
-Open the [deployed interactive theorem map](https://optpku.github.io/ReasBook/theorem-maps/papers/tr_lalm_theory/)
+Open the [deployed interactive theorem map](https://optpku.github.io/ReasBook/versions/v4.32.2/theorem-maps/papers/tr_lalm_theory/)
 first to browse the 24 article-level entries, their 42 direct dependencies,
 and the natural-language statement attached to each item. Every graph node
 links to the corresponding declaration in the official `v4.32.2` source tree.
