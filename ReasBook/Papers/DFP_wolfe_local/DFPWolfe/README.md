@@ -1,5 +1,9 @@
 # Paper correspondence
 
+**Center-manifold proof:** [Verso](https://optpku.github.io/ReasBook/versions/v4.32.0/papers/dfp_wolfe_local/sections/main-theorems/) · [Documentation](https://optpku.github.io/ReasBook/versions/v4.32.0/docs/ReasBook/DFPWolfe/Paper.html) · [Theorem map](https://optpku.github.io/ReasBook/versions/v4.32.0/theorem-maps/papers/dfp_wolfe_local/?view=paper)
+
+Formalization contributor: Zichen Wang. See the [project roster](../README.md#contributor).
+
 The numbering below follows the shared theorem counter in `main-new.tex`:
 Theorems 1 and 3, Corollary 2, Proposition 4, and Lemmas 5–11.
 The LaTeX labels identify statements independently of their printed numbers.

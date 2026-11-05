@@ -1,5 +1,11 @@
 # A Counterexample to Global Convergence of Classical DFP Under the Standard Strong Wolfe Conditions
 
+**Published reading (v4.32.0):** [Verso](https://optpku.github.io/ReasBook/versions/v4.32.0/papers/dfp_wolfe_local/) · [Documentation](https://optpku.github.io/ReasBook/versions/v4.32.0/docs/ReasBook/DFP_wolfe_local/Paper.html) · [Theorem map](https://optpku.github.io/ReasBook/versions/v4.32.0/theorem-maps/papers/dfp_wolfe_local/)
+
+**Project-level formalization contributors:** Zichen Wang.
+
+Project-level formalization credit is recorded in the [catalog](https://github.com/optpku/ReasBook/blob/90ac3dd3a968313d0da7a3137680aa895af6a69a/README.md#papers); it is separate from the original reference authors and per-file Lean authorship.
+
 - **Authors:** Benqi Liu, Zichen Wang, Zaiwen Wen, Liwei Zhang, and Yaxiang Yuan
 - **Venue:** arXiv:2608.21708v1 (`math.OC`), 2026
 - **Paper ID:** `DFP_wolfe_local`
@@ -73,15 +79,15 @@ The Docs source plan contains **498 reachable modules**. The Verso manifest
 contains **21 routes**, retaining all original eight routes and the three v21
 foundation URLs, and adding ten routes for the complete v21 results and
 refinements. The existing Docs builder follows the combined import root.
-The rebuilt [Docs](https://optpku.github.io/ReasBook/sites/dfp_wolfe_local/docs/),
-[Verso reading pages](https://optpku.github.io/ReasBook/sites/dfp_wolfe_local/pages/),
-[original map](https://optpku.github.io/ReasBook/theorem-maps/papers/dfp_wolfe_local/)
-and [v21 map](https://optpku.github.io/ReasBook/theorem-maps/papers/dfp_wolfe_local/v21/)
+The rebuilt [Docs](https://optpku.github.io/ReasBook/versions/v4.32.0/docs/ReasBook/DFP_wolfe_local/Paper.html),
+[Verso reading pages](https://optpku.github.io/ReasBook/versions/v4.32.0/papers/dfp_wolfe_local/),
+[original map](https://optpku.github.io/ReasBook/versions/v4.32.0/theorem-maps/papers/dfp_wolfe_local/)
+and [v21 map](https://optpku.github.io/ReasBook/versions/v4.32.0/theorem-maps/papers/dfp_wolfe_local/v21/)
 are published in
-[site-20261020T152000Z-64fdfbc54b6b](https://github.com/optpku/ReasBook/releases/tag/reasbook-site-20261020T152000Z-64fdfbc54b6b).
+[site-20261105T034713Z-fe8615a941bf](https://github.com/optpku/ReasBook/releases/tag/reasbook-site-20261105T034713Z-fe8615a941bf).
 The release uses the immutable source snapshot
-[`5f2648b6`](https://github.com/optpku/ReasBook/commit/5f2648b67408c025ff266d7263a3693e67ce4435)
-and retains the other fifteen published projects.
+[`dac77d53`](https://github.com/optpku/ReasBook/commit/dac77d532d2d28352c5a2af2f9a3a3a1256be1a6)
+within the current 18-project site release.
 
 ## Contributor
 
@@ -281,12 +287,12 @@ Lean 4.32.0 extractor configuration explicitly. It uses one Lean thread and an
 For rendering-only changes, `--reuse-evidence` accepts an existing evidence
 directory after checking its source, extractor, and raw-data hashes.
 
-## API documentation and Verso reading pages
+## Documentation and Verso reading pages
 
-The refreshed API documentation contains 447 real project-module pages, covering
-the complete imported closure of `Paper.lean`. The Verso guide retains its eight
-existing reading routes, with `main-theorems` now displaying `DFPWolfe.Main`.
-The source excerpts, highlighted reading pages, API source links, and theorem
+The published Documentation includes the combined import closure of both proof
+routes. The Verso guide retains the original reading routes and the v21 results;
+`main-theorems` displays `DFPWolfe.Main`.
+The source excerpts, highlighted reading pages, documentation source links, and theorem
 map refer to the same immutable ReasBook source commit recorded above.
 
 The project adapters use a clean ReasBook SDK checkout and compatible prebuilt
@@ -294,11 +300,11 @@ doc-gen4/Verso dependencies. After committing and checking the Lean source, run:
 
 ```bash
 python3.11 ReasBook/Papers/DFP_wolfe_local/tools/build_docs.py \
-  --sdk-root /path/to/ReasBook/sdk --output /tmp/dfp-api-docs-new
+  --sdk-root /path/to/ReasBook/sdk --output /workspace/.work/dfp-docs-new
 python3.11 ReasBook/Papers/DFP_wolfe_local/tools/build_verso.py \
   --tooling-root /path/to/ReasBook \
   --web-cache /path/to/compatible/ReasBookWeb \
-  --workspace /tmp/dfp-verso-new
+  --workspace /workspace/.work/dfp-verso-new
 ```
 
 Both builders run bounded, serial Lean jobs and never invoke `lake build`.

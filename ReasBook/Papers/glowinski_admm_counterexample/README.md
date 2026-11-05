@@ -1,5 +1,11 @@
 # The multiplier step size of two-block ADMM: convergence and counterexamples
 
+**Published reading (v4.32.0):** [Verso](https://optpku.github.io/ReasBook/versions/v4.32.0/papers/glowinski_admm_counterexample/) · [Documentation](https://optpku.github.io/ReasBook/versions/v4.32.0/docs/ReasBook/glowinski_admm_counterexample/Paper.html) · [Theorem map](https://optpku.github.io/ReasBook/versions/v4.32.0/theorem-maps/papers/glowinski_admm_counterexample/)
+
+**Project-level formalization contributors:** Qiming Dai.
+
+Project-level formalization credit is recorded in the [catalog](https://github.com/optpku/ReasBook/blob/90ac3dd3a968313d0da7a3137680aa895af6a69a/README.md#papers); it is separate from the original reference authors and per-file Lean authorship.
+
 - **Authors:** Not provided in the supplied manuscript.
 - **Year:** 2026.
 - **Contributor:** Qiming Dai ([@newbiedqm](https://github.com/newbiedqm)).
@@ -79,9 +85,9 @@ branch-pinned toolchain. A fresh whole-library audit checked 47,248 declarations
 
 ## Reading resources
 
-[Docs](https://optpku.github.io/ReasBook/sites/glowinski_admm_counterexample/docs/) ·
-[Verso](https://optpku.github.io/ReasBook/sites/glowinski_admm_counterexample/pages/) ·
-[Theorem map](https://optpku.github.io/ReasBook/theorem-maps/papers/glowinski_admm_counterexample/)
+[Docs](https://optpku.github.io/ReasBook/versions/v4.32.0/docs/ReasBook/glowinski_admm_counterexample/Paper.html) ·
+[Verso](https://optpku.github.io/ReasBook/versions/v4.32.0/papers/glowinski_admm_counterexample/) ·
+[Theorem map](https://optpku.github.io/ReasBook/versions/v4.32.0/theorem-maps/papers/glowinski_admm_counterexample/)
 
 The map groups the 30 imported public interface modules into 26 nodes. Interfaces
 that expose the same primary compiled constant share a node; their alternative
