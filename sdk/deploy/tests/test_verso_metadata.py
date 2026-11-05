@@ -91,10 +91,13 @@ class NativeWhitespaceTests(unittest.TestCase):
                     '<span class="inter-text" data-verso-hover="3">keep</span></code>')
             source = '<script>window.__versoSiteRoot="/ReasBook/";</script><p>Prose</p>'+code
             (root/'a.html').write_text(source)
-            (root/'docs').mkdir();(root/'docs/Item.html').write_text(source)
-            before=Probe();before.feed(source)
+            (root/'docs').mkdir()
+            (root/'docs/Item.html').write_text(source)
+            before=Probe()
+            before.feed(source)
             result=compact_verso_intertext(root)
-            after=Probe();after.feed((root/'a.html').read_text())
+            after=Probe()
+            after.feed((root/'a.html').read_text())
             self.assertEqual(''.join(before.text), ''.join(after.text))
             self.assertEqual(before.bindings, after.bindings)
             self.assertIn('data-verso-hover="2"', (root/'a.html').read_text())
@@ -126,7 +129,8 @@ class NativeWhitespaceTests(unittest.TestCase):
                 (root/f'{i}.html').write_text('<script>window.__versoSiteRoot="/ReasBook/";</script>'+text)
             originals={p:p.read_bytes() for p in root.glob('*.html')}
             self.assertEqual(compact_verso_intertext(root)['pages'],0)
-            for p,data in originals.items():self.assertEqual(p.read_bytes(),data)
+            for p,data in originals.items():
+                self.assertEqual(p.read_bytes(),data)
 
 
 if __name__ == '__main__':
