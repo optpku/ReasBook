@@ -43,3 +43,18 @@ measurement. The complete canary's sampled peak memory was about 2.9 GiB.
 Keep live build inputs immutable. Adopt the fix through a new frozen candidate,
 retain completed branch sites with their SDK-validated producer provenance, and
 resume remaining work only after the superseded writer has released its Pod.
+
+## Pages projection capacity
+
+The full native artifact is retained. The bounded Pages view shares repeated
+classic head scripts and styles, including generated navigation exceeding one
+MiB. Head scanning stops at its closing tag and has an eight-MiB bound; CSS
+relative-resource guards remain separate from JavaScript URL construction.
+
+Native code may drop exact, unstyled inter-text wrappers while preserving every
+text character, token and hover/binding attribute. Diagnostic documents and
+inert/raw-text content are retained. Existing API pages remain byte-identical.
+Duplicate chapter aliases become query/fragment-preserving redirects only when
+the complete native HTML is equal after normalizing its own page URL. No distinct
+mathematical or proof page is removed. Projection audits record bytes saved per
+stage, and the Pages hard limit plus the release planning budget still apply.

@@ -79,3 +79,55 @@ class VersoMetadataTests(unittest.TestCase):
             self.assertEqual(len(copies), 1)
             self.assertIn('dataset.b', copies[0].read_text())
             self.assertNotIn('dataset.binding', copies[0].read_text())
+
+
+class NativeWhitespaceTests(unittest.TestCase):
+    def test_compaction_preserves_text_hovers_and_api_bytes(self):
+        from reasbook_deploy_sdk.release.static_assets import compact_verso_intertext
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            code = ('<code class="hl lean block"><span class="var token" data-binding="v" data-verso-hover="2">x</span>'
+                    '<span class="inter-text"> &lt;\n </span><span class=inter-text> </span>'
+                    '<span class="inter-text" data-verso-hover="3">keep</span></code>')
+            source = '<script>window.__versoSiteRoot="/ReasBook/";</script><p>Prose</p>'+code
+            (root/'a.html').write_text(source)
+            (root/'docs').mkdir();(root/'docs/Item.html').write_text(source)
+            before=Probe();before.feed(source)
+            result=compact_verso_intertext(root)
+            after=Probe();after.feed((root/'a.html').read_text())
+            self.assertEqual(''.join(before.text), ''.join(after.text))
+            self.assertEqual(before.bindings, after.bindings)
+            self.assertIn('data-verso-hover="2"', (root/'a.html').read_text())
+            self.assertIn('data-verso-hover="3"', (root/'a.html').read_text())
+            self.assertEqual((root/'docs/Item.html').read_text(), source)
+            self.assertEqual(result['wrappers'], 2)
+            self.assertEqual(compact_verso_intertext(root)['wrappers'], 0)
+
+    def test_inert_text_non_native_code_and_diagnostics_are_retained(self):
+        from reasbook_deploy_sdk.release.static_assets import compact_verso_intertext
+        with tempfile.TemporaryDirectory() as temp:
+            root=Path(temp)
+            inner='<span class="inter-text"> </span>'
+            examples=[
+                '<div class="has-info"><code class="hl lean block">'+inner+'</code></div>',
+                '<code class="hl lean block"><span class="has-info">'+inner+'</span></code>',
+                '<code>'+inner+'</code>',
+                '<code data-note=\'class="hl lean block"\'>'+inner+'</code>',
+                '<template><code class="hl lean block">'+inner+'</code></template>',
+                '<template><script>noop()</script><code class="hl lean block">'+inner+'</code></template>',
+                '<template><template></template><code class="hl lean block">'+inner+'</code></template>',
+                '<div class = "has-info"><code class="hl lean block">'+inner+'</code></div>',
+                """<script>let x='</style><code class="hl lean block">"""+inner+"""</code>';</script>""",
+                '<code data-class="hl lean block">'+inner+'</code>',
+                '<!-- <code class="hl lean block">'+inner+'</code> -->',
+                '<script>const text=\'<code class="hl lean block">'+inner+'</code>\';</script>',
+            ]
+            for i,text in enumerate(examples):
+                (root/f'{i}.html').write_text('<script>window.__versoSiteRoot="/ReasBook/";</script>'+text)
+            originals={p:p.read_bytes() for p in root.glob('*.html')}
+            self.assertEqual(compact_verso_intertext(root)['pages'],0)
+            for p,data in originals.items():self.assertEqual(p.read_bytes(),data)
+
+
+if __name__ == '__main__':
+    unittest.main()
