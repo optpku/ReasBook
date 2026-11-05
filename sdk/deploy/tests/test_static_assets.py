@@ -66,5 +66,37 @@ class StaticAssetTests(unittest.TestCase):
             self.assertEqual(deduplicate_verso_assets(root, '/ReasBook/')['assets'], 0)
 
 
+
+
+class LargeStaticAssetTests(unittest.TestCase):
+    def test_large_native_navigation_is_shared_without_touching_body(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            script = 'window.largeNavigation="' + 'n' * (1400 * 1024) + '";'
+            body = '<body><code class="hl lean block"><span data-verso-hover="7">∀ x, x = x</span></code></body>'
+            source = ('<html><head><script>window.__versoSiteRoot="/ReasBook/";</script>'
+                      + '<script>' + script + '</script></head>' + body + '</html>')
+            for name in ('a.html', 'b.html'):
+                (root/name).write_text(source)
+            report = deduplicate_verso_assets(root, '/ReasBook/')
+            self.assertEqual(report['assets'], 1)
+            self.assertEqual(report['replaced_blocks'], 2)
+            self.assertGreater(report['saved_bytes'], 1300 * 1024)
+            self.assertTrue((root/'a.html').read_text().endswith(body + '</html>'))
+
+    def test_javascript_url_constructor_is_safe_but_relative_css_is_retained(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            script = ' ' * 300 + 'window.testURL = new URL("./thing", location.href);'
+            css = ' ' * 300 + '.image {background: url(./image.png)}'
+            source = ('<head><script>window.__versoSiteRoot="/ReasBook/";</script>'
+                      f'<script>{script}</script><style>{css}</style></head><body>Math</body>')
+            for name in ('a.html', 'b.html'):
+                (root/name).write_text(source)
+            result = deduplicate_verso_assets(root, '/ReasBook/')
+            self.assertEqual(result['assets'], 1)
+            self.assertIn(f'<style>{css}</style>', (root/'a.html').read_text())
+
+
 if __name__ == '__main__':
     unittest.main()

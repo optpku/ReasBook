@@ -10,11 +10,29 @@ import re
 
 from reasbook_sdk_common import atomic_write_text
 
-_LIMIT = 1024 * 1024
+_LIMIT = 8 * 1024 * 1024
+_HEAD_CHUNK = 64 * 1024
 _CONTEXT_SENSITIVE = re.compile(
     r"document\s*\.\s*currentScript|\bimport\s*\(|\bimport\s*\.\s*meta|"
-    r"sourceMappingURL|\burl\s*\(|@import", re.I
+    r"sourceMappingURL", re.I
 )
+
+_CSS_CONTEXT_SENSITIVE = re.compile(r"\burl\s*\(|@import", re.I)
+
+
+_INERT_CONTAINER = re.compile(r"<(?:template|noscript|textarea)\b", re.I)
+_RAW_BLOCK = re.compile(r"<!--.*?-->|<(?P<rawtag>script|style)\b.*?</(?P=rawtag)\s*>", re.I | re.S)
+
+
+def _protected_parts(text: str) -> list[str]:
+    """Alternate editable HTML and exact, correctly matched raw-text blocks."""
+    parts = []
+    position = 0
+    for match in _RAW_BLOCK.finditer(text):
+        parts.extend([text[position:match.start()], match.group(0)])
+        position = match.end()
+    parts.append(text[position:])
+    return parts
 
 
 class _Head(HTMLParser):
@@ -52,7 +70,8 @@ class _Head(HTMLParser):
             _, start, content_start = self.active
             end = self.absolute_position()
             content = self.text[content_start:end]
-            if len(content) >= 256 and not _CONTEXT_SENSITIVE.search(content):
+            if (len(content) >= 256 and not _CONTEXT_SENSITIVE.search(content)
+                    and not (tag == "style" and _CSS_CONTEXT_SENSITIVE.search(content))):
                 self.blocks.append((start, self.text.index(">", end) + 1, tag, content))
             self.active = None
         if tag in {"template", "noscript"}:
@@ -64,13 +83,21 @@ class _Head(HTMLParser):
 
 def _head(path: Path) -> _Head | None:
     # Only head assets are candidates. Do not parse huge Lean expression bodies.
+    prefix = bytearray()
+    end = None
     with path.open("rb") as stream:
-        prefix = stream.read(_LIMIT)
-    end = re.search(rb"</head\s*>", prefix, re.I)
+        while len(prefix) < _LIMIT:
+            chunk = stream.read(min(_HEAD_CHUNK, _LIMIT - len(prefix)))
+            if not chunk:
+                break
+            prefix.extend(chunk)
+            end = re.search(rb"</head\s*>", prefix, re.I)
+            if end is not None:
+                break
     if end is None or b"__versoSiteRoot" not in prefix[:end.end()]:
         return None
     try:
-        text = prefix[:end.end()].decode("utf-8")
+        text = bytes(prefix[:end.end()]).decode("utf-8")
     except UnicodeDecodeError:
         return None
     parser = _Head(text)
@@ -161,7 +188,6 @@ def compact_verso_metadata(site: Path, base_path: str) -> dict[str, int]:
         replacements[base_path + script.relative_to(root).as_posix()] = (
             base_path + target.relative_to(root).as_posix()
         )
-    protected = re.compile(r"(<(?:script|style|textarea|template|noscript)\b.*?</(?:script|style|textarea|template|noscript)\s*>)", re.I | re.S)
     tags = re.compile(r"<[A-Za-z][^>]*>")
     binding = re.compile(r'(?<=\s)data-binding="([^"]*)"')
     quotes = re.compile(r'(?<=\s)(data-b|data-verso-hover|data-lean-context|class)="([A-Za-z0-9_.:-]+)"')
@@ -172,7 +198,9 @@ def compact_verso_metadata(site: Path, base_path: str) -> dict[str, int]:
         original = path.read_text(encoding="utf-8")
         if "__versoSiteRoot" not in original or "data-binding=" not in original:
             continue
-        parts = protected.split(original)
+        if _INERT_CONTAINER.search(original):
+            continue
+        parts = _protected_parts(original)
         values = dict.fromkeys(
             html.unescape(match.group(1))
             for part in parts[::2] for tag in tags.finditer(part)
@@ -212,3 +240,55 @@ def compact_verso_metadata(site: Path, base_path: str) -> dict[str, int]:
             saved += len(original.encode()) - len(updated.encode())
             changed += 1
     return {"pages": changed, "saved_bytes": saved, "scripts": len(replacements)}
+
+
+def compact_verso_intertext(site: Path) -> dict[str, int]:
+    """Remove unstyled whitespace wrappers inside native Lean code only.
+
+    Keep diagnostic documents, all tokens, binding/hover attributes, source text,
+    prose, and scripts/styles unchanged. Inter-text under `.has-info` can carry
+    a diagnostic underline and must retain its wrapper.
+    """
+    codes = re.compile(r"(<code\b[^>]*>)(.*?)(</code\s*>)", re.I | re.S)
+    class CodeOpening(HTMLParser):
+        def __init__(self):
+            super().__init__()
+            self.classes = set()
+        def handle_starttag(self, tag, attrs):
+            if tag == "code":
+                self.classes = set((dict(attrs).get("class") or "").split())
+    whitespace = re.compile(r"""<span class=(?:"inter-text"|'inter-text'|inter-text)>([^<]*)</span>""")
+    diagnostic = re.compile(r"""<[^>]*\bclass\s*=\s*(?:"[^"]*\bhas-info\b[^"]*"|'[^']*\bhas-info\b[^']*'|has-info(?:\s|>))""", re.I)
+    changed = saved = wrappers = 0
+    for path in sorted(Path(site).rglob("*.html")):
+        if "docs" in path.relative_to(site).parts:
+            continue
+        source = path.read_text(encoding="utf-8")
+        if "__versoSiteRoot" not in source or "inter-text" not in source:
+            continue
+        if _INERT_CONTAINER.search(source):
+            continue
+        parts = _protected_parts(source)
+        if any(diagnostic.search(part) for part in parts[::2]):
+            continue
+        count = 0
+        def rewrite(match):
+            nonlocal count
+            opening, content, closing = match.groups()
+            parser = CodeOpening()
+            parser.feed(opening)
+            tokens = parser.classes
+            if not {"hl", "lean", "block"}.issubset(tokens) or "has-info" in content or "has-info" in tokens:
+                return match.group(0)
+            result, n = whitespace.subn(r"\1", content)
+            count += n
+            return opening + result + closing
+        for i in range(0, len(parts), 2):
+            parts[i] = codes.sub(rewrite, parts[i])
+        result = "".join(parts)
+        if result != source:
+            atomic_write_text(path, result)
+            changed += 1
+            saved += len(source.encode()) - len(result.encode())
+            wrappers += count
+    return {"pages": changed, "saved_bytes": saved, "wrappers": wrappers}

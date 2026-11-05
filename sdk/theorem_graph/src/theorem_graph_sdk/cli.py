@@ -111,7 +111,11 @@ def main(argv: list[str] | None = None) -> int:
             project_keys=tuple(args.project_keys or ()),
             source_only=args.source_only,
         )
-        report = GraphGenerator(config).generate()
+        def progress(event: object) -> None:
+            print("[theorem-graph] " + json.dumps(event, ensure_ascii=False),
+                  file=sys.stderr, flush=True)
+
+        report = GraphGenerator(config, progress=progress).generate()
         if args.json:
             print(json.dumps(report.public_dict(), ensure_ascii=False, indent=2))
         else:

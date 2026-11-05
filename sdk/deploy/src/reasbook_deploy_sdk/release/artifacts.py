@@ -31,7 +31,7 @@ from .results import (
     ReleaseSetManifest,
 )
 from .store import ReleaseLayout, ReleaseStore
-from .static_assets import compact_verso_metadata, deduplicate_verso_assets
+from .static_assets import compact_verso_intertext, compact_verso_metadata, deduplicate_verso_assets
 
 
 _SHARED_DOC_DIRECTORIES = {"declarations", "find", "src"}
@@ -183,8 +183,22 @@ class PagesSiteProjector:
             )
             self._write_catalog_redirects(spec, staged, canonical_routes)
             self._write_historical_reading_redirects(spec, full_site, staged, canonical_routes)
-            deduplicate_verso_assets(staged, spec.base_path)
-            compact_verso_metadata(staged, spec.base_path)
+            audit = {
+                "release_id": spec.release_id,
+                "spec_digest": spec.spec_digest,
+                "before_bytes": sum(p.stat().st_size for p in staged.rglob("*") if p.is_file()),
+                "optimizations": {},
+            }
+            for name, operation in (
+                ("shared_head", lambda: deduplicate_verso_assets(staged, spec.base_path)),
+                ("binding_metadata", lambda: compact_verso_metadata(staged, spec.base_path)),
+                ("native_intertext", lambda: compact_verso_intertext(staged)),
+                ("identical_chapter_aliases", lambda: self._deduplicate_chapter_aliases(spec, staged)),
+            ):
+                audit["optimizations"][name] = operation()
+                atomic_write_json(target.parent / "projection-audit.json", audit)
+            audit["after_transforms_bytes"] = sum(p.stat().st_size for p in staged.rglob("*") if p.is_file())
+            atomic_write_json(target.parent / "projection-audit.json", audit)
             self._close_internal_references(
                 spec,
                 full_site,
@@ -196,6 +210,8 @@ class PagesSiteProjector:
             total_bytes = sum(
                 path.stat().st_size for path in staged.rglob("*") if path.is_file()
             )
+            audit["projected_bytes"] = total_bytes
+            atomic_write_json(target.parent / "projection-audit.json", audit)
             self._validate_capacity(total_bytes)
             self._publish(staged, target, backup)
             return target
@@ -207,6 +223,36 @@ class PagesSiteProjector:
                     shutil.rmtree(backup)
                 else:
                     backup.unlink(missing_ok=True)
+
+    def _deduplicate_chapter_aliases(self, spec: ReleaseSpec, site: Path) -> dict[str, int]:
+        """Keep one full copy only when the complete native pages are equivalent.
+
+        Modern sidebars already use chapters/chapNN directly. Old chapNN URLs
+        keep a fragment-preserving redirect; different pages remain untouched.
+        """
+        changed = saved = 0
+        for canonical in sorted(site.glob("versions/*/books/*/chapters/chap*/index.html")):
+            chapter = canonical.parent.name
+            if not re.fullmatch(r"chap[0-9]+", chapter):
+                continue
+            alias = canonical.parent.parent.parent / chapter / "index.html"
+            if not alias.is_file() or alias.is_symlink():
+                continue
+            source = alias.read_bytes()
+            target = canonical.read_bytes()
+            if b"__versoSiteRoot" not in source or b"__versoSiteRoot" not in target:
+                continue
+            old_url = spec.base_path + alias.parent.relative_to(site).as_posix() + "/"
+            new_url = spec.base_path + canonical.parent.relative_to(site).as_posix() + "/"
+            if source.replace(old_url.encode(), new_url.encode()) != target:
+                continue
+            self._write_redirect(alias, new_url, "Chapter " + chapter[4:], spec.base_path)
+            redirect = alias.read_text(encoding="utf-8")
+            script = "<script>location.replace(" + json.dumps(new_url).replace("<", "\\u003c") + "+location.search+location.hash)</script>\n"
+            alias.write_text(redirect.replace('  <meta http-equiv="refresh"', script + '  <meta http-equiv="refresh"', 1), encoding="utf-8")
+            changed += 1
+            saved += len(source) - alias.stat().st_size
+        return {"aliases": changed, "saved_bytes": saved}
 
     def _copy_catalog_shell(
         self,

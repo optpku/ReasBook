@@ -30,6 +30,29 @@ from theorem_graph_sdk.render import read_catalog_entry, write_catalog
 
 
 class TheoremGraphSdkTests(unittest.TestCase):
+    def test_project_progress_preserves_atomic_publication_and_json_output(self) -> None:
+        from contextlib import redirect_stderr
+        from theorem_graph_sdk.cli import main
+
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            source = root / "ReasBook/Books/Demo"
+            source.mkdir(parents=True)
+            (source / "Book.lean").write_text(
+                "/-- Theorem 1.1: a result. -/\ntheorem demo : True := by trivial\n")
+            stdout, stderr = io.StringIO(), io.StringIO()
+            with redirect_stdout(stdout), redirect_stderr(stderr):
+                status = main(["--repo-root", str(root), "--site-root", str(root / "site"),
+                               "--branch", "test", "--commit", "a" * 40,
+                               "--include-generic", "--source-only", "--json"])
+            self.assertEqual(status, 0, stderr.getvalue())
+            self.assertEqual(json.loads(stdout.getvalue())["generated_count"], 1)
+            events = [json.loads(line.removeprefix("[theorem-graph] "))
+                      for line in stderr.getvalue().splitlines()]
+            self.assertEqual(events[0]["phase"], "discovered")
+            self.assertIn({"phase": "render-start", "project": "books/Demo"}, events)
+            self.assertEqual(events[-1]["phase"], "published")
+
     def test_chapter_prefixed_labels_preserve_real_typed_edges(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)

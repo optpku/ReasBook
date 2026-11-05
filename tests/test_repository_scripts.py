@@ -42,7 +42,7 @@ class RepositoryScriptTests(unittest.TestCase):
             original = "https://github.com/acme/books/blob/v4.30.0/ReasBook/Demo/Item.lean"
             pinned = original.replace("v4.30.0", "a" * 40)
             doc = root / "index.html"
-            source = ('<main><p>Item (<a href="/ReasBook/docs/Item.html">API documentation</a>) '
+            source = ('<main><p>Item (<a href="/ReasBook/docs/Demo/Item.html">API documentation</a>) '
                       f'(<a href="{original}">Lean source</a>)</p>'
                       '<a href="/ReasBook/missing.html">Unrelated</a></main>')
             doc.write_text(source)
@@ -53,7 +53,7 @@ class RepositoryScriptTests(unittest.TestCase):
             self.assertIn("Documentation unavailable", text)
             self.assertIn(pinned, text)
             self.assertIn('href="/ReasBook/missing.html"', text)
-            self.assertFalse((root / "docs/Item.html").exists())
+            self.assertFalse((root / "docs/Demo/Item.html").exists())
             for invalid in (original, pinned.replace("Item.lean", "Other.lean")):
                 doc.write_text(source)
                 result = assemble.reconcile_documentation_links(root, verified_source_links={original: invalid})
@@ -62,10 +62,42 @@ class RepositoryScriptTests(unittest.TestCase):
             result = assemble.reconcile_documentation_links(root, verified_source_links={original: pinned})
             self.assertEqual(result["replacement_count"], 1)
             self.assertIn("Documentation unavailable", doc.read_text())
-            (root / "docs").mkdir()
-            (root / "docs/Item.html").write_text("Real documentation")
+            doc.write_text(source.replace("/docs/Demo/Item.html", "/docs/Other/Item.html"))
+            self.assertEqual(assemble.reconcile_documentation_links(
+                root, verified_source_links={original: pinned})["replacement_count"], 0)
+            api_page = root / "docs/Internal/Overview.html"
+            api_page.parent.mkdir(parents=True)
+            api_page.write_text(source)
+            self.assertEqual(assemble.reconcile_documentation_links(
+                root, verified_source_links={original: pinned})["replacement_count"], 0)
+            self.assertEqual(api_page.read_text(), source)
+            (root / "docs/Demo").mkdir(parents=True)
+            (root / "docs/Demo/Item.html").write_text("Real documentation")
             doc.write_text(source)
             self.assertEqual(assemble.reconcile_documentation_links(root, verified_source_links={original: pinned})["replacement_count"], 0)
+
+    def test_verified_source_evidence_is_optional_and_rejects_invalid_input(self):
+        with tempfile.TemporaryDirectory() as temp:
+            evidence = Path(temp) / "sources.json"
+            with patch.dict(os.environ, {"REASBOOK_VERIFIED_SOURCE_LINKS_FILE": ""}):
+                self.assertIsNone(assemble.load_verified_source_links())
+            with patch.dict(os.environ, {"REASBOOK_VERIFIED_SOURCE_LINKS_FILE": str(evidence)}):
+                for value in ([], {"source": "https://github.com/acme/book/blob/main/Item.lean"}):
+                    evidence.write_text(json.dumps(value))
+                    with self.assertRaises(ValueError):
+                        assemble.load_verified_source_links()
+                pinned = "https://github.com/acme/book/blob/" + "a" * 40 + "/ReasBook/Demo/Item.lean"
+                evidence.write_text(json.dumps({pinned: pinned}))
+                self.assertEqual(assemble.load_verified_source_links(), {pinned: pinned})
+
+    def test_documentation_source_matching_checks_full_module_path(self):
+        pinned = "https://github.com/acme/book/blob/" + "a" * 40 + "/ReasBook/Books/Demo/Chap01/Support.lean"
+        for prefix in ("docs/", "docs/ReasBook/", "docs/ReasBook/Books/"):
+            with self.subTest(prefix=prefix):
+                self.assertTrue(assemble._documentation_matches_source(
+                    "/ReasBook/versions/v4.30.0/" + prefix + "Demo/Chap01/Support.html", pinned))
+        for wrong in ("Other/Chap01/Support.html", "Demo/Chap02/Support.html", "Support.html"):
+            self.assertFalse(assemble._documentation_matches_source("/ReasBook/docs/" + wrong, pinned))
 
     @staticmethod
     def _project_docs_fixture(root: Path) -> tuple[Path, Path, Path, Path]:
@@ -550,6 +582,9 @@ class RepositoryScriptTests(unittest.TestCase):
             self.assertIn('theorem bound (n : Nat) : 0 ≤ n', chapter)
             self.assertNotIn('exact Nat.zero_le', chapter)
             self.assertNotIn('section13325', sidebar.lower())
+            self.assertNotIn('section13325.html', chapter)
+            self.assertIn('source only (outside the published documentation root)', chapter)
+            self.assertIn('section13325.lean', chapter)
             self.assertIn(r'\"route\":\"books/maylike/chapters/chap01/\"', sidebar)
 
     def test_section_chapter_contains_statements_and_home_skips_empty_aggregator(self):
@@ -652,7 +687,8 @@ class RepositoryScriptTests(unittest.TestCase):
             self.assertIn('class := "reader-chapter-grid"', home)
             self.assertEqual(home.count("([Documentation]"), 0)
             self.assertNotIn("#definition-1-1-1", home)
-            self.assertIn("\n- [Chapter 01](/ReasBook/books/maylike/chapters/chap01/)", home)
+            self.assertIn("\n- [Chapter 01 — A deliberately descriptive chapter heading that is "
+                          "longer than the title heuristic permits](/ReasBook/books/maylike/chapters/chap01/)", home)
             self.assertLess(len(home.splitlines()), 25)
 
             chapter_page = home_page.parent / "MayLike" / "Chap01.lean"
@@ -906,7 +942,7 @@ class RepositoryScriptTests(unittest.TestCase):
             self.assertNotIn("This chapter indexes", reader)
             self.assertEqual(reader.count("— no statement yet"), 8)
             self.assertIn("# Reading sections", reader)
-            self.assertIn("# Statements", reader)
+            self.assertNotIn("# Statements", reader)
             self.assertIn("# Section 1.2", reader)
             self.assertIn("Definition 1.2.extra.1", reader)
             self.assertIn("`Helper_1_1.lean`", reader)
@@ -1086,32 +1122,49 @@ class RepositoryScriptTests(unittest.TestCase):
             home = home_path.read_text(encoding="utf-8")
             reader = reader_path.read_text(encoding="utf-8")
             self.assertIn("TR-LALM Theory", home)
-            self.assertNotIn("[Grouped contents]", home)
-            self.assertIn('«data-reasbook-verso-standalone» := "true"', home)
-            self.assertIn('```\n#check Nat\n```', home)
-            self.assertIn("/TR_LALM_theory/Theorem_2_9.html", home)
-            self.assertEqual(home.count("([Documentation]"), 4)
-            self.assertNotIn("/TR_LALM_theory/Remark_C_1.html", home)
-            self.assertIn("/TR_LALM_theory/Remark_C_1.lean", home)
-            self.assertIn("source only (outside the published documentation root)", home)
-            self.assertIn("structure Run where", home)
-            self.assertNotIn("theorem consequence", home)
-            self.assertIn("indexes 4 formalized items", reader)
+            self.assertIn("reader-paper-contents", home)
+            self.assertIn("items/#paper-section-2", home)
+            self.assertIn("items/#paper-section-3", home)
+            self.assertIn("items/#paper-section-c", home)
+            self.assertNotIn('«data-reasbook-verso-standalone» := "true"', home)
+            self.assertNotIn("# Statements", home)
+            self.assertIn('«data-reasbook-verso-standalone» := "true"', reader)
+            self.assertIn('```\n#check Nat\n```', reader)
+            self.assertIn("/TR_LALM_theory/Theorem_2_9.html", reader)
+            self.assertEqual(reader.count("([Documentation]"), 4)
+            self.assertNotIn("/TR_LALM_theory/Remark_C_1.html", reader)
+            self.assertIn("/TR_LALM_theory/Remark_C_1.lean", reader)
+            self.assertIn("source only (outside the published documentation root)", reader)
+            self.assertIn("structure Run where", reader)
+            self.assertNotIn("theorem consequence", reader)
+            self.assertNotIn("indexes 4 formalized items", reader)
+            self.assertNotIn("Formalized items", reader)
             self.assertIn("# Section 2", reader)
             self.assertIn("# Section 3", reader)
             self.assertIn("# Appendix C", reader)
+            self.assertNotRegex(reader, r'(?m)^:{3,}html[^\n]*\n#+\s',
+                                'Generated paper and appendix headings must be document sections')
             self.assertIn("Theorem 2.9", reader)
             self.assertIn("Remark C.1", reader)
             self.assertEqual(reader.count("[Documentation]"), 4)
-            self.assertEqual(reader.count("[Lean source]"), 5)
+            self.assertEqual(reader.count("[Lean source]"), 6)
             self.assertNotIn("OperationalTrace", reader)
             self.assertNotIn("## ", reader)
 
             sections = (web_root / "ReasBookSite" / "Sections.lean").read_text(
                 encoding="utf-8"
             )
-            self.assertNotIn("Theorem_2_9", sections)
-            self.assertNotIn("Remark_C_1", sections)
+            self.assertNotIn('(`TR_LALM_theory.Theorem_2_9,', sections)
+            self.assertNotIn('(`TR_LALM_theory.Remark_C_1,', sections)
+            payload_text = re.search(r'^def sidebarDataJson : String := (.+)$', sections, re.M)[1]
+            paper_nav = json.loads(json.loads(payload_text))["papers"][0]
+            self.assertEqual(paper_nav["reader_route"], "papers/tr_lalm_theory/items/")
+            self.assertEqual([item["title"] for item in paper_nav["items"]],
+                             ["Algorithm 2.1", "Theorem 2.9", "Corollary 3.8", "Remark C.1"])
+            for item in paper_nav["items"]:
+                self.assertIn(f'id := "{item["anchor"]}"', reader)
+            for group in paper_nav["item_sections"]:
+                self.assertIn(f'id := "{group["anchor"]}"', reader)
             fragment = json.loads(
                 (web_root / ".project-fragment.json").read_text(encoding="utf-8")
             )

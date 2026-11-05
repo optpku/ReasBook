@@ -24,6 +24,12 @@ class ReleaseBuildOptions:
     verso_timeout_seconds: float = 21600.0
     graph_timeout_seconds: float = 3600.0
 
+    def graph_batch_timeout(self, project_count: int) -> float:
+        """Allow each isolated project its extraction budget, plus publication."""
+        if isinstance(project_count, bool) or not isinstance(project_count, int) or project_count < 1:
+            raise DeployExecutionError("graph project count must be positive")
+        return self.graph_timeout_seconds * (project_count + 1)
+
     def __post_init__(self) -> None:
         if (
             isinstance(self.max_parallel_branches, bool)
@@ -289,6 +295,8 @@ class BranchPlanFactory:
             "--branch",
             branch.name,
             "--include-generic",
+            "--extractor-timeout-seconds",
+            str(self.options.graph_timeout_seconds),
         ]
         if spec.policy.theorem_graph == "compiled":
             argv.append("--no-source-fallback")
@@ -301,7 +309,7 @@ class BranchPlanFactory:
             tuple(argv),
             worktree,
             environment,
-            self.options.graph_timeout_seconds,
+            self.options.graph_batch_timeout(len(projects)),
             required=not spec.policy.allow_partial,
         )
 
