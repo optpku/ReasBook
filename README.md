@@ -1,43 +1,35 @@
 # ReasBook — Lean/mathlib v4.30.0
 
 **Toolchain:** `leanprover/lean4:v4.30.0`
-**Mathlib:** v4.30.0
-**Status:** Active
-**Last build:** pending
+**Mathlib:** `v4.30.0`
 
-This branch aggregates books and papers that use exactly Lean/mathlib `v4.30.0`.
-Dependency locks, shared declarations, and namespaces must stay compatible within the branch.
+[Published reading catalog](https://optpku.github.io/ReasBook/) · [Cross-version source catalog](https://github.com/optpku/ReasBook/) · [Reading and review](https://reasbook.reaslab.io/review/)
 
-- Manifest: [`ReasBook/lake-manifest.json`](ReasBook/lake-manifest.json)
-- Aggregate entry: [`ReasBook/ReasBook.lean`](ReasBook/ReasBook.lean)
+This branch contains 9 book projects and 2 paper projects using Lean/mathlib `v4.30.0`. The reading links below refer to the [published site snapshot](https://github.com/optpku/ReasBook/releases/tag/reasbook-site-20261105T034713Z-fe8615a941bf); their versions are shown explicitly. Source links stay on this branch.
 
 ## Books
 
-| Book | Contributors | Documentation | Source | Verso |
-| --- | --- | --- | --- | --- |
-| A Concise Course in Algebraic Topology — J. Peter May (1999) | — | [doc](https://optpku.github.io/ReasBook/docs/Books/AlgebraicTopology_May_1999/Book.html) | [source](./ReasBook/Books/AlgebraicTopology_May_1999/) | [verso](https://optpku.github.io/ReasBook/books/algebraictopology_may_1999/) |
-| Analysis II — Terence Tao (4th ed., 2022) | Chenyi Li, Min Cui, Qiming Dai, Shu Miao, Wanli Ma, Yi Yuan, Zichen Wang, Ziyu Wang | [doc](https://optpku.github.io/ReasBook/docs/Books/Analysis2_Tao_2022/Book.html) | [source](./ReasBook/Books/Analysis2_Tao_2022/) | [verso](https://optpku.github.io/ReasBook/books/analysis2_tao_2022/) |
-| Combinatorial Group Theory — Magnus, Karrass, Solitar (2004) | — | [doc](https://optpku.github.io/ReasBook/docs/Books/CombinatorialGroupTheory_Magnus_2004/Book.html) | [source](./ReasBook/Books/CombinatorialGroupTheory_Magnus_2004/) | [verso](https://optpku.github.io/ReasBook/books/combinatorialgrouptheory_magnus_2004/) |
-| Convex Analysis and Monotone Operator Theory in Hilbert Spaces — Bauschke, Combettes (2nd ed., 2017) | — | [doc](https://optpku.github.io/ReasBook/docs/Books/ConvexAnalysisMonotoneOperators_BauschkeCombettes_2017/Book.html) | [source](./ReasBook/Books/ConvexAnalysisMonotoneOperators_BauschkeCombettes_2017/) | [verso](https://optpku.github.io/ReasBook/books/convexanalysismonotoneoperators_bauschkecombettes_2017/) |
-| First-Order Methods in Optimization — Amir Beck (2017) | — | [doc](https://optpku.github.io/ReasBook/docs/Books/FirstOrderMethodsOptimization_Beck_2017/Book.html) | [source](./ReasBook/Books/FirstOrderMethodsOptimization_Beck_2017/) | [verso](https://optpku.github.io/ReasBook/books/firstordermethodsoptimization_beck_2017/) |
-| Introduction to Real Analysis, Volume I — Jiri Lebl (v6.2, 2025) | Zichen Wang | [doc](https://optpku.github.io/ReasBook/docs/Books/IntroductiontoRealAnalysisVolumeI_JiriLebl_2025/Book.html) | [source](./ReasBook/Books/IntroductiontoRealAnalysisVolumeI_JiriLebl_2025/) | [verso](https://optpku.github.io/ReasBook/books/introductiontorealanalysisvolumei_jirilebl_2025/) |
-| Optimization Theory and Methods: Nonlinear Programming — Wenyu Sun, Ya-xiang Yuan (2006) | Chenyi Li, Wanli Ma, Zichen Wang | [doc](https://optpku.github.io/ReasBook/docs/Books/OptimizationTheoryAndMethods_SunYuan_2006/Book.html) | [source](./ReasBook/Books/OptimizationTheoryAndMethods_SunYuan_2006/) | — |
-| Lectures on Riemann Surfaces — Otto Forster (1981) | — | [doc](https://optpku.github.io/ReasBook/docs/Books/RiemannSurfaces_Forster_1981/Book.html) | [source](./ReasBook/Books/RiemannSurfaces_Forster_1981/) | [verso](https://optpku.github.io/ReasBook/books/riemannsurfaces_forster_1981/) |
+| Project and reference | Formalization contributors | Published reading |
+| --- | --- | --- |
+| **[A Concise Course in Algebraic Topology](./ReasBook/Books/AlgebraicTopology_May_1999/)**<br><sub>J. Peter May (1999)</sub> | Ze Yuan, Zichen Wang, Zaiwen Wen | `v4.30.0`<br>[Verso](https://optpku.github.io/ReasBook/versions/v4.30.0/books/algebraictopology_may_1999/) &#124; [Documentation](https://optpku.github.io/ReasBook/versions/v4.30.0/docs/ReasBook/AlgebraicTopology_May_1999/Book.html) &#124; [Theorem map](https://optpku.github.io/ReasBook/versions/v4.30.0/theorem-maps/books/algebraictopology_may_1999/) |
+| **[Analysis II](./ReasBook/Books/Analysis2_Tao_2022/)**<br><sub>Terence Tao (4th ed., 2022)</sub> | <details><summary>9 contributors</summary><sub>Chenyi Li, Min Cui, Qiming Dai, Shu Miao, Wanli Ma, Yi Yuan, Zichen Wang, Ziyu Wang, Zaiwen Wen</sub></details> | `v4.30.0`<br>[Verso](https://optpku.github.io/ReasBook/versions/v4.30.0/books/analysis2_tao_2022/) &#124; [Documentation](https://optpku.github.io/ReasBook/versions/v4.30.0/docs/ReasBook/Analysis2_Tao_2022/Book.html) &#124; [Theorem map](https://optpku.github.io/ReasBook/versions/v4.30.0/theorem-maps/books/analysis2_tao_2022/) |
+| **[Combinatorial Group Theory](./ReasBook/Books/CombinatorialGroupTheory_Magnus_2004/)**<br><sub>Lyndon and Schupp (1977)</sub> | Zichen Wang, Zaiwen Wen | `v4.30.0`<br>[Verso](https://optpku.github.io/ReasBook/versions/v4.30.0/books/combinatorialgrouptheory_magnus_2004/) &#124; [Documentation](https://optpku.github.io/ReasBook/versions/v4.30.0/docs/ReasBook/CombinatorialGroupTheory_Magnus_2004/Book.html) &#124; [Theorem map](https://optpku.github.io/ReasBook/versions/v4.30.0/theorem-maps/books/combinatorialgrouptheory_magnus_2004/) |
+| **[Convex Analysis and Monotone Operator Theory in Hilbert Spaces](./ReasBook/Books/ConvexAnalysisMonotoneOperators_BauschkeCombettes_2017/)**<br><sub>Bauschke and Combettes (2nd ed., 2017)</sub> | Yifan Bai, Zichen Wang, Zaiwen Wen | `v4.30.0`<br>[Verso](https://optpku.github.io/ReasBook/versions/v4.30.0/books/convexanalysismonotoneoperators_bauschkecombettes_2017/) &#124; [Documentation](https://optpku.github.io/ReasBook/versions/v4.30.0/docs/ReasBook/ConvexAnalysisMonotoneOperators_BauschkeCombettes_2017/Book.html) &#124; [Theorem map](https://optpku.github.io/ReasBook/versions/v4.30.0/theorem-maps/books/convexanalysismonotoneoperators_bauschkecombettes_2017/) |
+| **[First-Order Methods in Optimization](./ReasBook/Books/FirstOrderMethodsOptimization_Beck_2017/)**<br><sub>Amir Beck (2017)</sub> | <details><summary>9 contributors</summary><sub>Shu Miao, Zichen Wang, Zaiwen Wen, Zhiyan Wang, Suwan Wu, Changyu Zou, Xinyi Guo, Yunxi Duan, Wanli Ma</sub></details> | `v4.30.0`<br>[Verso](https://optpku.github.io/ReasBook/versions/v4.30.0/books/firstordermethodsoptimization_beck_2017/) &#124; [Documentation](https://optpku.github.io/ReasBook/versions/v4.30.0/docs/ReasBook/FirstOrderMethodsOptimization_Beck_2017/Book.html) &#124; [Theorem map](https://optpku.github.io/ReasBook/versions/v4.30.0/theorem-maps/books/firstordermethodsoptimization_beck_2017/) |
+| **[Introduction to Real Analysis, Volume I](./ReasBook/Books/IntroductiontoRealAnalysisVolumeI_JiriLebl_2025/)**<br><sub>Jiri Lebl (v6.2, 2025)</sub> | Zichen Wang, Zaiwen Wen | `v4.30.0`<br>[Verso](https://optpku.github.io/ReasBook/versions/v4.30.0/books/introductiontorealanalysisvolumei_jirilebl_2025/) &#124; [Documentation](https://optpku.github.io/ReasBook/versions/v4.30.0/docs/ReasBook/IntroductiontoRealAnalysisVolumeI_JiriLebl_2025/Book.html) &#124; [Theorem map](https://optpku.github.io/ReasBook/versions/v4.30.0/theorem-maps/books/introductiontorealanalysisvolumei_jirilebl_2025/) |
+| **[Lectures on Convex Optimization](./ReasBook/Books/IntroductoryLecturesOnConvexOptimization_Nesterov_2004/)**<br><sub>Yurii Nesterov (2nd ed., 2018)</sub> | Chenyi Li, Siyuan Shao, Yijie Wang, Feiming Wang, Weiran Shi, Yuhao Jiang, Zebo Liu, Wentao Long | `v4.30.0`<br>[Verso](https://optpku.github.io/ReasBook/versions/v4.30.0/books/introductorylecturesonconvexoptimization_nesterov_2004/) &#124; [Documentation](https://optpku.github.io/ReasBook/versions/v4.30.0/docs/ReasBook/IntroductoryLecturesOnConvexOptimization_Nesterov_2004/Book.html) &#124; [Theorem map](https://optpku.github.io/ReasBook/versions/v4.30.0/theorem-maps/books/introductorylecturesonconvexoptimization_nesterov_2004/) |
+| **[Optimization Theory and Methods: Nonlinear Programming](./ReasBook/Books/OptimizationTheoryAndMethods_SunYuan_2006/)**<br><sub>Wenyu Sun and Ya-xiang Yuan (2006)</sub> | Chenyi Li, Wanli Ma, Zichen Wang | `v4.30.0`<br>[Verso](https://optpku.github.io/ReasBook/versions/v4.30.0/books/optimizationtheoryandmethods_sunyuan_2006/) &#124; [Documentation](https://optpku.github.io/ReasBook/versions/v4.30.0/docs/ReasBook/OptimizationTheoryAndMethods_SunYuan_2006/Book.html) &#124; [Theorem map](https://optpku.github.io/ReasBook/versions/v4.30.0/theorem-maps/books/optimizationtheoryandmethods_sunyuan_2006/) |
+| **[Lectures on Riemann Surfaces](./ReasBook/Books/RiemannSurfaces_Forster_1981/)**<br><sub>Otto Forster (1981)</sub> | Zichen Wang, Zaiwen Wen | `v4.30.0`<br>[Verso](https://optpku.github.io/ReasBook/versions/v4.30.0/books/riemannsurfaces_forster_1981/) &#124; [Documentation](https://optpku.github.io/ReasBook/versions/v4.30.0/docs/ReasBook/RiemannSurfaces_Forster_1981/Book.html) &#124; [Theorem map](https://optpku.github.io/ReasBook/versions/v4.30.0/theorem-maps/books/riemannsurfaces_forster_1981/) |
 
 ## Papers
 
-| Paper | Contributors | Documentation | Source | Verso |
-| --- | --- | --- | --- | --- |
-| Smooth Minimization of Non-Smooth Functions — Yurii Nesterov (2004) | Wanli Ma, Zichen Wang | [doc](https://optpku.github.io/ReasBook/docs/Papers/SmoothMinimization_Nesterov_2004/Paper.html) | [source](./ReasBook/Papers/SmoothMinimization_Nesterov_2004/) | [verso](https://optpku.github.io/ReasBook/papers/smoothminimization_nesterov_2004/) |
-| On Some Local Rings — Mohamad Maassarani (2025) | Liang Xiao, Haochen Ju, Zichen Wang | [doc](https://optpku.github.io/ReasBook/docs/Papers/OnSomeLocalRings_Maassaran_2025/Paper.html) | [source](./ReasBook/Papers/OnSomeLocalRings_Maassaran_2025/) | [verso](https://optpku.github.io/ReasBook/papers/onsomelocalrings_maassaran_2025/) |
+| Project and reference | Formalization contributors | Published reading |
+| --- | --- | --- |
+| **[Smooth Minimization of Non-Smooth Functions](./ReasBook/Papers/SmoothMinimization_Nesterov_2004/)**<br><sub>Yurii Nesterov (2005)</sub> | Wanli Ma, Zichen Wang, Zaiwen Wen | `v4.30.0`<br>[Verso](https://optpku.github.io/ReasBook/versions/v4.30.0/papers/smoothminimization_nesterov_2004/) &#124; [Documentation](https://optpku.github.io/ReasBook/versions/v4.30.0/docs/ReasBook/SmoothMinimization_Nesterov_2004/Paper.html) &#124; [Theorem map](https://optpku.github.io/ReasBook/versions/v4.30.0/theorem-maps/papers/smoothminimization_nesterov_2004/) |
+| **[On Some Local Rings](./ReasBook/Papers/OnSomeLocalRings_Maassaran_2025/)**<br><sub>Mohamad Maassarani (2025)</sub> | Liang Xiao, Haochen Ju, Zichen Wang, Zaiwen Wen | `v4.30.0`<br>[Verso](https://optpku.github.io/ReasBook/versions/v4.30.0/papers/onsomelocalrings_maassaran_2025/) &#124; [Documentation](https://optpku.github.io/ReasBook/versions/v4.30.0/docs/ReasBook/OnSomeLocalRings_Maassaran_2025/Paper.html) &#124; [Theorem map](https://optpku.github.io/ReasBook/versions/v4.30.0/theorem-maps/papers/onsomelocalrings_maassaran_2025/) |
+
+Contributor names are project-level credits; project READMEs retain roster sources and any upstream roles. Original book and paper authors are listed separately.
 
 ## Build
 
-```bash
-cd ReasBook
-lake update
-lake build
-```
-
-Full Lean build and web build run on the self-hosted runner; locally, `./build.sh` / `./build-web.sh`
-replicate the same phases (see `scripts/`).
+Use the committed `ReasBook/lean-toolchain` and `ReasBook/lake-manifest.json` dependency pins. Follow the [build SDK guide](https://github.com/optpku/ReasBook/blob/main/sdk/build/README.md) for the corresponding version. Published documentation records its own source snapshot; its publication does not certify every historical source file or an aggregate branch build.
