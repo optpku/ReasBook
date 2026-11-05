@@ -1,5 +1,12 @@
 # Comparator SDK
 
+The [upstream Comparator project is deprecated](https://github.com/leanprover/comparator#deprecation)
+and archived. From Lean `v4.35.0`, its functionality is provided by `lake comparator`
+and `lake check`. ReasBook's current `v4.26.0`–`v4.32.2` projects predate those
+commands; this SDK retains their pinned legacy workflow. When upgrading a
+project to Lean `v4.35.0` or newer, migrate its validation setup to the core Lake
+commands rather than assuming this wrapper invokes them.
+
 `comparator-sdk` is a local, transport-neutral wrapper around the Lean FRO
 [`Comparator`](https://github.com/leanprover/comparator) executable. It validates
 a Challenge/Solution project, optionally builds the Comparator checkout, runs

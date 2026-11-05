@@ -40,6 +40,7 @@ jobs:
           node --check apps/reasbook-reviewer/docs/mathjax-config.js
           node --check sdk/theorem_graph/src/theorem_graph_sdk/resources/assets/app.js
           node apps/reasbook-reviewer/tests/statement_rendering.cjs
+          node apps/reasbook-reviewer/tests/loading_navigation.cjs
           node apps/reasbook-reviewer/tests/evidence_status.cjs
           node sdk/theorem_graph/tests/test_graph_view.js
           git diff --check

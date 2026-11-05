@@ -34,6 +34,8 @@ from .store import ReleaseLayout, ReleaseStore
 from .static_assets import (
     compact_verso_intertext, compact_verso_metadata, deduplicate_verso_assets,
     deduplicate_theorem_map_runtime, relativize_native_documentation_links,
+    resolve_native_documentation_links,
+    improve_documentation_navigation,
 )
 
 
@@ -198,6 +200,8 @@ class PagesSiteProjector:
                 ("shared_head", lambda: deduplicate_verso_assets(staged, spec.base_path)),
                 ("binding_metadata", lambda: compact_verso_metadata(staged, spec.base_path)),
                 ("native_intertext", lambda: compact_verso_intertext(staged)),
+                ("native_declaration_targets", lambda: resolve_native_documentation_links(staged, spec.base_path)),
+                ("documentation_navigation", lambda: improve_documentation_navigation(staged)),
                 ("native_documentation_links", lambda: relativize_native_documentation_links(staged, spec.base_path)),
                 ("identical_chapter_aliases", lambda: self._deduplicate_chapter_aliases(spec, staged)),
                 ("theorem_map_runtime", lambda: deduplicate_theorem_map_runtime(staged, spec.base_path)),
@@ -355,7 +359,14 @@ class PagesSiteProjector:
                 saved += sum(path.stat().st_size for path in files) - sum(
                     path.stat().st_size for path in (site / relative).rglob('*') if path.is_file())
             entry = canonical / 'index.html' if equivalent else site / relative / 'index.html'
-            if entry.is_file():
+            graph_data = original / 'data.json'
+            has_items = True
+            if graph_data.is_file():
+                try:
+                    has_items = bool(json.loads(graph_data.read_text(encoding='utf-8')).get('items'))
+                except (OSError, ValueError, AttributeError):
+                    has_items = False
+            if entry.is_file() and has_items:
                 entries.append(CatalogEntry(title,
                                             spec.base_path + entry.relative_to(site).as_posix(), project.key))
         root = site / 'theorem-maps/index.html'
@@ -707,6 +718,8 @@ class PagesSiteProjector:
                 title = _reader_title(site / pages / 'index.html', title)
             elif docs is not None:
                 title = _reader_title(site / docs, title)
+            if project.project_id == "IntegerProgramming_Conforti_2014":
+                title = "Integer Programming (Conforti, Cornuéjols and Zambelli, 2014)"
             if primary is not None:
                 url = spec.base_path + primary.as_posix() + ('/' if pages is not None else '')
                 catalog.append(CatalogEntry(title, url, project.key))

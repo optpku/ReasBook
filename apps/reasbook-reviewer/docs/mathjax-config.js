@@ -6,10 +6,6 @@ window.MathJax = {
     processEscapes: true,
     tags: "ams"
   },
-  chtml: {
-    displayOverflow: "linebreak",
-    linebreaks: { inline: true, width: "container" }
-  },
   options: { skipHtmlTags: ["script", "noscript", "style", "textarea", "pre", "code"] },
   startup: {
     typeset: false,

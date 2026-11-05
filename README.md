@@ -186,11 +186,11 @@ questions.
 | Formalization | Source | Contributors | Resources |
 | --- | :---: | --- | --- |
 | **[A Counterexample to Global Convergence of Classical DFP Under the Standard Strong Wolfe Conditions](ReasBook/Papers/DFP_wolfe_local/)**<br><sub>Benqi Liu, Zichen Wang, Zaiwen Wen, Liwei Zhang, and Yaxiang Yuan</sub> | [`v4.32.0`](https://github.com/optpku/ReasBook/tree/v4.32.0/ReasBook/Papers/DFP_wolfe_local/) | Zichen Wang | [arXiv](https://arxiv.org/html/2608.21708v1) |
-| ↳ **Center-manifold proof** | [Lean source](https://github.com/optpku/ReasBook/blob/v4.32.0/ReasBook/Papers/DFP_wolfe_local/DFPWolfe/Paper.lean) | | [Docs](https://optpku.github.io/ReasBook/versions/v4.32.0/docs/ReasBook/DFPWolfe/Paper.html) &#124; [Verso](https://optpku.github.io/ReasBook/versions/v4.32.0/papers/dfp_wolfe_local/sections/main-theorems/) &#124; [Theorem map](https://optpku.github.io/ReasBook/versions/v4.32.0/theorem-maps/papers/dfp_wolfe_local/?view=paper) &#124; [Reviewer](https://reasbook.reaslab.io/review/books/dfp_wolfe_local/) |
-| ↳ **Polar proof (v21)** | [Lean source](https://github.com/optpku/ReasBook/blob/v4.32.0/ReasBook/Papers/DFP_wolfe_local/DFPWolfe/V21/Paper.lean) | | [Docs](https://optpku.github.io/ReasBook/versions/v4.32.0/docs/ReasBook/DFPWolfe/V21/Paper.html) &#124; [Verso](https://optpku.github.io/ReasBook/versions/v4.32.0/papers/dfp_wolfe_local/sections/v21-main/) &#124; [Theorem map](https://optpku.github.io/ReasBook/versions/v4.32.0/theorem-maps/papers/dfp_wolfe_local/v21/?view=paper) &#124; [Reviewer](https://reasbook.reaslab.io/review/books/dfp_wolfe_local/) |
+| ↳ **Center-manifold proof** | [Lean source](https://github.com/optpku/ReasBook/blob/v4.32.0/ReasBook/Papers/DFP_wolfe_local/DFPWolfe/Paper.lean) | | [Docs](https://optpku.github.io/ReasBook/versions/v4.32.0/docs/ReasBook/DFPWolfe/Paper.html) &#124; [Verso](https://optpku.github.io/ReasBook/versions/v4.32.0/papers/dfp_wolfe_local/sections/main-theorems/) &#124; [Theorem map](https://optpku.github.io/ReasBook/versions/v4.32.0/theorem-maps/papers/dfp_wolfe_local/?view=paper) &#124; [Reviewer](https://reasbook.reaslab.io/review/books/dfp_wolfe_local/?proof=original) |
+| ↳ **Polar proof (v21)** | [Lean source](https://github.com/optpku/ReasBook/blob/v4.32.0/ReasBook/Papers/DFP_wolfe_local/DFPWolfe/V21/Paper.lean) | | [Docs](https://optpku.github.io/ReasBook/versions/v4.32.0/docs/ReasBook/DFPWolfe/V21/Paper.html) &#124; [Verso](https://optpku.github.io/ReasBook/versions/v4.32.0/papers/dfp_wolfe_local/sections/v21-main/) &#124; [Theorem map](https://optpku.github.io/ReasBook/versions/v4.32.0/theorem-maps/papers/dfp_wolfe_local/v21/?view=paper) &#124; [Reviewer](https://reasbook.reaslab.io/review/books/dfp_wolfe_local/?proof=v21) |
 | **[A Fixed-Penalty Linearized Augmented Lagrangian Method with Classical Multiplier Updates](ReasBook/Papers/TR_LALM_theory/)**<br><sub>Benqi Liu, Kangkang Deng, Zichen Wang, and Zaiwen Wen</sub> | [`v4.32.2`](https://github.com/optpku/ReasBook/tree/v4.32.2/ReasBook/Papers/TR_LALM_theory/) | Zichen Wang, Zaiwen Wen | [Docs](https://optpku.github.io/ReasBook/versions/v4.32.2/docs/ReasBook/TR_LALM_theory.html) &#124; [Verso](https://optpku.github.io/ReasBook/versions/v4.32.2/papers/tr_lalm_theory/) &#124; [Theorem map](https://optpku.github.io/ReasBook/versions/v4.32.2/theorem-maps/papers/tr_lalm_theory/) &#124; [Reviewer](https://reasbook.reaslab.io/review/books/tr_lalm_theory/) |
 | **[The Minimum Q-Order of BFGS with Exact Line Search Is One](ReasBook/Papers/BFGSMinimumQOrder_Liu_2026/)**<br><sub>Benqi Liu, Chenyi Li, and Zaiwen Wen (2026)</sub> | [`v4.32.2`](https://github.com/optpku/ReasBook/tree/v4.32.2/ReasBook/Papers/BFGSMinimumQOrder_Liu_2026/) | Chenyi Li<br><sub>Imported DFP infrastructure: Zichen Wang</sub> | [Docs](https://optpku.github.io/ReasBook/versions/v4.32.2/docs/ReasBook/BFGSMinimumQOrder_Liu_2026.html) &#124; [Verso](https://optpku.github.io/ReasBook/versions/v4.32.2/papers/bfgsminimumqorder_liu_2026/) &#124; [Theorem map](https://optpku.github.io/ReasBook/versions/v4.32.2/theorem-maps/papers/bfgsminimumqorder_liu_2026/) &#124; [Reviewer](https://reasbook.reaslab.io/review/books/bfgsminimumqorder_liu_2026/) |
-| **[Technical note: a counterexample to the Rockafellar sum conjecture on c₀](ReasBook/Papers/RockafellarSum_2026/)**<br><sub>Junyu Zhang, Jinbiao Chen, Zichen Wang, Benqi Liu, and Zaiwen Wen (2026)</sub> | [`v4.32.0`](https://github.com/optpku/ReasBook/tree/v4.32.0/ReasBook/Papers/RockafellarSum_2026/) | Zichen Wang | [Docs](https://optpku.github.io/ReasBook/versions/v4.32.0/docs/ReasBook/RockafellarSum_2026/Paper.html) &#124; [Verso](https://optpku.github.io/ReasBook/versions/v4.32.0/papers/rockafellarsum_2026/) &#124; [Theorem map](https://optpku.github.io/ReasBook/versions/v4.32.0/theorem-maps/papers/rockafellarsum_2026/) &#124; [Reviewer](https://reasbook.reaslab.io/review/books/rockafellarsum_2026/) &#124; [Note PDF](https://github.com/optpku/ReasBook/blob/v4.32.0/ReasBook/Papers/RockafellarSum_2026/note/rockafellar_sum_technical_note.pdf) &#124; [LaTeX](https://github.com/optpku/ReasBook/blob/v4.32.0/ReasBook/Papers/RockafellarSum_2026/note/rockafellar_sum_technical_note.tex) |
+| **[Technical note: a counterexample to the Rockafellar sum conjecture on c₀](ReasBook/Papers/RockafellarSum_2026/)**<br><sub>Junyu Zhang, Jinbiao Chen, Zichen Wang, Benqi Liu, and Zaiwen Wen (2026)</sub> | [`v4.32.0`](https://github.com/optpku/ReasBook/tree/v4.32.0/ReasBook/Papers/RockafellarSum_2026/) | Zichen Wang | [Docs](https://optpku.github.io/ReasBook/versions/v4.32.0/docs/ReasBook/RockafellarSum_2026/Paper.html) &#124; [Verso](https://optpku.github.io/ReasBook/versions/v4.32.0/papers/rockafellarsum_2026/) &#124; [Reviewer](https://reasbook.reaslab.io/review/books/rockafellarsum_2026/) &#124; [Note PDF](https://github.com/optpku/ReasBook/blob/v4.32.0/ReasBook/Papers/RockafellarSum_2026/note/rockafellar_sum_technical_note.pdf) &#124; [LaTeX](https://github.com/optpku/ReasBook/blob/v4.32.0/ReasBook/Papers/RockafellarSum_2026/note/rockafellar_sum_technical_note.tex) |
 | **[The multiplier step size of two-block ADMM: convergence and counterexamples](ReasBook/Papers/glowinski_admm_counterexample/)**<br><sub>2026</sub> | [`v4.32.0`](https://github.com/optpku/ReasBook/tree/v4.32.0/ReasBook/Papers/glowinski_admm_counterexample/) | Qiming Dai | [Docs](https://optpku.github.io/ReasBook/versions/v4.32.0/docs/ReasBook/glowinski_admm_counterexample/Paper.html) &#124; [Verso](https://optpku.github.io/ReasBook/versions/v4.32.0/glowinski_admm_counterexample/paper/) &#124; [Theorem map](https://optpku.github.io/ReasBook/versions/v4.32.0/theorem-maps/papers/glowinski_admm_counterexample/) &#124; [Reviewer](https://reasbook.reaslab.io/review/books/glowinski_admm_counterexample/) |
 
 ### Other Formalized Papers
@@ -247,7 +247,7 @@ metadata, validation, and pull-request rules.
 </tr>
 <tr>
 <td rowspan="2" scope="rowgroup">Benchmark</td>
-<td><a href="https://github.com/optsuite/AMBER">AMBER</a></td>
+<td><a href="https://arxiv.org/abs/2602.01291">AMBER</a></td>
 <td>A Lean4 benchmark for construction and verification in applied mathematics formalization, covering both theorem-proving and computational problems.</td>
 </tr>
 <tr>
@@ -275,10 +275,10 @@ metadata, validation, and pull-request rules.
 ### Mathematical Formalization
 
 - Wanli Ma, Zichen Wang,  Zaiwen Wen, *A Unified Framework for Formalizing Matrix Decomposition Proofs*. [(Paper)](https://arxiv.org/abs/2607.05874)
-- Chenyi Li, Ziyu Wang, Wanyi He, Yuxuan Wu, Shengyang Xu, Zaiwen Wen. *Formalization of Complexity Analysis of the First-order Optimization Algorithms*, Journal of Automated Reasoning. [(Paper)](https://arxiv.org/abs/2403.11437)
+- Chenyi Li, Ziyu Wang, Wanyi He, Yuxuan Wu, Shengyang Xu, Zaiwen Wen. *Formalization of Complexity Analysis of the First-order Algorithms for Convex Optimization*, Journal of Automated Reasoning. [(Paper)](https://arxiv.org/abs/2403.11437)
 - Chenyi Li, Zichen Wang, Yifan Bai, Yunxi Duan, Yuqing Gao, Pengfei Hao, Zaiwen Wen. *Formalization of Algorithms for Optimization with Block Structures*, Science in China Series A: Mathematics. [(Paper)](http://arxiv.org/abs/2503.18806)
 - Chenyi Li, Shengyang Xu, Chumin Sun, Li Zhou, Zaiwen Wen. *Formalization of Optimality Conditions for Smooth Constrained Optimization Problems*. [(Paper)](https://arxiv.org/abs/2503.18821)
-- Chenyi Li, Zaiwen Wen. *An Introduction to Mathematics Formalization Based on Lean*. [(Paper)](http://faculty.bicmr.pku.edu.cn/~wenzw/paper/OptLean.pdf)
+- Chenyi Li, Zaiwen Wen. *An Introduction to Mathematics Formalization Based on Lean*. [(Manuscript)](https://faculty.bicmr.pku.edu.cn/~wenzw/paper/OptLean.pdf)
 
 ### Autoformalization and Automated Theorem Proving
 
@@ -290,17 +290,17 @@ metadata, validation, and pull-request rules.
 
 ### Theorem-Proof Checking
 
-- Ziyu Wang, Qiming Dai, Yishan Wu, Zaiwen Wen. *FaithSieve: Fine-Grained Evaluation of Math Proofs with Faithful Formal Evidence*.
-- Ziyu Wang, Qiming Dai, Chenyi Li, Zaiwen Wen, *Beyond Formal Correctness: Structure-Aware Evaluation of Informal–Formal Proof Correspondence*
+- Ziyu Wang, Qiming Dai, Yishan Wu, Zaiwen Wen. *FaithSieve: Fine-Grained Evaluation of Math Proofs with Faithful Formal Evidence*. [(Paper)](https://arxiv.org/abs/2608.26310)
+- Ziyu Wang, Qiming Dai, Chenyi Li, Zaiwen Wen, *Beyond Formal Correctness: Structure-Aware Evaluation of Informal–Formal Proof Correspondence* Public reading link not listed.
 
 ### Premise Selection
 
 - Zichen Wang, Anjie Dong, Zaiwen Wen. *Tree-Based Premise Selection for Lean4*, NeurIPS 2025. [(Paper)](https://neurips.cc/virtual/2025/loc/san-diego/poster/116011)
-- Shu Miao, Zichen Wang, Anjie Dong, Yishan Wu, Weixi Zhang, Zaiwen Wen. *Directed Multi-Relational GCNs for Premise Selection*.
+- Shu Miao, Zichen Wang, Anjie Dong, Yishan Wu, Weixi Zhang, Zaiwen Wen. *Directed Multi-Relational GCNs for Premise Selection*. Public reading link not listed.
 
 ### Benchmark
 
-- Bowen Yang, Yi Yuan, Chenyi Li, Ziyu Wang, Liangqi Li, Bo Zhang, Zhe Li, Zaiwen Wen. *Construction-Verification: A Benchmark for Formalizing Applied Mathematics in Lean 4*. [(Paper)](https://arxiv.org/abs/2602.01291)
+- Bowen Yang, Yi Yuan, Chenyi Li, Ziyu Wang, Liangqi Li, Bo Zhang, Zhe Li, Zaiwen Wen. *Construction-Verification: A Benchmark for Applied Mathematics in Lean 4*. [(Paper)](https://arxiv.org/abs/2602.01291)
 - Wentao Long, Yunfei Zhang, Chenyi Li, Li Zhou, Chumin Sun, Zaiwen Wen. *CAM-Bench: A Benchmark for Computational and Applied Mathematics in Lean*. [(Paper)](https://arxiv.org/abs/2605.17255)
 
 ## Contributors

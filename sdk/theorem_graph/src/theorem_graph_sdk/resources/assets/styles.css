@@ -468,6 +468,8 @@ select:focus-visible,
   background: #f7f8f9;
 }
 
+.graph-view-hint { margin: 0; padding: .5rem 1rem; font-size: .875rem; color: var(--muted); }
+.graph-view-hint[hidden] { display: none; }
 .graph-stats,
 .legend {
   display: flex;
