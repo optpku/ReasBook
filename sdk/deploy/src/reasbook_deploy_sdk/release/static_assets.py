@@ -38,7 +38,8 @@ _HTML_ATTRIBUTE = re.compile(
 
 _DOCUMENTATION_NAV_STYLE = """
 /* ReasBook readable module navigation */
-.nav .module_list, .nav .module_list details { min-width: 0; }
+.nav .module_list, .nav .module_list details { min-width: 0;
+  white-space: normal; overflow-wrap: anywhere; }
 .nav .nav_file { display: block; box-sizing: border-box; max-width: 100%;
   white-space: normal; overflow-wrap: anywhere; }
 .nav .nav_file a, .nav .nav_link { white-space: normal; overflow-wrap: anywhere; }
