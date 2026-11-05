@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-08-31T13:34:33Z",
+  "projectId": "StacksProject_Chapters_2026",
+  "targetBranch": "v4.30.0",
+  "chapters": [
+    "Chap04",
+    "Chap05",
+    "Chap06",
+    "Chap07"
+  ],
+  "sourceCommit": "5721b95f5e43a559b8ca9797614a0d8fafb190d8",
+  "filesDiscovered": 1033,
+  "filesCopied": 1033,
+  "lines": 312332,
+  "declarations": 5745,
+  "sorryOrAdmit": 38,
+  "worktree": "/volume/math/users/zcwang/ReasBook_Reviewer/cache/reasbook/pr/stacks-project-v4.30.0",
+  "patch": "/volume/math/users/zcwang/ReasBook_Reviewer/cache/reasbook/pr/StacksProject_Chapters_2026.patch",
+  "branch": "book/stacks-project-chap04-07-v4.30.0",
+  "committed": true
+}
