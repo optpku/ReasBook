@@ -1,21 +1,21 @@
 schema_version: 1
+# Historical ID retained for import and URL compatibility.
 id: CombinatorialGroupTheory_Magnus_2004
 title: Combinatorial Group Theory
 authors:
-- Wilhelm Magnus
-- Abraham Karrass
-- Donald Solitar
+- Roger C. Lyndon
+- Paul E. Schupp
 edition: null
-publisher: Dover Publications
-year: 2004
-isbn: 978-0-486-43830-6
+publisher: Springer-Verlag
+year: 1977
+isbn: null
 toolchain: leanprover/lean4:v4.30.0
 mathlib: v4.30.0
 branch: v4.30.0
 contributors:
 - name: Zichen Wang
 - name: Zaiwen Wen
-coverage: Formalized content from Magnus–Karrass–Solitar's Combinatorial Group Theory.
+coverage: Formalized statements from Chapters I–V of Lyndon–Schupp's Combinatorial Group Theory (1977).
 statistics:
   declarations: 1757
   theorem_lemma_example: 866
