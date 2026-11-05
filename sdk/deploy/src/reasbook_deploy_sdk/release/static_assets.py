@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 from collections import Counter
+from bisect import bisect_right
 import hashlib
 import html
 from html.parser import HTMLParser
@@ -22,6 +23,80 @@ _CSS_CONTEXT_SENSITIVE = re.compile(r"\burl\s*\(|@import", re.I)
 
 _INERT_CONTAINER = re.compile(r"<(?:template|noscript|textarea)\b", re.I)
 _RAW_BLOCK = re.compile(r"<!--.*?-->|<(?P<rawtag>script|style)\b.*?</(?P=rawtag)\s*>", re.I | re.S)
+_HTML_TAG = re.compile(
+    r'''</?([A-Za-z][A-Za-z0-9:_-]*)(?=[\s/>])(?:[^"'<>]|"[^"]*"|'[^']*')*>'''
+)
+_VOID_TAGS = frozenset({
+    "area", "base", "br", "col", "embed", "hr", "img", "input", "link",
+    "meta", "param", "source", "track", "wbr",
+})
+
+
+class _ClassOpening(HTMLParser):
+    def __init__(self):
+        super().__init__()
+        self.values: list[set[str]] = []
+
+    def handle_starttag(self, tag, attrs):
+        self.values = [set((value or "").split()) for key, value in attrs if key == "class"]
+
+
+def _lean_markup_ranges(parts: list[str]) -> tuple[list[int], list[int], list[tuple[int, int, int, int, int]]]:
+    """Find real diagnostic containers without parsing native token contents.
+
+    Only real class attributes activate a range. Nested elements of the same
+    name extend it; comments and raw scripts/styles cannot close it. Preserve
+    an unmatched container through EOF. False positives retain more markup.
+    """
+    starts: list[int] = []
+    ends: list[int] = []
+    blocks: list[tuple[int, int, int, int, int]] = []
+    code_depth = 0
+    code_begin = None
+    active = None
+    depth = offset = beginning = 0
+    for index, part in enumerate(parts):
+        if index % 2 == 0:
+            for match in _HTML_TAG.finditer(part):
+                name = match.group(1).lower()
+                opening = match.group(0)
+                closing = opening.startswith("</")
+                if name == "code":
+                    if not closing:
+                        if code_depth == 0:
+                            code_begin = (index, match.start(), match.end())
+                        code_depth += 1
+                    elif code_depth:
+                        code_depth -= 1
+                        if code_depth == 0 and code_begin is not None:
+                            block_index, block_start, content_start = code_begin
+                            # Raw blocks/comments or malformed nesting inside
+                            # code retain the entire outer code block unchanged.
+                            if block_index == index:
+                                blocks.append((index, block_start, content_start,
+                                               match.start(), match.end()))
+                if active is not None:
+                    if name == active:
+                        depth += -1 if closing else 1
+                        if depth == 0:
+                            starts.append(beginning)
+                            ends.append(offset + match.end())
+                            active = None
+                elif not closing and ("has-info" in opening or "&" in opening):
+                    parser = _ClassOpening()
+                    parser.feed(opening)
+                    if any("has-info" in value for value in parser.values):
+                        beginning = offset + match.start()
+                        if name in _VOID_TAGS:
+                            starts.append(beginning)
+                            ends.append(offset + match.end())
+                        else:
+                            active, depth = name, 1
+        offset += len(part)
+    if active is not None:
+        starts.append(beginning)
+        ends.append(offset)
+    return starts, ends, blocks
 
 
 def _protected_parts(text: str) -> list[str]:
@@ -245,20 +320,12 @@ def compact_verso_metadata(site: Path, base_path: str) -> dict[str, int]:
 def compact_verso_intertext(site: Path) -> dict[str, int]:
     """Remove unstyled whitespace wrappers inside native Lean code only.
 
-    Keep diagnostic documents, all tokens, binding/hover attributes, source text,
-    prose, and scripts/styles unchanged. Inter-text under `.has-info` can carry
-    a diagnostic underline and must retain its wrapper.
+    Keep complete code blocks that overlap diagnostic containers unchanged.
+    Other blocks retain every token, binding/hover attribute and source text.
+    Inter-text under `.has-info` can carry a diagnostic underline and must
+    retain its wrapper; a diagnostic elsewhere does not affect a clean block.
     """
-    codes = re.compile(r"(<code\b[^>]*>)(.*?)(</code\s*>)", re.I | re.S)
-    class CodeOpening(HTMLParser):
-        def __init__(self):
-            super().__init__()
-            self.classes = set()
-        def handle_starttag(self, tag, attrs):
-            if tag == "code":
-                self.classes = set((dict(attrs).get("class") or "").split())
     whitespace = re.compile(r"""<span class=(?:"inter-text"|'inter-text'|inter-text)>([^<]*)</span>""")
-    diagnostic = re.compile(r"""<[^>]*\bclass\s*=\s*(?:"[^"]*\bhas-info\b[^"]*"|'[^']*\bhas-info\b[^']*'|has-info(?:\s|>))""", re.I)
     changed = saved = wrappers = 0
     for path in sorted(Path(site).rglob("*.html")):
         if "docs" in path.relative_to(site).parts:
@@ -269,22 +336,37 @@ def compact_verso_intertext(site: Path) -> dict[str, int]:
         if _INERT_CONTAINER.search(source):
             continue
         parts = _protected_parts(source)
-        if any(diagnostic.search(part) for part in parts[::2]):
-            continue
+        diagnostic_starts, diagnostic_ends, blocks = _lean_markup_ranges(parts)
         count = 0
-        def rewrite(match):
-            nonlocal count
-            opening, content, closing = match.groups()
-            parser = CodeOpening()
-            parser.feed(opening)
-            tokens = parser.classes
-            if not {"hl", "lean", "block"}.issubset(tokens) or "has-info" in content or "has-info" in tokens:
-                return match.group(0)
-            result, n = whitespace.subn(r"\1", content)
+        offsets = []
+        offset = 0
+        for part in parts:
+            offsets.append(offset)
+            offset += len(part)
+        edits: dict[int, list[tuple[int, int, str]]] = {}
+        for index, start, content_start, content_end, end in blocks:
+            position = bisect_right(diagnostic_ends, offsets[index] + start)
+            if (position < len(diagnostic_starts)
+                    and diagnostic_starts[position] < offsets[index] + end):
+                continue
+            part = parts[index]
+            parser = _ClassOpening()
+            parser.feed(part[start:content_start])
+            if len(parser.values) != 1 or not {"hl", "lean", "block"}.issubset(parser.values[0]):
+                continue
+            result, n = whitespace.subn(r"\1", part[content_start:content_end])
             count += n
-            return opening + result + closing
-        for i in range(0, len(parts), 2):
-            parts[i] = codes.sub(rewrite, parts[i])
+            if n:
+                edits.setdefault(index, []).append((content_start, content_end, result))
+        for index, changes in edits.items():
+            part = parts[index]
+            chunks = []
+            position = 0
+            for start, end, replacement in changes:
+                chunks.extend([part[position:start], replacement])
+                position = end
+            chunks.append(part[position:])
+            parts[index] = "".join(chunks)
         result = "".join(parts)
         if result != source:
             atomic_write_text(path, result)

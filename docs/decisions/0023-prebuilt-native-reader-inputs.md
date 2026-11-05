@@ -52,8 +52,12 @@ MiB. Head scanning stops at its closing tag and has an eight-MiB bound; CSS
 relative-resource guards remain separate from JavaScript URL construction.
 
 Native code may drop exact, unstyled inter-text wrappers while preserving every
-text character, token and hover/binding attribute. Diagnostic documents and
-inert/raw-text content are retained. Existing API pages remain byte-identical.
+text character, token and hover/binding attribute. Complete code blocks that
+overlap diagnostic containers are retained; diagnostics elsewhere in the page
+do not disable compaction of clean blocks. Match nested code and diagnostic
+containers, recognize real attributes including character references, and keep
+unclosed or cross-raw-text code unchanged. Apply independent edits in one join
+per HTML segment. Inert/raw-text content and existing API pages remain intact.
 Duplicate chapter aliases become query/fragment-preserving redirects only when
 the complete native HTML is equal after normalizing its own page URL. No distinct
 mathematical or proof page is removed. Projection audits record bytes saved per
