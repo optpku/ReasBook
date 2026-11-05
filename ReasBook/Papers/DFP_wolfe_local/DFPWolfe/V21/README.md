@@ -1,5 +1,9 @@
 # v21 paper correspondence
 
+**Polar proof (v21):** [Verso](https://optpku.github.io/ReasBook/versions/v4.32.0/papers/dfp_wolfe_local/sections/v21-main/) · [Documentation](https://optpku.github.io/ReasBook/versions/v4.32.0/docs/ReasBook/DFPWolfe/V21/Paper.html) · [Theorem map](https://optpku.github.io/ReasBook/versions/v4.32.0/theorem-maps/papers/dfp_wolfe_local/v21/?view=paper)
+
+Formalization contributor: Zichen Wang. See the [project roster](../../README.md#contributor).
+
 The v21 submission proves the counterexample by a prescribed polar recurrence
 and explicit cutoff interpolation. Import `DFPWolfe.V21.Paper` for this route.
 The repository root `DFPWolfe` also retains the original center-manifold proof
