@@ -162,9 +162,9 @@ BOOK_TITLES = {
 PAPER_TITLES = {
     "BFGSMinimumQOrder_Liu_2026": "The Minimum Q-Order of BFGS with Exact Line Search Is One (Liu et al., 2026)",
     "RockafellarSum_2026": "A Counterexample to the Rockafellar Sum Conjecture on c₀ (2026)",
-    "DFP_wolfe_local": "Local Convergence of DFP with Wolfe Line Search",
+    "DFP_wolfe_local": "A Counterexample to Global Convergence of Classical DFP Under the Standard Strong Wolfe Conditions",
     "glowinski_admm_counterexample": "The Multiplier Step Size of Two-Block ADMM",
-    "SmoothMinimization_Nesterov_2004": "Smooth Minimization of Non-Smooth Functions (Nesterov, 2004)",
+    "SmoothMinimization_Nesterov_2004": "Smooth Minimization of Non-Smooth Functions (Nesterov, 2005)",
     "OnSomeLocalRings_Maassaran_2025": "On Some Local Rings (Maassarani, 2025)",
     "TR_LALM_theory": "TR-LALM Theory",
 }
@@ -1905,6 +1905,8 @@ def emit_sections(
                     if e.category == "papers" and e.book_or_paper == paper
                     and e.section_num == 0 and e.part_num == 0 and e.stem not in {"paper", "main"}
                 ],
+                "home_items": flat_paper_reading_items(source_root, paper, entries)
+                if reader is None and not sections_payload else [],
             }
         )
 
@@ -2717,6 +2719,28 @@ def module_statement_blocks(source_root: Path, module: str, category: str,
                                       name.casefold().replace(".", "-"), limit=limit,
                                       module=name, source_path=source_path))
     return lines
+
+
+def flat_paper_reading_items(source_root: Path, paper: str, entries: list[Entry]) -> list[dict]:
+    """Index the exact source-file excerpts rendered on a flat paper's home."""
+    if any(e.category == "papers" and e.book_or_paper == paper and e.section_num == 0
+           and e.part_num == 0 and e.stem not in {"paper", "main"} for e in entries):
+        return []  # Existing file reading routes already provide the contents.
+    items = []
+    seen = set()
+    for entry in sorted((e for e in entries if e.category == "papers" and e.book_or_paper == paper
+                         and e.section_num == 0 and e.part_num == 0), key=reading_file_order):
+        for name, path in statement_sources(entry.module, project_sources(source_root, "papers", paper)):
+            if name in seen:
+                continue
+            seen.add(name)
+            reading = statement_excerpts(path.read_text(encoding="utf-8"))
+            if not reading:
+                continue
+            label = re.sub(r"(?<=[a-z])(?=[A-Z])", " ", module_label(name))
+            items.append({"title": label, "module": name, "anchor": name.casefold().replace(".", "-"),
+                          "source": path.relative_to(source_root.parent).as_posix()})
+    return items
 
 
 @lru_cache(maxsize=None)

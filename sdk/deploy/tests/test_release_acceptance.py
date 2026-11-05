@@ -53,6 +53,28 @@ TOOLING_DIGEST = "e" * 64
 
 
 class ReleaseAcceptanceTests(unittest.TestCase):
+    def test_an_existing_html_shell_is_not_a_published_theorem_map(self) -> None:
+        project = SimpleNamespace(project_id="RockafellarSum_2026", key="papers/RockafellarSum_2026")
+        with tempfile.TemporaryDirectory() as temp:
+            directory = Path(temp)
+            (directory / "index.html").write_text("<html>Graph application</html>")
+            (directory / "data.json").write_text('{"items": [], "sections": []}')
+            with self.assertRaisesRegex(DeployExecutionError, "no published graph statements"):
+                ReleaseAcceptanceRunner._validate_theorem_map_content(directory, project)
+            (directory / "data.json").write_text('{"items": [{"id": "named-result"}]}')
+            ReleaseAcceptanceRunner._validate_theorem_map_content(directory, project)
+
+    def test_canonical_only_release_also_rejects_empty_maps(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            spec, layout, policies = self._package(Path(temp), include_historical_versions=False)
+            (layout.site / "theorem-maps/books/demo/data.json").write_text('{"items": []}')
+            runner = ReleaseAcceptanceRunner(
+                REPO_ROOT, layout, spec, artifact_policies=policies,
+                expected_artifact_policy_sha256=artifact_policy_digest(policies),
+            )
+            with self.assertRaisesRegex(DeployExecutionError, "no published graph statements"):
+                runner._routes(layout.site, artifact="full")
+
     def setUp(self) -> None:
         # ReleaseAcceptanceRunner receives its digest provider through the
         # module boundary.  Most tests are about acceptance semantics rather
@@ -149,6 +171,8 @@ class ReleaseAcceptanceTests(unittest.TestCase):
                 "<body>fixture</body></html>",
                 encoding="utf-8",
             )
+            if "theorem-maps" in relative.parts:
+                (destination.parent / "data.json").write_text(json.dumps({"items": [{"id": "fixture-result"}]}))
 
         def write_verso_tree(
             verso_root: Path,

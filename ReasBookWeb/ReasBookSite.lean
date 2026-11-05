@@ -615,6 +615,11 @@ def sidebarFallbackScript : String := r##"
         + (sameRoute(file.route, route) ? ' class="is-current" aria-current="page"' : '')
         + ' title="' + escapeHtml(file.module || "") + '">' + escapeHtml(file.title) + '</a></li>';
     }
+    for (const item of (work.home_items || [])) {
+      const href = siteRoot + trimSlashes(work.home) + "/#" + encodeURIComponent(item.anchor);
+      html += '<li class="nav-file-item"><a data-chapter-target="true" href="' + escapeHtml(href)
+        + '" title="' + escapeHtml(item.source || item.module || "") + '">' + escapeHtml(item.title) + '</a></li>';
+    }
     html += "</ul></li>";
     return html;
   }
@@ -623,6 +628,10 @@ def sidebarFallbackScript : String := r##"
     const navData = window.__reasbookSidebarData || { books: [], papers: [] };
     const current = findCurrentWork(navData);
     let html = "<ol>";
+    if (current.work) {
+      const collectionRoot = siteRoot.replace(/versions\/v[0-9.]+\/.*$/, "");
+      html += '<li><a data-reader-collection href="' + escapeHtml(collectionRoot) + '">All books and papers</a></li>';
+    }
     if (!current.work) {
       html += itemHtml(siteRoot, "Home");
       html += itemHtml(siteRoot + "docs/", "Documentation");
@@ -1055,6 +1064,13 @@ def navLinkRewriteScript : String := r##"
       item.firstChild.title = file.module || "";
       sectionList.appendChild(item);
     }
+    for (const source of (work.home_items || [])) {
+      const item = mkItem(routeHref(work.home) + "#" + encodeURIComponent(source.anchor), source.title, false);
+      item.classList.add("nav-file-item");
+      item.firstChild.setAttribute("data-chapter-target", "true");
+      item.firstChild.title = source.source || source.module || "";
+      sectionList.appendChild(item);
+    }
 
     li.appendChild(sectionList);
     return li;
@@ -1160,6 +1176,10 @@ def navLinkRewriteScript : String := r##"
       list.classList.add("nav-tree-root");
       try {
         if (current.work) {
+          const collectionRoot = siteRoot.replace(/versions\/v[0-9.]+\/.*$/, "");
+          const collectionLink = mkItem(collectionRoot, "All books and papers", false);
+          collectionLink.querySelector("a").setAttribute("data-reader-collection", "");
+          list.appendChild(collectionLink);
           if (current.kind === "book") {
             list.appendChild(mkBookTree(current.work, current.route));
           } else if (current.kind === "paper") {
@@ -1183,6 +1203,15 @@ def navLinkRewriteScript : String := r##"
     renderSidebarNav();
     if (window.__reasbookForwardPaperFragment(current)) return;
     window.__reasbookFormatReadingTitles();
+    // Manuscript source labels are useful in Lean files, but do not carry a
+    // readable proposition number. Remove only a leading label text node;
+    // leave the actual statement and native code/hover elements untouched.
+    document.querySelectorAll(".declaration > p").forEach(function (paragraph) {
+      const first = paragraph.firstChild;
+      if (first && first.nodeType === Node.TEXT_NODE) {
+        first.nodeValue = first.nodeValue.replace(/^\s*(?:thm|lem|prop|cor|def|eq):[A-Za-z0-9_.-]+\.\s+/, "");
+      }
+    });
     rewriteAllAnchors();
     document.addEventListener("click", onClick, true);
   }

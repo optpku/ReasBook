@@ -9,6 +9,7 @@ from reasbook_deploy_sdk.release.artifacts import PagesSiteProjector
 from reasbook_deploy_sdk.release.static_assets import (
     deduplicate_theorem_map_runtime,
     relativize_native_documentation_links,
+    resolve_native_documentation_links,
 )
 
 
@@ -51,6 +52,36 @@ class GraphAliasTests(unittest.TestCase):
 
 
 class NativeDocumentationLinkTests(unittest.TestCase):
+    def test_native_constants_use_actual_local_declarations_or_upstream_finder(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            prefix = '/ReasBook/versions/v4.30.0/'
+            docs = root / 'versions/v4.30.0/docs/ReasBook'
+            (docs / 'declarations').mkdir(parents=True)
+            (docs / 'declarations/declaration-data.bmp').write_text(json.dumps({'declarations': {
+                'Demo.main': {'docLink': './Demo.html#Demo.main'},
+                "Demo.main'": {'docLink': './Demo.html#Demo.main%27'},
+            }}))
+            (docs / 'Demo.html').write_text('<div id="Demo.main">Actual declaration</div><div id="Demo.main\x27">A primed declaration</div>')
+            page = root / 'versions/v4.30.0/books/demo/index.html'
+            page.parent.mkdir(parents=True)
+            links = ''.join('<a title="Documentation" href="' + prefix +
+                            'docs/ReasBook/find?pattern=' + name + '#doc">' + text + '</a>'
+                            for name, text in [('Demo.main', 'main'), ('Demo.main%27', 'main prime'), ('Fin', 'Fin'), ('Nat', 'ℕ')])
+            raw = '<script>const keep = ' + json.dumps(links) + ';</script>'
+            page.write_text('<head><base href="' + prefix + '"><script>window.__versoSiteRoot="/ReasBook/";</script></head>' + links + raw)
+            report = resolve_native_documentation_links(root, '/ReasBook/')
+            self.assertEqual(report, {'pages': 1, 'local': 2, 'upstream': 2})
+            rendered = page.read_text()
+            self.assertIn('href="' + prefix + 'docs/ReasBook/Demo.html#Demo.main"', rendered)
+            self.assertIn('href="' + prefix + 'docs/ReasBook/Demo.html#Demo.main%27"', rendered)
+            for name in ['Fin', 'Nat']:
+                self.assertIn('href="https://leanprover-community.github.io/mathlib4_docs/find/?pattern=' + name + '#doc"', rendered)
+            self.assertIn('Upstream documentation (current version): Nat', rendered)
+            self.assertIn('>ℕ</a>', rendered)
+            self.assertIn(raw, rendered)
+            self.assertEqual(resolve_native_documentation_links(root, '/ReasBook/')['pages'], 0)
+
     def test_complete_urls_stay_equal_and_only_native_declaration_links_change(self):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)

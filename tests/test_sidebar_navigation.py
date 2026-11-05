@@ -31,6 +31,23 @@ def sidebar_scripts():
 
 
 class SidebarInventoryTests(unittest.TestCase):
+    def test_flat_paper_home_indexes_each_rendered_source_file(self):
+        project = self.source / "Papers/FlatPaper"
+        project.mkdir(parents=True)
+        lakefile = self.source / 'lakefile.lean'
+        lakefile.write_text(lakefile.read_text() + '\nlean_lib FlatPaper where\n  srcDir := "Papers"\n')
+        (project / 'Paper.lean').write_text('import FlatPaper.NormalCone\nimport FlatPaper.Seed\n')
+        (project / 'NormalCone.lean').write_text('def normalCone : Nat := 0\n')
+        (project / 'Seed.lean').write_text('theorem seed : True := by trivial\n')
+        entries = generator.collect_entries(self.source)
+        payload = sidebar_payload(generator.emit_sections(entries, source_root=self.source))
+        paper = next(p for p in payload['papers'] if p['slug'] == 'flatpaper')
+        self.assertEqual({item['module'] for item in paper['home_items']}, {'FlatPaper.NormalCone', 'FlatPaper.Seed'})
+        generator.write_work_pages(self.repo, self.source, entries)
+        home = (self.repo / 'ReasBookWeb/ReasBookSite/WorkPages/Papers/FlatPaper.lean').read_text()
+        for item in paper['home_items']:
+            self.assertIn('id := "' + item['anchor'] + '"', home)
+
     def test_reading_headers_are_outside_html_directives(self):
         for title in ('1.1 — What Is Algebraic Topology?',
                       'Section 2 — Deterministic method and convergence',
@@ -313,7 +330,7 @@ class SidebarInventoryTests(unittest.TestCase):
                          "Chapter 04 — Second-Order Methods")
         self.assertEqual(generator.chapter_title_for_book(book, 7),
                          "Chapter 07 — Optimization in Relative Scale")
-        self.assertIn("2004", generator.PAPER_TITLES["SmoothMinimization_Nesterov_2004"])
+        self.assertIn("2005", generator.PAPER_TITLES["SmoothMinimization_Nesterov_2004"])
 
     def test_theme_has_bypass_and_reading_semantics(self):
         source = (ROOT / 'ReasBookWeb/ReasBookSite.lean').read_text()
@@ -726,10 +743,12 @@ class SidebarBrowserTests(unittest.TestCase):
                         page.route("**/*", lambda route: route.fulfill(status=200, content_type="text/html", body=html))
                         base = "https://preview.test" + prefix + chapter_route
                         page.goto(base + "#lemma-1-70")
-                        expect(page.locator('[data-reader-collection]')).to_have_attribute('href', '/all-books/')
+                        expect(page.locator('.main [data-reader-collection]')).to_have_attribute('href', '/all-books/')
                         expect(page.locator('code.hl.lean.block')).to_have_attribute('tabindex', '0')
                         expect(page.locator('code.hl.lean.block')).to_have_attribute('aria-label', 'Lean code')
                         nav = page.locator("#sidebar-nav-root")
+                        collection_root = prefix.split("versions/", 1)[0]
+                        expect(nav.locator('[data-reader-collection]')).to_have_attribute('href', collection_root)
                         self.assertEqual(nav.locator(".nav-file-item").count(), 81)
                         self.assertEqual(nav.get_by_role("link", name="Home", exact=True).count(), 0)
                         expect(nav.locator("a.nav-work-title")).to_have_text("Demo")
@@ -799,6 +818,9 @@ class SidebarBrowserTests(unittest.TestCase):
                         expect(nav.locator("a.nav-work-title")).to_have_attribute("aria-current", "page")
                         self.assertEqual(nav.get_by_role("link", name="Documentation", exact=True).count(), 0)
                         self.assertEqual(errors, [])
+                        page.set_viewport_size({"width": 1440, "height": 1000})
+                        nav.locator('[data-reader-collection]').click()
+                        page.wait_for_url("https://preview.test" + collection_root)
                         page.close()
             browser.close()
 

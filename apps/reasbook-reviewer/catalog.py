@@ -102,9 +102,10 @@ def _split_heading(title: str) -> tuple[str, str]:
     # ReasBook catalog headings use ``Title - Author (year)``.  Keep the full
     # heading available as the title when a future entry does not follow that
     # convention.
-    if " - " not in title:
+    separator = next((value for value in (" - ", " — ") if value in title), None)
+    if separator is None:
         return title.strip(), ""
-    name, authors = title.split(" - ", 1)
+    name, authors = title.split(separator, 1)
     return name.strip(), authors.strip()
 
 
@@ -115,6 +116,26 @@ def _read_project_metadata(readme: Path) -> tuple[str, str, tuple[str, ...], tup
         readme.parent.name,
     )
     title, authors = _split_heading(heading)
+    # Main's bilingual catalog carries original-reference authors separately
+    # from the formalization roster. Some short project landing pages omit
+    # those bibliographic fields, so use the owning catalog's exact project row.
+    if len(readme.parents) > 3:
+        root = readme.parents[3]
+        catalog = root / "README.md"
+        project_path = readme.parent.relative_to(root).as_posix()
+        if catalog.is_file():
+            for line in catalog.read_text(encoding="utf-8").splitlines():
+                match = re.match(r"\| \*\*\[([^]]+)\]\((?:\./)?" + re.escape(project_path)
+                                 + r"/\)\*\*<br><sub>(.*?)</sub>", line)
+                if match:
+                    title = match[1].strip()
+                    if not authors and re.search(r"[A-Za-z]", match[2]):
+                        authors = re.sub(r"<[^>]+>", "", match[2]).strip()
+                    break
+    if not authors:
+        match = re.search(r"^-\s+\*\*Authors?:\*\*\s*(.+)$", text, re.MULTILINE)
+        if match:
+            authors = match[1].strip()
     branches: list[str] = []
     urls: list[str] = []
     for match in SOURCE_LINK_RE.finditer(text):

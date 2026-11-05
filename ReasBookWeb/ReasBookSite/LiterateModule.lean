@@ -407,11 +407,11 @@ where
     let contents ← contents.mapM (ofInline tms)
     ``(Verso.Doc.Inline.link $(← arr contents) $(quote href))
   | .code str => do
-    let codeStr := String.join str.toList
-    if let some hl := tms[codeStr]? then
-      ``(Verso.Doc.Inline.other (InlineExt.highlightedCode codeOpts $(quote hl)) #[])
-    else
-      ``(Verso.Doc.Inline.code $(quote <| String.join str.toList))
+    -- Markdown backticks in prose also contain mathematical notation, which
+    -- need not elaborate as Lean. An empty/failed extracted term must never
+    -- erase the original hypotheses. Native declaration blocks keep their
+    -- semantic highlighting and hover information independently.
+    ``(Verso.Doc.Inline.code $(quote <| String.join str.toList))
   | .em txt => do ``(Verso.Doc.Inline.emph $(← arr (← txt.mapM (ofInline tms))))
   | .strong txt => do ``(Verso.Doc.Inline.bold $(← arr (← txt.mapM (ofInline tms))))
   | .img src _title alt => do

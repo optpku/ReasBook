@@ -50,6 +50,8 @@ PUBLISHED_VERSIONS = {
 }
 PUBLISHED_THEOREM_MAPS = set(PUBLISHED_DOCS) - {
     ("books", "IntegerProgramming_Conforti_2014"),
+    # The published Rockafellar Sum map currently contains no entries.
+    ("papers", "RockafellarSum_2026"),
 }
 PUBLISHED_VERSO = {
     ("papers", "glowinski_admm_counterexample"): "glowinski_admm_counterexample/paper/",

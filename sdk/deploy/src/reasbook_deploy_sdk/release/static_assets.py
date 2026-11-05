@@ -9,7 +9,7 @@ from html.parser import HTMLParser
 import json
 from pathlib import Path
 import re
-from urllib.parse import urljoin, urlsplit
+from urllib.parse import parse_qs, quote, unquote, urljoin, urlsplit
 
 from reasbook_sdk_common import atomic_write_text
 
@@ -36,6 +36,27 @@ _HTML_ATTRIBUTE = re.compile(
     r'''([^\s"'<>/=]+)(?:\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s"'=<>`]+)))?'''
 )
 
+_DOCUMENTATION_NAV_STYLE = """
+/* ReasBook readable module navigation */
+.nav .module_list, .nav .module_list details { min-width: 0; }
+.nav .nav_file { display: block; box-sizing: border-box; max-width: 100%;
+  white-space: normal; overflow-wrap: anywhere; }
+.nav .nav_file a, .nav .nav_link { white-space: normal; overflow-wrap: anywhere; }
+"""
+
+
+def improve_documentation_navigation(site: Path) -> dict[str, int]:
+    """Keep full module names readable without widening the page or hiding text."""
+    changed = 0
+    for path in Path(site).rglob('style.css'):
+        if path.is_symlink() or 'docs' not in path.relative_to(site).parts:
+            continue
+        content = path.read_text(encoding='utf-8')
+        if '.nav_file' in content and '.module_list' in content and _DOCUMENTATION_NAV_STYLE not in content:
+            atomic_write_text(path, content.rstrip() + '\n' + _DOCUMENTATION_NAV_STYLE)
+            changed += 1
+    return {'stylesheets': changed}
+
 
 class _ClassOpening(HTMLParser):
     def __init__(self):
@@ -44,6 +65,20 @@ class _ClassOpening(HTMLParser):
 
     def handle_starttag(self, tag, attrs):
         self.values = [set((value or "").split()) for key, value in attrs if key == "class"]
+
+
+class _DeclarationAnchors(HTMLParser):
+    def __init__(self, source: str):
+        super().__init__(convert_charrefs=True)
+        self.ids: set[str] = set()
+        self.stub = False
+        self.feed(source)
+
+    def handle_starttag(self, tag, attrs):
+        values = dict(attrs)
+        if values.get('id'):
+            self.ids.add(values['id'])
+        self.stub |= values.get('data-reasbook-doc-stub') == 'true'
 
 
 def _lean_markup_ranges(parts: list[str]) -> tuple[list[int], list[int], list[tuple[int, int, int, int, int]]]:
@@ -386,6 +421,102 @@ def compact_verso_intertext(site: Path) -> dict[str, int]:
     return {"pages": changed, "saved_bytes": saved, "wrappers": wrappers}
 
 
+def resolve_native_documentation_links(site: Path, base_path: str) -> dict[str, int]:
+    """Resolve native constants against the published declaration index.
+
+    Project-local declarations get their actual doc-gen target. Constants absent
+    from the bounded project index use mathlib's exact-name finder, explicitly
+    labeled as current upstream documentation, rather than a local 404 page.
+    Native token/hover markup and raw script/style contents are untouched.
+    """
+    site = Path(site).resolve()
+    indexes: dict[Path, dict] = {}
+    target_anchors: dict[Path, set[str]] = {}
+    pages = local = upstream = 0
+    for page in sorted(site.rglob('*.html')):
+        if 'docs' in page.relative_to(site).parts or page.is_symlink():
+            continue
+        head = _head(page)
+        if head is None or head.base_href is None:
+            continue
+        base = urlsplit(urljoin('https://reasbook.invalid' + base_path + page.relative_to(site).as_posix(), head.base_href))
+        if (base.netloc != 'reasbook.invalid' or base.query or base.fragment
+                or not re.fullmatch(re.escape(base_path) + r'versions/v[0-9.]+/', base.path)):
+            continue
+        doc_root = site / base.path[len(base_path):] / 'docs/ReasBook'
+        index = doc_root / 'declarations/declaration-data.bmp'
+        if doc_root not in indexes:
+            if index.is_symlink() or not index.is_file():
+                continue
+            payload = json.loads(index.read_text(encoding='utf-8'))
+            indexes[doc_root] = payload.get('declarations', {})
+        declarations = indexes[doc_root]
+        source = page.read_text(encoding='utf-8')
+        parts = _protected_parts(source)
+
+        def rewrite_link(match):
+            nonlocal local, upstream
+            tag = match.group(0)
+            if match.group(1).lower() != 'a' or tag.startswith('</'):
+                return tag
+            attributes = list(_HTML_ATTRIBUTE.finditer(tag, match.end(1) - match.start(), len(tag) - 1))
+            hrefs = [a for a in attributes if a.group(1).lower() == 'href']
+            titles = [a for a in attributes if a.group(1).lower() == 'title']
+            if len(hrefs) != 1 or len(titles) != 1:
+                return tag
+            def value(attr):
+                return next((v for v in attr.groups()[1:] if v is not None), '')
+            if html.unescape(value(titles[0])) != 'Documentation':
+                return tag
+            href = urlsplit(urljoin(base.geturl(), html.unescape(value(hrefs[0]))))
+            if (href.netloc != 'reasbook.invalid'
+                    or href.path.rstrip('/') != base.path + 'docs/ReasBook/find'):
+                return tag
+            query = parse_qs(href.query)
+            if set(query) != {'pattern'} or len(query['pattern']) != 1:
+                return tag
+            name = query['pattern'][0]
+            if not name or any(c in name for c in '\x00\r\n'):
+                return tag
+            entry = declarations.get(name)
+            target_href = entry.get('docLink') if isinstance(entry, dict) else None
+            title = 'Documentation'
+            if target_href:
+                destination = urlsplit(urljoin(base.geturl() + 'docs/ReasBook/', target_href))
+                target = (site / unquote(destination.path[len(base_path):])).resolve()
+                if (destination.netloc != 'reasbook.invalid' or not destination.path.startswith(base_path)
+                        or site not in target.parents or target.is_symlink() or not target.is_file()):
+                    return tag
+                if target not in target_anchors:
+                    probe = _DeclarationAnchors(target.read_text(encoding='utf-8'))
+                    target_anchors[target] = set() if probe.stub else probe.ids
+                if not destination.fragment or unquote(destination.fragment) not in target_anchors[target]:
+                    return tag
+                target_href = destination.path + '#' + destination.fragment
+                local += 1
+            else:
+                target_href = 'https://leanprover-community.github.io/mathlib4_docs/find/?pattern=' + quote(name, safe='') + '#doc'
+                title = 'Upstream documentation (current version): ' + name
+                upstream += 1
+            # Replace entire attributes so unquoted and differently quoted input
+            # still produces valid, escaped HTML.
+            for attribute, replacement in sorted([(hrefs[0], 'href="' + html.escape(target_href, quote=True) + '"'),
+                                                    (titles[0], 'title="' + html.escape(title, quote=True) + '"')],
+                                                   key=lambda edit: edit[0].start(), reverse=True):
+                tag = tag[:attribute.start()] + replacement + tag[attribute.end():]
+            return tag
+
+        # _protected_parts keeps executable/raw text exact. Native links have
+        # a dedicated title, so ordinary content links do not enter this path.
+        for i in range(0, len(parts), 2):
+            parts[i] = _HTML_TAG.sub(rewrite_link, parts[i])
+        result = ''.join(parts)
+        if result != source:
+            atomic_write_text(page, result)
+            pages += 1
+    return {'pages': pages, 'local': local, 'upstream': upstream}
+
+
 def relativize_native_documentation_links(site: Path, base_path: str) -> dict[str, int]:
     """Shorten native declaration links only when their complete URL is equal."""
     changed = saved = links = 0
@@ -469,6 +600,7 @@ def deduplicate_theorem_map_runtime(site: Path, base_path: str) -> dict[str, int
     """
     digest = '2e4fe91072268d06387a7b91d7ba11db9a235280df764d49399519faa5f5368d'
     applications = {
+        '04856d2078a6d85256a11ec194db838c26f31ca23666f3cd24b812e5cf19a0f3',  # Current SDK app; relocated Viz covered by browser canary.
         '39b8a52288092cc0e9b40c3d4445dab7d71a8dc28bee033ab53a0a286ec5ad41',
         'ba7d9b5219e591e5018467b079de9538aade4c39d49bb800c10adede25ae9c28',
         'a839b931d5d63ded7a05c64346c3fade4f736dddfa5413b9723493dd196d6cdb',

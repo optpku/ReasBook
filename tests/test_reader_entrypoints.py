@@ -107,7 +107,7 @@ class ReaderEntrypointsTests(unittest.TestCase):
             for path in re.findall(r"https://reasbook[.]reaslab[.]io([^\s)\[\]<>\"']*)", text):
                 self.assertRegex(
                     path,
-                    r"^(?:/?|/review/(?:books/[^/]+/)?|/artifacts/(?:projects/[^/]+/(?:"
+                    r"^(?:/?|/review/(?:books/[^/]+/(?:\?proof=(?:original|v21))?)?|/artifacts/(?:projects/[^/]+/(?:"
                     r"docs/ReasBook/.+[.]html|(?:books|papers)/[^/]+/(?:sections/[^/]+/)?"
                     r"|glowinski_admm_counterexample/paper/"
                     r"|theorem-maps/(?:books|papers)/[^/]+/(?:v[0-9]+/)?(?:\?view=(?:paper|lean))?)?)?)$",

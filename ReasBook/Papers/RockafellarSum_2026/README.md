@@ -1,6 +1,6 @@
 # Technical note: a counterexample to the Rockafellar sum conjecture on c₀
 
-**Published reading (v4.32.0):** [Verso](https://optpku.github.io/ReasBook/versions/v4.32.0/papers/rockafellarsum_2026/) · [Documentation](https://optpku.github.io/ReasBook/versions/v4.32.0/docs/ReasBook/RockafellarSum_2026/Paper.html) · [Theorem map](https://optpku.github.io/ReasBook/versions/v4.32.0/theorem-maps/papers/rockafellarsum_2026/)
+**Published reading (v4.32.0):** [Verso](https://optpku.github.io/ReasBook/versions/v4.32.0/papers/rockafellarsum_2026/) · [Documentation](https://optpku.github.io/ReasBook/versions/v4.32.0/docs/ReasBook/RockafellarSum_2026/Paper.html)
 
 **Project-level formalization contributors:** Zichen Wang.
 

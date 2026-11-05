@@ -690,6 +690,10 @@ class ReleaseAcceptanceRunner:
                     "theorem-map",
                     Path("theorem-maps") / project.kind / project.slug,
                 )
+                if not self.spec.include_historical_versions:
+                    self._validate_theorem_map_content(
+                        site / "theorem-maps" / project.kind / project.slug, project,
+                    )
 
         if self.spec.include_historical_versions:
             projects = (
@@ -743,7 +747,28 @@ class ReleaseAcceptanceRunner:
                         "version-theorem-map",
                         version_root / "theorem-maps" / project.kind / project.slug,
                     )
+                    self._validate_theorem_map_content(
+                        site / version_root / "theorem-maps" / project.kind / project.slug,
+                        project,
+                    )
         return tuple(routes)
+
+    @staticmethod
+    def _validate_theorem_map_content(directory: Path, project: ProjectSpec) -> None:
+        # This existing project is explicitly documented as an empty skeleton.
+        # It has no mathematical graph to advertise in the collection catalog.
+        if project.project_id == "IntegerProgramming_Conforti_2014":
+            return
+        path = directory / "data.json"
+        try:
+            if path.is_symlink() or not path.is_file():
+                raise ValueError("missing graph data")
+            data = json.loads(path.read_text(encoding="utf-8"))
+            items = data.get("items")
+            if not isinstance(items, list) or not items:
+                raise ValueError("no published graph statements")
+        except (OSError, ValueError, AttributeError) as exc:
+            raise DeployExecutionError(f"empty or invalid theorem map for {project.key}: {exc}") from exc
 
     def _requires_verso(self, project: ProjectSpec) -> bool:
         return (
