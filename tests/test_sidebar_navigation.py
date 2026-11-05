@@ -365,6 +365,35 @@ class SidebarInventoryTests(unittest.TestCase):
 @unittest.skipUnless(os.environ.get("REASBOOK_SIDEBAR_BROWSER_TEST") == "1",
                      "Set REASBOOK_SIDEBAR_BROWSER_TEST=1 to run browser checks")
 class SidebarBrowserTests(unittest.TestCase):
+    def test_documentation_iframe_keeps_long_module_headings_readable(self):
+        import ast
+        from playwright.sync_api import sync_playwright
+
+        module = ast.parse((ROOT / 'sdk/deploy/src/reasbook_deploy_sdk/release/static_assets.py').read_text())
+        css = next(ast.literal_eval(node.value) for node in module.body
+                   if isinstance(node, ast.Assign)
+                   and any(isinstance(target, ast.Name) and target.id == '_DOCUMENTATION_NAV_STYLE'
+                           for target in node.targets))
+        name = 'ConvexAnalysisMonotoneOperators_BauschkeCombettes_2017'
+        navbar = ('<style>.nav{width:255px;font:16px sans-serif}' + css + '</style>'
+                  + '<nav class="nav"><div class="module_list"><details open><summary>' + name
+                  + '</summary><div class="nav_link"><a href="Book.html">' + name
+                  + '</a></div></details></div></nav>')
+        with sync_playwright() as p:
+            browser = p.chromium.launch(headless=True)
+            page = browser.new_page(viewport={'width': 500, 'height': 700})
+            page.route('https://docs.test/navbar.html', lambda route: route.fulfill(
+                status=200, content_type='text/html', body=navbar))
+            page.set_content('<iframe class="navframe" src="https://docs.test/navbar.html" width="280"></iframe>')
+            frame = page.frame_locator('iframe.navframe')
+            frame.locator('summary').wait_for()
+            for selector in ('summary', '.nav_link'):
+                element = frame.locator(selector)
+                self.assertEqual(element.inner_text(), name)
+                self.assertTrue(element.evaluate('(e)=>e.scrollWidth<=e.clientWidth+1'))
+                self.assertGreater(element.bounding_box()['height'], 20)
+            browser.close()
+
     def test_book_bibliography_is_separate_and_repeated_enhancement_is_safe(self):
         from playwright.sync_api import expect, sync_playwright
 
