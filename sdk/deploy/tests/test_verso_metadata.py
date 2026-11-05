@@ -16,7 +16,8 @@ class Probe(HTMLParser):
     def handle_starttag(self, tag, attrs):
         attributes = dict(attrs)
         if tag == 'span' and ('data-binding' in attributes or 'data-b' in attributes):
-            self.bindings.append(attributes.get('data-b', attributes.get('data-binding')))
+            # HTML's valueless data attribute is the same empty DOM string.
+            self.bindings.append(attributes.get('data-b', attributes.get('data-binding')) or '')
         for key in ['href', 'src']:
             if key in attributes:
                 self.links.append(attributes[key])

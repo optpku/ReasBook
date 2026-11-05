@@ -5,6 +5,24 @@ import unittest
 from reasbook_deploy_sdk.release.artifacts import PagesSiteProjector
 
 class ChapterAliasTests(unittest.TestCase):
+    def test_flat_chapter_alias_keeps_query_fragment_and_distinct_content(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            canonical = root / 'versions/v4.30.0/books/demo/chapters/chap02/index.html'
+            alias = root / 'versions/v4.30.0/demo/chap02/index.html'
+            for path in (canonical, alias):
+                path.parent.mkdir(parents=True)
+            modern = '/ReasBook/versions/v4.30.0/books/demo/chapters/chap02/'
+            old = '/ReasBook/versions/v4.30.0/demo/chap02/'
+            page = '<script>window.__versoSiteRoot="/ReasBook/";</script><a href="' + modern + '#item">x</a>'
+            canonical.write_text(page)
+            alias.write_text(page.replace(modern, old))
+            report = PagesSiteProjector()._deduplicate_chapter_aliases(SimpleNamespace(base_path='/ReasBook/'), root)
+            self.assertEqual(report['aliases'], 1)
+            self.assertIn('location.search+location.hash', alias.read_text())
+            self.assertIn(modern, alias.read_text())
+            self.assertEqual(canonical.read_text(), page)
+
     def test_only_complete_equivalent_native_pages_become_redirects(self):
         with tempfile.TemporaryDirectory() as temp:
             root=Path(temp)

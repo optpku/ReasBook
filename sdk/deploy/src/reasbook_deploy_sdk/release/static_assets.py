@@ -6,8 +6,10 @@ from bisect import bisect_right
 import hashlib
 import html
 from html.parser import HTMLParser
+import json
 from pathlib import Path
 import re
+from urllib.parse import urljoin, urlsplit
 
 from reasbook_sdk_common import atomic_write_text
 
@@ -30,6 +32,9 @@ _VOID_TAGS = frozenset({
     "area", "base", "br", "col", "embed", "hr", "img", "input", "link",
     "meta", "param", "source", "track", "wbr",
 })
+_HTML_ATTRIBUTE = re.compile(
+    r'''([^\s"'<>/=]+)(?:\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s"'=<>`]+)))?'''
+)
 
 
 class _ClassOpening(HTMLParser):
@@ -120,6 +125,7 @@ class _Head(HTMLParser):
         self.in_head = False
         self.closed = False
         self.csp = False
+        self.base_href: str | None = None
         self.hidden = 0
         self.active: tuple[str, int, int] | None = None
         self.blocks: list[tuple[int, int, str, str]] = []
@@ -134,6 +140,9 @@ class _Head(HTMLParser):
         if tag in {"template", "noscript"}:
             self.hidden += 1
         values = dict(attrs)
+        hrefs = [value for key, value in attrs if key == 'href']
+        if tag == 'base' and self.in_head and not self.hidden and self.base_href is None and hrefs:
+            self.base_href = hrefs[0] or ''
         if tag == "meta" and (values.get("http-equiv") or "").lower() == "content-security-policy":
             self.csp = True
         if self.in_head and not self.hidden and tag in {"style", "script"} and not attrs:
@@ -297,7 +306,8 @@ def compact_verso_metadata(site: Path, base_path: str) -> dict[str, int]:
 
         def rewrite_tag(match):
             tag = match.group()
-            tag = binding.sub(lambda m: 'data-b="' + handles.get(html.unescape(m.group(1)), m.group(1)) + '"', tag)
+            tag = binding.sub(lambda m: ('data-b' if not m.group(1) else
+                              'data-b="' + handles.get(html.unescape(m.group(1)), m.group(1)) + '"'), tag)
             return quotes.sub(lambda m: m.group(1) + "=" + m.group(2), tag)
 
         for index, part in enumerate(parts):
@@ -374,3 +384,123 @@ def compact_verso_intertext(site: Path) -> dict[str, int]:
             saved += len(source.encode()) - len(result.encode())
             wrappers += count
     return {"pages": changed, "saved_bytes": saved, "wrappers": wrappers}
+
+
+def relativize_native_documentation_links(site: Path, base_path: str) -> dict[str, int]:
+    """Shorten native declaration links only when their complete URL is equal."""
+    changed = saved = links = 0
+    for path in sorted(Path(site).rglob('*.html')):
+        if 'docs' in path.relative_to(site).parts:
+            continue
+        head = _head(path)
+        if head is None or head.base_href is None:
+            continue
+        page_url = 'https://reasbook.invalid' + base_path + path.relative_to(site).as_posix()
+        base_url = urljoin(page_url, head.base_href)
+        base = urlsplit(base_url)
+        if (base.netloc != 'reasbook.invalid' or base.query or base.fragment
+                or not re.fullmatch(re.escape(base_path) + r'versions/v[0-9.]+/', base.path)):
+            continue
+        source = path.read_text(encoding='utf-8')
+        if _INERT_CONTAINER.search(source):
+            continue
+        parts = _protected_parts(source)
+        _, _, blocks = _lean_markup_ranges(parts)
+        edits: dict[int, list[tuple[int, int, str]]] = {}
+        count = 0
+
+        def rewrite_link(match):
+            nonlocal count
+            if match.group(1).lower() != 'a' or match.group(0).startswith('</'):
+                return match.group(0)
+            tag = match.group(0)
+            start = match.end(1) - match.start()
+            attributes = list(_HTML_ATTRIBUTE.finditer(tag, start, len(tag) - 1))
+            hrefs = [a for a in attributes if a.group(1).lower() == 'href']
+            titles = [a for a in attributes if a.group(1).lower() == 'title']
+            if len(hrefs) != 1 or len(titles) != 1:
+                return tag
+            title = next((v for v in titles[0].groups()[1:] if v is not None), '')
+            if html.unescape(title) != 'Documentation':
+                return tag
+            attribute = hrefs[0]
+            group = next((i for i in (2, 3) if attribute.group(i) is not None), None)
+            if group is None:
+                return tag
+            value = attribute.group(group)
+            if not value.startswith(base.path + 'docs/'):
+                return tag
+            relative = value[len(base.path):]
+            if urljoin(base_url, html.unescape(relative)) != urljoin(base_url, html.unescape(value)):
+                return tag
+            count += 1
+            return tag[:attribute.start(group)] + relative + tag[attribute.end(group):]
+
+        for index, start, content_start, content_end, end in blocks:
+            parser = _ClassOpening()
+            parser.feed(parts[index][start:content_start])
+            if len(parser.values) != 1 or not {'hl', 'lean', 'block'}.issubset(parser.values[0]):
+                continue
+            content = parts[index][content_start:content_end]
+            compact = _HTML_TAG.sub(rewrite_link, content)
+            if compact != content:
+                edits.setdefault(index, []).append((content_start, content_end, compact))
+        for index, changes in edits.items():
+            original, chunks, position = parts[index], [], 0
+            for start, end, replacement in changes:
+                chunks.extend([original[position:start], replacement])
+                position = end
+            chunks.append(original[position:])
+            parts[index] = ''.join(chunks)
+        result = ''.join(parts)
+        if result != source:
+            atomic_write_text(path, result)
+            changed += 1
+            links += count
+            saved += len(source.encode()) - len(result.encode())
+    return {'pages': changed, 'links': links, 'saved_bytes': saved}
+
+
+def deduplicate_theorem_map_runtime(site: Path, base_path: str) -> dict[str, int]:
+    """Share a pinned standalone Viz build verified to render after relocation.
+
+    Unknown distributions remain at their original locations. The actual
+    runtime, including its complete third-party notices, stays byte-identical.
+    """
+    digest = '2e4fe91072268d06387a7b91d7ba11db9a235280df764d49399519faa5f5368d'
+    applications = {
+        '39b8a52288092cc0e9b40c3d4445dab7d71a8dc28bee033ab53a0a286ec5ad41',
+        'ba7d9b5219e591e5018467b079de9538aade4c39d49bb800c10adede25ae9c28',
+        'a839b931d5d63ded7a05c64346c3fade4f736dddfa5413b9723493dd196d6cdb',
+        '9f06f9f9c1899766128bdb07ab6db71a956f3ddb14115055f6cd2313cd4dc2dc',
+    }
+    root = Path(site)
+    candidates = []
+    literal = 'script.src = "./vendor/viz-global.js";'
+    for runtime in sorted(root.glob('versions/*/theorem-maps/**/vendor/viz-global.js')):
+        app = runtime.parent.parent / 'app.js'
+        if runtime.is_symlink() or app.is_symlink() or not app.is_file():
+            continue
+        source = runtime.read_bytes()
+        script_bytes = app.read_bytes()
+        script = script_bytes.decode('utf-8')
+        if (hashlib.sha256(source).hexdigest() == digest
+                and hashlib.sha256(script_bytes).hexdigest() in applications
+                and script.count(literal) == 1):
+            candidates.append((runtime, app, source, script))
+    if len(candidates) < 2:
+        return {'runtimes': 0, 'saved_bytes': 0}
+    relative = Path('static/shared-theorem-maps') / (digest + '.js')
+    shared = root / relative
+    shared.parent.mkdir(parents=True, exist_ok=True)
+    if shared.exists() and (shared.is_symlink() or shared.read_bytes() != candidates[0][2]):
+        raise ValueError('shared theorem-map runtime collision')
+    shared.write_bytes(candidates[0][2])
+    replacement = 'script.src = ' + json.dumps(base_path + relative.as_posix()) + ';'
+    saved = -shared.stat().st_size
+    for runtime, app, source, script in candidates:
+        updated = script.replace(literal, replacement)
+        app.write_text(updated, encoding='utf-8')
+        runtime.unlink()
+        saved += len(source) + len(script.encode()) - len(updated.encode())
+    return {'runtimes': len(candidates), 'saved_bytes': saved}

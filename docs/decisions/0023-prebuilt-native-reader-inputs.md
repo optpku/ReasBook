@@ -59,6 +59,19 @@ containers, recognize real attributes including character references, and keep
 unclosed or cross-raw-text code unchanged. Apply independent edits in one join
 per HTML segment. Inert/raw-text content and existing API pages remain intact.
 Duplicate chapter aliases become query/fragment-preserving redirects only when
-the complete native HTML is equal after normalizing its own page URL. No distinct
-mathematical or proof page is removed. Projection audits record bytes saved per
-stage, and the Pages hard limit plus the release planning budget still apply.
+the complete native HTML is equal after normalizing its own page URL. This covers
+both book-scoped and flat historical chapter paths. Root theorem-map trees may
+use entry redirects only after every original file matches its canonical version
+counterpart; otherwise retain the original tree. Keep every HTML entry, including
+alternate views, and preserve queries and fragments. The graph catalog uses
+identity-checked project metadata titles rather than the graph UI's generic title.
+
+Native declaration links may drop a redundant version prefix only when resolving
+them against the first effective base yields the same complete URL. Valueless
+empty binding attributes keep their original empty DOM string and event behavior.
+Share only the byte-pinned standalone Viz runtime with byte-pinned known loader
+applications, changing their loader URL alone. Its relocation must pass actual
+WASM instantiation and rendering; unknown runtime/application bytes are retained.
+Keep third-party notices intact. No distinct mathematical or proof page is
+removed. Projection audits record bytes saved per stage, and the Pages hard limit
+plus the release planning budget still apply.
