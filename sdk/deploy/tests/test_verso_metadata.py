@@ -16,7 +16,8 @@ class Probe(HTMLParser):
     def handle_starttag(self, tag, attrs):
         attributes = dict(attrs)
         if tag == 'span' and ('data-binding' in attributes or 'data-b' in attributes):
-            self.bindings.append(attributes.get('data-b', attributes.get('data-binding')))
+            # HTML's valueless data attribute is the same empty DOM string.
+            self.bindings.append(attributes.get('data-b', attributes.get('data-binding')) or '')
         for key in ['href', 'src']:
             if key in attributes:
                 self.links.append(attributes[key])
@@ -82,6 +83,78 @@ class VersoMetadataTests(unittest.TestCase):
 
 
 class NativeWhitespaceTests(unittest.TestCase):
+    def compact(self, source):
+        from reasbook_deploy_sdk.release.static_assets import compact_verso_intertext
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            page = root / 'index.html'
+            page.write_text('<script>window.__versoSiteRoot="/ReasBook/";</script>' + source)
+            report = compact_verso_intertext(root)
+            return page.read_text(), report
+
+    def test_diagnostic_does_not_disable_compaction_of_other_blocks(self):
+        space = '<span class="inter-text"> &lt;\n </span>'
+        clean = '<code class="hl lean block"><span data-verso-hover="7">x</span>' + space + '</code>'
+        diagnostic = '<div class="has-info"><div>' + clean + '</div></div>'
+        source = diagnostic + clean + '<span class="has-info">notice</span>' + clean
+        result, report = self.compact(source)
+        self.assertIn(diagnostic, result)
+        self.assertEqual(report['wrappers'], 2)
+        self.assertEqual(result.count(space), 1)
+        before, after = Probe(), Probe()
+        before.feed('<script>window.__versoSiteRoot="/ReasBook/";</script>' + source)
+        after.feed(result)
+        self.assertEqual(''.join(before.text), ''.join(after.text))
+        self.assertEqual(result.count('data-verso-hover="7"'), 3)
+
+    def test_nested_diagnostic_code_keeps_entire_outer_block(self):
+        space = '<span class="inter-text"> </span>'
+        nested = ('<code class="hl lean block">' + space
+                  + '<code class="verso-message">message</code>'
+                  + '<span class="has-info">diagnostic</span>' + space + '</code>')
+        clean = '<code class="hl lean block">x' + space + '</code>'
+        result, report = self.compact(nested + clean)
+        self.assertIn(nested, result)
+        self.assertEqual(report['wrappers'], 1)
+
+    def test_entity_encoded_diagnostic_class_keeps_its_code_unchanged(self):
+        space = '<span class="inter-text"> </span>'
+        clean = '<code class="hl lean block">x' + space + '</code>'
+        diagnostic = '<div class="has&#45;info">' + clean + '</div>'
+        result, report = self.compact(diagnostic + clean)
+        self.assertIn(diagnostic, result)
+        self.assertEqual(report['wrappers'], 1)
+
+    def test_diagnostic_matching_ignores_raw_text_comments_and_quoted_tags(self):
+        space = '<span class="inter-text"> </span>'
+        clean = '<code class="hl lean block">x' + space + '</code>'
+        diagnostic = ('<div class = "has-info"><div data-note="</div>">'
+                      + '<!-- </div></div> --><script>const text="</div></div>";</script>'
+                      + '<style>/* </div></div> */</style>' + clean + '</div></div>')
+        result, report = self.compact(diagnostic + clean)
+        self.assertIn(diagnostic, result)
+        self.assertEqual(report['wrappers'], 1)
+
+    def test_unclosed_diagnostic_and_unbalanced_code_remain_unchanged(self):
+        space = '<span class="inter-text"> </span>'
+        clean = '<code class="hl lean block">x' + space + '</code>'
+        for source in ['<div class="has-info">' + clean,
+                       '<code class="hl lean block">' + clean,
+                       '<code class="hl lean block">' + space + '<!-- comment --></code>',
+                       '<code class="hl lean block" class="other">' + space + '</code>']:
+            with self.subTest(source=source):
+                result, report = self.compact(source)
+                self.assertTrue(result.endswith(source))
+                self.assertEqual(report['wrappers'], 0)
+
+    def test_fake_diagnostic_attributes_and_void_elements_do_not_hide_clean_code(self):
+        space = '<span class="inter-text"> </span>'
+        clean = '<code class="hl lean block">x' + space + '</code>'
+        source = '<div data-class="has-info">' + clean + '</div><br class="has-info">' + clean
+        result, report = self.compact(source)
+        self.assertEqual(report['wrappers'], 2)
+        self.assertIn('<br class="has-info">', result)
+
     def test_compaction_preserves_text_hovers_and_api_bytes(self):
         from reasbook_deploy_sdk.release.static_assets import compact_verso_intertext
         with tempfile.TemporaryDirectory() as temp:
