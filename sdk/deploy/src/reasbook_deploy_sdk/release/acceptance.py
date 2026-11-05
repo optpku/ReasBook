@@ -761,6 +761,11 @@ class ReleaseAcceptanceRunner:
             return
         path = directory / "data.json"
         try:
+            if not path.exists() and not path.is_symlink():
+                from .curated_map import validate_curated_map
+
+                validate_curated_map(directory, project)
+                return
             if path.is_symlink() or not path.is_file():
                 raise ValueError("missing graph data")
             data = json.loads(path.read_text(encoding="utf-8"))
