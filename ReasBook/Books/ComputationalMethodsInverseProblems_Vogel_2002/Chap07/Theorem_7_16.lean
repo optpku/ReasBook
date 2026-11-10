@@ -77,59 +77,16 @@ formulation. -/
 theorem optimalFamily_eventuallyAvoidsBoundary
     (h_vanishingNullspaceComponent :
       FilterRegularization.HasVanishingNullspaceComponent K fTrue) :
-    ∀ᶠ n in Filter.atTop, 0 < mE n ∧ mE n < n := by
-  filter_upwards [expectedSqErrorObjective_one_lt_zero_eventually
-      (μ := μ) (K := K) (S := S) (h_length := h_length) (fTrue := fTrue)
-      (b := b) (c := c) (p := p) (q := q) (σ := σ) (η := η) (Rtsvd := Rtsvd)
-      (h_b := h_b) (h_c := h_c) (h_p := h_p) (h_q := h_q) (h_σ := h_σ)
-      (h_noise_memLp := h_noise_memLp) (h_noise_meanZero := h_noise_meanZero)
-      (h_noise_modeVariance := h_noise_modeVariance)
-      (h_singularDecay := h_singularDecay) (h_fourierDecay := h_fourierDecay)
-      (h_tsvd := h_tsvd),
-    expectedSqErrorObjective_pred_lt_self_eventually
-      (μ := μ) (K := K) (S := S) (h_length := h_length) (fTrue := fTrue)
-      (b := b) (c := c) (p := p) (q := q) (σ := σ) (η := η) (Rtsvd := Rtsvd)
-      (h_b := h_b) (h_c := h_c) (h_p := h_p) (h_q := h_q) (h_σ := h_σ)
-      (h_noise_memLp := h_noise_memLp) (h_noise_meanZero := h_noise_meanZero)
-      (h_noise_modeVariance := h_noise_modeVariance)
-      (h_singularDecay := h_singularDecay) (h_fourierDecay := h_fourierDecay)
-      (h_tsvd := h_tsvd),
-    expectedSqErrorObjective_step_self_pos_eventually
-      (μ := μ) (K := K) (S := S) (h_length := h_length) (fTrue := fTrue)
-      (b := b) (c := c) (p := p) (q := q) (σ := σ) (η := η) (Rtsvd := Rtsvd)
-      (h_b := h_b) (h_c := h_c) (h_p := h_p) (h_q := h_q) (h_σ := h_σ)
-      (h_noise_memLp := h_noise_memLp) (h_noise_meanZero := h_noise_meanZero)
-      (h_noise_modeVariance := h_noise_modeVariance)
-      (h_singularDecay := h_singularDecay) (h_fourierDecay := h_fourierDecay)
-      (h_tsvd := h_tsvd),
-    Filter.eventually_ge_atTop (1 : ℕ)] with n hone hpred hpos hn1
-  have hnpos : 0 < n := hn1
-  have hmin : ∀ y ∈ Set.Icc 0 n,
-      expectedSqErrorObjective μ K Rtsvd fTrue η n (mE n) ≤
-        expectedSqErrorObjective μ K Rtsvd fTrue η n y := by
-    have h := h_estOptimal n
-    rw [isMinOn_iff] at h
-    simpa [admissibleIndexSet] using h
-  constructor
-  · -- The boundary index `0` is strictly beaten by the neighbouring index `1`.
-    by_contra hnot
-    have hzero : mE n = 0 := Nat.eq_zero_of_not_pos hnot
-    have hle := hmin 1 ⟨by norm_num, hn1⟩
-    rw [hzero] at hle
-    linarith
-  · -- Beyond `n` the objective is nondecreasing, so no minimizer can exceed `n`.
-    by_contra hnot
-    have hge : n ≤ mE n := Nat.le_of_not_lt hnot
-    have hmono := expectedSqErrorObjective_mono_of_step_pos
-      (μ := μ) (K := K) (S := S) (h_length := h_length) (fTrue := fTrue)
-      (b := b) (c := c) (p := p) (q := q) (σ := σ) (η := η) (Rtsvd := Rtsvd)
-      (h_b := h_b) (h_c := h_c) (h_p := h_p) (h_q := h_q) (h_σ := h_σ)
-      (h_noise_memLp := h_noise_memLp) (h_noise_meanZero := h_noise_meanZero)
-      (h_noise_modeVariance := h_noise_modeVariance)
-      (h_singularDecay := h_singularDecay) (h_fourierDecay := h_fourierDecay)
-      (h_tsvd := h_tsvd) hnpos hpos hge
-    have hle := hmin (n - 1) ⟨Nat.zero_le _, by omega⟩
-    linarith
+    ∀ᶠ n in Filter.atTop, 0 < mE n ∧ mE n < n :=
+  expectedSqErrorObjective_minimizer_interior_eventually
+    (μ := μ) (K := K) (S := S) (h_length := h_length) (fTrue := fTrue)
+    (b := b) (c := c) (p := p) (q := q) (σ := σ) (η := η) (Rtsvd := Rtsvd)
+    (mE := mE)
+    (h_b := h_b) (h_c := h_c) (h_p := h_p) (h_q := h_q) (h_σ := h_σ)
+    (h_noise_memLp := h_noise_memLp) (h_noise_meanZero := h_noise_meanZero)
+    (h_noise_modeVariance := h_noise_modeVariance)
+    (h_singularDecay := h_singularDecay) (h_fourierDecay := h_fourierDecay)
+    (h_tsvd := h_tsvd) (hmin := fun n ↦ h_estOptimal n)
 
 /-- Theorem 7.16 (1). Under the concrete Chapter 7 positivity, semistochastic
 white-noise, and algebraic decay hypotheses for the TSVD expected squared

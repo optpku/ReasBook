@@ -220,6 +220,67 @@ theorem expectedSqErrorObjective_pred_lt_self_eventually :
     (h_tsvd := h_tsvd) (hm := hnpos)
   linarith
 
+/-- Helper for Theorems 7.16 and 7.18: any family minimizing the TSVD expected
+squared estimation-error objective on `𝒵(n)` eventually avoids the boundary
+values `0` and `n`, because the neighbouring indices `1` and `n - 1` are
+eventually strictly better. -/
+theorem expectedSqErrorObjective_minimizer_interior_eventually
+    {mE : ℕ → ℕ}
+    (hmin :
+      ∀ n,
+        IsMinOn (expectedSqErrorObjective μ K Rtsvd fTrue η n) (admissibleIndexSet n) (mE n)) :
+    ∀ᶠ n in Filter.atTop, 0 < mE n ∧ mE n < n := by
+  filter_upwards [expectedSqErrorObjective_one_lt_zero_eventually
+      (μ := μ) (K := K) (S := S) (h_length := h_length) (fTrue := fTrue)
+      (b := b) (c := c) (p := p) (q := q) (σ := σ) (η := η) (Rtsvd := Rtsvd)
+      (h_b := h_b) (h_c := h_c) (h_p := h_p) (h_q := h_q) (h_σ := h_σ)
+      (h_noise_memLp := h_noise_memLp) (h_noise_meanZero := h_noise_meanZero)
+      (h_noise_modeVariance := h_noise_modeVariance)
+      (h_singularDecay := h_singularDecay) (h_fourierDecay := h_fourierDecay)
+      (h_tsvd := h_tsvd),
+    expectedSqErrorObjective_pred_lt_self_eventually
+      (μ := μ) (K := K) (S := S) (h_length := h_length) (fTrue := fTrue)
+      (b := b) (c := c) (p := p) (q := q) (σ := σ) (η := η) (Rtsvd := Rtsvd)
+      (h_b := h_b) (h_c := h_c) (h_p := h_p) (h_q := h_q) (h_σ := h_σ)
+      (h_noise_memLp := h_noise_memLp) (h_noise_meanZero := h_noise_meanZero)
+      (h_noise_modeVariance := h_noise_modeVariance)
+      (h_singularDecay := h_singularDecay) (h_fourierDecay := h_fourierDecay)
+      (h_tsvd := h_tsvd),
+    expectedSqErrorObjective_step_self_pos_eventually
+      (μ := μ) (K := K) (S := S) (h_length := h_length) (fTrue := fTrue)
+      (b := b) (c := c) (p := p) (q := q) (σ := σ) (η := η) (Rtsvd := Rtsvd)
+      (h_b := h_b) (h_c := h_c) (h_p := h_p) (h_q := h_q) (h_σ := h_σ)
+      (h_noise_memLp := h_noise_memLp) (h_noise_meanZero := h_noise_meanZero)
+      (h_noise_modeVariance := h_noise_modeVariance)
+      (h_singularDecay := h_singularDecay) (h_fourierDecay := h_fourierDecay)
+      (h_tsvd := h_tsvd),
+    Filter.eventually_ge_atTop (1 : ℕ)] with n hone hpred hpos hn1
+  have hnpos : 0 < n := hn1
+  have hlow : ∀ y ∈ Set.Icc 0 n,
+      expectedSqErrorObjective μ K Rtsvd fTrue η n (mE n) ≤
+        expectedSqErrorObjective μ K Rtsvd fTrue η n y := by
+    have h := hmin n
+    rw [isMinOn_iff] at h
+    simpa [admissibleIndexSet] using h
+  constructor
+  · by_contra hnot
+    have hzero : mE n = 0 := Nat.eq_zero_of_not_pos hnot
+    have hle := hlow 1 ⟨by norm_num, hn1⟩
+    rw [hzero] at hle
+    linarith
+  · by_contra hnot
+    have hge : n ≤ mE n := Nat.le_of_not_lt hnot
+    have hmono := expectedSqErrorObjective_mono_of_step_pos
+      (μ := μ) (K := K) (S := S) (h_length := h_length) (fTrue := fTrue)
+      (b := b) (c := c) (p := p) (q := q) (σ := σ) (η := η) (Rtsvd := Rtsvd)
+      (h_b := h_b) (h_c := h_c) (h_p := h_p) (h_q := h_q) (h_σ := h_σ)
+      (h_noise_memLp := h_noise_memLp) (h_noise_meanZero := h_noise_meanZero)
+      (h_noise_modeVariance := h_noise_modeVariance)
+      (h_singularDecay := h_singularDecay) (h_fourierDecay := h_fourierDecay)
+      (h_tsvd := h_tsvd) hnpos hpos hge
+    have hle := hlow (n - 1) ⟨Nat.zero_le _, by omega⟩
+    linarith
+
 end Boundary
 
 end TsvdEstimation
