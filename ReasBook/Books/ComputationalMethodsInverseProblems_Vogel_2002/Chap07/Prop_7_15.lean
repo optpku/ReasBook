@@ -65,7 +65,7 @@ variable
   (hm_lt : mStar < n)
 
 include h_b h_c h_p h_q h_σ h_noise_memLp h_noise_meanZero h_noise_modeVariance
-  h_singularDecay h_fourierDecay h_tsvd h_min hm_pos hm_lt
+  h_singularDecay h_fourierDecay h_tsvd
 
 /-- Helper for Proposition 7.15: truncating TSVD from `m - 1` to `m` adds
 exactly the new singular mode. -/
@@ -143,12 +143,12 @@ theorem previousError_stepModeCoefficient_eq_negSignal
       (inner_stepMode_reconstructionPrev_eq_zero
         (μ := μ) (K := K) (S := S) (h_length := h_length) (fTrue := fTrue)
         (b := b) (c := c) (p := p) (q := q) (σ := σ) (η := η)
-        (Rtsvd := Rtsvd) (n := n) (m := m) (mStar := mStar)
+        (Rtsvd := Rtsvd) (n := n) (m := m)
         (h_b := h_b) (h_c := h_c) (h_p := h_p) (h_q := h_q) (h_σ := h_σ)
         (h_noise_memLp := h_noise_memLp) (h_noise_meanZero := h_noise_meanZero)
         (h_noise_modeVariance := h_noise_modeVariance)
         (h_singularDecay := h_singularDecay) (h_fourierDecay := h_fourierDecay)
-        (h_tsvd := h_tsvd) (h_min := h_min) (hm_pos := hm_pos) (hm_lt := hm_lt)
+        (h_tsvd := h_tsvd)
         hm ((K n) fTrue + η n ω))
   -- Expand the error and use the vanishing predecessor coefficient.
   rw [FilterRegularization.estimationError_def, inner_sub_right, hprev_zero, zero_sub]
@@ -191,12 +191,12 @@ theorem backwardErrors_commonRemainder
         rw [previousError_stepModeCoefficient_eq_negSignal
           (μ := μ) (K := K) (S := S) (h_length := h_length) (fTrue := fTrue)
           (b := b) (c := c) (p := p) (q := q) (σ := σ) (η := η)
-          (Rtsvd := Rtsvd) (n := n) (mStar := mStar)
+          (Rtsvd := Rtsvd) (n := n)
           (h_b := h_b) (h_c := h_c) (h_p := h_p) (h_q := h_q) (h_σ := h_σ)
           (h_noise_memLp := h_noise_memLp) (h_noise_meanZero := h_noise_meanZero)
           (h_noise_modeVariance := h_noise_modeVariance)
           (h_singularDecay := h_singularDecay) (h_fourierDecay := h_fourierDecay)
-          (h_tsvd := h_tsvd) (h_min := h_min) (hm_pos := hm_pos) (hm_lt := hm_lt)
+          (h_tsvd := h_tsvd)
           hm ω, inner_smul_right]
       _ = 0 := by rw [huu]; ring
   ·
@@ -224,12 +224,12 @@ theorem backwardErrors_commonRemainder
                 rw [tsvdReconstructionStep_apply
                   (μ := μ) (K := K) (S := S) (h_length := h_length) (fTrue := fTrue)
                   (b := b) (c := c) (p := p) (q := q) (σ := σ) (η := η)
-                  (Rtsvd := Rtsvd) (n := n) (m := m) (mStar := mStar)
+                  (Rtsvd := Rtsvd) (n := n) (m := m)
                   (h_b := h_b) (h_c := h_c) (h_p := h_p) (h_q := h_q) (h_σ := h_σ)
                   (h_noise_memLp := h_noise_memLp) (h_noise_meanZero := h_noise_meanZero)
                   (h_noise_modeVariance := h_noise_modeVariance)
                   (h_singularDecay := h_singularDecay) (h_fourierDecay := h_fourierDecay)
-                  (h_tsvd := h_tsvd) (h_min := h_min) (hm_pos := hm_pos) (hm_lt := hm_lt)
+                  (h_tsvd := h_tsvd)
                   hm ((K n) fTrue + η n ω)]
         _ = ePrev + (((1 / (S n).singularValue j) *
               inner ℝ v ((K n) fTrue + η n ω)) • u) := by
@@ -240,12 +240,12 @@ theorem backwardErrors_commonRemainder
                 stepMode_signalCoefficient_eq
                   (μ := μ) (K := K) (S := S) (h_length := h_length) (fTrue := fTrue)
                   (b := b) (c := c) (p := p) (q := q) (σ := σ) (η := η)
-                  (Rtsvd := Rtsvd) (n := n) (mStar := mStar)
+                  (Rtsvd := Rtsvd) (n := n)
                   (h_b := h_b) (h_c := h_c) (h_p := h_p) (h_q := h_q) (h_σ := h_σ)
                   (h_noise_memLp := h_noise_memLp) (h_noise_meanZero := h_noise_meanZero)
                   (h_noise_modeVariance := h_noise_modeVariance)
                   (h_singularDecay := h_singularDecay) (h_fourierDecay := h_fourierDecay)
-                  (h_tsvd := h_tsvd) (h_min := h_min) (hm_pos := hm_pos) (hm_lt := hm_lt)
+                  (h_tsvd := h_tsvd)
                   hm]
               simpa [a, ξ, u, v, j, add_smul]
     -- Rewrite the current error using the same remainder.
@@ -273,12 +273,12 @@ theorem backwardErrorStep_pointwise
     backwardErrors_commonRemainder
       (μ := μ) (K := K) (S := S) (h_length := h_length) (fTrue := fTrue)
       (b := b) (c := c) (p := p) (q := q) (σ := σ) (η := η)
-      (Rtsvd := Rtsvd) (n := n) (m := m) (mStar := mStar)
+      (Rtsvd := Rtsvd) (n := n) (m := m)
       (h_b := h_b) (h_c := h_c) (h_p := h_p) (h_q := h_q) (h_σ := h_σ)
       (h_noise_memLp := h_noise_memLp) (h_noise_meanZero := h_noise_meanZero)
       (h_noise_modeVariance := h_noise_modeVariance)
       (h_singularDecay := h_singularDecay) (h_fourierDecay := h_fourierDecay)
-      (h_tsvd := h_tsvd) (h_min := h_min) (hm_pos := hm_pos) (hm_lt := hm_lt)
+      (h_tsvd := h_tsvd)
       hm ω
   have hu_norm : ‖u‖ = 1 := by
     simpa [u] using (S n).rightBasis.orthonormal.norm_eq_one j
@@ -423,12 +423,12 @@ theorem expectedSqErrorObjective_backwardStep_eq
       (backwardErrorStep_pointwise
         (μ := μ) (K := K) (S := S) (h_length := h_length) (fTrue := fTrue)
         (b := b) (c := c) (p := p) (q := q) (σ := σ) (η := η)
-        (Rtsvd := Rtsvd) (n := n) (mStar := mStar)
+        (Rtsvd := Rtsvd) (n := n)
         (h_b := h_b) (h_c := h_c) (h_p := h_p) (h_q := h_q) (h_σ := h_σ)
         (h_noise_memLp := h_noise_memLp) (h_noise_meanZero := h_noise_meanZero)
         (h_noise_modeVariance := h_noise_modeVariance)
         (h_singularDecay := h_singularDecay) (h_fourierDecay := h_fourierDecay)
-        (h_tsvd := h_tsvd) (h_min := h_min) (hm_pos := hm_pos) (hm_lt := hm_lt)
+        (h_tsvd := h_tsvd)
         hm ω)
   -- Route correction: the expectation proof only integrates the already-normalized
   -- pointwise identity, then substitutes the scalar decay laws.
@@ -464,7 +464,7 @@ theorem expectedSqErrorObjective_forwardStep_eq :
       (h_noise_memLp := h_noise_memLp) (h_noise_meanZero := h_noise_meanZero)
       (h_noise_modeVariance := h_noise_modeVariance)
       (h_singularDecay := h_singularDecay) (h_fourierDecay := h_fourierDecay)
-      (h_tsvd := h_tsvd) (h_min := h_min) (hm_pos := hm_pos) (hm_lt := hm_lt)
+      (h_tsvd := h_tsvd)
       (hm := Nat.succ_pos _))
 
 /-- Helper for Proposition 7.15: a nonpositive step expression forces the
@@ -573,6 +573,8 @@ theorem stepExpr_nonneg_implies_benchmarkLower
         hpq_pos).2 hpow_le
   simpa [one_div, Real.rpow_neg_eq_inv_rpow] using hroot
 
+
+include h_min hm_pos hm_lt
 /-- prop_7_15
 
 Proposition 7.15 (1). For an interior minimizer `mStar` of the concrete TSVD
@@ -595,7 +597,7 @@ theorem backwardDiffNonpos :
         (h_noise_memLp := h_noise_memLp) (h_noise_meanZero := h_noise_meanZero)
         (h_noise_modeVariance := h_noise_modeVariance)
         (h_singularDecay := h_singularDecay) (h_fourierDecay := h_fourierDecay)
-        (h_tsvd := h_tsvd) (h_min := h_min) (hm_pos := hm_pos) (hm_lt := hm_lt)
+        (h_tsvd := h_tsvd)
         (hm := hm_pos)
   · -- Lemma 7.14 turns interior minimality into the sign of the backward step.
     have h_min_icc :
@@ -609,7 +611,7 @@ theorem backwardDiffNonpos :
       (h_noise_memLp := h_noise_memLp) (h_noise_meanZero := h_noise_meanZero)
       (h_noise_modeVariance := h_noise_modeVariance)
       (h_singularDecay := h_singularDecay) (h_fourierDecay := h_fourierDecay)
-      (h_tsvd := h_tsvd) (h_min := h_min) (hm_pos := hm_pos) (hm_lt := hm_lt)
+      (h_tsvd := h_tsvd)
       (hm := hm_pos)]
     exact backwardDiff_nonpos_of_isMinOn
       (expectedSqErrorObjective μ K Rtsvd fTrue η n) n mStar h_min_icc hm_lt
@@ -634,7 +636,7 @@ theorem forwardDiffNonneg :
       (h_noise_memLp := h_noise_memLp) (h_noise_meanZero := h_noise_meanZero)
       (h_noise_modeVariance := h_noise_modeVariance)
       (h_singularDecay := h_singularDecay) (h_fourierDecay := h_fourierDecay)
-      (h_tsvd := h_tsvd) (h_min := h_min) (hm_pos := hm_pos) (hm_lt := hm_lt)
+      (h_tsvd := h_tsvd)
   · -- Lemma 7.14 turns interior minimality into the sign of the forward step.
     have h_min_icc :
         IsMinOn (expectedSqErrorObjective μ K Rtsvd fTrue η n) (Set.Icc 0 n) mStar := by
@@ -647,7 +649,7 @@ theorem forwardDiffNonneg :
       (h_noise_memLp := h_noise_memLp) (h_noise_meanZero := h_noise_meanZero)
       (h_noise_modeVariance := h_noise_modeVariance)
       (h_singularDecay := h_singularDecay) (h_fourierDecay := h_fourierDecay)
-      (h_tsvd := h_tsvd) (h_min := h_min) (hm_pos := hm_pos) (hm_lt := hm_lt)]
+      (h_tsvd := h_tsvd)]
     exact forwardDiff_nonneg_of_isMinOn
       (expectedSqErrorObjective μ K Rtsvd fTrue η n) n mStar h_min_icc hm_lt
 
@@ -673,13 +675,13 @@ theorem optimalIndexLowerBound :
     -- Apply the scalar lower benchmark to the successor forward step.
     exact stepExpr_nonneg_implies_benchmarkLower
       (μ := μ) (K := K) (S := S) (h_length := h_length) (fTrue := fTrue)
-      (η := η) (Rtsvd := Rtsvd) (mStar := mStar)
+      (η := η) (Rtsvd := Rtsvd)
       (b := b) (c := c) (p := p) (q := q) (σ := σ) (n := n)
       (h_b := h_b) (h_c := h_c) (h_p := h_p) (h_q := h_q) (h_σ := h_σ)
       (h_noise_memLp := h_noise_memLp) (h_noise_meanZero := h_noise_meanZero)
       (h_noise_modeVariance := h_noise_modeVariance)
       (h_singularDecay := h_singularDecay) (h_fourierDecay := h_fourierDecay)
-      (h_tsvd := h_tsvd) (h_min := h_min) (hm_pos := hm_pos) (hm_lt := hm_lt)
+      (h_tsvd := h_tsvd)
       (x := ((mStar + 1 : ℕ) : ℝ)) (hx_pos := by positivity) (hn_pos := hn_pos)
       (h_step := h_forward)
   -- Subtract the successor `1` from the real bound.
@@ -705,13 +707,13 @@ theorem optimalIndexUpperBound :
   -- Apply the scalar upper benchmark to the backward step at `mStar`.
   exact stepExpr_nonpos_implies_benchmarkUpper
     (μ := μ) (K := K) (S := S) (h_length := h_length) (fTrue := fTrue)
-    (η := η) (Rtsvd := Rtsvd) (mStar := mStar)
+    (η := η) (Rtsvd := Rtsvd)
     (b := b) (c := c) (p := p) (q := q) (σ := σ) (n := n)
     (h_b := h_b) (h_c := h_c) (h_p := h_p) (h_q := h_q) (h_σ := h_σ)
     (h_noise_memLp := h_noise_memLp) (h_noise_meanZero := h_noise_meanZero)
     (h_noise_modeVariance := h_noise_modeVariance)
     (h_singularDecay := h_singularDecay) (h_fourierDecay := h_fourierDecay)
-    (h_tsvd := h_tsvd) (h_min := h_min) (hm_pos := hm_pos) (hm_lt := hm_lt)
+    (h_tsvd := h_tsvd)
     (x := mStar) (hx_pos := by exact_mod_cast hm_pos) (hn_pos := hn_pos)
     (h_step := h_backward)
 

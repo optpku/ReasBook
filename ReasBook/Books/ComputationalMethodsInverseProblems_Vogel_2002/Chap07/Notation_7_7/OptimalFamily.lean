@@ -18,7 +18,7 @@ universe u
 /-- A parameter family `a` is optimal for an `n`-indexed objective family on an
 `n`-indexed admissible family when `a n` minimizes the `n`th objective on the
 `n`th admissible set for every data size `n`. -/
-def IsOptimalParameterFamily {τ : Type u}
+@[expose] def IsOptimalParameterFamily {τ : Type u}
     (objective : ℕ → τ → ℝ) (admissible : ℕ → Set τ) (a : ℕ → τ) : Prop :=
   ∀ n, IsMinOn (objective n) (admissible n) (a n)
 
