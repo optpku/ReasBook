@@ -7,7 +7,7 @@ from the existing ReasBook SDK cache; starting the web server never builds Lean.
 
 [Public reading and review website](https://reasbook.reaslab.io/) ·
 [Open the hosted Reviewer](https://reasbook.reaslab.io/review/) ·
-[Browse static Docs and Verso](https://reasbook.reaslab.io/artifacts/)
+[Browse static Docs and Verso](https://optpku.github.io/ReasBook/)
 
 To review a formalization online, choose a textbook or paper and select a
 declaration. Switch between Source, Docs, Verso and Graph to inspect the Lean

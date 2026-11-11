@@ -147,7 +147,59 @@ and then a documentation link which could lead to that empty page.
   Pin the updated branch commits in a new release plan after these changes are
   committed and merged; do not alter an already frozen plan or release artifact.
 
+## Numbered reading titles
+
+Use one presentation rule for numbered chapters, sections, subsections, parts,
+appendices and named statements, both in the reading body and in directories
+and sidebars. Put the number on a separate, smaller line and the actual name
+below it. Remove only the separator between that number and name. Long names
+wrap naturally; heading levels retain their relative visual hierarchy.
+
+The shared runtime formatter owns this rule for every book and both sidebar
+renderers. Retain canonical labels, numbering, destinations, anchor IDs and
+accessible navigation names. Move existing name nodes rather than replacing
+rich mathematical markup with plain text. Preserve inline links, emphasis and
+native Lean hover metadata and prefix anchor aliases; do not apply title
+formatting to code, inline citations or statement prose. Unnamed headings such as “Statements” and plain numbered items without a
+name remain unchanged. Local previews use the same formatter and styles, and
+identify their source snapshot in the preview controls rather than repeating a
+banner above every reading title.
+
+## Item-structured paper reading
+
+Paper homes show the existing reader's section groups instead of duplicating
+all excerpts. The Items route keeps every statement and its original anchors,
+source links, publication scope and Lean author attribution. The shared primary
+and fallback sidebar lists paper-level items by number, groups them by section,
+and folds supporting implementation-file navigation under a separate disclosure.
+Section links remain direct links with separate expansion buttons. Old home
+item fragments forward to the same item on the existing reader, preserving
+clause suffixes. Share this compatibility path across the primary and fallback
+renderers. Supporting-file navigation stays current when a declaration fragment
+is selected inside the file. Do not emit redundant `Statements` headings; keep old group
+anchors and promote unsectioned item headings to the correct level.
+
+TR-LALM's editorial section labels describe the deterministic method, stochastic
+method, second-order correction and appendix remarks. Their evidence is the
+pinned source README's Scope and Article-to-Lean Map; they do not claim to quote
+manuscript section headings. Local previews reorganize only existing native
+artifacts and verify that all mathematical blocks remain on the native reader.
+No source, proof, term-type data or author list is inferred or regenerated.
+
 ## Consequences
+
+Stable reading-section anchors are empty HTML directives immediately before
+document-level headings. Verso does not accept Markdown section headers inside
+an HTML directive. This rule applies to book subsections, paper sections and
+appendices; native compilation must validate the generated pages as well as
+the browser layout.
+
+Book homes separate the registered title from its author/year citation, using
+the same typography as curated paper titles. Navigation repeats this hierarchy
+and retains the canonical bibliography in its accessible name and browser title.
+The complete title and all source URLs remain unchanged. Bibliographic authors
+remain distinct from the formalization contributors; chapter and section names
+continue to follow the shared number-and-name rule.
 
 Both supported doc-gen modes can show referenced mathematics without building
 all mathlib documentation. Native Verso hovers additionally require semantic
@@ -166,3 +218,17 @@ Documentation. It does not infer types, recreate dependencies or certify proofs.
 excluded. Missing deployments require separate publication work, not fabricated
 pages or changing project selection to make a catalog look complete. The mirror's
 external hosting inventory must likewise be regenerated from published artifacts.
+
+## Source-only supporting modules during assembly
+
+Supporting-module inventories use the same public documentation closure as item
+statements. Files outside that closure retain their pinned source link and
+attribution, without an empty Documentation link.
+
+When reusing historical native HTML, assembly may consume an operator-supplied
+`REASBOOK_VERIFIED_SOURCE_LINKS_FILE` map prepared from exact Git trees. Only an
+adjacent generated Documentation/Lean-source pair can be downgraded, and only
+when its missing documentation and verified source match the complete module
+path. Filename equality alone is insufficient. Existing documentation, doc-gen
+pages, and unrelated missing links retain strict validation. This repairs old
+reader links without changing their native Lean data or fabricating API pages.

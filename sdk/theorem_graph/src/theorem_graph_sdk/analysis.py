@@ -513,6 +513,26 @@ def build_data(
         return data
 
     candidates = candidates_from_raw(project, raw_declarations)
+    # This technical note uses named Lean results rather than numbered
+    # literature labels. Keep the compiled declarations and their actual
+    # dependency evidence; never invent a manuscript number or source edge.
+    if not candidates and project.project_id == "RockafellarSum_2026" and project.root_module:
+        for declaration in raw_declarations:
+            doc = str(declaration.get("docString") or "").strip()
+            name = str(declaration.get("name") or "")
+            kind = str(declaration.get("kind") or "")
+            if not doc or not name or name.startswith("_private.") or kind not in {"theorem", "lemma"}:
+                continue
+            module = str(declaration.get("moduleName") or "")
+            relative = module_relative_file(project, module)
+            section, section_label = section_for(relative, "")
+            candidates.append(Candidate(
+                label=name, item_id="declaration-" + name, item_type="Theorem" if kind == "theorem" else "Lemma",
+                number="", title=clean_title_text(doc.split("\n\n", 1)[0]), statement=doc,
+                declaration=name, declaration_kind=kind, module_name=module,
+                relative_file=relative, line=int(declaration.get("line") or 1),
+                section_id=section, section_label=section_label, score=0,
+            ))
     selected = select_representatives(candidates)
     raw_by_name = {
         str(item.get("name")): item for item in raw_declarations if item.get("name")

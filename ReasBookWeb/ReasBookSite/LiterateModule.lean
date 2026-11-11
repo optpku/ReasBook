@@ -75,33 +75,45 @@ def loadModuleContent (mod : String) (leanProject : System.FilePath := "../ReasB
       "LEAN_GITHASH",
       "ELAN_TOOLCHAIN", "DYLD_LIBRARY_PATH", "LD_LIBRARY_PATH"]
 
-  let f ← IO.FS.Handle.mk lakeConfig .read
-  f.lock (exclusive := true)
+  -- The release builder validates the complete literate cache before enabling
+  -- this mode. Rendering must only read it: invoking Lake under a project-wide
+  -- lock here would serialize all pages and repeat dependency traversal twice
+  -- for every module. Missing/invalid prebuilt data is an error, never a rebuild.
+  let prebuilt := (← IO.getEnv "REASBOOK_LITERATE_PREBUILT")
   let jsonFile ←
-    try
+    if prebuilt == some "1" || prebuilt == some "true" then
+      let jsonPath := projectDir / ".lake" / "build" / "literate" /
+        (mod.replace "." "/" ++ ".json")
+      unless (← jsonPath.pathExists) do
+        throw <| IO.userError s!"Missing prebuilt literate JSON for {mod}: {jsonPath}"
+      IO.FS.readFile jsonPath
+    else
+      let f ← IO.FS.Handle.mk lakeConfig .read
+      f.lock (exclusive := true)
+      try
 
-      let cmd := "elan"
-      let args := #["run", "--install", toolchain, "lake", "build", s!"+{mod}:literate"]
+        let cmd := "elan"
+        let args := #["run", "--install", toolchain, "lake", "build", s!"+{mod}:literate"]
 
-      let res ← IO.Process.output {
-        cmd, args, cwd := projectDir
-        -- Unset Lake's environment variables
-        env := lakeVars.map (·, none)
-      }
-      if res.exitCode != 0 then
-        reportFail projectDir cmd args res
+        let res ← IO.Process.output {
+          cmd, args, cwd := projectDir
+          -- Unset Lake's environment variables
+          env := lakeVars.map (·, none)
+        }
+        if res.exitCode != 0 then
+          reportFail projectDir cmd args res
 
-      let args := #["run", "--install", toolchain, "lake", "query", s!"+{mod}:literate"]
+        let args := #["run", "--install", toolchain, "lake", "query", s!"+{mod}:literate"]
 
-      let res ← IO.Process.output {
-        cmd, args, cwd := projectDir
-        -- Unset Lake's environment variables
-        env := lakeVars.map (·, none)
-      }
-      if res.exitCode != 0 then
-        reportFail projectDir cmd args res
-      IO.FS.readFile res.stdout.trim
-    finally f.unlock
+        let res ← IO.Process.output {
+          cmd, args, cwd := projectDir
+          -- Unset Lake's environment variables
+          env := lakeVars.map (·, none)
+        }
+        if res.exitCode != 0 then
+          reportFail projectDir cmd args res
+        IO.FS.readFile res.stdout.trim
+      finally f.unlock
 
   let parsed ←
     match Json.parse jsonFile with
@@ -118,7 +130,7 @@ def loadModuleContent (mod : String) (leanProject : System.FilePath := "../ReasB
       match findModuleItemArray? parsed with
       | some json => pure json
       | none =>
-        let sample := if jsonFile.length > 400 then jsonFile.take 400 ++ " ..." else jsonFile
+        let sample := if jsonFile.length > 400 then String.ofList (jsonFile.toList.take 400) ++ " ..." else jsonFile
         throw <| IO.userError s!"Couldn't find a module-item JSON array in literate output. Sample:\n{sample}"
     match json.mapM deJson with
     | .error err =>
@@ -395,11 +407,11 @@ where
     let contents ← contents.mapM (ofInline tms)
     ``(Verso.Doc.Inline.link $(← arr contents) $(quote href))
   | .code str => do
-    let codeStr := String.join str.toList
-    if let some hl := tms[codeStr]? then
-      ``(Verso.Doc.Inline.other (InlineExt.highlightedCode codeOpts $(quote hl)) #[])
-    else
-      ``(Verso.Doc.Inline.code $(quote <| String.join str.toList))
+    -- Markdown backticks in prose also contain mathematical notation, which
+    -- need not elaborate as Lean. An empty/failed extracted term must never
+    -- erase the original hypotheses. Native declaration blocks keep their
+    -- semantic highlighting and hover information independently.
+    ``(Verso.Doc.Inline.code $(quote <| String.join str.toList))
   | .em txt => do ``(Verso.Doc.Inline.emph $(← arr (← txt.mapM (ofInline tms))))
   | .strong txt => do ``(Verso.Doc.Inline.bold $(← arr (← txt.mapM (ofInline tms))))
   | .img src _title alt => do

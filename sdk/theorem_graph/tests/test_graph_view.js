@@ -43,11 +43,20 @@ vm.runInNewContext(source.replace('  fetch("./data.json"', `
     layout: graphLayout,
     highlight: reviewerGraphHighlight,
     zoom: zoomAt,
+    displayMathTitle: displayMathTitle,
+    displayItemLabel: displayItemLabel,
+    displayItemTitle: displayItemTitle,
     fit: fitGraph,
     transform: function () { return state.transform; }
   };
   fetch("./data.json"`), context);
 const api = context.window.testGraph;
+assert.equal(api.displayMathTitle('Extension to every dimension $n\\ge2$'), 'Extension to every dimension n≥2');
+assert.equal(api.displayMathTitle('Points lie on $\\Gamma$ and $\\mathcal E$ is closed'), 'Points lie on Γ and 𝓔 is closed');
+assert.equal(api.displayMathTitle('Retain $\\unknown{x}$'), 'Retain $\\unknown{x}$');
+const namedProposition = {label: 'Proposition prop:finite', title: 'Proposition prop:finite', type: 'Proposition', file: 'GlowinskiADMM/finite_objectives_and_growth.lean'};
+assert.equal(api.displayItemLabel(namedProposition), 'Proposition');
+assert.equal(api.displayItemTitle(namedProposition), 'Finite objectives and growth');
 const item = (id, dependencies = []) => ({ id, dependencies, statementDependencies: [], proofDependencies: dependencies });
 const chain = Array.from({ length: 3000 }, (_, index) => item(String(index), index ? [String(index - 1)] : []));
 api.set(chain, "1500", "focus", 3);

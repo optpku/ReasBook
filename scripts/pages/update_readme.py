@@ -16,9 +16,9 @@ from urllib.parse import urlsplit
 from project_catalog import EXCLUDED_PROJECTS, NO_VERSO_PROJECTS
 
 
-SITE_BASE = "https://reasbook.reaslab.io/artifacts"
+SITE_BASE = "https://optpku.github.io/ReasBook"
 REVIEWER_BASE = "https://reasbook.reaslab.io/review"
-# Verified deployment entry points (2026-10-22), relative to each project's
+# Verified deployment entry points (release site-20261105T034713Z-fe8615a941bf), relative to each project's
 # docs/ directory. Build outputs use different module roots across toolchains.
 PUBLISHED_DOCS = {
     ("books", "AlgebraicTopology_May_1999"): "ReasBook/AlgebraicTopology_May_1999/Book.html",
@@ -40,8 +40,17 @@ PUBLISHED_DOCS = {
     ("papers", "SmoothMinimization_Nesterov_2004"): "ReasBook/SmoothMinimization_Nesterov_2004/Paper.html",
     ("papers", "TR_LALM_theory"): "ReasBook/TR_LALM_theory.html",
 }
+# Published versions are independent of the branch selected for future source work.
+PUBLISHED_VERSIONS = {
+    key: ("v4.26.0" if key[1] in {"ConvexAnalysis_Rockafellar_1970", "IntegerProgramming_Conforti_2014"}
+          else "v4.32.2" if key[1] in {"BFGSMinimumQOrder_Liu_2026", "TR_LALM_theory"}
+          else "v4.32.0" if key[1] in {"DFP_wolfe_local", "RockafellarSum_2026", "glowinski_admm_counterexample"}
+          else "v4.30.0")
+    for key in PUBLISHED_DOCS
+}
 PUBLISHED_THEOREM_MAPS = set(PUBLISHED_DOCS) - {
     ("books", "IntegerProgramming_Conforti_2014"),
+    # The published Rockafellar Sum map currently contains no entries.
     ("papers", "RockafellarSum_2026"),
 }
 PUBLISHED_VERSO = {
@@ -58,6 +67,7 @@ RESOURCE_LABELS = {
         "theorem_map": "Theorem map",
         "source_only": "Source only (excluded from the current release profile)",
         "verso_unpublished": "Verso not published",
+        "skeleton": "Project skeleton; no statements or Verso reading pages yet",
         "documentation_pending": "Source available; Docs, Verso and theorem map pending publication",
     },
     "zh-CN": {
@@ -65,6 +75,7 @@ RESOURCE_LABELS = {
         "theorem_map": "定理依赖图",
         "source_only": "仅源代码（不包含在当前发布配置中）",
         "verso_unpublished": "尚未发布 Verso",
+        "skeleton": "项目骨架；尚无命题或 Verso 阅读页",
         "documentation_pending": "源代码可用；Docs、Verso 和定理依赖图待发布",
     },
 }
@@ -82,10 +93,12 @@ def resource_cell(project: dict[str, str], *, language: str = "en") -> str:
     if name in EXCLUDED_PROJECTS or (kind, name) not in PUBLISHED_DOCS:
         return labels["source_only"]
 
-    project_base = f"{SITE_BASE}/projects/{slug}"
+    project_base = f"{SITE_BASE}/versions/{PUBLISHED_VERSIONS[(kind, name)]}"
     docs_href = f"{project_base}/docs/{PUBLISHED_DOCS[(kind, name)]}"
 
     pieces = [f"[{labels['docs']}]({docs_href})"]
+    if name == "IntegerProgramming_Conforti_2014":
+        return " &#124; ".join([*pieces, labels["skeleton"]])
     if name not in NO_VERSO_PROJECTS:
         reading_route = PUBLISHED_VERSO.get((kind, name), f"{kind}/{slug}/")
         pieces.append(f"[Verso]({project_base}/{reading_route})")

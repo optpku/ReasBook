@@ -5,6 +5,7 @@
     catalog: [],
     selectedSlug: "",
     book: null,
+    bookLoadState: "idle",
     items: [],
     selectedKey: "",
     context: null,
@@ -16,6 +17,7 @@
     csrf: null,
     bookSearch: "",
     itemSearch: "",
+    proofRoute: "",
     kindFilter: "all",
     availabilityFilter: "all",
     subjectFilters: new Set(),
@@ -370,7 +372,8 @@
     const explicitSection = stem.match(/^section0*(\d+)(?:_part0*(\d+))?$/i);
     const numberedSection = stem.match(/(?:^|_)(\d+)_(\d+)_(\d+)(?:_|$)/);
     const chapter = chapterMatch ? String(Number(chapterMatch[1])) : "";
-    let section = explicitSection ? String(Number(explicitSection[1])) : "";
+    const metadataSection = String(item?.section || "").match(/^section-(\d+)$/i);
+    let section = metadataSection ? String(Number(metadataSection[1])) : explicitSection ? String(Number(explicitSection[1])) : "";
     const part = explicitSection?.[2] ? String(Number(explicitSection[2])) : "";
     if (!section && numberedSection && (!chapter || Number(numberedSection[1]) === Number(chapter))) {
       section = String(Number(numberedSection[2]));
@@ -820,7 +823,10 @@
   function renderBookOverview() {
     const book = state.book;
     if (!book) {
-      refs.bookOverview.innerHTML = `<div class="detail-empty">Select a book to load its review index.</div>`;
+      const message = state.bookLoadState === "loading" ? "Loading project evidence…"
+        : state.bookLoadState === "error" ? "Project evidence could not be loaded. Select this project to retry."
+        : "Select a book to load its review index.";
+      refs.bookOverview.innerHTML = `<div class="detail-empty" role="status">${message}</div>`;
       return;
     }
     const count = state.items.length;
@@ -842,7 +848,8 @@
     refs.itemTypeFilter.innerHTML = `<option value="all">All types</option>${values.map((value) => `<option value="${escapeHtml(value)}">${escapeHtml(itemKind({ kind: value }))}</option>`).join("")}`;
     refs.itemTypeFilter.value = values.includes(current) ? current : "all";
     state.itemTypeFilter = refs.itemTypeFilter.value;
-    const sections = [...new Set(state.items.map((item) => item.section).filter(Boolean))].sort();
+    const sections = [...new Set(state.items.map((item) => item.section).filter(Boolean))]
+      .sort((left, right) => left.localeCompare(right, "en", { numeric: true }));
     const currentSection = state.itemSectionFilter;
     refs.itemSectionFilter.innerHTML = `<option value="all">All sections</option>${sections.map((value) => `<option value="${escapeHtml(value)}">${escapeHtml(value.replace(/^chapter-/, "Chapter "))}</option>`).join("")}`;
     refs.itemSectionFilter.value = sections.includes(currentSection) ? currentSection : "all";
@@ -852,6 +859,7 @@
   function visibleItems() {
     const query = state.itemSearch.trim().toLowerCase();
     return state.items.filter((item) => {
+      if (!inProofRoute(item)) return false;
       const status = aggregateReview(item.key).status;
       if (state.reviewFilter !== "all" && status !== state.reviewFilter) return false;
       if (state.itemTypeFilter !== "all" && item.kind !== state.itemTypeFilter) return false;
@@ -862,11 +870,28 @@
     });
   }
 
+  function inProofRoute(item) {
+    if (!state.proofRoute) return true;
+    const identity = [item.module, item.moduleName, item.sourcePath, item.name, item.key].filter(Boolean).join(" ");
+    const polar = /(?:^|[./\s])DFPWolfe[./]V21(?:[./]|\b)/.test(identity);
+    return state.proofRoute === "v21" ? polar : !polar;
+  }
+
   function renderQueue() {
+    if (state.bookLoadState === "loading" || state.bookLoadState === "error") {
+      const loading = state.bookLoadState === "loading";
+      refs.itemResultCount.textContent = loading ? "Loading declarations…" : "Declarations unavailable";
+      refs.reviewQueue.innerHTML = `<div class="empty-state" role="status">${loading ? "Loading declarations…" : "Could not load declarations. Select this project to retry."}</div>`;
+      refs.reviewQueue.setAttribute("aria-busy", String(loading));
+      refs.reviewQueue.setAttribute("aria-label", loading ? "Loading declarations" : "Declarations unavailable");
+      return;
+    }
+    refs.reviewQueue.setAttribute("aria-busy", "false");
     const items = visibleItems();
     const shown = items.slice(0, state.reviewLimit);
     const hasFilters = Boolean(
       state.itemSearch.trim()
+      || state.proofRoute
       || state.itemTypeFilter !== "all"
       || state.itemSectionFilter !== "all"
       || state.reviewFilter !== "all"
@@ -906,9 +931,13 @@
   }
 
   function renderToolbar() {
-    const book = state.book;
+    const book = state.book || state.catalog.find((value) => value.slug === state.selectedSlug);
     refs.currentBookTitle.textContent = book?.title || "ReasBook Review";
-    refs.currentBookMeta.textContent = book ? `${book.branches?.join(", ") || "unversioned"} / ${state.items.length} declarations / ${state.items.filter((item) => item.hasSorry).length} with sorry` : "Select a book";
+    const version = book?.branches?.join(", ") || "Version not recorded";
+    refs.currentBookMeta.textContent = state.bookLoadState === "loading" ? `${version} / Loading declarations…`
+      : state.bookLoadState === "error" ? `${version} / Load failed`
+      : book ? `${version} / ${state.items.length} declarations / ${state.items.filter((item) => item.hasSorry).length} with sorry` : "Select a book";
+    if (state.proofRoute) refs.currentBookMeta.textContent += state.proofRoute === "v21" ? " / Polar proof (v21)" : " / Original proof and shared infrastructure";
     refs.currentBookMeta.title = refs.currentBookMeta.textContent;
   }
 
@@ -1825,7 +1854,9 @@
     refs.relationSection.open = false;
     renderBookOverview(); renderQueue(); renderGraph(); renderSource(); renderFrames(); renderDetail();
     if (moveToEvidence && isMobile()) setMobileView("evidence");
-    history.replaceState({}, "", `${appUrl(`/books/${encodeURIComponent(state.selectedSlug)}/`)}?item=${encodeURIComponent(key)}`);
+    const query = new URLSearchParams(window.location.search);
+    query.set("item", key);
+    history.replaceState({}, "", `${appUrl(`/books/${encodeURIComponent(state.selectedSlug)}/`)}?${query}`);
     await loadContext(item);
   }
 
@@ -1900,6 +1931,9 @@
     if (!state.catalog.some((book) => book.slug === slug)) return;
     if (state.selectedSlug && state.selectedSlug !== slug && state.draft?.dirty && !window.confirm("Discard unsaved review changes?")) return;
     const request = ++state.bookRequest;
+    state.bookLoadState = "loading";
+    const requestedProof = !push ? new URLSearchParams(window.location.search).get("proof") : "";
+    state.proofRoute = slug === "dfp_wolfe_local" && ["original", "v21"].includes(requestedProof) ? requestedProof : "";
     state.contextRequest += 1;
     state.historyRequest += 1;
     state.selectedSlug = slug; state.book = null; state.items = []; state.selectedKey = ""; state.context = null; state.draft = null; state.history = null; state.evidenceReturn = null; state.reviewLimit = 80; state.reviews.clear();
@@ -1913,31 +1947,39 @@
         api(`/api/books/${encodeURIComponent(slug)}/resources`),
       ]);
       if (request !== state.bookRequest || state.selectedSlug !== slug) return;
+      state.bookLoadState = "ready";
       state.book = book; state.items = Array.isArray(book.items) ? book.items : []; state.reviewRevision = Number(reviewPayload.revision || 0); mergeReviews(reviewPayload.reviews || []); state.context = { resources: resources.resources };
       updateTypeFilter(); renderToolbar(); renderBookOverview(); renderQueue(); refs.bookOverview.setAttribute("aria-busy", "false");
       const query = new URLSearchParams(window.location.search); const initialKey = query.get("item");
-      const item = state.items.find((value) => value.key === initialKey) || state.items[0];
+      const preferredName = state.proofRoute === "v21" ? "DFPWolfe.V21.main"
+        : state.proofRoute === "original" ? "DFP.existsStrongWolfeCounterexampleHolderSharp_of_dimension_ge_two" : "";
+      const item = state.items.find((value) => value.key === initialKey && inProofRoute(value))
+        || (preferredName && state.items.find((value) => value.name === preferredName && inProofRoute(value)))
+        || state.items.find(inProofRoute);
       if (item) await selectItem(item.key, false);
       if (request !== state.bookRequest || state.selectedSlug !== slug) return;
       if (push && isMobile()) setMobileView("queue");
       setSync("Synced", "ok");
     } catch (error) {
       if (request !== state.bookRequest || state.selectedSlug !== slug) return;
+      state.bookLoadState = "error";
       refs.bookOverview.setAttribute("aria-busy", "false");
-      setSync("Load failed", "warn"); refs.graphMessage.textContent = error.message; renderBookOverview(); renderQueue();
+      setSync("Load failed", "warn"); refs.graphMessage.textContent = error.message; renderToolbar(); renderBookOverview(); renderQueue();
     }
   }
 
   async function pollReviews() {
-    if (!state.selectedSlug) return;
+    if (!state.selectedSlug || state.bookLoadState !== "ready") return;
     const slug = state.selectedSlug;
     const bookRequest = state.bookRequest;
     try {
       const payload = await api(`/api/books/${encodeURIComponent(slug)}/reviews?since=${state.reviewRevision}`);
-      if (state.selectedSlug !== slug || state.bookRequest !== bookRequest) return;
+      if (state.selectedSlug !== slug || state.bookRequest !== bookRequest || state.bookLoadState !== "ready") return;
       if (Array.isArray(payload.reviews) && payload.reviews.length) { mergeReviews(payload.reviews); renderQueue(); renderBookOverview(); renderReviewerCards(); }
       state.reviewRevision = Number(payload.revision || state.reviewRevision); setSync("Synced", "ok");
-    } catch (_) { setSync("Offline", "warn"); }
+    } catch (_) {
+      if (state.selectedSlug === slug && state.bookRequest === bookRequest && state.bookLoadState === "ready") setSync("Offline", "warn");
+    }
   }
 
   function alignReaderControls() {
@@ -2032,6 +2074,10 @@
     });
     refs.copyStatementSource.addEventListener("click", copyStatementSource);
     refs.clearItemFilters.addEventListener("click", () => {
+      state.proofRoute = "";
+      const query = new URLSearchParams(window.location.search);
+      query.delete("proof");
+      history.replaceState({}, "", window.location.pathname + (query.size ? `?${query}` : "") + window.location.hash);
       state.itemSearch = "";
       state.itemTypeFilter = "all";
       state.itemSectionFilter = "all";
@@ -2040,6 +2086,7 @@
       refs.itemTypeFilter.value = "all";
       refs.itemSectionFilter.value = "all";
       refs.reviewFilter.value = "all";
+      renderToolbar();
       renderQueue();
       refs.itemSearch.focus();
     });

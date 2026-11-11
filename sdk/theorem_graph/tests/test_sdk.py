@@ -30,6 +30,50 @@ from theorem_graph_sdk.render import read_catalog_entry, write_catalog
 
 
 class TheoremGraphSdkTests(unittest.TestCase):
+    def test_named_rockafellar_results_preserve_compiled_dependencies_without_numbering(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            raw = [
+                {"name": "Seed.base", "moduleName": "RockafellarSum_2026.S3", "kind": "theorem",
+                 "docString": "The seed is monotone.", "line": 10, "dependencies": []},
+                {"name": "C0Seq.main", "moduleName": "RockafellarSum_2026.S3", "kind": "theorem",
+                 "docString": "A maximal monotone sum counterexample.", "line": 20,
+                 "statementDependencies": [], "proofDependencies": ["Seed.base"], "dependencies": ["Seed.base"]},
+            ]
+            project = Project("papers", "Papers", "Paper", "RockafellarSum_2026", root, "RockafellarSum_2026.Paper")
+            graph = build_data(project, raw, "https://github.com/optpku/ReasBook", "v4.32.0", "a" * 40)
+            self.assertEqual(len(graph["items"]), 2)
+            by_name = {item["declaration"]: item for item in graph["items"]}
+            self.assertEqual(by_name["C0Seq.main"]["proofDependencies"], [by_name["Seed.base"]["id"]])
+            self.assertEqual(by_name["C0Seq.main"]["label"], "C0Seq.main")
+            self.assertEqual(by_name["C0Seq.main"]["dependencyEvidence"], "compiled")
+            # An uncompiled source inventory must not be relabeled compiled.
+            source = Project("papers", "Papers", "Paper", "RockafellarSum_2026", root)
+            self.assertEqual(build_data(source, raw, "https://example.com", "v4.32.0", "a" * 40)["items"], [])
+
+    def test_project_progress_preserves_atomic_publication_and_json_output(self) -> None:
+        from contextlib import redirect_stderr
+        from theorem_graph_sdk.cli import main
+
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            source = root / "ReasBook/Books/Demo"
+            source.mkdir(parents=True)
+            (source / "Book.lean").write_text(
+                "/-- Theorem 1.1: a result. -/\ntheorem demo : True := by trivial\n")
+            stdout, stderr = io.StringIO(), io.StringIO()
+            with redirect_stdout(stdout), redirect_stderr(stderr):
+                status = main(["--repo-root", str(root), "--site-root", str(root / "site"),
+                               "--branch", "test", "--commit", "a" * 40,
+                               "--include-generic", "--source-only", "--json"])
+            self.assertEqual(status, 0, stderr.getvalue())
+            self.assertEqual(json.loads(stdout.getvalue())["generated_count"], 1)
+            events = [json.loads(line.removeprefix("[theorem-graph] "))
+                      for line in stderr.getvalue().splitlines()]
+            self.assertEqual(events[0]["phase"], "discovered")
+            self.assertIn({"phase": "render-start", "project": "books/Demo"}, events)
+            self.assertEqual(events[-1]["phase"], "published")
+
     def test_chapter_prefixed_labels_preserve_real_typed_edges(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)

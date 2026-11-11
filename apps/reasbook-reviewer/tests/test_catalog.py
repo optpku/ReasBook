@@ -15,6 +15,21 @@ from catalog import catalog_payload, discover_books, discover_stacks_project, lo
 
 
 class CatalogTests(unittest.TestCase):
+    def test_catalog_retains_public_source_identity_and_original_authors(self) -> None:
+        records = {record.slug: record for record in discover_books(REPOSITORY_ROOT, include_papers=True)}
+        may = records["algebraictopology_may_1999"]
+        self.assertIn("May", may.authors)
+        self.assertEqual(may.branches, ("v4.30.0",))
+        self.assertEqual(may.source_urls, (
+            "https://github.com/optpku/ReasBook/tree/v4.30.0/ReasBook/Books/AlgebraicTopology_May_1999/",
+        ))
+        self.assertIn("Benqi Liu", records["dfp_wolfe_local"].authors)
+        self.assertIn("Chenyi Li", records["bfgsminimumqorder_liu_2026"].authors)
+        self.assertIn("Kangkang Deng", records["tr_lalm_theory"].authors)
+        self.assertIn("Lyndon", records["combinatorialgrouptheory_magnus_2004"].authors)
+        self.assertTrue(all(record.branches for record in records.values()))
+        self.assertTrue(all("quokka-workspace" not in url for record in records.values() for url in record.source_urls))
+
     def test_discovers_books_without_building_per_book_data(self) -> None:
         cache_root = PROJECT_ROOT / "data" / "books"
         before = sorted(str(path.relative_to(cache_root)) for path in cache_root.rglob("*") if path.is_file()) if cache_root.exists() else []

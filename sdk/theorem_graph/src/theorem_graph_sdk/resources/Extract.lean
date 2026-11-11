@@ -103,7 +103,8 @@ private def extractDeclaration? (env : Environment) (spec : ProjectSpec)
   let proofDependencies :=
     projectDependencyNames env spec.id (proofUsedConstants info)
   let dependencies :=
-    projectDependencyNames env spec.id info.getUsedConstantsAsSet
+    proofDependencies.foldl (fun names name =>
+      if names.contains name then names else names.push name) statementDependencies
   return some {
     name := name.toString
     moduleName := moduleName.toString

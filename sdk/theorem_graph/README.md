@@ -46,6 +46,11 @@ replaced, so a failed run leaves the previous published tree intact. Use
 `--extractor-timeout-seconds` to bound each project's compiled-environment
 extraction.
 
+The CLI streams project extraction, source-inventory and rendering progress to
+stderr, including completed-project durations. With `--json`, stdout remains
+one final machine-readable report. Callers running several projects must allow
+the sum of their extraction deadlines plus time for inventory and publication.
+
 Generated `data.json` files use schema version 2. Every item keeps the legacy
 `dependencies` union and also records two provenance-preserving edge lists:
 

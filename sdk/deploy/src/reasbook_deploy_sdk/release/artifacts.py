@@ -31,7 +31,12 @@ from .results import (
     ReleaseSetManifest,
 )
 from .store import ReleaseLayout, ReleaseStore
-from .static_assets import compact_verso_metadata, deduplicate_verso_assets
+from .static_assets import (
+    compact_verso_intertext, compact_verso_metadata, deduplicate_verso_assets,
+    deduplicate_theorem_map_runtime, relativize_native_documentation_links,
+    resolve_native_documentation_links,
+    improve_documentation_navigation,
+)
 
 
 _SHARED_DOC_DIRECTORIES = {"declarations", "find", "src"}
@@ -182,9 +187,29 @@ class PagesSiteProjector:
                 Path("versions") / "index.html",
             )
             self._write_catalog_redirects(spec, staged, canonical_routes)
+            graph_aliases = self._write_theorem_map_aliases(spec, full_site, staged)
             self._write_historical_reading_redirects(spec, full_site, staged, canonical_routes)
-            deduplicate_verso_assets(staged, spec.base_path)
-            compact_verso_metadata(staged, spec.base_path)
+            audit = {
+                "release_id": spec.release_id,
+                "spec_digest": spec.spec_digest,
+                "before_bytes": sum(p.stat().st_size for p in staged.rglob("*") if p.is_file()),
+                "optimizations": {},
+                "graph_aliases": graph_aliases,
+            }
+            for name, operation in (
+                ("shared_head", lambda: deduplicate_verso_assets(staged, spec.base_path)),
+                ("binding_metadata", lambda: compact_verso_metadata(staged, spec.base_path)),
+                ("native_intertext", lambda: compact_verso_intertext(staged)),
+                ("native_declaration_targets", lambda: resolve_native_documentation_links(staged, spec.base_path)),
+                ("documentation_navigation", lambda: improve_documentation_navigation(staged)),
+                ("native_documentation_links", lambda: relativize_native_documentation_links(staged, spec.base_path)),
+                ("identical_chapter_aliases", lambda: self._deduplicate_chapter_aliases(spec, staged)),
+                ("theorem_map_runtime", lambda: deduplicate_theorem_map_runtime(staged, spec.base_path)),
+            ):
+                audit["optimizations"][name] = operation()
+                atomic_write_json(target.parent / "projection-audit.json", audit)
+            audit["after_transforms_bytes"] = sum(p.stat().st_size for p in staged.rglob("*") if p.is_file())
+            atomic_write_json(target.parent / "projection-audit.json", audit)
             self._close_internal_references(
                 spec,
                 full_site,
@@ -196,6 +221,8 @@ class PagesSiteProjector:
             total_bytes = sum(
                 path.stat().st_size for path in staged.rglob("*") if path.is_file()
             )
+            audit["projected_bytes"] = total_bytes
+            atomic_write_json(target.parent / "projection-audit.json", audit)
             self._validate_capacity(total_bytes)
             self._publish(staged, target, backup)
             return target
@@ -207,6 +234,41 @@ class PagesSiteProjector:
                     shutil.rmtree(backup)
                 else:
                     backup.unlink(missing_ok=True)
+
+    def _deduplicate_chapter_aliases(self, spec: ReleaseSpec, site: Path) -> dict[str, int]:
+        """Keep one full copy only when the complete native pages are equivalent.
+
+        Modern sidebars already use chapters/chapNN directly. Old chapNN URLs
+        keep a fragment-preserving redirect; different pages remain untouched.
+        """
+        changed = saved = 0
+        for canonical in sorted(site.glob("versions/*/books/*/chapters/chap*/index.html")):
+            chapter = canonical.parent.name
+            if not re.fullmatch(r"chap[0-9]+", chapter):
+                continue
+            target = canonical.read_bytes()
+            if b"__versoSiteRoot" not in target:
+                continue
+            new_url = spec.base_path + canonical.parent.relative_to(site).as_posix() + "/"
+            project = canonical.parent.parent.parent
+            for alias in (project / chapter / "index.html",
+                          project.parent.parent / project.name / chapter / "index.html"):
+                if not alias.is_file() or alias.is_symlink():
+                    continue
+                source = alias.read_bytes()
+                old_url = spec.base_path + alias.parent.relative_to(site).as_posix() + "/"
+                if b"__versoSiteRoot" not in source or source.replace(old_url.encode(), new_url.encode()) != target:
+                    continue
+                self._write_preserving_redirect(alias, new_url, "Chapter " + chapter[4:], spec.base_path)
+                changed += 1
+                saved += len(source) - alias.stat().st_size
+        return {"aliases": changed, "saved_bytes": saved}
+
+    def _write_preserving_redirect(self, path: Path, target: str, title: str, base_path: str) -> None:
+        self._write_redirect(path, target, title, base_path)
+        redirect = path.read_text(encoding="utf-8")
+        script = "<script>location.replace(" + json.dumps(target).replace("<", "\\u003c") + "+location.search+location.hash)</script>\n"
+        path.write_text(redirect.replace('  <meta http-equiv="refresh"', script + '  <meta http-equiv="refresh"', 1), encoding="utf-8")
 
     def _copy_catalog_shell(
         self,
@@ -247,11 +309,70 @@ class PagesSiteProjector:
                 destination,
                 Path("sites") / project.slug / "index.html",
             )
-            self._copy_if_present(
-                source,
-                destination,
-                Path("theorem-maps") / project.kind / project.slug,
+
+    def _write_theorem_map_aliases(self, spec: ReleaseSpec, source: Path, site: Path) -> dict[str, int]:
+        """Retain old HTML entries without a second identical graph payload.
+
+        Verify the complete source tree against the admitted version before
+        replacing it with redirects. Any difference retains the original tree.
+        """
+        entries: list[CatalogEntry] = []
+        redirects = saved = 0
+        for project in spec.canonical_projects():
+            relative = Path("theorem-maps") / project.kind / project.slug
+            original = source / relative
+            canonical = site / "versions" / project.branch / relative
+            if not original.is_dir():
+                continue
+            title = re.sub(r'(?<=[a-z])(?=[A-Z])', ' ', project.project_id).replace('_', ' ')
+            metadata = original / 'metadata.json'
+            if metadata.is_file() and not metadata.is_symlink():
+                try:
+                    description = json.loads(metadata.read_text(encoding='utf-8')).get('project', {})
+                    if (description.get('id') == project.project_id
+                            and description.get('kind') == project.kind
+                            and description.get('branch') == project.branch
+                            and description.get('commit') == getattr(project, 'commit', description.get('commit'))
+                            and isinstance(description.get('title'), str) and description['title'].strip()):
+                        title = description['title'].strip()
+                except (ValueError, AttributeError):
+                    pass
+            files = sorted(path for path in original.rglob('*') if path.is_file())
+            equivalent = canonical.is_dir() and all(
+                not path.is_symlink() and (canonical / path.relative_to(original)).is_file()
+                and not (canonical / path.relative_to(original)).is_symlink()
+                and path.stat().st_size == (canonical / path.relative_to(original)).stat().st_size
+                and path.read_bytes() == (canonical / path.relative_to(original)).read_bytes()
+                for path in files
             )
+            if not equivalent:
+                self._copy_if_present(source, site, relative)
+            else:
+                for path in files:
+                    if path.suffix.lower() != '.html':
+                        continue
+                    local = path.relative_to(original)
+                    destination = site / relative / local
+                    target = spec.base_path + (canonical / local).relative_to(site).as_posix()
+                    self._write_preserving_redirect(destination, target, title, spec.base_path)
+                    redirects += 1
+                saved += sum(path.stat().st_size for path in files) - sum(
+                    path.stat().st_size for path in (site / relative).rglob('*') if path.is_file())
+            entry = canonical / 'index.html' if equivalent else site / relative / 'index.html'
+            graph_data = original / 'data.json'
+            has_items = True
+            if graph_data.is_file():
+                try:
+                    has_items = bool(json.loads(graph_data.read_text(encoding='utf-8')).get('items'))
+                except (OSError, ValueError, AttributeError):
+                    has_items = False
+            if entry.is_file() and has_items:
+                entries.append(CatalogEntry(title,
+                                            spec.base_path + entry.relative_to(site).as_posix(), project.key))
+        root = site / 'theorem-maps/index.html'
+        root.parent.mkdir(parents=True, exist_ok=True)
+        root.write_text(catalog_page('ReasBook — Theorem dependency maps', entries), encoding='utf-8')
+        return {"redirects": redirects, "saved_bytes": saved}
 
     def _project_branch(
         self,
@@ -597,6 +718,8 @@ class PagesSiteProjector:
                 title = _reader_title(site / pages / 'index.html', title)
             elif docs is not None:
                 title = _reader_title(site / docs, title)
+            if project.project_id == "IntegerProgramming_Conforti_2014":
+                title = "Integer Programming (Conforti, Cornuéjols and Zambelli, 2014)"
             if primary is not None:
                 url = spec.base_path + primary.as_posix() + ('/' if pages is not None else '')
                 catalog.append(CatalogEntry(title, url, project.key))

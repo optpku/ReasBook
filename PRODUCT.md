@@ -37,8 +37,12 @@ URLs and statement anchors are part of the reading workflow.
 - Keep mathematical content and author attribution intact, including Lean file
   authors and the stated source of project-level attribution.
 - A book home shows a compact chapter directory, not the complete item inventory.
-- Chapter labels are plain `Chapter 01`, without section or item counts.
+- Named reading titles separate the number (for example `Chapter 01` or `1.1`)
+  from the actual name on the next line, without section or item counts.
 - Chapters expose statements; documentation and source are secondary links.
+- Item-structured papers have a compact section overview and a full numbered
+  reader. Article entries lead the sidebar; supporting Lean files remain
+  available in a collapsed group. Redundant `Statements` headings are omitted.
 - Use “Documentation” or “statement,” not “API documentation.” Avoid explanatory
   filler and redundant intermediate navigation.
 - Unavailable statements and unavailable local-preview artifacts must be described

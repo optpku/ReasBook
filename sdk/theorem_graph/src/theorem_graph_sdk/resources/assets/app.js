@@ -34,6 +34,7 @@
     mobileDetailButton: document.getElementById("mobileDetailButton"),
     workspace: document.getElementById("workspace"),
     graphStats: document.getElementById("graphStats"),
+    graphViewHint: document.getElementById("graphViewHint"),
     graphViewport: document.getElementById("graphViewport"),
     dependencyGraph: document.getElementById("dependencyGraph"),
     graphScene: document.getElementById("graphScene"),
@@ -78,6 +79,32 @@
       element.setAttribute(key, String(attributes[key]));
     });
     return element;
+  }
+
+  function displayMathTitle(value) {
+    // Lossless text forms for notation used in the current compact titles.
+    // Unknown TeX is retained, never guessed or silently dropped.
+    return String(value || "").replace(/\$([^$]+)\$/g, function (original, math) {
+      var text = math.replace(/\\Gamma(?![A-Za-z])/g, "Γ")
+        .replace(/\\mathcal\s*(?:\{E\}|E(?![A-Za-z]))/g, "𝓔")
+        .replace(/\\ge(?![A-Za-z])/g, "≥");
+      return /[\\{}]/.test(text) ? original : text;
+    });
+  }
+
+  function displayItemLabel(item) {
+    var label = String(item.label || "");
+    return /^(?:Theorem|Lemma|Proposition|Corollary) [a-z]+:[\w-]+$/.test(label)
+      ? (item.type || label.split(" ")[0]) : label;
+  }
+
+  function displayItemTitle(item) {
+    if (displayItemLabel(item) !== item.label && item.title === item.label) {
+      var name = String(item.file || "").split(/[\\/]/).pop().replace(/\.lean$/, "")
+        .replace(/[_-]+/g, " ");
+      return name ? name[0].toUpperCase() + name.slice(1) : displayItemLabel(item);
+    }
+    return displayMathTitle(item.title);
   }
 
   function readPreference(key) {
@@ -937,6 +964,8 @@
     );
     refs.graphZoomSlider.setAttribute("aria-valuetext", percent);
     refs.graphZoomValue.textContent = percent;
+    refs.graphViewHint.hidden = state.graphMode !== "full" || state.transform.scale >= 0.2;
+    refs.graphViewHint.textContent = "Full graph overview. Choose Neighborhood to read the selected statement’s dependencies.";
   }
 
   function fitGraph() {
@@ -1384,6 +1413,10 @@
           return values.indexOf(id) === index;
         });
       return Object.assign({}, item, {
+        rawTitle: item.title,
+        rawLabel: item.label,
+        title: displayItemTitle(item),
+        label: displayItemLabel(item),
         statementDependencies: statementDependencies,
         proofDependencies: proofDependencies,
         dependencies: dependencies,

@@ -1,5 +1,7 @@
 # Computational Methods for Inverse Problems - Curtis R. Vogel (2002)
 
+**Publication:** Source only; not included in the [published catalog](https://optpku.github.io/ReasBook/).
+
 This is a catalog link folder on `main`; the Lean source is available on
 `v4.32.0` with Lean/mathlib `v4.32.0`.
 

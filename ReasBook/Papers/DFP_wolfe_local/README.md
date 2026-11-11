@@ -1,5 +1,13 @@
 # A Counterexample to Global Convergence of Classical DFP Under the Standard Strong Wolfe Conditions
 
+**Published reading (v4.32.0):** [Verso](https://optpku.github.io/ReasBook/versions/v4.32.0/papers/dfp_wolfe_local/) · [Documentation](https://optpku.github.io/ReasBook/versions/v4.32.0/docs/ReasBook/DFP_wolfe_local/Paper.html) · [Theorem map](https://optpku.github.io/ReasBook/versions/v4.32.0/theorem-maps/papers/dfp_wolfe_local/)
+
+**Project-level formalization contributors:** Zichen Wang.
+
+Project-level formalization credit is recorded in the [catalog](https://github.com/optpku/ReasBook/blob/90ac3dd3a968313d0da7a3137680aa895af6a69a/README.md#papers); it is separate from the original reference authors and per-file Lean authorship.
+
+[Center-manifold statements](https://optpku.github.io/ReasBook/versions/v4.32.0/docs/ReasBook/DFPWolfe/Paper.html) · [v21 statements](https://optpku.github.io/ReasBook/versions/v4.32.0/docs/ReasBook/DFPWolfe/V21/Paper.html) · [v21 theorem map](https://optpku.github.io/ReasBook/versions/v4.32.0/theorem-maps/papers/dfp_wolfe_local/v21/?view=paper)
+
 [Reviewer: deployed center-manifold snapshot](https://reasbook.reaslab.io/review/books/dfp_wolfe_local/)
 
 This is a catalog link folder on `main`. The `v4.32.0` source preserves two
@@ -12,11 +20,6 @@ prescribed polar construction.
 - **License:** Apache License, Version 2.0
 
 **[Open the source on `v4.32.0`](https://github.com/optpku/ReasBook/tree/v4.32.0/ReasBook/Papers/DFP_wolfe_local/)**
-
-[API documentation](https://optpku.github.io/ReasBook/sites/dfp_wolfe_local/docs/) ·
-[Verso reading pages](https://optpku.github.io/ReasBook/sites/dfp_wolfe_local/pages/) ·
-[Original dependency map](https://optpku.github.io/ReasBook/theorem-maps/papers/dfp_wolfe_local/) ·
-[v21 dependency map](https://optpku.github.io/ReasBook/theorem-maps/papers/dfp_wolfe_local/v21/)
 
 ## Proof versions
 
@@ -46,7 +49,7 @@ checked 182 kernel axiom reports using only `propext`, `Classical.choice` and
 The Docs source plan covers 498 reachable modules. The 21-route Verso manifest
 preserves all original reading URLs and adds the complete v21 results. Docs,
 Verso and both dependency maps are published in
-[site-20261020T152000Z-64fdfbc54b6b](https://github.com/optpku/ReasBook/releases/tag/reasbook-site-20261020T152000Z-64fdfbc54b6b).
+[site-20261105T034713Z-fe8615a941bf](https://github.com/optpku/ReasBook/releases/tag/reasbook-site-20261105T034713Z-fe8615a941bf).
 Both maps provide paper-numbered and Lean-declaration views. The published
 resources use the immutable source snapshot
-[`5f2648b6`](https://github.com/optpku/ReasBook/commit/5f2648b67408c025ff266d7263a3693e67ce4435).
+[`dac77d53`](https://github.com/optpku/ReasBook/commit/dac77d532d2d28352c5a2af2f9a3a3a1256be1a6).
