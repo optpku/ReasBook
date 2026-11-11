@@ -1408,13 +1408,8 @@ wrapper `ParameterChoice.IsAsymptoticallyOptimal`. -/
 lemma isAsymptoticallyOptimal_of_isEquivalent_local
     {α αopt : ℕ → ℝ}
     (h : Asymptotics.IsEquivalent Filter.atTop α αopt) :
-    ParameterChoice.IsAsymptoticallyOptimal α αopt := by
-  -- TODO: this `module` file cannot access the non-`module` bridge import, and
-  -- the exposed equation theorem for `IsAsymptoticallyOptimal` is not usable
-  -- here. Restore the canonical owner bridge once the wrapper is exported to a
-  -- `module`-safe dependency.
-  let _ := h
-  sorry
+    ParameterChoice.IsAsymptoticallyOptimal α αopt :=
+  h
 
 /-- The regime-split parameter asymptotics from Theorem 7.21 `(7.80)`. -/
 def OptimalFamilyParameterAsymptotics : Prop :=
@@ -1464,17 +1459,15 @@ theorem optimalFamily_nonsaturated_isAsymptoticallyOptimal
         admissibleParameters
         alphaE)
     (h_alphaE_admissible : ∀ n, alphaE n ∈ admissibleParameters n)
+    (h_b : 0 < b) (h_c : 0 < c) (h_p : 1 < p) (h_q : 1 < q) (h_σ : 0 < σ)
     (h_nonsaturated : 2 * p - q > -1) :
     ParameterChoice.IsAsymptoticallyOptimal alphaE
       (nonsaturatedParameterBenchmark b c p q σ) := by
   have h_beta_pos :
       ∀ᶠ n : ℕ in Filter.atTop, 0 < nonsaturatedParameterBenchmark b c p q σ n :=
-    by
-      -- TODO: this branch needs the standing positivity hypotheses
-      -- `h_b`, `h_c`, `h_p`, `h_q`, `h_σ`, but they are not present in the
-      -- theorem-local context, so the benchmark positivity lemma cannot be
-      -- instantiated here.
-      sorry
+    nonsaturatedBenchmark_eventuallyPos
+      (b := b) (c := c) (p := p) (q := q) (σ := σ)
+      h_b h_c h_p h_q h_σ h_nonsaturated
   have h_equiv :
       Asymptotics.IsEquivalent Filter.atTop alphaE
         (nonsaturatedParameterBenchmark b c p q σ) := by
@@ -1554,6 +1547,7 @@ theorem optimalFamily_saturated_isAsymptoticallyOptimal
         admissibleParameters
         alphaE)
     (h_alphaE_admissible : ∀ n, alphaE n ∈ admissibleParameters n)
+    (h_c : 0 < c) (h_p : 1 < p) (h_σ : 0 < σ)
     (h_saturated : 2 * p - q < -1)
     (h_sourceNormSq_pos :
       ∀ n, 0 < adjointCompSourceNormSq (S n) (h_length n) fTrue) :
@@ -1566,11 +1560,9 @@ theorem optimalFamily_saturated_isAsymptoticallyOptimal
         0 <
           saturatedParameterBenchmark c p σ
             (adjointCompSourceNormSq (S n) (h_length n) fTrue) n :=
-    by
-      -- TODO: this branch needs the standing positivity hypotheses
-      -- `h_c`, `h_p`, `h_σ`, but they are not present in the theorem-local
-      -- context, so the benchmark positivity lemma cannot be instantiated here.
-      sorry
+    saturatedBenchmark_eventuallyPos
+      (K := K) (S := S) (h_length := h_length) (fTrue := fTrue)
+      (c := c) (p := p) (σ := σ) h_c h_p h_σ h_sourceNormSq_pos
   have h_equiv :
       Asymptotics.IsEquivalent Filter.atTop alphaE
         (fun n ↦
@@ -1611,6 +1603,7 @@ theorem expectedObjectiveAlongOptimalFamily_nonsaturated_isEquivalent
         admissibleParameters
         alphaE)
     (h_alphaE_admissible : ∀ n, alphaE n ∈ admissibleParameters n)
+    (h_b : 0 < b) (h_c : 0 < c) (h_p : 1 < p) (h_q : 1 < q) (h_σ : 0 < σ)
     (h_nonsaturated : 2 * p - q > -1) :
     Asymptotics.IsEquivalent Filter.atTop
       (objectiveAlong (expectedObjective μ K Rtikh fTrue η) alphaE)
@@ -1624,6 +1617,7 @@ theorem expectedObjectiveAlongOptimalFamily_nonsaturated_isEquivalent
       (b := b) (c := c) (σ := σ)
       (h_alphaE := h_alphaE)
       (h_alphaE_admissible := h_alphaE_admissible)
+      (h_b := h_b) (h_c := h_c) (h_p := h_p) (h_q := h_q) (h_σ := h_σ)
       (h_nonsaturated := h_nonsaturated)
   -- Route correction: the parameter asymptotic is now available as the only input from `(7.80)`.
   -- TODO: combine `h_alpha_equiv` with the exact objective quadrature profile and identify
@@ -1682,6 +1676,7 @@ theorem expectedObjectiveAlongOptimalFamily_saturated_isEquivalent
         admissibleParameters
         alphaE)
     (h_alphaE_admissible : ∀ n, alphaE n ∈ admissibleParameters n)
+    (h_c : 0 < c) (h_p : 1 < p) (h_σ : 0 < σ)
     (h_saturated : 2 * p - q < -1)
     (h_sourceNormSq_pos :
       ∀ n, 0 < adjointCompSourceNormSq (S n) (h_length n) fTrue) :
@@ -1720,6 +1715,7 @@ theorem optimalFamilyParameterAndExpectedErrorAsymptotics
     (h_betaE : IsCriticalBenchmark b c p σ betaE)
     (h_betaE_pos : ∀ n, 0 < betaE n)
     (h_betaE_tendsto_zero : Filter.Tendsto betaE Filter.atTop (nhds 0))
+    (h_b : 0 < b) (h_c : 0 < c) (h_p : 1 < p) (h_q : 1 < q) (h_σ : 0 < σ)
     (h_sourceNormSq_pos :
       ∀ n, 0 < adjointCompSourceNormSq (S n) (h_length n) fTrue) :
     OptimalFamilyParameterAsymptotics
@@ -1734,6 +1730,7 @@ theorem optimalFamilyParameterAndExpectedErrorAsymptotics
         (b := b) (c := c) (σ := σ)
         (h_alphaE := h_alphaE)
         (h_alphaE_admissible := h_alphaE_admissible)
+        (h_b := h_b) (h_c := h_c) (h_p := h_p) (h_q := h_q) (h_σ := h_σ)
         (h_nonsaturated := h_nonsaturated)
     · constructor
       · intro h_critical
@@ -1749,6 +1746,7 @@ theorem optimalFamilyParameterAndExpectedErrorAsymptotics
           (c := c) (σ := σ)
           (h_alphaE := h_alphaE)
           (h_alphaE_admissible := h_alphaE_admissible)
+          (h_c := h_c) (h_p := h_p) (h_σ := h_σ)
           (h_saturated := h_saturated)
           (h_sourceNormSq_pos := h_sourceNormSq_pos)
   · constructor
@@ -1757,6 +1755,7 @@ theorem optimalFamilyParameterAndExpectedErrorAsymptotics
         (b := b) (c := c) (σ := σ)
         (h_alphaE := h_alphaE)
         (h_alphaE_admissible := h_alphaE_admissible)
+        (h_b := h_b) (h_c := h_c) (h_p := h_p) (h_q := h_q) (h_σ := h_σ)
         (h_nonsaturated := h_nonsaturated)
     · constructor
       · intro h_critical
@@ -1772,6 +1771,7 @@ theorem optimalFamilyParameterAndExpectedErrorAsymptotics
           (σ := σ)
           (h_alphaE := h_alphaE)
           (h_alphaE_admissible := h_alphaE_admissible)
+          (h_c := h_c) (h_p := h_p) (h_σ := h_σ)
           (h_saturated := h_saturated)
           (h_sourceNormSq_pos := h_sourceNormSq_pos)
 
