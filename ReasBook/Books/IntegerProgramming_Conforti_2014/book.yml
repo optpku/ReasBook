@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "id": "IntegerProgramming_Conforti_2014",
+  "title": "Integer Programming",
+  "authors": [
+    "Michele Conforti",
+    "Gérard Cornuéjols",
+    "Giacomo Zambelli"
+  ],
+  "edition": null,
+  "publisher": "Springer International Publishing, Graduate Texts in Mathematics 271",
+  "year": 2014,
+  "isbn": "978-3-319-11007-3",
+  "toolchain": "leanprover/lean4:v4.30.0",
+  "mathlib": "v4.30.0",
+  "branch": "v4.30.0",
+  "contributors": [
+    {
+      "name": "Ziyu Wang",
+      "github": null
+    },
+    {
+      "name": "Zaiwen Wen",
+      "github": null
+    }
+  ],
+  "coverage": "Review candidate containing all received chapter modules Chap01 through Chap10. Five original admit bodies replaced. Only 2/5 original target axiom outputs are available; root compilation remains pending. First-party project-level attribution to formalization contributors Ziyu Wang and Zaiwen Wen was confirmed by the submitter; 55 modules preserve Cameron Freer notices. Textbook-to-source coverage has not been independently established.",
+  "statistics": {
+    "declarations": 17080,
+    "theorem_lemma_example": 13030,
+    "other_declarations": 4050,
+    "lean_files": 1065,
+    "lean_lines": 469843,
+    "proof_completion": null,
+    "sorry": 0,
+    "admit": 0
+  }
+}

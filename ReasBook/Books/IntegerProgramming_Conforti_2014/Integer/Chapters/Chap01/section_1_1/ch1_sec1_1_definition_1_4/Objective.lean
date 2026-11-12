@@ -1,0 +1,30 @@
+/-
+Authors: Ziyu Wang, Zaiwen Wen
+Released under Apache 2.0 license as described in the file LICENSE.
+Project-level attribution: TropicalFatFish/ReasBook-integer-programming@d380aaa277a7a97379616d8bd2809e751c1052f4:ReasBook/Books/IntegerProgramming_Conforti_2014/README.md (Confirmed formalization attribution).
+Attribution scope: project formalization contributors, confirmed by the submitter on 2026-11-04.
+-/
+
+module
+
+public import Mathlib.LinearAlgebra.Matrix.DotProduct
+public import IntegerProgramming_Conforti_2014.Integer.Chapters.Chap01.section_1_1.ch1_sec1_1_definition_1_4.MixedSpace
+
+open scoped Matrix
+
+public section
+
+/-- The linear objective `(x, y) ↦ c ⬝ᵥ x + h ⬝ᵥ y` on the ambient mixed space. -/
+def mixed_linear_objective
+    {n p : ℕ}
+    (c : Fin n → ℝ) (h : Fin p → ℝ) (xy : MixedRealPoint n p) : ℝ :=
+  c ⬝ᵥ xy.1 + h ⬝ᵥ xy.2
+
+/-- Unfolding equation for `mixed_linear_objective`. -/
+theorem mixed_linear_objective_def
+    {n p : ℕ}
+    (c : Fin n → ℝ) (h : Fin p → ℝ) (xy : MixedRealPoint n p) :
+    mixed_linear_objective c h xy = c ⬝ᵥ xy.1 + h ⬝ᵥ xy.2 := by
+  rfl
+
+end

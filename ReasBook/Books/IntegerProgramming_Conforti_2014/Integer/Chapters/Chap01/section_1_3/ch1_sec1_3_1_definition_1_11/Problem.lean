@@ -1,0 +1,55 @@
+/-
+Authors: Ziyu Wang, Zaiwen Wen
+Released under Apache 2.0 license as described in the file LICENSE.
+Project-level attribution: TropicalFatFish/ReasBook-integer-programming@d380aaa277a7a97379616d8bd2809e751c1052f4:ReasBook/Books/IntegerProgramming_Conforti_2014/README.md (Confirmed formalization attribution).
+Attribution scope: project formalization contributors, confirmed by the submitter on 2026-11-04.
+-/
+
+module
+
+public import Init
+
+@[expose] public section
+
+universe u v
+
+/-- A problem packages a type of admissible inputs together with, for each input, the type of
+acceptable answers. -/
+structure Problem where
+  input : Type u
+  answer : input → Type v
+
+namespace Problem
+
+/-- Build a problem from an admissible-input type and its acceptable-answer family. -/
+def ofAnswerFamily (input : Type u) (answer : input → Type v) : Problem :=
+  { input := input
+    answer := answer }
+
+/-- The type of instances of a problem, namely its admissible inputs. -/
+abbrev instanceOf (P : Problem) : Type u :=
+  P.input
+
+/-- The acceptable answers assigned to a given instance of a problem. -/
+abbrev answers (P : Problem) : P.instanceOf → Type v :=
+  P.answer
+
+/-- Unfolding `ofAnswerFamily` recovers the admissible-input type used to build the problem. -/
+@[simp] theorem ofAnswerFamily_input
+    (input : Type u)
+    (answer : input → Type v) :
+    (Problem.ofAnswerFamily input answer).input = input := rfl
+
+/-- Unfolding `instanceOf` recovers the admissible-input type of a problem. -/
+@[simp] theorem instanceOf_def
+    (P : Problem) :
+    P.instanceOf = P.input := rfl
+
+/-- Unfolding `answers` recovers the acceptable-answer family of a problem. -/
+@[simp] theorem answers_def
+    (P : Problem) :
+    P.answers = P.answer := rfl
+
+end Problem
+
+end
