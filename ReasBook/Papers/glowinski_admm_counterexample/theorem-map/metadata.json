@@ -1,26 +1,34 @@
 {
-  "edges": 92,
+  "edges": 20,
   "generation": {
-    "compiledItemCount": 26,
-    "dependencyCoverage": "complete",
-    "dependencyModel": "checked-public-interface-contraction-v1",
-    "grouping": "Interfaces with the same primary compiled constant share a node; all aliases are listed.",
-    "interfaceCount": 30,
+    "compiledItemCount": 14,
+    "correspondence": "Reviewed explicit mapping to the revised manuscript; edges come only from compiled Lean expressions.",
+    "dependencyCoverage": "complete for all mapped proof components",
+    "dependencyModel": "compiled-paper-component-contraction-v2",
+    "edgeWitnesses": "edge-witnesses.json",
+    "mappedTheoremCount": 41,
     "mode": "lean-environment",
-    "rawDeclarationCount": 45505,
-    "rawSha256": "3b3cf6e48ac78ad3d2e3d4dff4b59168db8fa239870bbb04600b4b01c8d0e6bd",
+    "numberedResultCount": 12,
+    "rawDeclarationCount": 63543,
+    "rawSha256": "7fb9c4b510e0a81e24789982972b0d812fd75d49793034a03a7f14fea93a5020",
     "rootModule": "glowinski_admm_counterexample.Paper",
-    "sourceOnlyItemCount": 0
+    "sourceFallback": false,
+    "sourceOnlyItemCount": 0,
+    "unnumberedCertificateCount": 2
   },
-  "nodes": 26,
+  "nodes": 14,
   "project": {
     "branch": "v4.32.0",
-    "commit": "14bc30298cd39f63898a3e88c75b2977235fefe6",
+    "commit": "uncommitted-7e9e0937e54ca2a9f55f2f4cce3f9089566f18c500e0f755e94ae1fb80a787fa",
     "id": "glowinski_admm_counterexample",
     "kind": "papers",
+    "localSourceRoot": "../",
+    "paper": "https://arxiv.org/abs/2611.09169",
+    "publicationPending": true,
     "repository": "https://github.com/optpku/ReasBook",
     "sourceRoot": "ReasBook/Papers/glowinski_admm_counterexample/",
-    "title": "The multiplier step size of two-block ADMM: convergence and counterexamples"
+    "sourceSnapshotSha256": "7e9e0937e54ca2a9f55f2f4cce3f9089566f18c500e0f755e94ae1fb80a787fa",
+    "title": "The multiplier step size in classical two-block ADMM: convergence and counterexamples"
   },
   "schemaVersion": 1
 }

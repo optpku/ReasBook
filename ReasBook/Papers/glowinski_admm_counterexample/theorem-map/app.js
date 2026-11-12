@@ -34,6 +34,7 @@
     mobileDetailButton: document.getElementById("mobileDetailButton"),
     workspace: document.getElementById("workspace"),
     graphStats: document.getElementById("graphStats"),
+    graphViewHint: document.getElementById("graphViewHint"),
     graphViewport: document.getElementById("graphViewport"),
     dependencyGraph: document.getElementById("dependencyGraph"),
     graphScene: document.getElementById("graphScene"),
@@ -78,6 +79,32 @@
       element.setAttribute(key, String(attributes[key]));
     });
     return element;
+  }
+
+  function displayMathTitle(value) {
+    // Lossless text forms for notation used in the current compact titles.
+    // Unknown TeX is retained, never guessed or silently dropped.
+    return String(value || "").replace(/\$([^$]+)\$/g, function (original, math) {
+      var text = math.replace(/\\Gamma(?![A-Za-z])/g, "Γ")
+        .replace(/\\mathcal\s*(?:\{E\}|E(?![A-Za-z]))/g, "𝓔")
+        .replace(/\\ge(?![A-Za-z])/g, "≥");
+      return /[\\{}]/.test(text) ? original : text;
+    });
+  }
+
+  function displayItemLabel(item) {
+    var label = String(item.label || "");
+    return /^(?:Theorem|Lemma|Proposition|Corollary) [a-z]+:[\w-]+$/.test(label)
+      ? (item.type || label.split(" ")[0]) : label;
+  }
+
+  function displayItemTitle(item) {
+    if (displayItemLabel(item) !== item.label && item.title === item.label) {
+      var name = String(item.file || "").split(/[\\/]/).pop().replace(/\.lean$/, "")
+        .replace(/[_-]+/g, " ");
+      return name ? name[0].toUpperCase() + name.slice(1) : displayItemLabel(item);
+    }
+    return displayMathTitle(item.title);
   }
 
   function readPreference(key) {
@@ -186,6 +213,10 @@
   }
 
   function sourceUrl(item) {
+    if (project.publicationPending) {
+      return String(project.localSourceRoot || "../") + encodePath(item.file || "") +
+        "#L" + Number(item.line || 1);
+    }
     var repository = String(project.repository || "").replace(/\/$/, "");
     var sourceRoot = encodePath(project.sourceRoot || "");
     var file = encodePath(item.file || "");
@@ -937,6 +968,8 @@
     );
     refs.graphZoomSlider.setAttribute("aria-valuetext", percent);
     refs.graphZoomValue.textContent = percent;
+    refs.graphViewHint.hidden = state.graphMode !== "full" || state.transform.scale >= 0.2;
+    refs.graphViewHint.textContent = "Full graph overview. Choose Neighborhood to read the selected statement’s dependencies.";
   }
 
   function fitGraph() {
@@ -1107,7 +1140,7 @@
     leanMark.className = "lean-mark";
     leanMark.textContent = "LEAN";
     source.appendChild(leanMark);
-    source.appendChild(document.createTextNode("Open source at line " + item.line));
+    source.appendChild(document.createTextNode((project.publicationPending ? "Open local source at line " : "Open source at line ") + item.line));
     header.appendChild(kicker);
     header.appendChild(heading);
     header.appendChild(subheading);
@@ -1166,6 +1199,34 @@
     factRow(facts, "Snapshot", String(project.commit || "").slice(0, 10));
     leanSection.appendChild(leanHeading);
     leanSection.appendChild(facts);
+    if (item.correspondence) {
+      var scope = document.createElement("p");
+      scope.className = "mapping-correspondence";
+      scope.textContent = item.correspondence;
+      leanSection.appendChild(scope);
+    }
+    var bindings = document.createElement("ul");
+    bindings.className = "mapped-declarations";
+    (item.declarationBindings || []).forEach(function (binding) {
+      var row = document.createElement("li");
+      var link = document.createElement("a");
+      link.href = sourceUrl(binding);
+      link.target = "_blank";
+      link.rel = "noreferrer";
+      var code = document.createElement("code");
+      code.textContent = binding.name;
+      link.appendChild(code);
+      row.appendChild(link);
+      row.appendChild(document.createTextNode(" — " + binding.file + ":" + binding.line));
+      bindings.appendChild(row);
+    });
+    leanSection.appendChild(bindings);
+    if (project.publicationPending) {
+      var pending = document.createElement("p");
+      pending.className = "dependency-evidence-note";
+      pending.textContent = "Verified local source snapshot; publication and immutable source links are pending the source merge and maintainer release.";
+      leanSection.appendChild(pending);
+    }
     refs.detailContent.replaceChildren(header, statementSection, relationSection, leanSection);
     refs.detailContent.parentElement.scrollTop = 0;
   }
@@ -1384,6 +1445,10 @@
           return values.indexOf(id) === index;
         });
       return Object.assign({}, item, {
+        rawTitle: item.title,
+        rawLabel: item.label,
+        title: displayItemTitle(item),
+        label: displayItemLabel(item),
         statementDependencies: statementDependencies,
         proofDependencies: proofDependencies,
         dependencies: dependencies,
@@ -1498,8 +1563,19 @@
       return response.json();
     })
     .then(function (payload) {
-      validateAndLoad(payload);
-      initialize();
+      return fetch("./release-context.json", { cache: "no-cache" })
+        .then(function (response) { return response.ok ? response.json() : null; })
+        .catch(function () { return null; })
+        .then(function (context) {
+          var identity = context && context.project;
+          if (identity && identity.id === payload.project.id &&
+              identity.sourceRoot === payload.project.sourceRoot &&
+              /^[0-9a-f]{40}$/i.test(String(identity.commit || ""))) {
+            payload.project = Object.assign({}, payload.project, identity, { publicationPending: false });
+          }
+          validateAndLoad(payload);
+          initialize();
+        });
     })
     .catch(function (error) {
       refs.fatalError.hidden = false;
