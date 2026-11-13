@@ -1,0 +1,13 @@
+# Repository-level webhook: configured once by an administrator, for all branches.
+# ReasLab filters repository, ref and changed paths before queuing source sync.
+repository: optpku/ReasBook
+name: web
+active: true
+events:
+  - push
+config:
+  url: https://reasbook.reaslab.io/hooks/upstream-sync
+  content_type: json
+  insecure_ssl: "0"
+# Supply separately; never commit the secret value or paste it into a PR.
+secret_env: REASLAB_UPSTREAM_WEBHOOK_SECRET
