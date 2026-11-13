@@ -6,6 +6,8 @@ Project-level attribution: optpku/ReasBook@f40e785158f79d8f0e645890825b840af912e
 
 module
 
-public import glowinski_admm_counterexample.GlowinskiADMM
+public import glowinski_admm_counterexample.GlowinskiADMM.UpdatedPaper
 
-/-! Verified public entry point for the Glowinski ADMM paper. -/
+/-! Complete formalization of the updated Glowinski ADMM paper.
+`GlowinskiADMM.UpdatedPaper` exports the retained results and the strengthened
+convergence, unit-circle criterion, and strict endpoint bounds. -/

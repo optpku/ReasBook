@@ -1,0 +1,230 @@
+{
+  "rawSha256": "7fb9c4b510e0a81e24789982972b0d812fd75d49793034a03a7f14fea93a5020",
+  "sourceSnapshotSha256": "7e9e0937e54ca2a9f55f2f4cce3f9089566f18c500e0f755e94ae1fb80a787fa",
+  "edges": [
+    {
+      "from": "theorem-2-1",
+      "to": "appendix-c-2",
+      "kind": "proof",
+      "declarationPath": [
+        "ADMM.UpdatedTargets.mainConvergence",
+        "ADMM.UpdatedTargets.lowerCircleCertificate"
+      ]
+    },
+    {
+      "from": "theorem-2-1",
+      "to": "lemma-3-1",
+      "kind": "proof",
+      "declarationPath": [
+        "ADMM.UpdatedTargets.mainConvergence",
+        "ADMM.UpdatedTargets.mainConvergence_of_lower_certificate",
+        "ADMM.UpdatedTargets.mainConvergence_of_circle_claims",
+        "ADMM.UpdatedTargets.trajectoryConclusions_of_circle_claim",
+        "ADMM.Problem.reducedFirst_isClosedProperConvex"
+      ]
+    },
+    {
+      "from": "theorem-2-1",
+      "to": "lemma-3-2",
+      "kind": "proof",
+      "declarationPath": [
+        "ADMM.UpdatedTargets.mainConvergence",
+        "ADMM.UpdatedTargets.mainConvergence_of_lower_certificate",
+        "ADMM.UpdatedTargets.mainConvergence_of_circle_claims",
+        "ADMM.UpdatedTargets.retained_trajectory_conclusions",
+        "ADMM.leftImage_tendsto",
+        "_private.glowinski_admm_counterexample.ReasLib.Optimization.ADMM.Convergence.0.ADMM.rankFreeConvergenceBundle",
+        "_private.glowinski_admm_counterexample.ReasLib.Optimization.ADMM.Convergence.0.ADMM.reducedOrbitConverges",
+        "ADMM.ConvergenceProof.reduced_orbit_converges",
+        "ADMM.ConvergenceProof.finiteMemory_residual_summable",
+        "ADMM.ConvergenceProof.generated_certificate_summable"
+      ]
+    },
+    {
+      "from": "theorem-2-1",
+      "to": "lemma-c-1",
+      "kind": "proof",
+      "declarationPath": [
+        "ADMM.UpdatedTargets.mainConvergence",
+        "ADMM.UpdatedTargets.mainConvergence_of_lower_certificate",
+        "ADMM.UpdatedTargets.unitCircleConvergence"
+      ]
+    },
+    {
+      "from": "theorem-2-2",
+      "to": "lemma-4-1",
+      "kind": "proof",
+      "declarationPath": [
+        "ConsensusADMM.fixedPolytopes",
+        "ConsensusADMM.IsProjectionCycle.hasUniqueUpdates"
+      ]
+    },
+    {
+      "from": "theorem-2-2",
+      "to": "lemma-5-1",
+      "kind": "proof",
+      "declarationPath": [
+        "ConsensusADMM.smoothCounterexample",
+        "_private.glowinski_admm_counterexample.ReasLib.ConsensusADMM.Period48.Counterexamples.0.ConsensusADMM.criticalStrictCycle_exists",
+        "ConsensusADMM.IsProjectionCycle.strictifyOneBlock"
+      ]
+    },
+    {
+      "from": "theorem-2-2",
+      "to": "proposition-4-3",
+      "kind": "proof",
+      "declarationPath": [
+        "ConsensusADMM.fixedPolytopes",
+        "_private.glowinski_admm_counterexample.ReasLib.ConsensusADMM.Period48.Counterexamples.0.ConsensusADMM.period48GramSupportCertificate",
+        "ConsensusADMM.Period48.FixedPolytopes.constantPositiveResidual"
+      ]
+    },
+    {
+      "from": "corollary-2-3",
+      "to": "appendix-c-2",
+      "kind": "proof",
+      "declarationPath": [
+        "ADMM.UpdatedTargets.endpointBounds",
+        "ADMM.UpdatedTargets.lowerCircleCertificate"
+      ]
+    },
+    {
+      "from": "corollary-2-3",
+      "to": "appendix-c-3",
+      "kind": "proof",
+      "declarationPath": [
+        "ADMM.UpdatedTargets.endpointBounds",
+        "ADMM.UpdatedTargets.endpointBounds_of_lower_certificate",
+        "ADMM.UpdatedTargets.endpointBounds_of_circle_claims",
+        "ADMM.UpdatedTargets.refinedUpperBound"
+      ]
+    },
+    {
+      "from": "corollary-2-3",
+      "to": "lemma-3-1",
+      "kind": "proof",
+      "declarationPath": [
+        "ADMM.UpdatedTargets.refinedLowerBound",
+        "ADMM.UpdatedTargets.refinedLowerBound_of_lower_certificate",
+        "ADMM.UpdatedTargets.refinedLowerBound_of_circle_claims",
+        "ADMM.UpdatedTargets.trajectoryConclusions_of_circle_claim",
+        "ADMM.Problem.reducedFirst_isClosedProperConvex"
+      ]
+    },
+    {
+      "from": "corollary-2-3",
+      "to": "lemma-3-2",
+      "kind": "proof",
+      "declarationPath": [
+        "ADMM.UpdatedTargets.refinedLowerBound",
+        "ADMM.UpdatedTargets.refinedLowerBound_of_lower_certificate",
+        "ADMM.UpdatedTargets.refinedLowerBound_of_circle_claims",
+        "ADMM.UpdatedTargets.retained_trajectory_conclusions",
+        "ADMM.leftImage_tendsto",
+        "_private.glowinski_admm_counterexample.ReasLib.Optimization.ADMM.Convergence.0.ADMM.rankFreeConvergenceBundle",
+        "_private.glowinski_admm_counterexample.ReasLib.Optimization.ADMM.Convergence.0.ADMM.reducedOrbitConverges",
+        "ADMM.ConvergenceProof.reduced_orbit_converges",
+        "ADMM.ConvergenceProof.finiteMemory_residual_summable",
+        "ADMM.ConvergenceProof.generated_certificate_summable"
+      ]
+    },
+    {
+      "from": "corollary-2-3",
+      "to": "lemma-4-1",
+      "kind": "proof",
+      "declarationPath": [
+        "ADMM.UpdatedTargets.refinedLowerBound",
+        "ADMM.UpdatedTargets.refinedLowerBound_of_lower_certificate",
+        "ADMM.UpdatedTargets.refinedLowerBound_of_circle_claims",
+        "ADMM.EndpointBounds.prefix_bounded_and_endpoint_lt",
+        "ConsensusADMM.IsProjectionCycle.not_uniformConvergenceAt",
+        "ConsensusADMM.IsProjectionCycle.isTrajectory"
+      ]
+    },
+    {
+      "from": "corollary-2-3",
+      "to": "lemma-5-1",
+      "kind": "proof",
+      "declarationPath": [
+        "ADMM.UpdatedTargets.refinedLowerBound",
+        "ADMM.UpdatedTargets.refinedLowerBound_of_lower_certificate",
+        "ADMM.UpdatedTargets.refinedLowerBound_of_circle_claims",
+        "ADMM.EndpointBounds.prefix_bounded_and_endpoint_lt",
+        "ConsensusADMM.IsProjectionCycle.strictifyOneBlock"
+      ]
+    },
+    {
+      "from": "corollary-2-3",
+      "to": "lemma-c-1",
+      "kind": "proof",
+      "declarationPath": [
+        "ADMM.UpdatedTargets.endpointBounds",
+        "ADMM.UpdatedTargets.endpointBounds_of_lower_certificate",
+        "ADMM.UpdatedTargets.unitCircleConvergence"
+      ]
+    },
+    {
+      "from": "corollary-2-3",
+      "to": "proposition-4-3",
+      "kind": "proof",
+      "declarationPath": [
+        "ADMM.UpdatedTargets.refinedLowerBound",
+        "ADMM.UpdatedTargets.refinedLowerBound_of_lower_certificate",
+        "ADMM.UpdatedTargets.refinedLowerBound_of_circle_claims",
+        "ADMM.EndpointBounds.prefix_bounded_and_endpoint_lt",
+        "ConsensusADMM.Period48.FixedPolytopes.gramMatrix_posDef"
+      ]
+    },
+    {
+      "from": "proposition-4-3",
+      "to": "lemma-4-1",
+      "kind": "proof",
+      "declarationPath": [
+        "ConsensusADMM.Period48.FixedPolytopes.trajectory_exactPeriod",
+        "ConsensusADMM.IsProjectionCycle.isTrajectory"
+      ]
+    },
+    {
+      "from": "lemma-5-1",
+      "to": "lemma-4-1",
+      "kind": "proof",
+      "declarationPath": [
+        "ConsensusADMM.IsProjectionCycle.uniformConvergenceEndpoint_lt",
+        "ConsensusADMM.IsProjectionCycle.not_uniformConvergenceAt",
+        "ConsensusADMM.IsProjectionCycle.isTrajectory"
+      ]
+    },
+    {
+      "from": "lemma-5-2",
+      "to": "lemma-4-1",
+      "kind": "proof",
+      "declarationPath": [
+        "ConsensusADMM.IsStrictProjectionCycle.smoothStronglyConvexRealization",
+        "ConsensusADMM.IsProjectionCycle.minimalPeriod_dvd"
+      ]
+    },
+    {
+      "from": "proposition-5-3",
+      "to": "lemma-4-1",
+      "kind": "proof",
+      "declarationPath": [
+        "ConsensusADMM.IsStrictProjectionCycle.finiteObjectivesAndGrowth",
+        "ConsensusADMM.FiniteObjectivesAndGrowth.periodic",
+        "ConsensusADMM.IsProjectionCycle.minimalPeriod_dvd"
+      ]
+    },
+    {
+      "from": "appendix-c-3",
+      "to": "lemma-5-1",
+      "kind": "proof",
+      "declarationPath": [
+        "ADMM.UpdatedTargets.refinedUpperBound",
+        "ConsensusADMM.RefinedEndpoint.Certificate.endpoint_lt_upper",
+        "ConsensusADMM.RefinedEndpoint.Period1024.endpoint_lt_upper_of_supports",
+        "ConsensusADMM.RefinedEndpoint.endpoint_lt_of_scaled_zeroPhase",
+        "ConsensusADMM.RefinedEndpoint.endpoint_lt_of_zeroPhase",
+        "ConsensusADMM.IsProjectionCycle.uniformConvergenceEndpoint_lt"
+      ]
+    }
+  ]
+}
