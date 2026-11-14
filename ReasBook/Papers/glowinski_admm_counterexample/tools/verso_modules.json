@@ -1,0 +1,90 @@
+{
+  "preserve_discovered_routes": true,
+  "modules": [
+    {
+      "module": "glowinski_admm_counterexample.GlowinskiADMM.UpdatedResults",
+      "title": "Theorem 2.1 and Corollary 2.3",
+      "slug": "main-results"
+    },
+    {
+      "module": "glowinski_admm_counterexample.GlowinskiADMM.theorem_2_1_4",
+      "title": "Theorem 2.2: periodic orbits and growth",
+      "slug": "periodic-growth"
+    },
+    {
+      "module": "glowinski_admm_counterexample.GlowinskiADMM.lemma_3_1_2",
+      "title": "Lemma 3.1: image reduction",
+      "slug": "image-reduction"
+    },
+    {
+      "module": "glowinski_admm_counterexample.GlowinskiADMM.lemma_3_2_reduced",
+      "title": "Lemma 3.2: reduced interval certificate",
+      "slug": "interval-certificate"
+    },
+    {
+      "module": "glowinski_admm_counterexample.GlowinskiADMM.lemma_4_1_2",
+      "title": "Lemma 4.1: projection cycles",
+      "slug": "projection-cycles"
+    },
+    {
+      "module": "glowinski_admm_counterexample.GlowinskiADMM.proposition_4_1_3",
+      "title": "Proposition 4.2: cyclic reduction",
+      "slug": "cyclic-reduction"
+    },
+    {
+      "module": "glowinski_admm_counterexample.GlowinskiADMM.proposition_4_1_6",
+      "title": "Proposition 4.3: fixed polytopes",
+      "slug": "fixed-polytopes"
+    },
+    {
+      "module": "glowinski_admm_counterexample.GlowinskiADMM.lemma_5_1_1",
+      "title": "Lemma 5.1: strictification",
+      "slug": "strictification"
+    },
+    {
+      "module": "glowinski_admm_counterexample.GlowinskiADMM.lemma_5_1_4",
+      "title": "Lemma 5.2: smooth strongly convex realization",
+      "slug": "smooth-realization"
+    },
+    {
+      "module": "glowinski_admm_counterexample.GlowinskiADMM.finite_objectives_and_growth",
+      "title": "Proposition 5.3: finite objectives and growth",
+      "slug": "finite-objectives"
+    },
+    {
+      "module": "glowinski_admm_counterexample.GlowinskiADMM.UnitCircleConvergence",
+      "title": "Lemma C.1: unit-circle convergence",
+      "slug": "unit-circle"
+    },
+    {
+      "module": "glowinski_admm_counterexample.GlowinskiADMM.RefinedLowerCertificate",
+      "title": "Appendix C.2: concrete lower certificate",
+      "slug": "lower-certificate"
+    },
+    {
+      "module": "glowinski_admm_counterexample.ReasLib.ConsensusADMM.RefinedEndpoint.Certificate.UpperBound",
+      "title": "Appendix C.3: 1024-phase upper counterexample",
+      "slug": "upper-certificate"
+    },
+    {
+      "module": "glowinski_admm_counterexample.GlowinskiADMM.UpdatedTargets",
+      "title": "Full statements and exact problem scope",
+      "slug": "full-statements"
+    },
+    {
+      "module": "glowinski_admm_counterexample.GlowinskiADMM.UpdatedAssembly",
+      "title": "Transport and assembly of the updated results",
+      "slug": "result-assembly"
+    },
+    {
+      "module": "glowinski_admm_counterexample.GlowinskiADMM.UnitCircleTiltedValues",
+      "title": "Tilted objective limits at any fixed KKT anchor",
+      "slug": "fixed-anchor-values"
+    },
+    {
+      "module": "glowinski_admm_counterexample.ReasLib.Optimization.ADMM.UnitCircle.LowerCertificate.DeterminantPolynomial.Actual",
+      "title": "The actual determinant-to-polynomial identities",
+      "slug": "actual-determinants"
+    }
+  ]
+}
