@@ -12,7 +12,7 @@ import posixpath
 import re
 import sys
 import tempfile
-from dataclasses import dataclass, replace
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Iterable
 from urllib.parse import quote
@@ -266,7 +266,7 @@ class Entry:
     section_num: int
     part_num: int
     stem: str
-    legacy_routes: tuple[str, ...] = ()
+    from_reading_manifest: bool = False
 
 
 @dataclass(frozen=True)
@@ -621,6 +621,8 @@ def section_title_from_stem(stem: str) -> str:
 
 
 def entry_label(e: Entry) -> str:
+    if e.from_reading_manifest:
+        return e.title
     if e.category == "books":
         section_titles = BOOK_SECTION_TITLES.get(e.book_or_paper, {}).get(
             e.chapter_num, {}
@@ -647,7 +649,7 @@ def readme_label(e: Entry) -> str:
         return ""
     if e.category == "books":
         return book_section_heading(e.book_or_paper, e.chapter_num, e.section_num, base)
-    if e.category == "papers":
+    if e.category == "papers" and not e.from_reading_manifest:
         return f"Section {e.section_num}: {base}"
     return base
 
@@ -1293,8 +1295,6 @@ def collect_entries(
         if paper_inventory_uses_item_reader(inventory)
     )
     configured_papers: set[str] = set()
-    preserve_discovered_routes: set[str] = set()
-    configured_entries: dict[tuple[str, str], int] = {}
     facade_sources: set[Path] = set()
     for paper_dir in sorted(papers_root.iterdir()) if papers_root.is_dir() else ():
         if not paper_dir.is_dir() or not project_enabled("papers", paper_dir.name):
@@ -1312,17 +1312,14 @@ def collect_entries(
         if not paper_dir.is_dir() or not project_enabled("papers", paper_dir.name) or not manifest.is_file():
             continue
         plan = json.loads(manifest.read_text(encoding="utf-8"))
-        if plan.get("preserve_discovered_routes", False) is True:
-            preserve_discovered_routes.add(paper_dir.name)
         sources = {to_module(source_root, path): path for path in paper_dir.rglob("*.lean")}
         for number, row in enumerate(plan["modules"], start=1):
             module, slug = row["module"], row["slug"]
             if module not in sources or re.fullmatch(r"[a-z0-9][a-z0-9-]*", slug) is None:
                 raise ValueError(f"invalid Verso reading module for {paper_dir.name}: {row}")
-            configured_entries[(paper_dir.name, module)] = len(entries)
             entries.append(Entry("papers", module, row["title"],
                 f"papers/{paper_dir.name.lower()}/sections/{slug}/", paper_dir.name,
-                0, number, 0, slug))
+                0, number, 0, slug, from_reading_manifest=True))
         configured_papers.add(paper_dir.name)
 
     for path in sorted(books_root.rglob("*.lean")):
@@ -1385,18 +1382,10 @@ def collect_entries(
             continue
         if not project_enabled("papers", paper):
             continue
-        legacy_only = paper in configured_papers and path != papers_root / paper / "Paper.lean"
-        if legacy_only:
-            if paper not in preserve_discovered_routes:
-                continue
-            index = configured_entries.get((paper, module))
-            if index is not None:
-                # Reuse the same rendered page at its former module URL.
-                entries[index] = replace(entries[index], legacy_routes=(route_from_module(module),))
-                continue
+        if paper in configured_papers and path != papers_root / paper / "Paper.lean":
+            continue
         sec_title = module_doc_title(path) or section_title_from_stem(path.stem)
-        # The manifest owns the section index; unselected modules keep their URLs.
-        sec_num, part_num = (0, 0) if legacy_only else parse_section_part(path.stem)
+        sec_num, part_num = parse_section_part(path.stem)
         entries.append(
             Entry(
                 category="papers",
@@ -2064,7 +2053,6 @@ def site_route_bindings(
         target = f"Book.{entry.module}"
         bindings.append((entry.route, target))
         bindings.extend((alias, target) for alias in alias_routes(entry))
-        bindings.extend((alias, target) for alias in entry.legacy_routes)
 
     for reader in readers:
         target = reader_chapter_module(reader)
@@ -2147,7 +2135,6 @@ def fragment_owned_routes(
     intro_prefix = "books/introductiontorealanalysisvolumei_jirilebl_2025/"
     for entry in entries:
         routes.add(entry.route)
-        routes.update(entry.legacy_routes)
         if entry.category == "books" and entry.stem == "book":
             routes.add(f"books/{entry.book_or_paper.lower()}/")
         elif entry.category == "papers" and entry.stem in {"paper", "main"}:

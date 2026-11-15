@@ -1451,6 +1451,7 @@ class RepositoryScriptTests(unittest.TestCase):
             )
             (project / "Paper.lean").write_text("import DFPWolfe.Paper\n", encoding="utf-8")
             (project / "DFPWolfe" / "Main.lean").write_text("", encoding="utf-8")
+            (project / "section01.lean").write_text("", encoding="utf-8")
             (project / "DFPWolfe" / "Paper.lean").write_text("", encoding="utf-8")
             (project / "ReasLib" / "Core.lean").write_text("", encoding="utf-8")
             (project / "tools").mkdir()
@@ -1475,54 +1476,19 @@ class RepositoryScriptTests(unittest.TestCase):
             self.assertIn('"papers/dfp_wolfe_local/sections/polar-foundations/" Book.ReasLib.Core', routes)
             landing = (web_root / "ReasBookSite/WorkPages/Papers/DFP_wolfe_local.lean").read_text()
             self.assertNotIn("No separate reading sections", landing)
-
-    def test_gen_sections_can_preserve_discovered_routes_with_manifest(self) -> None:
-        generator = ROOT / "ReasBookWeb" / "scripts" / "gen_sections.py"
-        with tempfile.TemporaryDirectory() as temp:
-            repo = Path(temp)
-            source = repo / "ReasBook"
-            paper = source / "Papers" / "Demo"
-            (paper / "tools").mkdir(parents=True)
-            (paper / "Support").mkdir()
-            (source / "Books").mkdir()
-            (source / "lakefile.lean").write_text(
-                'import Lake\nlean_lib Demo where\n  srcDir := "Papers"\n'
+            self.assertIn("[Main theorems](", landing)
+            self.assertIn("[Polar foundations](", landing)
+            self.assertNotIn("Section 1: Main-Theorems", landing)
+            self.assertIn('"dfp_wolfe_local/paper/" Book.DFP_wolfe_local.Paper', routes)
+            self.assertNotIn("dfp_wolfe_local/section01/", routes)
+            sections = (web_root / "ReasBookSite/Sections.lean").read_text()
+            payload = re.search(r"^def sidebarDataJson : String := (.+)$", sections, re.M)[1]
+            paper = json.loads(json.loads(payload))["papers"][0]
+            self.assertEqual(
+                [section["title"] for section in paper["sections"]],
+                ["Main theorems", "Polar foundations"],
             )
-            for name in ("Paper", "section01", "section02", "Support/Result"):
-                (paper / f"{name}.lean").write_text(
-                    "/-\nAuthors: Example Author\n-/\ntheorem result : True := by trivial\n"
-                )
-            (paper / "tools" / "verso_modules.json").write_text(json.dumps({
-                "preserve_discovered_routes": True,
-                "modules": [
-                    {"module": "Demo.section01", "title": "First", "slug": "first"},
-                    {"module": "Demo.Support.Result", "title": "New", "slug": "new"},
-                ],
-            }))
-            result = subprocess.run(
-                [sys.executable, str(generator), "--repo-root", str(repo)],
-                env={
-                    **os.environ, "REASBOOK_INCLUDE_PROJECTS": "papers/Demo",
-                    "REASBOOK_PROJECT_FRAGMENT": "1",
-                },
-                capture_output=True, text=True, check=False,
-            )
-            self.assertEqual(result.returncode, 0, result.stderr)
-            web = repo / "ReasBookWeb"
-            manifest = json.loads((web / ".literate-modules.json").read_text())
-            self.assertCountEqual(manifest["modules"], [
-                "Demo.Paper", "Demo.section01", "Demo.section02", "Demo.Support.Result",
-            ])
-            fragment = json.loads((web / ".project-fragment.json").read_text())
-            table = (web / "ReasBookSite" / "RouteTable.lean").read_text()
-            for route, target in {
-                "demo/section01/": "Demo.section01",
-                "demo/section02/": "Demo.section02",
-                "papers/demo/sections/first/": "Demo.section01",
-                "papers/demo/sections/new/": "Demo.Support.Result",
-            }.items():
-                self.assertIn(route, fragment["routes"])
-                self.assertIn(f'"{route}" Book.{target}', table)
+            self.assertEqual(paper["files"], [])
 
     def test_gen_sections_discovers_imported_nested_paper_facades(self) -> None:
         with tempfile.TemporaryDirectory() as temp:
