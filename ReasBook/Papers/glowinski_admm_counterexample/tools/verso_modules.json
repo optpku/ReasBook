@@ -1,5 +1,4 @@
 {
-  "preserve_discovered_routes": true,
   "modules": [
     {
       "module": "glowinski_admm_counterexample.GlowinskiADMM.UpdatedResults",
