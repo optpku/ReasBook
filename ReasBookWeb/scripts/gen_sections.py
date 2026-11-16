@@ -163,7 +163,7 @@ PAPER_TITLES = {
     "BFGSMinimumQOrder_Liu_2026": "The Minimum Q-Order of BFGS with Exact Line Search Is One (Liu et al., 2026)",
     "RockafellarSum_2026": "A Counterexample to the Rockafellar Sum Conjecture on c₀ (2026)",
     "DFP_wolfe_local": "A Counterexample to Global Convergence of Classical DFP Under the Standard Strong Wolfe Conditions",
-    "glowinski_admm_counterexample": "The Multiplier Step Size of Two-Block ADMM",
+    "glowinski_admm_counterexample": "The multiplier step size in classical two-block ADMM: convergence and counterexamples",
     "SmoothMinimization_Nesterov_2004": "Smooth Minimization of Non-Smooth Functions (Nesterov, 2005)",
     "OnSomeLocalRings_Maassaran_2025": "On Some Local Rings (Maassarani, 2025)",
     "TR_LALM_theory": "TR-LALM Theory",
@@ -266,6 +266,7 @@ class Entry:
     section_num: int
     part_num: int
     stem: str
+    from_reading_manifest: bool = False
 
 
 @dataclass(frozen=True)
@@ -620,6 +621,8 @@ def section_title_from_stem(stem: str) -> str:
 
 
 def entry_label(e: Entry) -> str:
+    if e.from_reading_manifest:
+        return e.title
     if e.category == "books":
         section_titles = BOOK_SECTION_TITLES.get(e.book_or_paper, {}).get(
             e.chapter_num, {}
@@ -646,7 +649,7 @@ def readme_label(e: Entry) -> str:
         return ""
     if e.category == "books":
         return book_section_heading(e.book_or_paper, e.chapter_num, e.section_num, base)
-    if e.category == "papers":
+    if e.category == "papers" and not e.from_reading_manifest:
         return f"Section {e.section_num}: {base}"
     return base
 
@@ -1316,7 +1319,7 @@ def collect_entries(
                 raise ValueError(f"invalid Verso reading module for {paper_dir.name}: {row}")
             entries.append(Entry("papers", module, row["title"],
                 f"papers/{paper_dir.name.lower()}/sections/{slug}/", paper_dir.name,
-                0, number, 0, slug))
+                0, number, 0, slug, from_reading_manifest=True))
         configured_papers.add(paper_dir.name)
 
     for path in sorted(books_root.rglob("*.lean")):

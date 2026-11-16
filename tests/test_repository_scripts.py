@@ -1451,6 +1451,7 @@ class RepositoryScriptTests(unittest.TestCase):
             )
             (project / "Paper.lean").write_text("import DFPWolfe.Paper\n", encoding="utf-8")
             (project / "DFPWolfe" / "Main.lean").write_text("", encoding="utf-8")
+            (project / "section01.lean").write_text("", encoding="utf-8")
             (project / "DFPWolfe" / "Paper.lean").write_text("", encoding="utf-8")
             (project / "ReasLib" / "Core.lean").write_text("", encoding="utf-8")
             (project / "tools").mkdir()
@@ -1475,6 +1476,19 @@ class RepositoryScriptTests(unittest.TestCase):
             self.assertIn('"papers/dfp_wolfe_local/sections/polar-foundations/" Book.ReasLib.Core', routes)
             landing = (web_root / "ReasBookSite/WorkPages/Papers/DFP_wolfe_local.lean").read_text()
             self.assertNotIn("No separate reading sections", landing)
+            self.assertIn("[Main theorems](", landing)
+            self.assertIn("[Polar foundations](", landing)
+            self.assertNotIn("Section 1: Main-Theorems", landing)
+            self.assertIn('"dfp_wolfe_local/paper/" Book.DFP_wolfe_local.Paper', routes)
+            self.assertNotIn("dfp_wolfe_local/section01/", routes)
+            sections = (web_root / "ReasBookSite/Sections.lean").read_text()
+            payload = re.search(r"^def sidebarDataJson : String := (.+)$", sections, re.M)[1]
+            paper = json.loads(json.loads(payload))["papers"][0]
+            self.assertEqual(
+                [section["title"] for section in paper["sections"]],
+                ["Main theorems", "Polar foundations"],
+            )
+            self.assertEqual(paper["files"], [])
 
     def test_gen_sections_discovers_imported_nested_paper_facades(self) -> None:
         with tempfile.TemporaryDirectory() as temp:
