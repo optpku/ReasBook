@@ -3,6 +3,7 @@ schema_version: 1
 
 books:
   Analysis2_Tao_2022: v4.30.0
+  IntegerProgramming_Conforti_2014: v4.26.0
   IntroductiontoRealAnalysisVolumeI_JiriLebl_2025: v4.30.0
 
 papers:
