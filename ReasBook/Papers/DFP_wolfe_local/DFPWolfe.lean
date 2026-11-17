@@ -7,11 +7,13 @@ module
 
 public import DFPWolfe.Paper
 public import DFPWolfe.V21.Paper
+public import DFPWolfe.Latest.Paper
 
 /-! # DFP under Wolfe line searches
 
-The original center-manifold proof is exported by `DFPWolfe.Paper`; the v21
-polar proof is exported by `DFPWolfe.V21.Paper`. Both include source-facing
-counterexample, identity initialization and planar convergence results.
+The latest general polar proof is exported by `DFPWolfe.Latest.Paper`.
+The original center-manifold proof and v21 fixed-exponent polar proof are
+preserved through `DFPWolfe.Paper` and `DFPWolfe.V21.Paper`. Each route includes
+source-facing counterexample, identity initialization and planar convergence results.
 See `DFPWolfe/README.md` for the original result index.
 -/
