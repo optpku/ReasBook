@@ -3427,11 +3427,15 @@ def is_generated_overview_block(body_lines: list[str]) -> bool:
     if not lines:
         return False
     first = lines[0]
-    if not (
-        first.startswith("Overview page for ") or re.match(r"^Chapter \d{2}$", first)
-    ):
-        return False
-    return "Verso links:" in "\n".join(lines)
+    legacy_title = first.startswith("Overview page for ") or re.fullmatch(
+        r"Chapter \d{2}", first
+    )
+    chapter_template = (
+        "This chapter aggregation page links to section overviews and source files."
+        in lines
+        and "Section overviews:" in lines
+    )
+    return "Verso links:" in lines and bool(legacy_title or chapter_template)
 
 
 # ---------------------------------------------------------------------------
@@ -3465,39 +3469,9 @@ def upsert_overview_block(path: Path, body_lines: list[str]) -> None:
         }
     ]
 
-    insert_at = -1
-    last_import = -1
-    for i, line in enumerate(lines):
-        if line.startswith("import "):
-            last_import = i
-    insert_at = last_import + 1 if last_import >= 0 else 0
-
-    while insert_at < len(lines) and lines[insert_at].strip() == "":
-        insert_at += 1
-
-    candidate_start = insert_at
-    while candidate_start < len(lines) and lines[candidate_start].strip() == "":
-        candidate_start += 1
-    if candidate_start < len(lines) and lines[candidate_start].strip() == "/-!":
-        candidate_end = None
-        for j in range(candidate_start + 1, len(lines)):
-            if lines[j].strip() == "-/":
-                candidate_end = j
-                break
-        if candidate_end is not None:
-            candidate_body = lines[candidate_start + 1 : candidate_end]
-            if is_generated_overview_block(candidate_body):
-                del lines[candidate_start : candidate_end + 1]
-                while (
-                    candidate_start < len(lines)
-                    and lines[candidate_start].strip() == ""
-                ):
-                    if candidate_start == 0 or lines[candidate_start - 1].strip() == "":
-                        del lines[candidate_start]
-                    else:
-                        break
-
-    # Drop stale legacy docstring blocks used by old generated chapter aggregators.
+    # Remove every owned block, including duplicates accumulated by older
+    # generators that did not recognize custom chapter titles. Authored module
+    # docstrings remain in their original order.
     i = 0
     while i < len(lines):
         if lines[i].strip() == "/-!":
@@ -3505,16 +3479,21 @@ def upsert_overview_block(path: Path, body_lines: list[str]) -> None:
             while j < len(lines) and lines[j].strip() != "-/":
                 j += 1
             if j < len(lines):
-                block_text = "\n".join(lines[i + 1 : j])
-                if "Auto-managed imports live below." in block_text:
+                body = lines[i + 1 : j]
+                if is_generated_overview_block(body) or (
+                    "Auto-managed imports live below." in "\n".join(body)
+                ):
                     del lines[i : j + 1]
-                    while i < len(lines) and lines[i].strip() == "":
-                        if i == 0 or lines[i - 1].strip() == "":
-                            del lines[i]
-                        else:
-                            break
                     continue
         i += 1
+
+    last_import = -1
+    for i, line in enumerate(lines):
+        if line.startswith("import "):
+            last_import = i
+    insert_at = last_import + 1 if last_import >= 0 else 0
+    while insert_at < len(lines) and lines[insert_at].strip() == "":
+        insert_at += 1
 
     block_lines = ["/-!", *body_lines, "-/"]
     insert_lines = ["", *block_lines, ""]
