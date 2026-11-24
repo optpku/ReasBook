@@ -77,15 +77,14 @@ theorem theorem4_concrete :
 /-- Lemma 5 of `20251124-DFP/MP.zip`: the fixed limiting polar stages close
 the explicit even and odd reference states. -/
 theorem lemma5_fixedSingleLimit :
-    Normalized.leadingStage (1 : ℝ) (cycleState (9 / 4) (2 / 3)) =
-        cycleState (9 / 4) (1 / 3) ∧
-      Normalized.leadingStage (1 : ℝ) (cycleState (9 / 4) (1 / 3)) =
-        cycleState (9 / 4) (2 / 3) := by
+    Normalized.leadingStage (1 : ℝ) (evenState 1 1 (1 / 3)) =
+        oddState 1 1 (1 / 3) ∧
+      Normalized.leadingStage (1 : ℝ) (oddState 1 1 (1 / 3)) =
+        evenState 1 1 (1 / 3) := by
   have hcycle : CycleDomain (1 : ℝ) 1 (1 / 3) := by
     constructor <;> norm_num
   have hmatch := And.intro (evenToOdd hcycle) (oddToEven hcycle)
-  simpa [evenState, oddState, cycleState, cycleGamma, cycleLambdaEven,
-    cycleLambdaOdd] using hmatch
+  simpa only [Parameters.leadingStage_eq_original] using hmatch
 
 /-- Helper for lem:fixed-single-limit: the canceled normalized stage at zero
 scale is the explicit limiting map used in the manuscript. -/
@@ -126,7 +125,7 @@ theorem lemma6_fixedCycle (p : Parameters) (hβ : 0 < p.beta) (hβone : p.beta <
 /-- Lemma 7 of `20251124-DFP/MP.zip`: the actual recurrence remains feasible
 for every later index and its odd phase has a uniform transverse estimate. -/
 theorem lemma7_fixedContinuation (p : Parameters) (hβ : 0 < p.beta) (hβone : p.beta < 1) :
-    ∃ N > 0, ∃ M > 0, ∃ K > 0, ∃ J : ℕ, 0 < J ∧ ∀ j0 : ℕ, J ≤ j0 →
+    ∃ N > 0, ∃ M > 0, ∃ K : ℝ, 0 < K ∧ ∃ J : ℕ, 0 < J ∧ ∀ j0 : ℕ, J ≤ j0 →
       Continuation.TrajectoryBounds p j0 N M ∧
         (∀ k : ℕ, Continuation.RawFeasible (p.withStartIndex j0) k) ∧
         ∀ j : ℕ,
