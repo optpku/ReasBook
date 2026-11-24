@@ -1,0 +1,59 @@
+{
+  "manuscript": "20251124-DFP/MP.zip/main.tex",
+  "manuscriptSha256": "6a35c7bb5e2ffc6d5ede723ca8ebcc6909bf16bac10f27980e4fabb40ca23a2c",
+  "counter": "shared theorem counter in source order",
+  "results": [
+    [
+      "Theorem 1",
+      "thm:main"
+    ],
+    [
+      "Theorem 2",
+      "thm:planar-convergence"
+    ],
+    [
+      "Lemma 3",
+      "lem:polar-dfp"
+    ],
+    [
+      "Theorem 4",
+      "thm:concrete"
+    ],
+    [
+      "Lemma 5",
+      "lem:fixed-single-limit"
+    ],
+    [
+      "Lemma 6",
+      "lem:fixed-cycle"
+    ],
+    [
+      "Lemma 7",
+      "lem:fixed-continuation"
+    ],
+    [
+      "Lemma 8",
+      "lem:fixed-geometry"
+    ],
+    [
+      "Lemma 9",
+      "lem:fixed-realization"
+    ],
+    [
+      "Lemma 10",
+      "lem:general-reference"
+    ],
+    [
+      "Lemma 11",
+      "lem:general-continuation"
+    ],
+    [
+      "Corollary 12",
+      "cor:identity-initialization"
+    ],
+    [
+      "Lemma 13",
+      "lem:planar-degeneration"
+    ]
+  ]
+}
