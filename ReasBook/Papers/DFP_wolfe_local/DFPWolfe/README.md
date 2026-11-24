@@ -2,10 +2,9 @@
 
 The current source archive is `20251124-DFP/MP.zip`.  Its paper-numbered
 interface is exported by [`DFPWolfe.MP20251124.Paper`](MP20251124/Paper.lean).
-The table below documents the earlier 20251117 route and remains available as
-the published `Latest` snapshot.
+The 20251117 route remains available as a separate `Latest` snapshot.
 
-The 20251124 source order is shown in the [paper-numbered DAG](../theorem-map/mp20251124/index.html?view=paper).  The wrappers are in
+The 20251124 source order is shown in the [paper-numbered DAG](../theorem-map/mp20251124/index.html?view=paper).  The paper-facing declarations are in
 [`MP20251124/Results.lean`](MP20251124/Results.lean) and preserve the paper's
 labels while reusing the general polar declarations.
 
