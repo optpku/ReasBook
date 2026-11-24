@@ -29,7 +29,12 @@ jobs:
           root = Path("ReasBook")
           # doc-gen4 v4.30.0 segfaults while rendering this project's root
           # after the shared ReasBook docs target has already covered it.
-          project_doc_exclusions = {"ProbabilityTheory_Klenke_2020"}
+          # These entries are intentionally exposed as TBD in the site and do
+          # not have compilable project-root targets in the current lakefile.
+          project_doc_exclusions = {
+              "ProbabilityTheory_Klenke_2020",
+              "ComputationalMethodsInverseProblems_Vogel_2002",
+          }
           flat_project_roots = set()
           current_lib = None
           for line in (root / "lakefile.lean").read_text(encoding="utf-8").splitlines():
@@ -375,10 +380,16 @@ jobs:
           from pathlib import Path
 
           source_root = Path("ReasBook")
+          tbd_books = {
+              "IntegerProgramming_Conforti_2014",
+              "ComputationalMethodsInverseProblems_Vogel_2002",
+          }
           doc_root = source_root / ".lake/build/doc"
           missing = []
           for kind, leaf in (("Books", "Book"), ("Papers", "Paper")):
               for entry in sorted((source_root / kind).glob(f"*/{leaf}.lean")):
+                  if kind == "Books" and entry.parent.name in tbd_books:
+                      continue
                   expected = doc_root / entry.parent.name / f"{leaf}.html"
                   if not expected.is_file():
                       missing.append(expected.relative_to(doc_root).as_posix())
