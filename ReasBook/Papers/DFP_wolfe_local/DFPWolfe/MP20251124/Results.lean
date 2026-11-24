@@ -164,7 +164,7 @@ theorem lemma10_generalReference {c1 c2 : ℝ} (hc1 : 0 < c1)
 is available for every admissible exponent. -/
 theorem lemma11_generalContinuation (p : Parameters) (hβ : 0 < p.beta)
     (hβone : p.beta < 1) :
-    ∃ N > 0, ∃ M > 0, ∃ K > 0, ∃ J : ℕ, 0 < J ∧ ∀ j0 : ℕ, J ≤ j0 →
+    ∃ N > 0, ∃ M > 0, ∃ K : ℝ, 0 < K ∧ ∃ J : ℕ, 0 < J ∧ ∀ j0 : ℕ, J ≤ j0 →
       Continuation.TrajectoryBounds p j0 N M ∧
         (∀ k : ℕ, Continuation.RawFeasible (p.withStartIndex j0) k) := by
   obtain ⟨N, hN, M, hM, K, hK, J, hJ, h⟩ :=
