@@ -21,7 +21,7 @@ public import DFPWolfe.Latest.Lemma_PolarParameterChoice
 public import DFPWolfe.Latest.Lemma_PolarCycleEstimates
 
 /-!
-# DFP counterexample — the general polar construction
+# DFP counterexample — the 20251117 general polar construction
 
 This entry follows `20251117-DFP/arXiv.tex`: Theorem 10, Corollary 11,
 Lemma 12 and Theorem 13; the preliminary results are Lemmas 1–9, together with the unnumbered comparisons on the

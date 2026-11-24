@@ -1,5 +1,10 @@
 # Paper correspondence
 
+The current source archive is `20251124-DFP/MP.zip`.  Its paper-numbered
+interface is exported by [`DFPWolfe.MP20251124.Paper`](MP20251124/Paper.lean).
+The table below documents the earlier 20251117 route and remains available as
+the published `Latest` snapshot.
+
 **Center-manifold proof:** [Verso](https://optpku.github.io/ReasBook/versions/v4.32.0/papers/dfp_wolfe_local/sections/main-theorems/) · [Documentation](https://optpku.github.io/ReasBook/versions/v4.32.0/docs/ReasBook/DFPWolfe/Paper.html) · [Theorem map](https://optpku.github.io/ReasBook/versions/v4.32.0/theorem-maps/papers/dfp_wolfe_local/?view=paper)
 
 Formalization contributor: Zichen Wang. See the [project roster](../README.md#contributor).
