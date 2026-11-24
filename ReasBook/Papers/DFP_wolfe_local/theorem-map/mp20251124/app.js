@@ -1117,7 +1117,7 @@
     statementSection.appendChild(statementHeading);
     statementSection.appendChild(statement);
 
-    if (item.leanCode) {
+    if (item.leanCode || (item.leanExcerpts && item.leanExcerpts.length)) {
       var codeHeading = document.createElement("h3");
       codeHeading.textContent = "Corresponding Lean code";
       statementSection.appendChild(codeHeading);

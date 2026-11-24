@@ -1125,7 +1125,8 @@
     statementSection.appendChild(statementHeading);
     statementSection.appendChild(statement);
 
-    if (item.leanCode) {
+    var hasLeanCode = item.leanCode || (item.leanExcerpts && item.leanExcerpts.length);
+    if (hasLeanCode) {
       var codeSection = document.createElement("section");
       codeSection.className = "detail-section lean-code-section";
       var codeHeading = document.createElement("h3");
@@ -1194,7 +1195,7 @@
     leanSection.appendChild(leanHeading);
     leanSection.appendChild(facts);
     refs.detailContent.replaceChildren(header, statementSection);
-    if (item.leanCode) refs.detailContent.appendChild(codeSection);
+    if (hasLeanCode) refs.detailContent.appendChild(codeSection);
     refs.detailContent.append(relationSection, leanSection);
     refs.detailContent.parentElement.scrollTop = 0;
   }
