@@ -564,6 +564,8 @@ jobs:
       - name: Verify generated site tree
         run: |
           set -euo pipefail
+          # Keep the partition root present when every book is currently TBD.
+          mkdir -p .site/books
           ls -la .site
           test -d .site/books
           test -d .site/papers
