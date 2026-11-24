@@ -110,7 +110,7 @@ def main() -> None:
         {"id": "main", "label": "Main results", "short": "Main results", "color": "#315fb5", "wash": "#e9effa"},
         {"id": "convergence", "label": "Convergence", "short": "Convergence", "color": "#7654a6", "wash": "#eee8f8"},
     ]
-    project = {"id": "DFP_wolfe_local", "title": "DFP 20251124 polar proof", "kind": "papers", "branch": "paper/dfp-20251124-sync", "commit": args.commit, "repository": "https://github.com/optpku/ReasBook", "sourceRoot": ""}
+    project = {"id": "DFP_wolfe_local", "title": "DFP 20251124 polar proof", "kind": "papers", "branch": "paper/dfp-20251124-sync", "commit": args.commit, "repository": "https://github.com/optpku/ReasBook", "sourceRoot": "ReasBook"}
     edge_witnesses = []
     evidence = {
         "mp24-theorem-1": (1455, 1560), "mp24-theorem-2": (1665, 1720),
