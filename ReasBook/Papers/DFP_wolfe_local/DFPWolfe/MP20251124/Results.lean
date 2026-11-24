@@ -73,13 +73,18 @@ theorem theorem4_concrete :
   · norm_num
   · norm_num
 
-/-- Lemma 5 of `20251124-DFP/MP.zip`: the selected analytic reference
-family closes under both limiting polar stages near its base point. -/
-theorem lemma5_fixedSingleLimit (p : Parameters) :
-    ∀ᶠ γ in 𝓝 p.gammaStar,
-      Normalized.leadingStage p.deltaEven (p.evenReference γ) = p.oddReference γ ∧
-        Normalized.leadingStage p.deltaOdd (p.oddReference γ) = p.evenReference γ := by
-  exact p.referenceCycle_eventually
+/-- Lemma 5 of `20251124-DFP/MP.zip`: the fixed limiting polar stages close
+the explicit even and odd reference states. -/
+theorem lemma5_fixedSingleLimit :
+    Normalized.leadingStage (1 : ℝ) (cycleState (9 / 4) (2 / 3)) =
+        cycleState (9 / 4) (1 / 3) ∧
+      Normalized.leadingStage (1 : ℝ) (cycleState (9 / 4) (1 / 3)) =
+        cycleState (9 / 4) (2 / 3) := by
+  have hcycle : CycleDomain (1 : ℝ) 1 (1 / 3) := by
+    constructor <;> norm_num
+  have hmatch := And.intro (evenToOdd hcycle) (oddToEven hcycle)
+  simpa [evenState, oddState, cycleState, cycleGamma, cycleLambdaEven,
+    cycleLambdaOdd] using hmatch
 
 /-- Lemma 6 of `20251124-DFP/MP.zip`: the normalized recurrence has a
 uniform trajectory bound before the starting index is chosen. -/

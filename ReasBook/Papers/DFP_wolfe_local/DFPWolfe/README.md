@@ -5,6 +5,10 @@ interface is exported by [`DFPWolfe.MP20251124.Paper`](MP20251124/Paper.lean).
 The table below documents the earlier 20251117 route and remains available as
 the published `Latest` snapshot.
 
+The 20251124 source order is shown in the [paper-numbered DAG](../theorem-map/mp20251124/index.html?view=paper).  The wrappers are in
+[`MP20251124/Results.lean`](MP20251124/Results.lean) and preserve the paper's
+labels while reusing the general polar declarations.
+
 **Center-manifold proof:** [Verso](https://optpku.github.io/ReasBook/versions/v4.32.0/papers/dfp_wolfe_local/sections/main-theorems/) · [Documentation](https://optpku.github.io/ReasBook/versions/v4.32.0/docs/ReasBook/DFPWolfe/Paper.html) · [Theorem map](https://optpku.github.io/ReasBook/versions/v4.32.0/theorem-maps/papers/dfp_wolfe_local/?view=paper)
 
 Formalization contributor: Zichen Wang. See the [project roster](../README.md#contributor).

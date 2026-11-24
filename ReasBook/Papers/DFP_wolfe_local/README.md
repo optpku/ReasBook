@@ -11,6 +11,7 @@ snapshot, and the current `20251117-DFP/arXiv.tex` general polar construction.
 | Original center-manifold | [`DFPWolfe.Paper`](DFPWolfe/Paper.lean) | [Original theorem map](theorem-map/index.html?view=paper) |
 | October 2026 v21 snapshot | [`DFPWolfe.V21.Paper`](DFPWolfe/V21/Paper.lean) | [Historical v21 map](theorem-map/v21/index.html?view=paper) |
 | 20251117 latest polar proof | [`DFPWolfe.Latest.Paper`](DFPWolfe/Latest/Paper.lean) | [Latest theorem DAG](theorem-map/latest/index.html?view=paper) |
+| 20251124 latest polar proof | [`DFPWolfe.MP20251124.Paper`](DFPWolfe/MP20251124/Paper.lean) | [20251124 theorem DAG](theorem-map/mp20251124/index.html?view=paper) |
 
 The 20251117 manuscript uses the shared amsthm counter in source order. Its
 paper-numbered results are:
