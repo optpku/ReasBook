@@ -1,0 +1,24 @@
+/* Proof routes are independent of the paper/Lean node-label views. */
+body { display: flex; flex-direction: column; }
+.proof-navigation {
+  flex: 0 0 auto; display: flex; flex-wrap: wrap; align-items: center;
+  gap: 6px 10px; padding: 8px 14px; border-bottom: 1px solid #d7dde3;
+  background: #fff; font: 12px/1.5 system-ui, sans-serif;
+}
+.proof-navigation .navigation-label { color: #65717d; margin-right: 4px; }
+.proof-navigation a {
+  padding: 5px 10px; border: 1px solid transparent; border-radius: 5px;
+  color: #315fb5; text-decoration: none;
+}
+.proof-navigation a:hover { background: #f5f7f8; }
+.proof-navigation a[aria-current="page"] {
+  color: #21457c; background: #e9effa; border-color: #bcc6cf; font-weight: 650;
+}
+.proof-navigation .archive-link { margin-left: auto; color: #65717d; }
+body > .app-shell { flex: 1 1 0; min-height: 0; height: auto; }
+@media (max-width: 820px) {
+  body > .app-shell { flex: 0 0 auto; min-height: 100vh; height: auto; }
+  .proof-navigation { gap: 4px; padding: 8px; }
+}
+/* Graphviz supplies arrow polygons: never inherit the line's dashed stroke. */
+g.edge > polygon { stroke-dasharray: none; marker-end: none; }

@@ -9,10 +9,11 @@
   <link rel="stylesheet" href="./styles.css">
 <link rel="stylesheet" href="../vendor/katex/katex.min.css">
   <link rel="stylesheet" href="../lean-code.css">
+<link rel="stylesheet" href="../proof-navigation.css">
 </head>
 <body class="v21-view">
-<nav class="version-links"><a href="../index.html?view=paper">Original center-manifold proof</a> · <strong>v21 complete polar proof</strong> · <a href="?view=paper">Paper theorem numbers</a> · <a href="?view=lean">Lean declarations</a></nav>
-  <div class="app-shell" id="appShell">
+<nav class="proof-navigation" aria-label="Proof route"><span class="navigation-label">DFP proofs</span><a href="../index.html?view=paper">Center-manifold proof</a><a href="../latest/index.html">Polar proof</a><a href="../v21/index.html?view=paper" aria-current="page" class="archive-link">v21 archive</a></nav>
+<div class="app-shell" id="appShell">
     <aside class="sidebar" id="sidebar">
       <header class="brand">
         <div class="brand-mark" id="brandMark" aria-hidden="true">RB</div>
@@ -24,7 +25,7 @@
           title="Collapse index" aria-label="Collapse index" aria-expanded="true">&lt;</button>
       </header>
 
-      <div class="index-controls">
+      <div class="index-controls"><nav class="view-switch" aria-label="Node labels"><a id="paperViewLink" href="?view=paper">Paper numbers</a> <a id="leanViewLink" href="?view=lean">Lean declarations</a></nav>
         <label class="search-field">
           <span class="visually-hidden">Search literature items</span>
           <input id="searchInput" type="search"

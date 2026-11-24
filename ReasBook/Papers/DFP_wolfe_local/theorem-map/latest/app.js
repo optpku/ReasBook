@@ -224,10 +224,7 @@
   function renderLegend() {
     var fragment = document.createDocumentFragment();
     [
-      ["Statement edge", "statement"],
-      ["Proof/body edge", "proof"],
-      ["Both", "both"],
-      [data.generation && /^curated/.test(data.generation.mode || "") ? "Curated" : "Legacy", "unclassified"]
+      ["Paper dependency →", "unclassified"]
     ].forEach(function (entry) {
       var edgeEntry = document.createElement("span");
       var line = document.createElement("i");
@@ -447,20 +444,17 @@
     groups.forEach(function (group) { group.sort(itemSort); });
     var maximumRows = 1;
     groups.forEach(function (group) { maximumRows = Math.max(maximumRows, group.length); });
-    var width = 80 + (maximumLevel + 1) * NODE_WIDTH + maximumLevel * LEVEL_GAP;
-    var height = Math.max(390, 70 + maximumRows * NODE_HEIGHT + (maximumRows - 1) * ROW_GAP);
     var positions = new Map();
     groups.forEach(function (group, level) {
-      var groupHeight = group.length * NODE_HEIGHT + Math.max(0, group.length - 1) * ROW_GAP;
-      var startY = Math.max(35, (height - groupHeight) / 2);
       group.forEach(function (id, row) {
         positions.set(id, {
-          x: 40 + level * (NODE_WIDTH + LEVEL_GAP),
-          y: startY + row * (NODE_HEIGHT + ROW_GAP)
+          x: 40 + row * (NODE_WIDTH + LEVEL_GAP),
+          y: 35 + level * (NODE_HEIGHT + LEVEL_GAP)
         });
       });
     });
-    return { positions: positions, width: width, height: height };
+    return { positions: positions, width: 80 + maximumRows * (NODE_WIDTH + LEVEL_GAP),
+      height: 70 + (maximumLevel + 1) * (NODE_HEIGHT + LEVEL_GAP) };
   }
 
   function escapeReviewerDot(value) {
@@ -543,9 +537,9 @@
   function buildReviewerGraphDot(model, highlight) {
     var lines = [
       "digraph G {",
-      '  graph [rankdir="LR", bgcolor="transparent", pad="0.25", nodesep="0.28", ranksep="0.72", outputorder="edgesfirst", splines="spline"];',
-      '  node [style="rounded,filled", fontname="Segoe UI", fontsize="10", margin="0.15,0.09"];',
-      '  edge [arrowhead="normal", arrowsize="0.7"];'
+      '  graph [rankdir="TB", bgcolor="transparent", pad="0.25", nodesep="0.28", ranksep="0.72", outputorder="edgesfirst", splines="spline"];',
+      '  node [style="rounded,filled", fontname="Arial", fontsize="13", margin="0.15,0.09"];',
+      '  edge [arrowhead="normal", arrowsize="0.7", tailport="s", headport="n"];'
     ];
     model.ids.forEach(function (id) {
       var item = itemById.get(id);
@@ -573,7 +567,7 @@
         '[id="edge-' + escapeReviewerDot(reviewerGraphDomId(edge.id)) + '" ' +
         'color="' + style.color + '" penwidth="' + style.width + '" ' +
         (style.dash ? 'style="dashed" ' : '') +
-        'tooltip="' + escapeReviewerDot((edge.kind || "legacy") + " dependency") + '"];'
+        'tooltip="' + escapeReviewerDot(itemById.get(edge.source).label + " → " + itemById.get(edge.target).label) + '"];'
       );
     });
     lines.push("}");
@@ -815,14 +809,14 @@
   }
 
   function edgePath(source, target) {
-    var startX = source.x + NODE_WIDTH;
-    var startY = source.y + NODE_HEIGHT / 2;
-    var endX = target.x;
-    var endY = target.y + NODE_HEIGHT / 2;
-    var control = Math.max(30, (endX - startX) * 0.48);
+    var startX = source.x + NODE_WIDTH / 2;
+    var startY = source.y + NODE_HEIGHT;
+    var endX = target.x + NODE_WIDTH / 2;
+    var endY = target.y;
+    var control = Math.max(25, (endY - startY) * 0.48);
     return "M " + startX + " " + startY + " C " +
-      (startX + control) + " " + startY + ", " +
-      (endX - control) + " " + endY + ", " + endX + " " + endY;
+      startX + " " + (startY + control) + ", " +
+      endX + " " + (endY - control) + ", " + endX + " " + endY;
   }
 
   function renderGraph(options) {
@@ -1156,6 +1150,9 @@
       evidenceNote.className = "dependency-evidence-note";
       evidenceNote.textContent = "This declaration is present in the source inventory but was not imported by the compiled project root. No dependency edges are inferred from text.";
       relationGrid.appendChild(evidenceNote);
+    } else if (item.dependencyEvidence === "curated") {
+      relationGrid.appendChild(relationColumn("Paper prerequisites", item.dependencies));
+      relationGrid.appendChild(relationColumn("Used directly by", consumersById.get(item.id) || []));
     } else {
       relationGrid.appendChild(relationColumn("Statement prerequisites", item.statementDependencies));
       relationGrid.appendChild(relationColumn("Proof/body dependencies", item.proofDependencies));
@@ -1391,7 +1388,7 @@
     }
     data = payload;
     project = data.project;
-    preferencePrefix += ":" + String(project.id || "project");
+    preferencePrefix += ":" + String(project.id || "project") + ":latest";
     items = data.items.map(function (item) {
       var statementDependencies = Array.isArray(item.statementDependencies)
         ? item.statementDependencies.slice() : [];
@@ -1457,16 +1454,15 @@
     populateFilters();
     renderLegend();
     var hashId = decodeURIComponent(window.location.hash.replace(/^#/, ""));
-    state.selectedId = itemById.has(hashId) ? hashId : (items[0] ? items[0].id : "");
+    state.selectedId = itemById.has(hashId) ? hashId : "latest-main";
     var savedLayout = readPreference("layout-mode");
     state.layoutMode = savedLayout === "layered" ? "layered" : "natural";
     window.dispatchEvent(new CustomEvent("reasbook-layoutchange", {
       detail: { mode: state.layoutMode }
     }));
-    // v1 defaulted to full and persisted it automatically. Do not migrate that
-    // incidental value into the bounded default; explicit v2 choices persist.
+    // This compact paper graph starts with all numbered results visible.
     var savedMode = readPreference("graph-mode-v2");
-    state.graphMode = savedMode === "full" ? "full" : "focus";
+    state.graphMode = savedMode === "focus" ? "focus" : "full";
     var savedDepth = Number(readPreference("graph-depth"));
     state.graphDepth = [1, 2, 3, 4, 5, 8].indexOf(savedDepth) >= 0 ? savedDepth : 3;
     state.sidebarCollapsed = readPreference("sidebar-collapsed") === "true";

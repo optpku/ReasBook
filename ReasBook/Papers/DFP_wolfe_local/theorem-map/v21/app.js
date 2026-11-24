@@ -1,5 +1,7 @@
 (function () {
   "use strict";
+  document.getElementById(new URLSearchParams(location.search).get("view") === "lean"
+    ? "leanViewLink" : "paperViewLink").setAttribute("aria-current", "page");
 
   var SVG_NS = "http://www.w3.org/2000/svg";
   var NODE_WIDTH = 146;
