@@ -5,7 +5,7 @@
     "title": "DFP 20251124 polar proof",
     "kind": "papers",
     "branch": "paper/dfp-20251124-sync",
-    "commit": "b384435bd",
+    "commit": "72a33d555",
     "repository": "https://github.com/optpku/ReasBook",
     "sourceRoot": "ReasBook"
   },
@@ -21,7 +21,7 @@
     "dependencyCoverage": "reviewed-paper-dependencies",
     "dependencyModel": "curated-paper-proof-v2",
     "scope": "20251124-DFP/MP.zip; theorem-like blocks follow the manuscript source order.",
-    "sourceSnapshot": "b384435bd",
+    "sourceSnapshot": "72a33d555",
     "manuscriptSha256": "6a35c7bb5e2ffc6d5ede723ca8ebcc6909bf16bac10f27980e4fabb40ca23a2c",
     "numbering": "Shared theorem counter in the manuscript source order; 13 theorem-like results.",
     "edges": 19,
