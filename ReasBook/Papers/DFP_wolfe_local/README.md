@@ -25,8 +25,8 @@ paper-numbered results are:
 - Lemma 12: planar secant degeneration;
 - Theorem 13: planar convergence.
 
-The latest DAG has 13 nodes and 15 reviewed paper-order edges. It is generated
-from manuscript SHA256
+The 20251117 DAG has 13 nodes and 15 reviewed paper-order edges. It is generated
+from the 20251117 manuscript SHA256
 `2a22ecf8e12959dd584a11732ba1836319eb16dd583059c283e4513b3dbbbdca`; its Lean
 source links use immutable source commit
 [`97fe7b8f`](https://github.com/imathwy/DFP_wolfe_local/commit/97fe7b8f1a2fa524f9ce5588a4190603db93946c).
@@ -38,7 +38,9 @@ with Theorems 1–2, Lemmas 3 and 5–11, Corollary 12, and Lemma 13, and the
 fixed construction recorded as Theorem 4.  The corresponding DAG has 13
 nodes and 19 reviewed paper-order edges.  Its statement source is
 `20251124-DFP/MP.zip/main.tex` with SHA256
-`6a35c7bb5e2ffc6d5ede723ca8ebcc6909bf16bac10f27980e4fabb40ca23a2c`.
+`6a35c7bb5e2ffc6d5ede723ca8ebcc6909bf16bac10f27980e4fabb40ca23a2c`.  Its
+Lean source links use the immutable ReasBook commit
+[`575db2e0`](https://github.com/optpku/ReasBook/commit/575db2e062732b467d0011824f8da4d4631615a9).
 
 - **Authors:** Benqi Liu, Zichen Wang, Zaiwen Wen, Liwei Zhang, and Yaxiang Yuan
 - **Contributor:** Zichen Wang ([@imathwy](https://github.com/imathwy))

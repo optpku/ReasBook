@@ -5,7 +5,7 @@
     "title": "DFP 20251124 polar proof",
     "kind": "papers",
     "branch": "paper/dfp-20251124-sync",
-    "commit": "b4d59758c739b4d7cfa262c5d4c93508c5e7d0e5",
+    "commit": "575db2e062732b467d0011824f8da4d4631615a9",
     "repository": "https://github.com/optpku/ReasBook",
     "sourceRoot": "ReasBook"
   },
@@ -84,7 +84,7 @@
       "statementDependencies": [],
       "proofDependencies": [],
       "dependencyEvidence": "curated-paper-dependencies",
-      "sourceSha256": "0e0990f8bdce9b006ad9b566ec052d0468ea7ef1c8763da7c154788fcce11cc8"
+      "sourceSha256": "f86f2f9f224df430411d9bdc59872e0ea0828e8a52e0d5198834a562fb8e30fb"
     },
     {
       "id": "mp24-theorem-2",
@@ -128,7 +128,7 @@
       "statementDependencies": [],
       "proofDependencies": [],
       "dependencyEvidence": "curated-paper-dependencies",
-      "sourceSha256": "0e0990f8bdce9b006ad9b566ec052d0468ea7ef1c8763da7c154788fcce11cc8"
+      "sourceSha256": "f86f2f9f224df430411d9bdc59872e0ea0828e8a52e0d5198834a562fb8e30fb"
     },
     {
       "id": "mp24-lemma-3",
@@ -170,7 +170,7 @@
       "statementDependencies": [],
       "proofDependencies": [],
       "dependencyEvidence": "curated-paper-dependencies",
-      "sourceSha256": "0e0990f8bdce9b006ad9b566ec052d0468ea7ef1c8763da7c154788fcce11cc8"
+      "sourceSha256": "f86f2f9f224df430411d9bdc59872e0ea0828e8a52e0d5198834a562fb8e30fb"
     },
     {
       "id": "mp24-theorem-4",
@@ -219,7 +219,7 @@
       "statementDependencies": [],
       "proofDependencies": [],
       "dependencyEvidence": "curated-paper-dependencies",
-      "sourceSha256": "0e0990f8bdce9b006ad9b566ec052d0468ea7ef1c8763da7c154788fcce11cc8"
+      "sourceSha256": "f86f2f9f224df430411d9bdc59872e0ea0828e8a52e0d5198834a562fb8e30fb"
     },
     {
       "id": "mp24-lemma-5",
@@ -261,7 +261,7 @@
       "statementDependencies": [],
       "proofDependencies": [],
       "dependencyEvidence": "curated-paper-dependencies",
-      "sourceSha256": "0e0990f8bdce9b006ad9b566ec052d0468ea7ef1c8763da7c154788fcce11cc8"
+      "sourceSha256": "f86f2f9f224df430411d9bdc59872e0ea0828e8a52e0d5198834a562fb8e30fb"
     },
     {
       "id": "mp24-lemma-6",
@@ -305,7 +305,7 @@
       "statementDependencies": [],
       "proofDependencies": [],
       "dependencyEvidence": "curated-paper-dependencies",
-      "sourceSha256": "0e0990f8bdce9b006ad9b566ec052d0468ea7ef1c8763da7c154788fcce11cc8"
+      "sourceSha256": "f86f2f9f224df430411d9bdc59872e0ea0828e8a52e0d5198834a562fb8e30fb"
     },
     {
       "id": "mp24-lemma-7",
@@ -349,7 +349,7 @@
       "statementDependencies": [],
       "proofDependencies": [],
       "dependencyEvidence": "curated-paper-dependencies",
-      "sourceSha256": "0e0990f8bdce9b006ad9b566ec052d0468ea7ef1c8763da7c154788fcce11cc8"
+      "sourceSha256": "f86f2f9f224df430411d9bdc59872e0ea0828e8a52e0d5198834a562fb8e30fb"
     },
     {
       "id": "mp24-lemma-8",
@@ -394,7 +394,7 @@
       "statementDependencies": [],
       "proofDependencies": [],
       "dependencyEvidence": "curated-paper-dependencies",
-      "sourceSha256": "0e0990f8bdce9b006ad9b566ec052d0468ea7ef1c8763da7c154788fcce11cc8"
+      "sourceSha256": "f86f2f9f224df430411d9bdc59872e0ea0828e8a52e0d5198834a562fb8e30fb"
     },
     {
       "id": "mp24-lemma-9",
@@ -438,7 +438,7 @@
       "statementDependencies": [],
       "proofDependencies": [],
       "dependencyEvidence": "curated-paper-dependencies",
-      "sourceSha256": "0e0990f8bdce9b006ad9b566ec052d0468ea7ef1c8763da7c154788fcce11cc8"
+      "sourceSha256": "f86f2f9f224df430411d9bdc59872e0ea0828e8a52e0d5198834a562fb8e30fb"
     },
     {
       "id": "mp24-lemma-10",
@@ -482,7 +482,7 @@
       "statementDependencies": [],
       "proofDependencies": [],
       "dependencyEvidence": "curated-paper-dependencies",
-      "sourceSha256": "0e0990f8bdce9b006ad9b566ec052d0468ea7ef1c8763da7c154788fcce11cc8"
+      "sourceSha256": "f86f2f9f224df430411d9bdc59872e0ea0828e8a52e0d5198834a562fb8e30fb"
     },
     {
       "id": "mp24-lemma-11",
@@ -517,7 +517,7 @@
           "declaration": "DFPWolfe.MP20251124.lemma11_generalContinuation",
           "file": "Papers/DFP_wolfe_local/DFPWolfe/MP20251124/Results.lean",
           "line": 165,
-          "leanCode": "theorem lemma11_generalContinuation (p : Parameters) (hβ : 0 < p.beta)\n    (hβone : p.beta < 1) :\n    ∃ N > 0, ∃ M > 0, ∃ K > 0, ∃ J : ℕ, 0 < J ∧ ∀ j0 : ℕ, J ≤ j0 →\n      Continuation.TrajectoryBounds p j0 N M ∧\n        (∀ k : ℕ, Continuation.RawFeasible (p.withStartIndex j0) k) := by\n  obtain ⟨N, hN, M, hM, K, hK, J, hJ, h⟩ :=\n    Continuation.existsContinuationEstimates p hβ hβone\n  refine ⟨N, hN, M, hM, K, hK, J, hJ, ?_⟩\n  intro j0 hj0\n  have hdata := h j0 hj0\n  exact ⟨hdata.1, hdata.2.1⟩\n\n/-- Corollary 12 of `20251124-DFP/MP.zip`: identity initialization in every\nfinite dimension at least two. -/\n"
+          "leanCode": "theorem lemma11_generalContinuation (p : Parameters) (hβ : 0 < p.beta)\n    (hβone : p.beta < 1) :\n    ∃ N > 0, ∃ M > 0, ∃ K : ℝ, 0 < K ∧ ∃ J : ℕ, 0 < J ∧ ∀ j0 : ℕ, J ≤ j0 →\n      Continuation.TrajectoryBounds p j0 N M ∧\n        (∀ k : ℕ, Continuation.RawFeasible (p.withStartIndex j0) k) := by\n  obtain ⟨N, hN, M, hM, K, hK, J, hJ, h⟩ :=\n    Continuation.existsContinuationEstimates p hβ hβone\n  refine ⟨N, hN, M, hM, K, hK, J, hJ, ?_⟩\n  intro j0 hj0\n  have hdata := h j0 hj0\n  exact ⟨hdata.1, hdata.2.1⟩\n\n/-- Corollary 12 of `20251124-DFP/MP.zip`: identity initialization in every\nfinite dimension at least two. -/\n"
         }
       ],
       "dependencies": [
@@ -527,7 +527,7 @@
       "statementDependencies": [],
       "proofDependencies": [],
       "dependencyEvidence": "curated-paper-dependencies",
-      "sourceSha256": "0e0990f8bdce9b006ad9b566ec052d0468ea7ef1c8763da7c154788fcce11cc8"
+      "sourceSha256": "f86f2f9f224df430411d9bdc59872e0ea0828e8a52e0d5198834a562fb8e30fb"
     },
     {
       "id": "mp24-corollary-12",
@@ -571,7 +571,7 @@
       "statementDependencies": [],
       "proofDependencies": [],
       "dependencyEvidence": "curated-paper-dependencies",
-      "sourceSha256": "0e0990f8bdce9b006ad9b566ec052d0468ea7ef1c8763da7c154788fcce11cc8"
+      "sourceSha256": "f86f2f9f224df430411d9bdc59872e0ea0828e8a52e0d5198834a562fb8e30fb"
     },
     {
       "id": "mp24-lemma-13",
@@ -613,7 +613,7 @@
       "statementDependencies": [],
       "proofDependencies": [],
       "dependencyEvidence": "curated-paper-dependencies",
-      "sourceSha256": "0e0990f8bdce9b006ad9b566ec052d0468ea7ef1c8763da7c154788fcce11cc8"
+      "sourceSha256": "f86f2f9f224df430411d9bdc59872e0ea0828e8a52e0d5198834a562fb8e30fb"
     }
   ],
   "generation": {
@@ -626,7 +626,7 @@
     "dependencyCoverage": "reviewed-paper-dependencies",
     "dependencyModel": "curated-paper-proof-v2",
     "scope": "20251124-DFP/MP.zip; theorem-like blocks follow the manuscript source order.",
-    "sourceSnapshot": "b4d59758c739b4d7cfa262c5d4c93508c5e7d0e5",
+    "sourceSnapshot": "575db2e062732b467d0011824f8da4d4631615a9",
     "manuscriptSha256": "6a35c7bb5e2ffc6d5ede723ca8ebcc6909bf16bac10f27980e4fabb40ca23a2c",
     "numbering": "Shared theorem counter in the manuscript source order; 13 theorem-like results.",
     "edges": 19,
