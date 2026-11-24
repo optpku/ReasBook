@@ -87,6 +87,35 @@ theorem lemma5_fixedSingleLimit :
   simpa [evenState, oddState, cycleState, cycleGamma, cycleLambdaEven,
     cycleLambdaOdd] using hmatch
 
+/-- Helper for lem:fixed-single-limit: the canceled normalized stage at zero
+scale is the explicit limiting map used in the manuscript. -/
+theorem lemma5_limitingStage (a : ℝ) (x : ℝ × ℝ × ℝ) :
+    Normalized.stage a 0 x 1 1 = Normalized.leadingStage a x := by
+  exact Normalized.stage_zero a x
+
+/-- Helper for lem:fixed-cycle: the two-stage normalized source map has the
+analytic interface used for the fixed-cycle perturbation argument. -/
+theorem lemma6_cycleAnalytic (p : Parameters) (hβ : 0 < p.beta)
+    (x : ℝ × ℝ × ℝ) (hφ : AnalyticAt ℝ p.feedbackPotential x.1)
+    (hC : x.2.1 ≠ 0)
+    (hCNext : (Normalized.leadingStage (p.evenAngleFactor 0) x).2.1 ≠ 0) :
+    AnalyticAt ℝ
+      (fun z : (ℝ × ℝ) × (ℝ × ℝ × ℝ) ↦
+        Normalized.map p.beta p.evenAngleFactor p.oddAngleFactor
+          p.feedbackPotential z.1.1 z.1.2 z.2)
+      ((0, 0), x) := by
+  apply Normalized.map_analyticAt p.beta p.evenAngleFactor p.oddAngleFactor
+    p.feedbackPotential x
+  · exact p.evenAngleFactor_analyticAt
+  · exact p.oddAngleFactor_analyticAt
+  · exact hφ
+  · rw [p.evenAngleFactor_zero hβ]
+    exact p.deltaEven_pos.ne'
+  · rw [p.oddAngleFactor_zero hβ]
+    exact p.deltaOdd_pos.ne'
+  · exact hC
+  · exact hCNext
+
 /-- Lemma 6 of `20251124-DFP/MP.zip`: the normalized recurrence has a
 uniform trajectory bound before the starting index is chosen. -/
 theorem lemma6_fixedCycle (p : Parameters) (hβ : 0 < p.beta) (hβone : p.beta < 1) :
