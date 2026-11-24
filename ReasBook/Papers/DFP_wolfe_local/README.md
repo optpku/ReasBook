@@ -11,7 +11,7 @@ snapshot, and the current `20251117-DFP/arXiv.tex` general polar construction.
 | Original center-manifold | [`DFPWolfe.Paper`](DFPWolfe/Paper.lean) | [Original theorem map](theorem-map/index.html?view=paper) |
 | October 2026 v21 snapshot | [`DFPWolfe.V21.Paper`](DFPWolfe/V21/Paper.lean) | [Historical v21 map](theorem-map/v21/index.html?view=paper) |
 | 20251117 latest polar proof | [`DFPWolfe.Latest.Paper`](DFPWolfe/Latest/Paper.lean) | [Latest theorem DAG](theorem-map/latest/index.html?view=paper) |
-| 20251124 latest polar proof | [`DFPWolfe.MP20251124.Paper`](DFPWolfe/MP20251124/Paper.lean) | [20251124 theorem DAG](theorem-map/mp20251124/index.html?view=paper) |
+| 20251124 polar proof | [`DFPWolfe.MP20251124.Paper`](DFPWolfe/MP20251124/Paper.lean) | [20251124 paper-numbered DAG](theorem-map/mp20251124/index.html?view=paper) |
 
 The 20251117 manuscript uses the shared amsthm counter in source order. Its
 paper-numbered results are:
@@ -32,13 +32,13 @@ source links use immutable source commit
 [`97fe7b8f`](https://github.com/imathwy/DFP_wolfe_local/commit/97fe7b8f1a2fa524f9ce5588a4190603db93946c).
 The original and October 2026 v21 maps remain unchanged.
 
-The 20251124 manuscript is exported separately while its paper-numbered
-interfaces are being aligned with the new proof order.  Its source-facing
-entry is [`DFPWolfe.MP20251124.Paper`](DFPWolfe/MP20251124/Paper.lean), with
-Theorems 1–2, Lemmas 3 and 5–11, Corollary 12, and Lemma 13, and the fixed
-construction recorded as Theorem 4.  The 20251117 route above remains the
-published `Latest` entry until the corresponding 20251124 theorem map is
-validated.
+The 20251124 manuscript is exported as a separate paper-numbered route.
+Its source-facing entry is [`DFPWolfe.MP20251124.Paper`](DFPWolfe/MP20251124/Paper.lean),
+with Theorems 1–2, Lemmas 3 and 5–11, Corollary 12, and Lemma 13, and the
+fixed construction recorded as Theorem 4.  The corresponding DAG has 13
+nodes and 19 reviewed paper-order edges.  Its statement source is
+`20251124-DFP/MP.zip/main.tex` with SHA256
+`6a35c7bb5e2ffc6d5ede723ca8ebcc6909bf16bac10f27980e4fabb40ca23a2c`.
 
 - **Authors:** Benqi Liu, Zichen Wang, Zaiwen Wen, Liwei Zhang, and Yaxiang Yuan
 - **Contributor:** Zichen Wang ([@imathwy](https://github.com/imathwy))
