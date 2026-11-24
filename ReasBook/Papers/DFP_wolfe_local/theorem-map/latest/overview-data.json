@@ -111,12 +111,8 @@
           "leanCode": "theorem sourceStrongWolfe_of_phaseMargins (p : Parameters) (κ δ H : ℝ)\n    (hβ : 0 < p.beta) (hstart : 0 < p.startIndex)\n    (hc1 : 0 < p.c1) (hc12 : p.c1 < p.c2) (hc2 : p.c2 < 1)\n    (hobjective : Objective.ObjectiveEstimates p κ δ H)\n    (hZ : ∀ k, (p.matrix k).PosDef) (hC : ∀ k, 0 < p.matrix k 0 1)\n    (hSin : ∀ k, 0 < Real.sin (p.angleIncrement k)) (hW : ∀ k, 0 < p.radiusRatio k)\n    (hr : ∀ k, 0 < p.radius k)\n    (hlog : Summable (fun j ↦ Real.log (p.radiusRatio (2 * j) * p.radiusRatio (2 * j + 1))))\n    (hphase : ∀ j : ℕ, ∀ i : Fin 2,\n      p.c1 < RadiusBounds.phaseArmijo p i (p.scale j) (p.inverseIndex j) (p.normalizedEvenState j) ∧\n        RadiusBounds.phaseCurvature p i (p.scale j) (p.inverseIndex j)\n          (p.normalizedEvenState j) < p.c2)\n    (k : ℕ) :\n    LineSearch.IsStrongWolfe p.c1 p.c2 (p.objective κ) (p.point k)\n      (p.point (k + 1) - p.point k) := by\n  apply sourceStrongWolfe_of_rawQuotients p κ δ H hc1 hc12 hc2 hobjective\n    hZ hC hSin hW hr hlog\n  intro k\n  rcases Nat.even_or_odd' k with ⟨j, rfl | rfl⟩\n  · have h := hphase j 0\n    have hquot := sourceQuotients_eq_phase p hβ hstart j 0\n    rw [← hquot.1, ← hquot.2] at h\n    simpa only [Fin.val_zero, Nat.add_zero] using And.intro h.1.le h.2.le\n  · have h := hphase j 1\n"
         }
       ],
-      "dependencies": [
-        "latest-direction-update"
-      ],
-      "statementDependencies": [
-        "latest-direction-update"
-      ],
+      "dependencies": [],
+      "statementDependencies": [],
       "proofDependencies": [],
       "dependencyEvidence": "curated",
       "sourceSha256": "5c7029f2841c26b2e7418d2c2dd5206458888d20c004c94abc714e079c9d6c1d"
@@ -161,10 +157,7 @@
         "latest-direction-update",
         "latest-endpoint-wolfe"
       ],
-      "statementDependencies": [
-        "latest-direction-update",
-        "latest-endpoint-wolfe"
-      ],
+      "statementDependencies": [],
       "proofDependencies": [],
       "dependencyEvidence": "curated",
       "sourceSha256": "11dc94a4229d56b077fc0cd710a8e7121eaaabe1ceef08500cd52777dce685be"
@@ -217,11 +210,9 @@
         }
       ],
       "dependencies": [
-        "latest-realization"
+        "latest-direction-update"
       ],
-      "statementDependencies": [
-        "latest-realization"
-      ],
+      "statementDependencies": [],
       "proofDependencies": [],
       "dependencyEvidence": "curated",
       "sourceSha256": "a5e2db7d02ebd2d2a86bbe3cae47b98d44a4ab1dec96f52270a15dfb92da179c"
@@ -263,11 +254,10 @@
         }
       ],
       "dependencies": [
+        "latest-endpoint-wolfe",
         "latest-limiting-cycle"
       ],
-      "statementDependencies": [
-        "latest-limiting-cycle"
-      ],
+      "statementDependencies": [],
       "proofDependencies": [],
       "dependencyEvidence": "curated",
       "sourceSha256": "a5e2db7d02ebd2d2a86bbe3cae47b98d44a4ab1dec96f52270a15dfb92da179c"
@@ -312,10 +302,7 @@
         "latest-limiting-cycle",
         "latest-parameter-choice"
       ],
-      "statementDependencies": [
-        "latest-limiting-cycle",
-        "latest-parameter-choice"
-      ],
+      "statementDependencies": [],
       "proofDependencies": [],
       "dependencyEvidence": "curated",
       "sourceSha256": "453b5bf024f7780d0290fffe7774d9b31a16aad149696725db34defbf570974e"
@@ -359,9 +346,7 @@
       "dependencies": [
         "latest-cycle-estimates"
       ],
-      "statementDependencies": [
-        "latest-cycle-estimates"
-      ],
+      "statementDependencies": [],
       "proofDependencies": [],
       "dependencyEvidence": "curated",
       "sourceSha256": "453b5bf024f7780d0290fffe7774d9b31a16aad149696725db34defbf570974e"
@@ -403,11 +388,11 @@
         }
       ],
       "dependencies": [
+        "latest-endpoint-wolfe",
+        "latest-parameter-choice",
         "latest-continuation"
       ],
-      "statementDependencies": [
-        "latest-continuation"
-      ],
+      "statementDependencies": [],
       "proofDependencies": [],
       "dependencyEvidence": "curated",
       "sourceSha256": "2a34c9a8dc3b69b74a171aaaef1e0a9ad2219f63f68be8a6a5b1e95f4e1288a9"
@@ -451,9 +436,7 @@
       "dependencies": [
         "latest-geometry"
       ],
-      "statementDependencies": [
-        "latest-geometry"
-      ],
+      "statementDependencies": [],
       "proofDependencies": [],
       "dependencyEvidence": "curated",
       "sourceSha256": "5d097b429c432aaa943597bf7dec5455767669755c04c97efaaa41fd57501aab"
@@ -539,15 +522,13 @@
         }
       ],
       "dependencies": [
+        "latest-realization",
+        "latest-parameter-choice",
         "latest-continuation",
         "latest-geometry",
         "latest-interpolation"
       ],
-      "statementDependencies": [
-        "latest-continuation",
-        "latest-geometry",
-        "latest-interpolation"
-      ],
+      "statementDependencies": [],
       "proofDependencies": [],
       "dependencyEvidence": "curated",
       "sourceSha256": "ec5cfe390a55df503b1f339c5b9995774e7b6105ea8a68fdd6d2c86091395ee6"
@@ -602,9 +583,7 @@
       "dependencies": [
         "latest-main"
       ],
-      "statementDependencies": [
-        "latest-main"
-      ],
+      "statementDependencies": [],
       "proofDependencies": [],
       "dependencyEvidence": "curated",
       "sourceSha256": "ec5cfe390a55df503b1f339c5b9995774e7b6105ea8a68fdd6d2c86091395ee6"
@@ -690,9 +669,7 @@
       "dependencies": [
         "latest-degeneration"
       ],
-      "statementDependencies": [
-        "latest-degeneration"
-      ],
+      "statementDependencies": [],
       "proofDependencies": [],
       "dependencyEvidence": "curated",
       "sourceSha256": "2524bbb4436217f9bb3d653eb30b5181fcbc8f13c770335d7a7c97bbe0795b92"
@@ -701,20 +678,211 @@
   "generation": {
     "mode": "curated-paper-numbered",
     "rootModule": "DFPWolfe.Latest.Paper",
-    "compiledItemCount": 13,
+    "curatedItemCount": 13,
     "sourceInventoryItemCount": 13,
     "sourceOnlyItemCount": 0,
     "mergedItemCount": 13,
     "dependencyCoverage": "reviewed-paper-dependencies",
-    "dependencyModel": "paper-order-v1",
+    "dependencyModel": "curated-paper-proof-v2",
     "scope": "20251117-DFP/arXiv.tex; shared amsthm counter gives Lemmas 1–2, Proposition 3, Lemmas 4–9, Theorem 10, Corollary 11, Lemma 12 and Theorem 13.",
     "sourceSnapshot": "97fe7b8f1a2fa524f9ce5588a4190603db93946c",
     "manuscriptSha256": "2a22ecf8e12959dd584a11732ba1836319eb16dd583059c283e4513b3dbbbdca",
     "numbering": "Shared theorem counter in source order; 13 theorem-like results.",
-    "edges": 15,
+    "edges": 19,
     "nodes": 13,
     "view": "paper-numbered",
-    "selection": "All theorem-like results in 20251117-DFP/arXiv.tex, in shared-counter order.",
-    "sourceRepository": "https://github.com/imathwy/DFP_wolfe_local"
-  }
+    "selection": "All theorem-like results in 20251117-DFP/arXiv.tex, in shared-counter order."
+  },
+  "edgeWitnesses": [
+    {
+      "source": "latest-direction-update",
+      "target": "latest-realization",
+      "evidence": "curated-paper-proof",
+      "manuscript": "20251117-DFP/arXiv.tex",
+      "manuscriptSha256": "2a22ecf8e12959dd584a11732ba1836319eb16dd583059c283e4513b3dbbbdca",
+      "startLine": 637,
+      "endLine": 642,
+      "reason": "Explicit use of the direction update in the orbit realization."
+    },
+    {
+      "source": "latest-endpoint-wolfe",
+      "target": "latest-realization",
+      "evidence": "curated-paper-proof",
+      "manuscript": "20251117-DFP/arXiv.tex",
+      "manuscriptSha256": "2a22ecf8e12959dd584a11732ba1836319eb16dd583059c283e4513b3dbbbdca",
+      "startLine": 637,
+      "endLine": 642,
+      "reason": "Explicit use of endpoint Wolfe ratios in the orbit realization."
+    },
+    {
+      "source": "latest-direction-update",
+      "target": "latest-limiting-cycle",
+      "evidence": "curated-paper-proof",
+      "manuscript": "20251117-DFP/arXiv.tex",
+      "manuscriptSha256": "2a22ecf8e12959dd584a11732ba1836319eb16dd583059c283e4513b3dbbbdca",
+      "startLine": 692,
+      "endLine": 741,
+      "reason": "Rescaling of the polar matrix update eq:polar-matrix-map."
+    },
+    {
+      "source": "latest-endpoint-wolfe",
+      "target": "latest-parameter-choice",
+      "evidence": "curated-paper-proof",
+      "manuscript": "20251117-DFP/arXiv.tex",
+      "manuscriptSha256": "2a22ecf8e12959dd584a11732ba1836319eb16dd583059c283e4513b3dbbbdca",
+      "startLine": 816,
+      "endLine": 825,
+      "reason": "Mathematical use of the endpoint Wolfe ratio formulas, rather than an explicit numbered citation."
+    },
+    {
+      "source": "latest-limiting-cycle",
+      "target": "latest-parameter-choice",
+      "evidence": "curated-paper-proof",
+      "manuscript": "20251117-DFP/arXiv.tex",
+      "manuscriptSha256": "2a22ecf8e12959dd584a11732ba1836319eb16dd583059c283e4513b3dbbbdca",
+      "startLine": 827,
+      "endLine": 840,
+      "reason": "Derivative of the limiting map at its two-cycle."
+    },
+    {
+      "source": "latest-limiting-cycle",
+      "target": "latest-cycle-estimates",
+      "evidence": "curated-paper-proof",
+      "manuscript": "20251117-DFP/arXiv.tex",
+      "manuscriptSha256": "2a22ecf8e12959dd584a11732ba1836319eb16dd583059c283e4513b3dbbbdca",
+      "startLine": 1210,
+      "endLine": 1210,
+      "reason": "Transformed secant of the limiting map."
+    },
+    {
+      "source": "latest-parameter-choice",
+      "target": "latest-cycle-estimates",
+      "evidence": "curated-paper-proof",
+      "manuscript": "20251117-DFP/arXiv.tex",
+      "manuscriptSha256": "2a22ecf8e12959dd584a11732ba1836319eb16dd583059c283e4513b3dbbbdca",
+      "startLine": 1262,
+      "endLine": 1279,
+      "reason": "Stable derivative at the selected base point."
+    },
+    {
+      "source": "latest-cycle-estimates",
+      "target": "latest-continuation",
+      "evidence": "curated-paper-proof",
+      "manuscript": "20251117-DFP/arXiv.tex",
+      "manuscriptSha256": "2a22ecf8e12959dd584a11732ba1836319eb16dd583059c283e4513b3dbbbdca",
+      "startLine": 1363,
+      "endLine": 1364,
+      "reason": "Explicit use of the two-cycle estimates."
+    },
+    {
+      "source": "latest-endpoint-wolfe",
+      "target": "latest-geometry",
+      "evidence": "curated-paper-proof",
+      "manuscript": "20251117-DFP/arXiv.tex",
+      "manuscriptSha256": "2a22ecf8e12959dd584a11732ba1836319eb16dd583059c283e4513b3dbbbdca",
+      "startLine": 1578,
+      "endLine": 1580,
+      "reason": "Use of the exact endpoint ratio formula."
+    },
+    {
+      "source": "latest-parameter-choice",
+      "target": "latest-geometry",
+      "evidence": "curated-paper-proof",
+      "manuscript": "20251117-DFP/arXiv.tex",
+      "manuscriptSha256": "2a22ecf8e12959dd584a11732ba1836319eb16dd583059c283e4513b3dbbbdca",
+      "startLine": 1596,
+      "endLine": 1599,
+      "reason": "Use of the selected strict Wolfe margins."
+    },
+    {
+      "source": "latest-continuation",
+      "target": "latest-geometry",
+      "evidence": "curated-paper-proof",
+      "manuscript": "20251117-DFP/arXiv.tex",
+      "manuscriptSha256": "2a22ecf8e12959dd584a11732ba1836319eb16dd583059c283e4513b3dbbbdca",
+      "startLine": 1458,
+      "endLine": 1469,
+      "reason": "Use of the continued orbit and tube estimates."
+    },
+    {
+      "source": "latest-geometry",
+      "target": "latest-interpolation",
+      "evidence": "curated-paper-proof",
+      "manuscript": "20251117-DFP/arXiv.tex",
+      "manuscriptSha256": "2a22ecf8e12959dd584a11732ba1836319eb16dd583059c283e4513b3dbbbdca",
+      "startLine": 1623,
+      "endLine": 1649,
+      "reason": "Use of the geometric separation and support bounds."
+    },
+    {
+      "source": "latest-realization",
+      "target": "latest-main",
+      "evidence": "curated-paper-proof",
+      "manuscript": "20251117-DFP/arXiv.tex",
+      "manuscriptSha256": "2a22ecf8e12959dd584a11732ba1836319eb16dd583059c283e4513b3dbbbdca",
+      "startLine": 1825,
+      "endLine": 1834,
+      "reason": "Realization as a classical DFP orbit."
+    },
+    {
+      "source": "latest-parameter-choice",
+      "target": "latest-main",
+      "evidence": "curated-paper-proof",
+      "manuscript": "20251117-DFP/arXiv.tex",
+      "manuscriptSha256": "2a22ecf8e12959dd584a11732ba1836319eb16dd583059c283e4513b3dbbbdca",
+      "startLine": 1804,
+      "endLine": 1807,
+      "reason": "Selection of admissible parameters."
+    },
+    {
+      "source": "latest-continuation",
+      "target": "latest-main",
+      "evidence": "curated-paper-proof",
+      "manuscript": "20251117-DFP/arXiv.tex",
+      "manuscriptSha256": "2a22ecf8e12959dd584a11732ba1836319eb16dd583059c283e4513b3dbbbdca",
+      "startLine": 1804,
+      "endLine": 1807,
+      "reason": "Infinite continuation of the selected construction."
+    },
+    {
+      "source": "latest-geometry",
+      "target": "latest-main",
+      "evidence": "curated-paper-proof",
+      "manuscript": "20251117-DFP/arXiv.tex",
+      "manuscriptSha256": "2a22ecf8e12959dd584a11732ba1836319eb16dd583059c283e4513b3dbbbdca",
+      "startLine": 1825,
+      "endLine": 1834,
+      "reason": "Explicit use of geometric data for the realized orbit."
+    },
+    {
+      "source": "latest-interpolation",
+      "target": "latest-main",
+      "evidence": "curated-paper-proof",
+      "manuscript": "20251117-DFP/arXiv.tex",
+      "manuscriptSha256": "2a22ecf8e12959dd584a11732ba1836319eb16dd583059c283e4513b3dbbbdca",
+      "startLine": 1804,
+      "endLine": 1834,
+      "reason": "Interpolation realizing the required objective."
+    },
+    {
+      "source": "latest-main",
+      "target": "latest-identity",
+      "evidence": "curated-paper-proof",
+      "manuscript": "20251117-DFP/arXiv.tex",
+      "manuscriptSha256": "2a22ecf8e12959dd584a11732ba1836319eb16dd583059c283e4513b3dbbbdca",
+      "startLine": 1898,
+      "endLine": 1900,
+      "reason": "Linear normalization of the constructed counterexample."
+    },
+    {
+      "source": "latest-degeneration",
+      "target": "latest-convergence",
+      "evidence": "curated-paper-proof",
+      "manuscript": "20251117-DFP/arXiv.tex",
+      "manuscriptSha256": "2a22ecf8e12959dd584a11732ba1836319eb16dd583059c283e4513b3dbbbdca",
+      "startLine": 2155,
+      "endLine": 2160,
+      "reason": "Use of the general planar secant degeneration result."
+    }
+  ]
 }

@@ -13,6 +13,7 @@ import hashlib
 import json
 import os
 from pathlib import Path
+from graph_navigation import install_navigation
 import re
 import subprocess
 import sys
@@ -300,6 +301,8 @@ def main():
     print(json.dumps(dict(output=str(output), nodes=len(items),
         edges=sum(len(item['dependencies']) for item in items), sourceCommit=commit), indent=2))
 
+
+    install_navigation(output, 'v21')
 
 if __name__ == '__main__':
     main()
