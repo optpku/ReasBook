@@ -6,7 +6,7 @@ Lean 4 formalization covering the inverse-problem framework, regularization,
 Tikhonov methods, iterative methods, spectral filter methods, parameter choice,
 variational methods, and iterative solution methods across Chapters 1–9.
 The project uses Lean/mathlib `v4.32.0` and keeps the chapter structure of the
-book in the [`Book/`](Book/) directory.
+book in the `Chap01/` through `Chap09/` directories.
 
 ## Contributors
 
@@ -16,28 +16,29 @@ book in the [`Book/`](Book/) directory.
 
 ## Statistics
 
-- **Lean files:** 683 `.lean` files, 114,644 lines
-- **Theorem/lemma/example declarations:** 3,109
-- **Remaining placeholders:** 105 `sorry` occurrences
+- **Lean files:** 722 `.lean` files, 121,494 lines
+- **Theorem/lemma/example declarations:** 3,580
+- **Remaining placeholders:** 0 `sorry` or `admit` occurrences
 - **Lean toolchain:** `leanprover/lean4:v4.32.0`
 
 ## Build
 
-From this directory, download the mathlib cache and build the book entry point:
+From the repository root, build the complete book:
 
 ```bash
-lake exe cache get
-lake -R build
+lake build ComputationalMethodsInverseProblems_Vogel_2002
 ```
 
-[`Book.lean`](Book.lean) imports all chapter modules. Some source files in the
-current snapshot still contain Lean errors and duplicate declarations, so a
-full build is not yet clean; the diagnostics identify the affected chapter
-files.
+The book is also included in the default `lake build` targets.
+[`Book.lean`](Book.lean) imports all 721 chapter and supporting modules.
+All 722 Lean files, the chapter aggregates, and the full-book aggregate compile
+successfully with Lean/mathlib `v4.32.0`. An axiom-dependency audit of all
+7,234 imported book declarations found no `sorryAx` or additional axioms beyond
+Lean’s standard propositional extensionality, classical choice, and quotient soundness.
 
 ## Project files
 
-- [`lakefile.toml`](lakefile.toml) — Lake project configuration
+- [`lakefile.lean`](../../lakefile.lean) — repository Lake project configuration
 - [`book.yml`](book.yml) — book metadata and statistics
 - [`Book.lean`](Book.lean) — aggregate entry point for all formalized chapters
-- [`Book/`](Book/) — chapter-by-chapter formalization
+- `Chap01/`–`Chap09/` — chapter-by-chapter formalization

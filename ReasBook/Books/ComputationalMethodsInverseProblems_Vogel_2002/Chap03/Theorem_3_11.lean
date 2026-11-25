@@ -6,8 +6,9 @@ Project-level attribution: optpku/ReasBook@f40e785158f79d8f0e645890825b840af912e
 
 module
 
-public import ComputationalMethodsInverseProblems_Vogel_2002.Chap03.Theorem_3_11.Convergence
+public import ComputationalMethodsInverseProblems_Vogel_2002.Chap03.Theorem_3_11.ErrorBounds
 public import Mathlib.Analysis.InnerProductSpace.Rayleigh
+public import Mathlib.Analysis.SpecificLimits.Basic
 public import Mathlib.Order.Filter.Extr
 
 public section
@@ -20,8 +21,9 @@ universe u
 
 variable {H : Type u} [NormedAddCommGroup H] [InnerProductSpace ℝ H] [CompleteSpace H]
 
-/-- Backend generalized Newton error estimate: if the Hessian near `fStar` is the
-genuine second Fréchet derivative of `J`, `hModel : HasQuadraticConvergenceModel J fStar K μ`
+/-- Backend generalized Newton error estimate: if the Hessian throughout the convergence
+ball is the genuine second Fréchet derivative of `J`,
+`hModel : HasQuadraticConvergenceModel J fStar K μ`
 bundles `gradient J fStar = 0`, self-adjoint strong positivity of `hessian J fStar`,
 `K`-Lipschitz continuity of `f ↦ hessian J f`, and the explicit lower bound
 `μ * ‖h‖ ^ 2 ≤ inner ℝ (hessian J fStar h) h`, and the initial iterate satisfies
@@ -31,7 +33,7 @@ error estimate
 theorem quadraticErrorBound
     (J : H → ℝ) (f : ℕ → H) (fStar : H) {K : NNReal} {μ : ℝ}
     (hSecondDerivative :
-      ∀ᶠ y in nhds fStar,
+      ∀ y ∈ Metric.ball fStar (1 / (2 * convergenceConstant K μ)),
         HasFDerivAt J (fderiv ℝ J y) y ∧
           HasFDerivAt (fderiv ℝ J) (fderiv ℝ (fderiv ℝ J) y) y)
     (hModel : HasQuadraticConvergenceModel J fStar K μ)
@@ -40,12 +42,7 @@ theorem quadraticErrorBound
     ∀ v : ℕ,
       ‖f (v + 1) - fStar‖ ≤
         convergenceConstant K μ * ‖f v - fStar‖ ^ 2 := by
-  -- Route correction: the standard Newton remainder estimate needs `fderiv ℝ J` to have the
-  -- displayed derivative on every point of the segment from `fStar` to `f v`, or at least on a
-  -- neighborhood containing the public convergence ball. The current hypothesis only supplies this
-  -- derivative eventually at `fStar`, so the analytic core is not available for arbitrary starts
-  -- satisfying `StartsInConvergenceBall`.
-  sorry
+  exact (quadraticErrorBound_and_halfErrorBound J f fStar hSecondDerivative hModel hNewton h0).1
 
 /-- Backend generalized Newton convergence statement corresponding to
 `quadraticErrorBound`. Under the same hypotheses, if the initial iterate satisfies
@@ -53,16 +50,25 @@ theorem quadraticErrorBound
 theorem tendsto_fStar
     (J : H → ℝ) (f : ℕ → H) (fStar : H) {K : NNReal} {μ : ℝ}
     (hSecondDerivative :
-      ∀ᶠ y in nhds fStar,
+      ∀ y ∈ Metric.ball fStar (1 / (2 * convergenceConstant K μ)),
         HasFDerivAt J (fderiv ℝ J y) y ∧
           HasFDerivAt (fderiv ℝ J) (fderiv ℝ (fderiv ℝ J) y) y)
     (hModel : HasQuadraticConvergenceModel J fStar K μ)
     (hNewton : IsIterateSequence J f)
     (h0 : StartsInConvergenceBall f fStar K μ) :
     Filter.Tendsto f Filter.atTop (nhds fStar) := by
-  -- Route correction: convergence is downstream of `quadraticErrorBound`, so the same missing
-  -- neighborhood/segment regularity blocks the proof here as well.
-  sorry
+  have hhalf :=
+    (quadraticErrorBound_and_halfErrorBound J f fStar hSecondDerivative hModel hNewton h0).2
+  have hgeom : ∀ v : ℕ, ‖f v - fStar‖ ≤ (1 / 2 : ℝ) ^ v * ‖f 0 - fStar‖ := by
+    intro v
+    exact le_geom (u := fun k ↦ ‖f k - fStar‖) (c := (1 / 2 : ℝ)) (by norm_num) v
+      (fun k _ ↦ by simpa [div_eq_mul_inv, mul_comm] using hhalf k)
+  rw [tendsto_iff_dist_tendsto_zero]
+  have ht : Filter.Tendsto (fun v : ℕ ↦ (1 / 2 : ℝ) ^ v * ‖f 0 - fStar‖)
+      Filter.atTop (nhds 0) := by
+    simpa using (tendsto_pow_atTop_nhds_zero_of_lt_one (by norm_num : (0 : ℝ) ≤ 1 / 2)
+      (by norm_num : (1 / 2 : ℝ) < 1)).mul_const ‖f 0 - fStar‖
+  exact squeeze_zero (fun _ ↦ dist_nonneg) (fun v ↦ by simpa [dist_eq_norm] using hgeom v) ht
 
 /-- The source `lambda_min (H_*)` represented by the infimum Rayleigh quotient of
 `hessian J fStar`. -/
@@ -170,7 +176,7 @@ theorem hasQuadraticConvergenceModel_of_sourceHypotheses
 
 /-- thm_3_11. Theorem 3.11. If `gradient J fStar = 0`, `hessian J fStar` is self-adjoint
 strongly positive, `f ↦ hessian J f` is `γ`-Lipschitz, and `gradient J` genuinely has
-derivative `hessian J` near `fStar`, then with
+derivative `hessian J` throughout the convergence ball, then with
 `c_* = cStar J fStar γ = γ / hessianLambdaMin J fStar`, every Newton iterate sequence
 started in `‖f 0 - fStar‖ < 1 / (2 * cStar J fStar γ)` converges to `fStar` and satisfies
 the quadratic estimate `(3.19)`. The positivity and lower-bound facts attached to
@@ -179,7 +185,7 @@ the quadratic estimate `(3.19)`. The positivity and lower-bound facts attached t
 theorem newtonConvergesWithQuadraticEstimate
     (J : H → ℝ) (f : ℕ → H) (fStar : H) {γ : NNReal}
     (hSecondDerivative :
-      ∀ᶠ y in nhds fStar,
+      ∀ y ∈ Metric.ball fStar (1 / (2 * cStar J fStar γ)),
         HasFDerivAt J (fderiv ℝ J y) y ∧
           HasFDerivAt (fderiv ℝ J) (fderiv ℝ (fderiv ℝ J) y) y)
     (hgrad : gradient J fStar = 0)
@@ -200,7 +206,7 @@ theorem newtonConvergesWithQuadraticEstimate
     letI : IsEmpty {h : H // h ≠ 0} := hEmpty
     have hLambda : hessianLambdaMin J fStar = 0 := by
       rw [hessianLambdaMin, iInf_of_isEmpty]
-      simpa using (Real.sInf_empty : sInf (∅ : Set ℝ) = 0)
+      simp
     have hFalse : False := by
       have hcontr : ‖f 0 - fStar‖ < 0 := by
         simpa [cStar, hLambda] using h0
@@ -216,15 +222,20 @@ theorem newtonConvergesWithQuadraticEstimate
       -- Rewrite the source radius hypothesis into the backend start-ball predicate.
       rw [startsInConvergenceBall_iff, convergenceConstant_eq]
       simpa [cStar] using h0
+    have hSecondDerivative' :
+        ∀ y ∈ Metric.ball fStar (1 / (2 * convergenceConstant γ (hessianLambdaMin J fStar))),
+          HasFDerivAt J (fderiv ℝ J y) y ∧
+            HasFDerivAt (fderiv ℝ J) (fderiv ℝ (fderiv ℝ J) y) y := by
+      simpa only [convergenceConstant_eq, cStar] using hSecondDerivative
     refine ⟨?_, ?_⟩
     · -- The backend convergence theorem gives `f v ⟶ fStar`.
-      exact tendsto_fStar J f fStar hSecondDerivative hModel hNewton hStart
+      exact tendsto_fStar J f fStar hSecondDerivative' hModel hNewton hStart
     · -- The backend recurrence is already in the source quadratic-error form after rewriting.
       intro v
       calc
         ‖f (v + 1) - fStar‖ ≤
             convergenceConstant γ (hessianLambdaMin J fStar) * ‖f v - fStar‖ ^ 2 :=
-          quadraticErrorBound J f fStar hSecondDerivative hModel hNewton hStart v
+          quadraticErrorBound J f fStar hSecondDerivative' hModel hNewton hStart v
         _ = cStar J fStar γ * ‖f v - fStar‖ ^ 2 := by
           rw [convergenceConstant_eq]
           simp [cStar]

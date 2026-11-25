@@ -8,6 +8,7 @@ module
 
 public import ComputationalMethodsInverseProblems_Vogel_2002.Chap08.Theorem_8_19
 public import ComputationalMethodsInverseProblems_Vogel_2002.Chap08.Theorem_8_20.Minimizer
+public import ComputationalMethodsInverseProblems_Vogel_2002.Chap02.Notation_2_4
 public import Mathlib.Topology.UniformSpace.UniformConvergence
 
 public section
@@ -21,11 +22,11 @@ The source theorem asserts stability of the constrained minimizers from
 Theorem 8.19 under three kinds of perturbations: datum perturbations, operator
 perturbations, and parameter perturbations.
 
-In the current repository snapshot, `Book.Ch8.Theorem_8_19` intentionally
-keeps the Chapter 8 objective `(8.73)` explicit as an unresolved parameter
-instead of replacing it by a guessed TV/L² owner. The exact Lean meaning of
-"stable" on this displayed theorem surface is likewise still unanchored in the
-item payload, and the source-facing quantification over perturbed minimizers
+The Chapter 8 TV/L² objective `(8.73)` is defined in `Theorem_8_19.Objective`,
+and `Theorem_8_19` proves existence and uniqueness under compact convex
+constraints and finite-TV feasibility. The exact Lean meaning of "stable"
+on this displayed theorem surface is still unanchored in the item payload,
+and the source-facing quantification over perturbed minimizers
 has not yet been verified as either arbitrary minimizing selections or a
 canonical uniquely determined family.
 
@@ -41,11 +42,10 @@ variable {d : ℕ}
 
 /- Theorem 8.20. Main labeled source-facing blocker entry.
 
-The exact Lean theorem surface for Theorem 8.20 still depends on three missing
+The exact Lean theorem surface for Theorem 8.20 still depends on two missing
 anchors:
-1. the verified owner of the Chapter 8 objective `(8.73)`,
-2. the verified source-facing meaning of stability,
-3. the verified quantification over perturbed minimizers in the datum,
+1. the verified source-facing meaning of stability,
+2. the verified quantification over perturbed minimizers in the datum,
    operator, and parameter clauses.
 
 Accordingly, this target remains a labeled check-only blocker entry. It does

@@ -6,6 +6,7 @@ Project-level attribution: optpku/ReasBook@f40e785158f79d8f0e645890825b840af912e
 
 module
 
+public import ComputationalMethodsInverseProblems_Vogel_2002.Chap02.Theorem_2_43.StrictLocalMin
 public import Mathlib.Topology.Order.LocalExtr
 public import ComputationalMethodsInverseProblems_Vogel_2002.Chap02.Assumption_A2.StronglyPositive
 public import ComputationalMethodsInverseProblems_Vogel_2002.Chap02.Theorem_2_42.Taylor
@@ -18,32 +19,6 @@ open scoped Topology
 universe u v
 
 variable {α : Type u} {β : Type v} [TopologicalSpace α] [Preorder β]
-
-/-- Helper for Theorem 2.43: `f` has a strict local minimum at `a` when `a` is a
-local minimizer and `f a < f x` holds eventually on the punctured neighborhood. -/
-def IsStrictLocalMin (f : α → β) (a : α) : Prop :=
-  IsLocalMin f a ∧ ∀ᶠ x in 𝓝[≠] a, f a < f x
-
-namespace IsStrictLocalMin
-
-/-- Helper for Theorem 2.43: a strict local minimizer is, in particular, a local
-minimizer. -/
-theorem isLocalMin {f : α → β} {a : α} (h : IsStrictLocalMin f a) :
-    IsLocalMin f a :=
-  h.1
-
-/-- Helper for Theorem 2.43: a strict local minimizer satisfies the punctured
-strict-inequality condition. -/
-theorem eventually_lt {f : α → β} {a : α} (h : IsStrictLocalMin f a) :
-    ∀ᶠ x in 𝓝[≠] a, f a < f x :=
-  h.2
-
-end IsStrictLocalMin
-
-/-- Helper for Theorem 2.43: the defining specification of `IsStrictLocalMin`. -/
-theorem isStrictLocalMin_iff (f : α → β) (a : α) :
-    IsStrictLocalMin f a ↔ IsLocalMin f a ∧ ∀ᶠ x in 𝓝[≠] a, f a < f x :=
-  Iff.rfl
 
 variable {H : Type u} [NormedAddCommGroup H] [InnerProductSpace ℝ H] [CompleteSpace H]
 

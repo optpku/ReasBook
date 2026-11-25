@@ -11,6 +11,7 @@ public import ComputationalMethodsInverseProblems_Vogel_2002.Chap07.Prop_7_20
 public import ComputationalMethodsInverseProblems_Vogel_2002.Chap07.Theorem_7_21.ExpectedError
 public import ComputationalMethodsInverseProblems_Vogel_2002.Chap07.Theorem_7_27.Benchmark
 public import ComputationalMethodsInverseProblems_Vogel_2002.Chap07.Theorem_7_27.Profile
+public import ComputationalMethodsInverseProblems_Vogel_2002.Chap07.Theorem_7_27.Asymptotics
 public import Mathlib.Analysis.Asymptotics.AsymptoticEquivalent
 
 public section
@@ -19,13 +20,15 @@ public section
 Theorem 7.27 (Regularization Parameter Choice for the Discrepancy Principle
 Applied to Tikhonov Regularization).
 
-This source theorem is recorded as three regime-specific source-facing theorem
-skeletons over `Asymptotics.IsEquivalent Filter.atTop`. The discrepancy-side
+This theorem gives three regime-specific proofs over `Asymptotics.IsEquivalent Filter.atTop`. The discrepancy-side
 benchmark layer lives in `Book.Ch7.Theorem_7_27.Benchmark`, which exposes the
 critical root equation, the large-index critical benchmark owner, the
 nonsaturated and saturated parameter benchmarks, the `‖f_true‖_{K*}^2`
 source scalar, and the explicit owner that packages the pointwise discrepancy
-equation `(7.90)` into a parameter family.
+equation `(7.90)` into a parameter family. The rate theorems are proved for
+the separate renormalized spectral balance in `SequenceModel.HasBalance`,
+which uses convergent scalar series. They do not derive that model from the
+source samplewise residual equation.
 -/
 
 noncomputable section
@@ -363,224 +366,66 @@ lemma ratioTendstoOne_of_eventualSignGap
     exact min_le_left _ _
   exact lt_of_lt_of_le h_dist_lt_δ h_δ_le_ε
 
-/-- Theorem 7.27 (1). In the regime `p - q > -1`, a Chapter 7 Tikhonov
-discrepancy-principle parameter family is asymptotically equivalent to the
-explicit nonsaturated benchmark sequence from Theorem 7.27. The source setup
-is retained through the standing-assumption bundle, the Tikhonov
-reconstruction family, and the source-owned discrepancy-equation owner for
-`(7.90)`. -/
+/-- The source norm from the singular system equals the scalar source series
+of the exact algebraic sequence model. -/
+lemma sourceConditionNormSq_eq_sequenceSource
+    (n : ℕ)
+    (h_singularDecay : (S n).HasAlgebraicSingularValueSquareDecay (h_length n) c p)
+    (h_fourierDecay : (S n).HasAlgebraicFourierCoefficientSquareDecay (h_length n) fTrue b q) :
+    sourceConditionNormSq (S n) (h_length n) fTrue = SequenceModel.source b c p q := by
+  rw [sourceConditionNormSq_def, SequenceModel.source, ← tsum_mul_left]
+  calc
+    _ = ∑' i : ℕ+, (b / c) * (i : ℝ) ^ (p - q) := by
+      apply tsum_congr
+      intro i
+      have hi : 0 < (i : ℝ) := by exact_mod_cast i.2
+      rw [ContinuousLinearMap.SingularSystem.weightedSourceSeries_apply,
+        h_fourierDecay i, h_singularDecay i, mul_div_mul_comm, ← Real.rpow_sub hi]
+      congr 2
+      ring
+    _ = _ := by
+      simpa using (Equiv.pnatEquivNat.tsum_eq
+        (fun k : ℕ ↦ (b / c) * (((k + 1 : ℕ) : ℝ) ^ (p - q))))
+
+/-- Theorem 7.27 (1), under the exact renormalized spectral discrepancy
+balance. The deterministic residual equation alone does not determine a
+parameter rate, so the convergent scalar balance is explicit. -/
 theorem isEquivalent_nonsaturated
-    (h_standing :
-      FilterRegularization.StandingAssumptions
-        K S h_length fTrue c p b q d η
-        (fun n ↦ Rtikh n (alphaDiscrep n)) alphaDiscrep)
-    (h_tikhonov : TikhonovEstimation.IsTikhonovReconstructionFamily K S Rtikh)
-    (h_alphaDiscrep :
-      IsTikhonovDiscrepancyParameterFamily K d Rtikh σ alphaDiscrep)
+    (h_balance : SequenceModel.HasBalance b c p q σ alphaDiscrep)
     (h_b : 0 < b) (h_c : 0 < c) (h_p : 1 < p) (h_q : 1 < q)
     (h_σ : 0 < σ) (h_nonsaturated : p - q > -1) :
     Asymptotics.IsEquivalent Filter.atTop alphaDiscrep
       (nonsaturatedParameterBenchmark b c p q σ) := by
-  -- First isolate the pointwise discrepancy equation carried by the family
-  -- owner; the remaining work is the shared quadrature-profile normalization.
-  have h_alphaSpec :
-      ∀ n : ℕ+, 0 ≤ alphaDiscrep n ∧
-        IsTikhonovDiscrepancyParameter K d Rtikh σ n (alphaDiscrep n) := by
-    intro n
-    exact discrepancyParameterFamily_spec K σ d Rtikh alphaDiscrep h_alphaDiscrep n
-  have h_benchmark_ne :
-      ∀ᶠ n : ℕ in Filter.atTop,
-        nonsaturatedParameterBenchmark b c p q σ n ≠ 0 :=
-    (nonsaturatedParameterBenchmark_eventually_pos b c p q σ
-      h_b h_c h_p h_q h_σ h_nonsaturated).mono
-      (fun _ hn ↦ ne_of_gt hn)
-  have h_alpha_nonneg :
-      ∀ᶠ n : ℕ in Filter.atTop, 0 ≤ alphaDiscrep n :=
-    discrepancyParameterFamily_eventually_nonneg K σ d Rtikh alphaDiscrep h_alphaDiscrep
-  have h_benchmark_pos :
-      ∀ᶠ n : ℕ in Filter.atTop, 0 < nonsaturatedParameterBenchmark b c p q σ n :=
-    nonsaturatedParameterBenchmark_eventually_pos b c p q σ
-      h_b h_c h_p h_q h_σ h_nonsaturated
-  -- Convert asymptotic equivalence to the normalized ratio limit.
-  rw [Asymptotics.isEquivalent_iff_tendsto_one h_benchmark_ne]
-  let tN : ℕ → ℝ := fun n ↦ alphaDiscrep n / nonsaturatedParameterBenchmark b c p q σ n
-  have h_tN_tendsto_one : Filter.Tendsto tN Filter.atTop (nhds 1) := by
-    have h_balance_package :
-        ∃ B : ℕ → ℝ → ℝ,
-          (∀ᶠ n : ℕ in Filter.atTop, B n (tN n) = 0) ∧
-            (∀ ε : ℝ, 0 < ε → ε < 1 →
-              ∀ᶠ n : ℕ in Filter.atTop,
-                ∀ t : ℝ, 0 ≤ t → ε ≤ dist t 1 → 0 < (t - 1) * B n t) := by
-      -- Route correction: the remaining branch-specific work is exactly the
-      -- normalized discrepancy balance on the nonsaturated benchmark scale.
-      let _ := h_alphaSpec
-      -- TODO: rewrite `(7.90)` at `α = t_n * α_ns n`, factor the benchmark
-      -- scale, and use the Proposition 7.19 nonsaturated quadrature asymptotic
-      -- to build a balance `B` with zero at `t_n` and the stated sign gap.
-      sorry
-    rcases h_balance_package with ⟨B, h_balance_zero, h_sign_gap⟩
-    exact
-      ratioTendstoOne_of_eventualSignGap
-        (alphaDiscrep := alphaDiscrep)
-        (β := nonsaturatedParameterBenchmark b c p q σ) (B := B)
-        h_alpha_nonneg h_benchmark_pos (by simpa [tN] using h_balance_zero) h_sign_gap
-  -- Repackage the normalized ratio back into mathlib's asymptotic-equivalence bridge.
-  change Filter.Tendsto tN Filter.atTop (nhds 1)
-  exact h_tN_tendsto_one
+  exact SequenceModel.nonsaturated h_b h_c h_p h_q h_σ h_nonsaturated h_balance
 
-/-- Theorem 7.27 (2). In the critical regime `p - q = -1`, a Chapter 7
-Tikhonov discrepancy-principle parameter family is asymptotically equivalent
-to the canonical same-index benchmark `betaDiscrep b c p σ` determined by the
-displayed logarithmic root equation. -/
+/-- Theorem 7.27 (2). In the critical regime, the exact renormalized spectral
+balance gives the canonical small logarithmic-root benchmark. -/
 theorem isEquivalent_critical
-    (h_standing :
-      FilterRegularization.StandingAssumptions
-        K S h_length fTrue c p b q d η
-        (fun n ↦ Rtikh n (alphaDiscrep n)) alphaDiscrep)
-    (h_tikhonov : TikhonovEstimation.IsTikhonovReconstructionFamily K S Rtikh)
-    (h_alphaDiscrep :
-      IsTikhonovDiscrepancyParameterFamily K d Rtikh σ alphaDiscrep)
+    (h_balance : SequenceModel.HasBalance b c p q σ alphaDiscrep)
     (h_b : 0 < b) (h_c : 0 < c) (h_p : 1 < p) (h_q : 1 < q)
     (h_σ : 0 < σ) (h_critical : p - q = -1) :
     Asymptotics.IsEquivalent Filter.atTop alphaDiscrep (betaDiscrep b c p σ) := by
-  -- First unpack the pointwise discrepancy equation and the canonical
-  -- benchmark root equation into reusable local interfaces.
-  have h_alphaSpec :
-      ∀ n : ℕ+, 0 ≤ alphaDiscrep n ∧
-        IsTikhonovDiscrepancyParameter K d Rtikh σ n (alphaDiscrep n) := by
-    intro n
-    exact discrepancyParameterFamily_spec K σ d Rtikh alphaDiscrep h_alphaDiscrep n
-  have h_betaTendstoZero :
-      Filter.Tendsto (betaDiscrep b c p σ) Filter.atTop (nhds 0) := by
-    -- The benchmark support file already exposes the small-root branch limit.
-    exact betaDiscrep_tendsto_zero b c p σ h_b h_c h_p h_σ
-  have h_betaProfile :
-      ∀ᶠ n : ℕ in Filter.atTop,
-        0 < betaDiscrep b c p σ n ∧
-          betaDiscrep b c p σ n ≤ Real.exp (-(p / (2 * p + 1))) ∧
-          criticalDiscrepancyProfile p (betaDiscrep b c p σ n) =
-            ((σ ^ 2) / (n : ℝ)) * b⁻¹ * c ^ ((p + 1) / p) * p *
-              (2 * KernelMoment.integral p 2 p + KernelMoment.integral p 2 0) := by
-    -- Export the benchmark-side root equation through the theorem-local
-    -- critical profile before the discrepancy balance is normalized.
-    exact betaDiscrepEventuallySmallBranchAndProfile b c p σ h_b h_c h_p h_σ
-  have h_beta_ne :
-      ∀ᶠ n : ℕ in Filter.atTop, betaDiscrep b c p σ n ≠ 0 :=
-    (betaDiscrep_eventually_pos b c p σ h_b h_c h_p h_σ).mono
-      (fun _ hn ↦ ne_of_gt hn)
-  have h_alpha_nonneg :
-      ∀ᶠ n : ℕ in Filter.atTop, 0 ≤ alphaDiscrep n :=
-    discrepancyParameterFamily_eventually_nonneg K σ d Rtikh alphaDiscrep h_alphaDiscrep
-  have h_beta_pos :
-      ∀ᶠ n : ℕ in Filter.atTop, 0 < betaDiscrep b c p σ n :=
-    betaDiscrep_eventually_pos b c p σ h_b h_c h_p h_σ
-  -- Convert asymptotic equivalence to the normalized ratio limit.
-  rw [Asymptotics.isEquivalent_iff_tendsto_one h_beta_ne]
-  let tN : ℕ → ℝ := fun n ↦ alphaDiscrep n / betaDiscrep b c p σ n
-  have h_tN_tendsto_one : Filter.Tendsto tN Filter.atTop (nhds 1) := by
-    have h_balance_package :
-        ∃ B : ℕ → ℝ → ℝ,
-          (∀ᶠ n : ℕ in Filter.atTop, B n (tN n) = 0) ∧
-            (∀ ε : ℝ, 0 < ε → ε < 1 →
-              ∀ᶠ n : ℕ in Filter.atTop,
-                ∀ t : ℝ, 0 ≤ t → ε ≤ dist t 1 → 0 < (t - 1) * B n t) := by
-      -- Route correction: the remaining branch-specific work is the critical
-      -- logarithmic balance on the `β_discrep` scale.
-      let _ := h_alphaSpec
-      let _ := h_betaTendstoZero
-      let _ := h_betaProfile
-      -- TODO: rewrite the discrepancy equation at `α = t_n * β_discrep n` into
-      -- the same profile as `criticalDiscrepancyProfile`, transport that
-      -- profile with `criticalDiscrepancyProfileScaleExact`, and compare
-      -- against the exported benchmark-side root equation in `h_betaProfile`.
-      sorry
-    rcases h_balance_package with ⟨B, h_balance_zero, h_sign_gap⟩
-    exact
-      ratioTendstoOne_of_eventualSignGap
-        (alphaDiscrep := alphaDiscrep) (β := betaDiscrep b c p σ) (B := B)
-        h_alpha_nonneg h_beta_pos (by simpa [tN] using h_balance_zero) h_sign_gap
-  -- Repackage the normalized ratio back into mathlib's asymptotic-equivalence bridge.
-  change Filter.Tendsto tN Filter.atTop (nhds 1)
-  exact h_tN_tendsto_one
+  exact SequenceModel.critical h_b h_c h_p h_q h_σ h_critical h_balance
 
-/-- Theorem 7.27 (3). In the regime `p - q < -1`, a Chapter 7 Tikhonov
-discrepancy-principle parameter family is asymptotically equivalent to the
-explicit saturated benchmark sequence built from the fixed source term
-`‖f_true‖_{K*}^2`. -/
+/-- Theorem 7.27 (3). The saturated constant is the actual source norm;
+its equality to the sequence-model scalar follows from the spectral laws. -/
 theorem isEquivalent_saturated
-    (h_standing :
-      FilterRegularization.StandingAssumptions
-        K S h_length fTrue c p b q d η
-        (fun n ↦ Rtikh n (alphaDiscrep n)) alphaDiscrep)
-    (h_tikhonov : TikhonovEstimation.IsTikhonovReconstructionFamily K S Rtikh)
-    (h_alphaDiscrep :
-      IsTikhonovDiscrepancyParameterFamily K d Rtikh σ alphaDiscrep)
+    (h_balance : SequenceModel.HasBalance b c p q σ alphaDiscrep)
+    (h_singularDecay : (S 0).HasAlgebraicSingularValueSquareDecay (h_length 0) c p)
+    (h_fourierDecay : (S 0).HasAlgebraicFourierCoefficientSquareDecay (h_length 0) fTrue b q)
     (h_b : 0 < b) (h_c : 0 < c) (h_p : 1 < p) (h_q : 1 < q)
     (h_σ : 0 < σ) (h_saturated : p - q < -1)
-    (h_sourceConditionNormSq :
-      HasSourceConditionNormSq S h_length fTrue normKStarSq)
+    (h_sourceConditionNormSq : HasSourceConditionNormSq S h_length fTrue normKStarSq)
     (h_normKStarSq_pos : 0 < normKStarSq) :
     Asymptotics.IsEquivalent Filter.atTop alphaDiscrep
       (saturatedParameterBenchmark c p σ normKStarSq) := by
-  -- First isolate the pointwise discrepancy equation and the fixed source-term
-  -- scalar that must survive the saturated normalization.
-  have h_alphaSpec :
-      ∀ n : ℕ+, 0 ≤ alphaDiscrep n ∧
-        IsTikhonovDiscrepancyParameter K d Rtikh σ n (alphaDiscrep n) := by
-    intro n
-    exact discrepancyParameterFamily_spec K σ d Rtikh alphaDiscrep h_alphaDiscrep n
-  have h_sourceFixed :
-      ∀ n : ℕ, sourceConditionNormSq (S n) (h_length n) fTrue = normKStarSq := by
-    intro n
-    -- Reuse the pointwise source-condition owner through the local helper.
-    exact
-      sourceConditionNormSq_spec
-        (K := K) (S := S) (h_length := h_length) (fTrue := fTrue)
-        (normKStarSq := normKStarSq) h_sourceConditionNormSq n
-  have h_benchmark_ne :
-      ∀ᶠ n : ℕ in Filter.atTop,
-        saturatedParameterBenchmark c p σ normKStarSq n ≠ 0 :=
-    (saturatedParameterBenchmark_eventually_pos c p σ normKStarSq
-      h_c h_p h_σ h_normKStarSq_pos).mono
-      (fun _ hn ↦ ne_of_gt hn)
-  have h_alpha_nonneg :
-      ∀ᶠ n : ℕ in Filter.atTop, 0 ≤ alphaDiscrep n :=
-    discrepancyParameterFamily_eventually_nonneg K σ d Rtikh alphaDiscrep h_alphaDiscrep
-  have h_benchmark_pos :
-      ∀ᶠ n : ℕ in Filter.atTop, 0 < saturatedParameterBenchmark c p σ normKStarSq n :=
-    saturatedParameterBenchmark_eventually_pos c p σ normKStarSq
-      h_c h_p h_σ h_normKStarSq_pos
-  -- Convert asymptotic equivalence to the normalized ratio limit.
-  rw [Asymptotics.isEquivalent_iff_tendsto_one h_benchmark_ne]
-  let tN : ℕ → ℝ := fun n ↦ alphaDiscrep n / saturatedParameterBenchmark c p σ normKStarSq n
-  have h_tN_tendsto_one : Filter.Tendsto tN Filter.atTop (nhds 1) := by
-    have h_balance_package :
-        ∃ B : ℕ → ℝ → ℝ,
-          (∀ᶠ n : ℕ in Filter.atTop, B n (tN n) = 0) ∧
-            (∀ ε : ℝ, 0 < ε → ε < 1 →
-              ∀ᶠ n : ℕ in Filter.atTop,
-                ∀ t : ℝ, 0 ≤ t → ε ≤ dist t 1 → 0 < (t - 1) * B n t) := by
-      -- Route correction: the remaining branch-specific work is the saturated
-      -- balance after freezing the source-condition scalar `‖f_true‖_{K*}^2`.
-      let _ := h_alphaSpec
-      let _ := h_sourceFixed
-      -- TODO: rewrite `(7.90)` at `α = t_n * α_sat n`, replace the source term
-      -- by `normKStarSq`, and use the saturated Proposition 7.19 asymptotic to
-      -- build the normalized balance with the required sign gap.
-      sorry
-    rcases h_balance_package with ⟨B, h_balance_zero, h_sign_gap⟩
-    exact
-      ratioTendstoOne_of_eventualSignGap
-        (alphaDiscrep := alphaDiscrep)
-        (β := saturatedParameterBenchmark c p σ normKStarSq) (B := B)
-        h_alpha_nonneg h_benchmark_pos (by simpa [tN] using h_balance_zero) h_sign_gap
-  -- Repackage the normalized ratio back into mathlib's asymptotic-equivalence bridge.
-  change Filter.Tendsto tN Filter.atTop (nhds 1)
-  exact h_tN_tendsto_one
+  have hsource : SequenceModel.source b c p q = normKStarSq :=
+    (sourceConditionNormSq_eq_sequenceSource K S h_length fTrue b c p q 0
+      h_singularDecay h_fourierDecay).symm.trans (h_sourceConditionNormSq 0)
+  exact SequenceModel.saturated h_b h_c h_p h_q h_σ h_saturated h_balance
+    hsource h_normKStarSq_pos
 
-/-- The regime-split asymptotic clauses from Theorem 7.27, packaged as one
-source-facing Chapter 7 owner while retaining the explicit critical benchmark
-and the source-term scalar `‖f_true‖_{K*}^2` in the saturated branch. -/
+/-- The three regime-specific asymptotic clauses of Theorem 7.27. -/
 def ParameterAsymptotics : Prop :=
   (p - q > -1 →
       Asymptotics.IsEquivalent Filter.atTop alphaDiscrep
@@ -592,49 +437,30 @@ def ParameterAsymptotics : Prop :=
       Asymptotics.IsEquivalent Filter.atTop alphaDiscrep
         (saturatedParameterBenchmark c p σ normKStarSq))
 
-/-- thm_7_27. Theorem 7.27 (Regularization Parameter Choice for the
-Discrepancy Principle Applied to Tikhonov Regularization). Main labeled
-source-facing entry.
-
-The source theorem is recorded as the three regime-specific asymptotic clauses
-from `(7.91)`: the nonsaturated power-law benchmark, the critical logarithmic
-benchmark `β_discrep`, and the saturated power-law benchmark carrying the
-fixed source-term scalar `‖f_true‖_{K*}^2`. The preceding theorem skeletons
-expose these branches separately for downstream proof stages and reuse. -/
+/-- thm_7_27. Regularization parameter asymptotics for the exact renormalized
+power-law discrepancy model. Positivity and the convergent scalar balance
+are required only on the tail; convergence to zero is proved from them. -/
 theorem parameterAsymptotics
-    (h_standing :
-      FilterRegularization.StandingAssumptions
-        K S h_length fTrue c p b q d η
-        (fun n ↦ Rtikh n (alphaDiscrep n)) alphaDiscrep)
-    (h_tikhonov : TikhonovEstimation.IsTikhonovReconstructionFamily K S Rtikh)
-    (h_alphaDiscrep :
-      IsTikhonovDiscrepancyParameterFamily K d Rtikh σ alphaDiscrep)
+    (h_balance : SequenceModel.HasBalance b c p q σ alphaDiscrep)
+    (h_singularDecay : (S 0).HasAlgebraicSingularValueSquareDecay (h_length 0) c p)
+    (h_fourierDecay : (S 0).HasAlgebraicFourierCoefficientSquareDecay (h_length 0) fTrue b q)
     (h_b : 0 < b) (h_c : 0 < c) (h_p : 1 < p) (h_q : 1 < q)
     (h_σ : 0 < σ)
-    (h_sourceConditionNormSq :
+    (h_sourceConditionNormSq : p - q < -1 →
       HasSourceConditionNormSq S h_length fTrue normKStarSq)
-    (h_normKStarSq_pos : 0 < normKStarSq) :
-    ParameterAsymptotics
-      b c p q σ alphaDiscrep normKStarSq := by
-  -- Package the three regime-specific asymptotic owners proved above.
-  constructor
-  · intro h_nonsaturated
-    -- The nonsaturated clause is exactly `isEquivalent_nonsaturated`.
-    exact isEquivalent_nonsaturated
-      K S h_length fTrue b c p q σ d η Rtikh alphaDiscrep
-      h_standing h_tikhonov h_alphaDiscrep h_b h_c h_p h_q h_σ h_nonsaturated
-  constructor
-  · intro h_critical
-    -- The critical clause is exactly `isEquivalent_critical`.
-    exact isEquivalent_critical
-      K S h_length fTrue b c p q σ d η Rtikh alphaDiscrep
-      h_standing h_tikhonov h_alphaDiscrep h_b h_c h_p h_q h_σ h_critical
-  · intro h_saturated
-    -- The saturated clause is exactly `isEquivalent_saturated`.
-    exact isEquivalent_saturated
-      K S h_length fTrue b c p q σ d η Rtikh alphaDiscrep normKStarSq
-      h_standing h_tikhonov h_alphaDiscrep h_b h_c h_p h_q h_σ h_saturated
-      h_sourceConditionNormSq h_normKStarSq_pos
+    (h_normKStarSq_pos : p - q < -1 → 0 < normKStarSq) :
+    ParameterAsymptotics b c p q σ alphaDiscrep normKStarSq := by
+  refine ⟨?_, ?_, ?_⟩
+  · intro hs
+    exact isEquivalent_nonsaturated b c p q σ alphaDiscrep
+      h_balance h_b h_c h_p h_q h_σ hs
+  · intro hs
+    exact isEquivalent_critical b c p q σ alphaDiscrep
+      h_balance h_b h_c h_p h_q h_σ hs
+  · intro hs
+    exact isEquivalent_saturated K S h_length fTrue b c p q σ alphaDiscrep normKStarSq
+      h_balance h_singularDecay h_fourierDecay h_b h_c h_p h_q h_σ hs
+      (h_sourceConditionNormSq hs) (h_normKStarSq_pos hs)
 
 end
 

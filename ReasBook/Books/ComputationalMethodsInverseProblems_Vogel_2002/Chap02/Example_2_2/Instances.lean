@@ -18,7 +18,7 @@ namespace Matrix
 
 /-- The Frobenius-scoped inner product on real matrices, transported from the canonical nested
 finite-product `L²` inner product. -/
-@[instance_reducible] noncomputable def frobeniusInner
+@[expose, instance_reducible] noncomputable def frobeniusInner
     {m : Type u} {n : Type v} [Fintype m] [Fintype n] : Inner ℝ (Matrix m n ℝ) where
   inner A B := inner ℝ (WithLp.toLp 2 fun i ↦ WithLp.toLp 2 (A i))
     (WithLp.toLp 2 fun i ↦ WithLp.toLp 2 (B i))

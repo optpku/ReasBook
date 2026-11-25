@@ -18,6 +18,6 @@ first clause is already formalized canonically in Chapter 2 as
 
 /- Exercise 2.15 (2). The source asks only for a proof of Theorem 2.19. Its
 second clause is already formalized canonically in Chapter 2 as
-`ContinuousLinearMap.SingularSystem.reconstructionOperator_convergesToRangePseudoInverse`. -/
+`ContinuousLinearMap.SingularSystem.reconstructionOperator_convergesToCanonicalInverseOnRange`. -/
 
-#check ContinuousLinearMap.SingularSystem.reconstructionOperator_convergesToRangePseudoInverse
+#check ContinuousLinearMap.SingularSystem.reconstructionOperator_convergesToCanonicalInverseOnRange

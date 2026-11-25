@@ -34,7 +34,7 @@ def example91LikelihoodFunctional (n : ℕ) (K : Matrix (Fin n) (Fin n) ℝ)
     (d : EuclideanSpace ℝ (Fin n)) (σ2 α : ℝ) :
     EuclideanSpace ℝ (Fin n) → ℝ :=
   fun f ↦
-    (∑ i : Fin n, Matrix.toEuclideanLin K f i + σ2) -
+    (∑ i : Fin n, (Matrix.toEuclideanLin K f i + σ2)) -
       ∑ i : Fin n, (max (d i) 0 + σ2) * Real.log (Matrix.toEuclideanLin K f i + σ2) +
         (α / 2) * ‖f‖ ^ 2
 
@@ -42,7 +42,7 @@ def example91LikelihoodFunctional (n : ℕ) (K : Matrix (Fin n) (Fin n) ℝ)
 theorem example91LikelihoodFunctional_def (n : ℕ) (K : Matrix (Fin n) (Fin n) ℝ)
     (d : EuclideanSpace ℝ (Fin n)) (σ2 α : ℝ) (f : EuclideanSpace ℝ (Fin n)) :
     example91LikelihoodFunctional n K d σ2 α f =
-      (∑ i : Fin n, Matrix.toEuclideanLin K f i + σ2) -
+      (∑ i : Fin n, (Matrix.toEuclideanLin K f i + σ2)) -
         ∑ i : Fin n, (max (d i) 0 + σ2) * Real.log (Matrix.toEuclideanLin K f i + σ2) +
           (α / 2) * ‖f‖ ^ 2 := by
   simp [example91LikelihoodFunctional]
@@ -178,10 +178,10 @@ theorem example91LikelihoodFunctional_fderiv_apply (n : ℕ)
   have hJ :
       HasFDerivAt (example91LikelihoodFunctional n K d σ2 α)
         ((∑ i : Fin n, coeff i • coordCLM i) + α • innerSL ℝ f) f := by
-    refine ((hsum.add hpen).add_const σ2).congr_of_eventuallyEq ?_
+    refine ((hsum.add hpen).add_const ((n : ℝ) * σ2)).congr_of_eventuallyEq ?_
     exact Filter.Eventually.of_forall fun x => by
       rw [example91LikelihoodFunctional_def]
-      simp [arg, weight, coordCLM, EuclideanSpace.proj, Finset.sum_sub_distrib]
+      simp [arg, weight, coordCLM, EuclideanSpace.proj, Finset.sum_sub_distrib, Finset.sum_add_distrib]
       ring
   rw [hJ.fderiv]
   simp [coordCLM, coeff, innerSL_apply_apply, EuclideanSpace.proj]
@@ -227,6 +227,7 @@ theorem gradient_example91LikelihoodFunctional (n : ℕ)
           (Matrix.toEuclideanLin K.transpose (WithLp.toLp 2 coeff) + α • f) h := by
           rw [inner_add_left, real_inner_smul_left]
 
+set_option maxHeartbeats 800000 in
 /-- The Hessian formula `(9.7)` for the shifted likelihood functional, under
 the positivity condition required by the log terms. -/
 theorem hessian_example91LikelihoodFunctional (n : ℕ)

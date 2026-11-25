@@ -9,7 +9,8 @@ module
 public import ComputationalMethodsInverseProblems_Vogel_2002.Chap07.Definition_7_33
 public import ComputationalMethodsInverseProblems_Vogel_2002.Chap07.Remark_7_12
 public import ComputationalMethodsInverseProblems_Vogel_2002.Chap07.Theorem_7_21.ExpectedError
-public import ComputationalMethodsInverseProblems_Vogel_2002.Chap07.Theorem_7_31
+public import ComputationalMethodsInverseProblems_Vogel_2002.Chap07.Theorem_7_31.ProfilePackage
+public import ComputationalMethodsInverseProblems_Vogel_2002.Chap07.Theorem_7_31.EnergyBounds
 
 public section
 
@@ -23,8 +24,8 @@ section
 
 variable {Ω : Type u} [MeasurableSpace Ω]
 variable {H : Type v} {F : Type w}
-variable [NormedAddCommGroup H] [InnerProductSpace ℝ H] [CompleteSpace H]
-variable [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+variable [NormedAddCommGroup H] [InnerProductSpace ℝ H]
+variable [NormedAddCommGroup F] [InnerProductSpace ℝ F]
 
 /-- Helper for Exercise 7.25: `rpow (R ^ 2) (3 / 2) = R ^ 3` for positive `R`,
 so the curvature denominator can be pulled apart along the normalized ratio. -/
@@ -77,39 +78,30 @@ lemma expectedCurvatureDerivative_eq_profile {R S d a : ℝ} (hR : 0 < R) :
 /-- Helper for Exercise 7.25: the expected residual energy is nonnegative,
 being the integral of a squared norm. -/
 lemma expectedResidualSq_nonneg_local
-    (μ : MeasureTheory.Measure Ω) [MeasureTheory.IsProbabilityMeasure μ]
+    (μ : MeasureTheory.Measure Ω)
     (K : ℕ → H →L[ℝ] F) (Rtikh : ℕ → ℝ → F →L[ℝ] H)
     (fTrue : H) (η : ℕ → Ω → F) (n : ℕ) (α : ℝ) :
     0 ≤ expectedResidualSq μ K Rtikh fTrue η n α := by
   rw [expectedResidualSq_apply]
   exact MeasureTheory.integral_nonneg fun _ ↦ by positivity
 
-/-- Exercise 7.25. If the Chapter 7 standing assumptions from Remark 7.12 hold
-samplewise along the Tikhonov family `Rtikh`, and the expected squared
-estimation error along `alphaL` tends to `0`, then the four source clauses
-`(7.109)`-`(7.112)` are packaged by
-`NormalizedCurvatureProfilePackage μ K Rtikh fTrue η alphaL`.
-
-The two profile identities are exact rewrites of the normalized curvature
-terms, so they hold at every `n`; the two limit clauses are the genuine
-Exercise 7.25 asymptotics. -/
+/-- Exercise 7.25, with explicit sufficient energy hypotheses. The original
+samplewise filter assumptions did not control the two required ratios. Here
+`FlatnessRegime` supplies a finite Tikhonov spectral model, bounded source
+energy, a positive residual noise floor, a resolved mode at the regularization
+scale, and `α → 0`, `n α² → 0`. Together with mean-square convergence, these
+imply both profile limits rather than assuming either of them. -/
 @[expose] def profilePackage_of_meanSquareConvergent
     (μ : MeasureTheory.Measure Ω)
-    [MeasureTheory.IsProbabilityMeasure μ]
     (K : ℕ → H →L[ℝ] F)
-    (S : (n : ℕ) → ContinuousLinearMap.SingularSystem (K n))
-    (h_length : ∀ n, (S n).length = ⊤)
-    (fTrue : H) (c p b q : ℝ)
+    (fTrue : H)
     (Rtikh : ℕ → ℝ → F →L[ℝ] H)
     (η : ℕ → Ω → F)
     (alphaL : ℕ → ℝ)
-    (h_standing :
-      ∀ ω,
-        FilterRegularization.StandingAssumptions
-          K S h_length fTrue c p b q
-          (fun n ↦ K n fTrue + η n ω) (fun n ↦ η n ω)
-          (fun n ↦ Rtikh n (alphaL n)) alphaL)
-    (h_tikhonov : TikhonovEstimation.IsTikhonovReconstructionFamily K S Rtikh)
+    (h_regime : EnergyBounds.FlatnessRegime
+      (expectedResidualSq μ K Rtikh fTrue η)
+      (expectedSolutionSq μ K Rtikh fTrue η)
+      (TikhonovEstimation.expectedObjective μ K Rtikh fTrue η) alphaL)
     (h_ms :
       ParameterChoice.IsMeanSquareConvergent
         (TikhonovEstimation.objectiveAlong
@@ -146,46 +138,33 @@ Exercise 7.25 asymptotics. -/
         rw [← hR0]
         simp
       · exact expectedCurvatureDerivative_eq_profile hRpos
-    hu := by
-      -- TODO: the limit `α * S / R → 0` is not derivable from the current
-      -- hypothesis set. `h_standing`/`h_tikhonov` only give the samplewise
-      -- filter representation and `h_ms` only gives mean-square convergence of
-      -- the expected error; none of them bounds the two energies in `u`.
-      -- Deriving `hu` needs the Chapter 7 Tikhonov energy decompositions with
-      -- the truncated (`n`-mode) noise model, i.e. the L-corner asymptotics of
-      -- `Remark 7.17` / `Remark 7.28`.
-      sorry
-    hz := by
-      -- TODO: as for `hu`, the limit `S ^ 2 / (R * deriv S) → 0` needs the
-      -- Tikhonov energy asymptotics along the L-corner sequence.
-      sorry }
+    hu := (EnergyBounds.profiles_tendsto_zero h_regime
+      (h_ms.tendsto_zero.congr' (Filter.Eventually.of_forall fun n ↦
+        TikhonovEstimation.objectiveAlong_apply _ _ n))).1
+    hz := (EnergyBounds.profiles_tendsto_zero h_regime
+      (h_ms.tendsto_zero.congr' (Filter.Eventually.of_forall fun n ↦
+        TikhonovEstimation.objectiveAlong_apply _ _ n))).2 }
+
 
 /-- The `u`-profile used by `profilePackage_of_meanSquareConvergent` is the
 normalized ratio `αL * expectedSolutionSq / expectedResidualSq`. -/
 theorem profilePackage_of_meanSquareConvergent_u
     (μ : MeasureTheory.Measure Ω)
-    [MeasureTheory.IsProbabilityMeasure μ]
     (K : ℕ → H →L[ℝ] F)
-    (S : (n : ℕ) → ContinuousLinearMap.SingularSystem (K n))
-    (h_length : ∀ n, (S n).length = ⊤)
-    (fTrue : H) (c p b q : ℝ)
+    (fTrue : H)
     (Rtikh : ℕ → ℝ → F →L[ℝ] H)
     (η : ℕ → Ω → F)
     (alphaL : ℕ → ℝ)
-    (h_standing :
-      ∀ ω,
-        FilterRegularization.StandingAssumptions
-          K S h_length fTrue c p b q
-          (fun n ↦ K n fTrue + η n ω) (fun n ↦ η n ω)
-          (fun n ↦ Rtikh n (alphaL n)) alphaL)
-    (h_tikhonov : TikhonovEstimation.IsTikhonovReconstructionFamily K S Rtikh)
+    (h_regime : EnergyBounds.FlatnessRegime
+      (expectedResidualSq μ K Rtikh fTrue η)
+      (expectedSolutionSq μ K Rtikh fTrue η)
+      (TikhonovEstimation.expectedObjective μ K Rtikh fTrue η) alphaL)
     (h_ms :
       ParameterChoice.IsMeanSquareConvergent
         (TikhonovEstimation.objectiveAlong
           (TikhonovEstimation.expectedObjective μ K Rtikh fTrue η) alphaL)) :
     (profilePackage_of_meanSquareConvergent
-        μ K S h_length fTrue c p b q Rtikh η alphaL
-        h_standing h_tikhonov h_ms).u =
+        μ K fTrue Rtikh η alphaL h_regime h_ms).u =
       fun n ↦
         alphaL n * expectedSolutionSq μ K Rtikh fTrue η n (alphaL n) /
           expectedResidualSq μ K Rtikh fTrue η n (alphaL n) :=

@@ -6,6 +6,7 @@ Project-level attribution: optpku/ReasBook@f40e785158f79d8f0e645890825b840af912e
 
 module
 
+public import ComputationalMethodsInverseProblems_Vogel_2002.Chap02.Example_2_2.Instances
 public import ComputationalMethodsInverseProblems_Vogel_2002.Chap05.Definition_5_13
 public import Mathlib.Analysis.InnerProductSpace.PiL2
 public import Mathlib.Analysis.Matrix.Normed
@@ -22,62 +23,21 @@ namespace Norms.Frobenius
 
 /-- Helper for Proposition 5.14: view a real matrix in the nested `WithLp` model carrying the
 Frobenius inner product. -/
-def toFrobeniusVecReal
+@[expose] def toFrobeniusVecReal
     {m : Type*} {n : Type*} [Fintype m] [Fintype n] (A : Matrix m n ℝ) :
     WithLp 2 (m → WithLp 2 (n → ℝ)) :=
   WithLp.toLp 2 fun i ↦ WithLp.toLp 2 (A i)
 
-/-- Helper for Proposition 5.14: the Frobenius-scoped inner product on real matrices is the
-nested finite-product `L²` inner product. -/
-@[instance_reducible] noncomputable def frobeniusInnerReal
-    {m : Type*} {n : Type*} [Fintype m] [Fintype n] : Inner ℝ (Matrix m n ℝ) where
-  inner A B := inner ℝ (toFrobeniusVecReal A) (toFrobeniusVecReal B)
+/-- The real Frobenius inner product uses the common Chapter 2 instance. -/
+noncomputable abbrev frobeniusInnerReal
+    {m : Type*} {n : Type*} [Fintype m] [Fintype n] : Inner ℝ (Matrix m n ℝ) :=
+  Matrix.frobeniusInner
 
-attribute [scoped instance] frobeniusInnerReal
-
-/-- Helper for Proposition 5.14: the Frobenius scope on real matrices carries the corresponding
-inner-product-space structure. -/
-noncomputable scoped instance frobeniusInnerProductSpaceReal
+/-- The real Frobenius inner-product-space structure is shared with Chapter 2. -/
+noncomputable abbrev frobeniusInnerProductSpaceReal
     {m : Type*} {n : Type*} [Fintype m] [Fintype n] :
-    InnerProductSpace ℝ (Matrix m n ℝ) where
-  inner := Matrix.Norms.Frobenius.frobeniusInnerReal.inner
-  norm_sq_eq_re_inner := by
-    intro A
-    -- Transport the Frobenius norm to the nested `PiLp` model.
-    change ‖toFrobeniusVecReal A‖ ^ 2 =
-      RCLike.re (inner ℝ (toFrobeniusVecReal A) (toFrobeniusVecReal A))
-    simpa using norm_sq_eq_re_inner (𝕜 := ℝ) (toFrobeniusVecReal A)
-  conj_inner_symm := by
-    intro A B
-    -- Hermitian symmetry is inherited from the ambient `PiLp` inner product.
-    change star (inner ℝ (toFrobeniusVecReal B) (toFrobeniusVecReal A)) =
-      inner ℝ (toFrobeniusVecReal A) (toFrobeniusVecReal B)
-    simpa using inner_conj_symm (𝕜 := ℝ) (toFrobeniusVecReal A) (toFrobeniusVecReal B)
-  add_left := by
-    intro A B C
-    -- Additivity is computed in the nested finite-product model.
-    have hAdd :
-        toFrobeniusVecReal (A + B) =
-          toFrobeniusVecReal A + toFrobeniusVecReal B := by
-      ext i j
-      simp [toFrobeniusVecReal, Matrix.add_apply]
-    change inner ℝ (toFrobeniusVecReal (A + B)) (toFrobeniusVecReal C) =
-      inner ℝ (toFrobeniusVecReal A) (toFrobeniusVecReal C) +
-        inner ℝ (toFrobeniusVecReal B) (toFrobeniusVecReal C)
-    rw [hAdd]
-    simpa using inner_add_left (𝕜 := ℝ)
-      (toFrobeniusVecReal A) (toFrobeniusVecReal B) (toFrobeniusVecReal C)
-  smul_left := by
-    intro A B a
-    -- Scalar compatibility is likewise inherited from the ambient `PiLp` model.
-    have hSmul :
-        toFrobeniusVecReal (a • A) = a • toFrobeniusVecReal A := by
-      ext i j
-      simp [toFrobeniusVecReal, Matrix.smul_apply]
-    change inner ℝ (toFrobeniusVecReal (a • A)) (toFrobeniusVecReal B) =
-      star a * inner ℝ (toFrobeniusVecReal A) (toFrobeniusVecReal B)
-    rw [hSmul]
-    simpa using inner_smul_left (𝕜 := ℝ) (toFrobeniusVecReal A) (toFrobeniusVecReal B) a
+    InnerProductSpace ℝ (Matrix m n ℝ) :=
+  Matrix.Norms.Frobenius.frobeniusInnerProductSpace
 
 end Norms.Frobenius
 

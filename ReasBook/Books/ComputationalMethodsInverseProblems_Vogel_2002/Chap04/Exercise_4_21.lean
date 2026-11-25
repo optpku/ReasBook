@@ -412,7 +412,7 @@ theorem emUpdate_isMaxOn_qFunction
           (r : ℝ) * g i * (Real.log (K i j) + Real.log (f j)) *
             (K i j * fCurrent j / Matrix.mulVec K fCurrent i) := by
     simpa [posteriorWeight_eq K hK fCurrent hfCurrent hobsPos, Matrix.mulVec, dotProduct] using
-      qFunction_eq_weightedPosteriorSum r K hK g f f.2 fCurrent hfCurrent hobsPos hcandidateLog
+      qFunction_eq_weightedPosteriorSum r K hK g f f.2 fCurrent hfCurrent hobsPos hg.1 hcandidateLog
   have hright :
       qFunction r K hK g uMax uMax.2 fCurrent hfCurrent hobsPos =
         ∑ i, ∑ j,
@@ -421,7 +421,7 @@ theorem emUpdate_isMaxOn_qFunction
     simpa [posteriorWeight_eq K hK fCurrent hfCurrent hobsPos, Matrix.mulVec, dotProduct]
       using
       qFunction_eq_weightedPosteriorSum r K hK g uMax uMax.2
-        fCurrent hfCurrent hobsPos hemUpdateLog
+        fCurrent hfCurrent hobsPos hg.1 hemUpdateLog
   have hrightRaw :
       qFunction r K hK g uMax uMax.2 fCurrent hfCurrent hobsPos =
         ∑ i, ∑ j,

@@ -28,7 +28,7 @@ estimate component of the canonical Chapter 3 theorem
 theorem quadraticEstimate_of_sourceHypotheses
     (J : H → ℝ) (f : ℕ → H) (fStar : H) {γ : NNReal}
     (hSecondDerivative :
-      ∀ᶠ y in nhds fStar,
+      ∀ y ∈ Metric.ball fStar (1 / (2 * cStar J fStar γ)),
         HasFDerivAt J (fderiv ℝ J y) y ∧
           HasFDerivAt (fderiv ℝ J) (fderiv ℝ (fderiv ℝ J) y) y)
     (hgrad : gradient J fStar = 0)

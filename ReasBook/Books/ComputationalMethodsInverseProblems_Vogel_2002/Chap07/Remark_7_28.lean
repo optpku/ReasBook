@@ -55,23 +55,16 @@ variable (betaP alphaP alphaDiscrep : ℕ → ℝ)
 Chapter 7 Tikhonov discrepancy-principle family `α_discrep` has the same
 asymptotic rate as the canonical discrepancy benchmark `β_discrep`. -/
 private theorem discrepancyFamily_isEquivalent_criticalBenchmark
-    (h_standing :
-      FilterRegularization.StandingAssumptions
-        K S h_length fTrue c p b q d η
-        (fun n ↦ Rtikh n (alphaDiscrep n)) alphaDiscrep)
-    (h_tikhonov : TikhonovEstimation.IsTikhonovReconstructionFamily K S Rtikh)
-    (h_alphaDiscrep :
-      TikhonovDiscrepancy.IsTikhonovDiscrepancyParameterFamily K d Rtikh σ alphaDiscrep)
+    (h_balance : TikhonovDiscrepancy.SequenceModel.HasBalance b c p q σ alphaDiscrep)
     (h_b : 0 < b) (h_c : 0 < c) (h_p : 1 < p) (h_q : 1 < q)
     (h_σ : 0 < σ) (h_critical : p - q = -1) :
     Asymptotics.IsEquivalent Filter.atTop alphaDiscrep
       (TikhonovDiscrepancy.betaDiscrep b c p σ) := by
-  -- Route correction: consume the theorem-local critical bridge rather than
-  -- importing the still-broken aggregate `Book.Ch7.Theorem_7_27` file.
+  -- Apply the exact spectral-balance theorem through the critical bridge.
   exact
     TikhonovDiscrepancy.discrepancyFamily_isEquivalent_criticalBenchmark_local
-      K S h_length fTrue b c p q σ d η Rtikh alphaDiscrep
-      h_standing h_tikhonov h_alphaDiscrep h_b h_c h_p h_q h_σ h_critical
+      b c p q σ alphaDiscrep
+      h_balance h_b h_c h_p h_q h_σ h_critical
 
 /-- Benchmark-level bridge behind Remark 7.28. In the critical regime
 `p - q = -1`, if a predictive critical benchmark `β_P` is asymptotically
@@ -82,13 +75,7 @@ theorem predictiveBenchmark_isEquivalent_critical_discrepancyFamily
     (h_betaP_discrep :
       Asymptotics.IsEquivalent Filter.atTop betaP
         (TikhonovDiscrepancy.betaDiscrep b c p σ))
-    (h_standing :
-      FilterRegularization.StandingAssumptions
-        K S h_length fTrue c p b q d η
-        (fun n ↦ Rtikh n (alphaDiscrep n)) alphaDiscrep)
-    (h_tikhonov : TikhonovEstimation.IsTikhonovReconstructionFamily K S Rtikh)
-    (h_alphaDiscrep :
-      TikhonovDiscrepancy.IsTikhonovDiscrepancyParameterFamily K d Rtikh σ alphaDiscrep)
+    (h_balance : TikhonovDiscrepancy.SequenceModel.HasBalance b c p q σ alphaDiscrep)
     (h_b : 0 < b) (h_c : 0 < c) (h_p : 1 < p) (h_q : 1 < q)
     (h_σ : 0 < σ) (h_critical : p - q = -1) :
     Asymptotics.IsEquivalent Filter.atTop betaP alphaDiscrep := by
@@ -97,8 +84,8 @@ theorem predictiveBenchmark_isEquivalent_critical_discrepancyFamily
         (TikhonovDiscrepancy.betaDiscrep b c p σ) :=
     -- First bridge the discrepancy family to the canonical critical benchmark.
     discrepancyFamily_isEquivalent_criticalBenchmark
-      K S h_length fTrue b c p q σ d η Rtikh alphaDiscrep
-      h_standing h_tikhonov h_alphaDiscrep h_b h_c h_p h_q h_σ h_critical
+      b c p q σ alphaDiscrep
+      h_balance h_b h_c h_p h_q h_σ h_critical
   -- Reverse the discrepancy-side equivalence so the predictive benchmark can
   -- compose directly with it.
   exact h_betaP_discrep.trans h_alphaDiscrep_beta.symm
@@ -109,20 +96,14 @@ theorem predictiveBenchmark_isTheta_critical_discrepancyFamily
     (h_betaP_discrep :
       Asymptotics.IsEquivalent Filter.atTop betaP
         (TikhonovDiscrepancy.betaDiscrep b c p σ))
-    (h_standing :
-      FilterRegularization.StandingAssumptions
-        K S h_length fTrue c p b q d η
-        (fun n ↦ Rtikh n (alphaDiscrep n)) alphaDiscrep)
-    (h_tikhonov : TikhonovEstimation.IsTikhonovReconstructionFamily K S Rtikh)
-    (h_alphaDiscrep :
-      TikhonovDiscrepancy.IsTikhonovDiscrepancyParameterFamily K d Rtikh σ alphaDiscrep)
+    (h_balance : TikhonovDiscrepancy.SequenceModel.HasBalance b c p q σ alphaDiscrep)
     (h_b : 0 < b) (h_c : 0 < c) (h_p : 1 < p) (h_q : 1 < q)
     (h_σ : 0 < σ) (h_critical : p - q = -1) :
     betaP =Θ[Filter.atTop] alphaDiscrep := by
   exact
     (predictiveBenchmark_isEquivalent_critical_discrepancyFamily
-      K S h_length fTrue b c p q σ d η Rtikh betaP alphaDiscrep
-      h_betaP_discrep h_standing h_tikhonov h_alphaDiscrep
+      b c p q σ betaP alphaDiscrep
+      h_betaP_discrep h_balance
       h_b h_c h_p h_q h_σ h_critical).isTheta
 
 /-- Remark 7.28. In the critical regime `p - q = -1`, if `α_P` is
@@ -138,13 +119,7 @@ theorem isEquivalent_critical_discrepancyFamily
     (h_betaP_discrep :
       Asymptotics.IsEquivalent Filter.atTop betaP
         (TikhonovDiscrepancy.betaDiscrep b c p σ))
-    (h_standing :
-      FilterRegularization.StandingAssumptions
-        K S h_length fTrue c p b q d η
-        (fun n ↦ Rtikh n (alphaDiscrep n)) alphaDiscrep)
-    (h_tikhonov : TikhonovEstimation.IsTikhonovReconstructionFamily K S Rtikh)
-    (h_alphaDiscrep :
-      TikhonovDiscrepancy.IsTikhonovDiscrepancyParameterFamily K d Rtikh σ alphaDiscrep)
+    (h_balance : TikhonovDiscrepancy.SequenceModel.HasBalance b c p q σ alphaDiscrep)
     (h_b : 0 < b) (h_c : 0 < c) (h_p : 1 < p) (h_q : 1 < q)
     (h_σ : 0 < σ) (h_critical : p - q = -1) :
     Asymptotics.IsEquivalent Filter.atTop alphaP alphaDiscrep := by
@@ -154,8 +129,8 @@ theorem isEquivalent_critical_discrepancyFamily
   have h_betaP_alphaDiscrep :
       Asymptotics.IsEquivalent Filter.atTop betaP alphaDiscrep :=
     predictiveBenchmark_isEquivalent_critical_discrepancyFamily
-      K S h_length fTrue b c p q σ d η Rtikh betaP alphaDiscrep
-      h_betaP_discrep h_standing h_tikhonov h_alphaDiscrep
+      b c p q σ betaP alphaDiscrep
+      h_betaP_discrep h_balance
       h_b h_c h_p h_q h_σ h_critical
   exact h_alphaP_betaP.trans h_betaP_alphaDiscrep
 
@@ -167,20 +142,14 @@ theorem isTheta_critical_discrepancyFamily
     (h_betaP_discrep :
       Asymptotics.IsEquivalent Filter.atTop betaP
         (TikhonovDiscrepancy.betaDiscrep b c p σ))
-    (h_standing :
-      FilterRegularization.StandingAssumptions
-        K S h_length fTrue c p b q d η
-        (fun n ↦ Rtikh n (alphaDiscrep n)) alphaDiscrep)
-    (h_tikhonov : TikhonovEstimation.IsTikhonovReconstructionFamily K S Rtikh)
-    (h_alphaDiscrep :
-      TikhonovDiscrepancy.IsTikhonovDiscrepancyParameterFamily K d Rtikh σ alphaDiscrep)
+    (h_balance : TikhonovDiscrepancy.SequenceModel.HasBalance b c p q σ alphaDiscrep)
     (h_b : 0 < b) (h_c : 0 < c) (h_p : 1 < p) (h_q : 1 < q)
     (h_σ : 0 < σ) (h_critical : p - q = -1) :
     alphaP =Θ[Filter.atTop] alphaDiscrep := by
   exact
     (isEquivalent_critical_discrepancyFamily
-      K S h_length fTrue b c p q σ d η Rtikh betaP alphaP alphaDiscrep
-      h_alphaP h_betaP_discrep h_standing h_tikhonov h_alphaDiscrep
+      b c p q σ betaP alphaP alphaDiscrep
+      h_alphaP h_betaP_discrep h_balance
       h_b h_c h_p h_q h_σ h_critical).isTheta
 
 end

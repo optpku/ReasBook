@@ -14,6 +14,7 @@ public import ComputationalMethodsInverseProblems_Vogel_2002.Chap07.Prop_7_15.Re
 public import ComputationalMethodsInverseProblems_Vogel_2002.Chap07.Remark_7_12.Nullspace
 public import ComputationalMethodsInverseProblems_Vogel_2002.Chap07.Theorem_7_16.Boundary
 public import ComputationalMethodsInverseProblems_Vogel_2002.Chap07.Theorem_7_16.ExpectedError
+public import ComputationalMethodsInverseProblems_Vogel_2002.Chap07.Theorem_7_16.AsymptoticError
 public import Mathlib.Analysis.Asymptotics.AsymptoticEquivalent
 
 public section
@@ -75,7 +76,7 @@ boundary index `0`, while the steps beyond `n` are positive (they grow like
 `n`. Assumption `(7.56)` is kept in the statement for fidelity to the source
 formulation. -/
 theorem optimalFamily_eventuallyAvoidsBoundary
-    (h_vanishingNullspaceComponent :
+    (_h_vanishingNullspaceComponent :
       FilterRegularization.HasVanishingNullspaceComponent K fTrue) :
     ∀ᶠ n in Filter.atTop, 0 < mE n ∧ mE n < n :=
   expectedSqErrorObjective_minimizer_interior_eventually
@@ -133,21 +134,25 @@ estimation error asymptotically equivalent to the nullspace term plus the
 explicit TSVD benchmark profile `optimalErrorBenchmark K fTrue b c p q σ` from
 `(7.64)`.
 
-The remaining obligation splits into a spectral step and an analytic step. By
-`(7.59)` telescoped along the truncation index, the objective equals
-`‖fTrue‖ ^ 2 - b * ∑_{j ≤ m} j ^ (-q) + (σ ^ 2 / (n c)) * ∑_{j ≤ m} j ^ p`,
-so matching `(7.64)` first needs the parseval splitting of `‖fTrue‖ ^ 2` into
-the nullspace term plus the coefficient series `b * ∑ j ^ (-q)` (the right
-singular vectors form a Hilbert basis of `K.kerᗮ`), and then the mode-counting
-asymptotics `∑_{j ≤ m} j ^ p ~ m ^ (p + 1) / (p + 1)` and
-`∑_{j > m} j ^ (-q) ~ m ^ (1 - q) / (q - 1)` evaluated along
-`m = optimalIndex b c p q σ n`. -/
+The proof uses the exact orthogonal decomposition into the nullspace floor,
+the signal tail, and the retained-mode noise sum. Integral comparison gives
+`∑_{j > m} j ^ (-q) ~ m ^ (1 - q) / (q - 1)` and
+`∑_{j ≤ m} j ^ p ~ m ^ (p + 1) / (p + 1)`. Both indices in the optimality
+window give the same leading term, including the tie case in `(7.63)`. -/
 theorem expectedSqErrorAtOptimalFamily_isEquivalent
     (h_vanishingNullspaceComponent :
       FilterRegularization.HasVanishingNullspaceComponent K fTrue) :
     Asymptotics.IsEquivalent Filter.atTop
       (expectedSqErrorAlong μ K Rtsvd fTrue η mE)
-      (optimalErrorBenchmark K fTrue b c p q σ) := sorry
+      (optimalErrorBenchmark K fTrue b c p q σ) := by
+  apply expectedSqErrorAlong_isEquivalent_of_optimalIndexWindow
+    μ K S h_length fTrue h_b h_c h_p h_q h_σ η Rtsvd h_tsvd h_noise_memLp
+    h_singularDecay h_fourierDecay
+  · exact Filter.Eventually.of_forall (fun n i _ ↦ h_noise_modeVariance n i)
+  · exact optimalFamily_eq_optimalIndex_eventually
+      μ K S h_length fTrue b c p q σ η Rtsvd h_b h_c h_p h_q h_σ
+      h_noise_memLp h_noise_meanZero h_noise_modeVariance h_singularDecay h_fourierDecay
+      h_tsvd h_estOptimal h_vanishingNullspaceComponent
 
 /-- thm_7_16. Theorem 7.16 (Minimizer of Estimation Error for TSVD). Main
 labeled source-facing entry.

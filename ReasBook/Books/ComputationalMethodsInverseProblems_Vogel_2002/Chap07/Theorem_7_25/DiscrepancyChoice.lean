@@ -6,62 +6,52 @@ Project-level attribution: optpku/ReasBook@f40e785158f79d8f0e645890825b840af912e
 
 module
 
-public import ComputationalMethodsInverseProblems_Vogel_2002.Chap07.Prop_7_15.Objective
+public import ComputationalMethodsInverseProblems_Vogel_2002.Chap07.Theorem_7_25.ScalarResidual
+public import Mathlib.Analysis.Normed.Operator.Basic
 
 public section
-
 noncomputable section
-
 namespace TsvdDiscrepancy
-
 universe u v
-
-section
-
 variable {H : Type u} {F : Type v}
 variable [NormedAddCommGroup H] [NormedSpace ℝ H]
 variable [NormedAddCommGroup F] [NormedSpace ℝ F]
 
-/-- Exercise 7.20 / Theorem 7.25 support: at positive data size `n`, a TSVD
-truncation index `m` is a discrepancy-principle choice when it lies in the
-source admissible set `𝒵(n)` and satisfies the displayed discrepancy equation
-`(7.88)`. -/
+/-- TSVD discrepancy choice using the raw squared residual and the adjacent
+integer threshold rule. With mode variance `σ²/n`, the total noise threshold is
+`σ²`; dividing the residual by `n` again would give the wrong scale. -/
 @[expose] def IsDiscrepancyChoiceAt
     (K : ℕ → H →L[ℝ] F) (d : ℕ → F)
     (Rtsvd : ℕ → ℕ → F →L[ℝ] H)
-    (σ : ℝ) (n : ℕ+) (m : ℕ) : Prop :=
-  m ∈ TsvdEstimation.admissibleIndexSet (n : ℕ) ∧
-    ‖K n (Rtsvd n m (d n)) - d n‖ ^ 2 / (n : ℝ) = σ ^ 2
+    (σ : ℝ) (n m : ℕ) : Prop :=
+  IsResidualDiscrepancyChoiceAt
+    (fun n m ↦ ‖K n (Rtsvd n m (d n)) - d n‖ ^ 2) σ n m
 
-/-- The defining characterization of `IsDiscrepancyChoiceAt`. -/
+/-- The pointwise characterization of the corrected discrepancy rule. -/
 theorem isDiscrepancyChoiceAt_iff
     (K : ℕ → H →L[ℝ] F) (d : ℕ → F)
     (Rtsvd : ℕ → ℕ → F →L[ℝ] H)
-    (σ : ℝ) (n : ℕ+) (m : ℕ) :
+    (σ : ℝ) (n m : ℕ) :
     IsDiscrepancyChoiceAt K d Rtsvd σ n m ↔
-      m ∈ TsvdEstimation.admissibleIndexSet (n : ℕ) ∧
-        ‖K n (Rtsvd n m (d n)) - d n‖ ^ 2 / (n : ℝ) = σ ^ 2 := by
+      m ≤ n ∧ ‖K n (Rtsvd n m (d n)) - d n‖ ^ 2 ≤ σ ^ 2 ∧
+        (0 < m → σ ^ 2 ≤ ‖K n (Rtsvd n (m - 1) (d n)) - d n‖ ^ 2) := by
   rfl
 
-/-- A TSVD discrepancy-choice family selects, for each positive data size, a
-truncation index solving `(7.88)` on the admissible set `𝒵(n)`. -/
+/-- Asymptotic discrepancy families satisfy the crossing rule beyond a finite
+prefix. The scalar spectral model has such admissible choices eventually,
+as proved by `exists_discrepancyChoice_eventually`. -/
 @[expose] def IsDiscrepancyChoiceFamily
     (K : ℕ → H →L[ℝ] F) (d : ℕ → F)
     (Rtsvd : ℕ → ℕ → F →L[ℝ] H)
-    (σ : ℝ) (mDiscrep : ℕ → ℕ) : Prop :=
-  ∀ n : ℕ+, IsDiscrepancyChoiceAt K d Rtsvd σ n (mDiscrep n)
+    (σ : ℝ) (m : ℕ → ℕ) : Prop :=
+  ∀ᶠ n in Filter.atTop, IsDiscrepancyChoiceAt K d Rtsvd σ n (m n)
 
-/-- The defining pointwise characterization of `IsDiscrepancyChoiceFamily`. -/
+/-- The defining characterization of a discrepancy family. -/
 theorem isDiscrepancyChoiceFamily_iff
     (K : ℕ → H →L[ℝ] F) (d : ℕ → F)
     (Rtsvd : ℕ → ℕ → F →L[ℝ] H)
-    (σ : ℝ) (mDiscrep : ℕ → ℕ) :
-    IsDiscrepancyChoiceFamily K d Rtsvd σ mDiscrep ↔
-      ∀ n : ℕ+, IsDiscrepancyChoiceAt K d Rtsvd σ n (mDiscrep n) := by
+    (σ : ℝ) (m : ℕ → ℕ) :
+    IsDiscrepancyChoiceFamily K d Rtsvd σ m ↔
+      ∀ᶠ n in Filter.atTop, IsDiscrepancyChoiceAt K d Rtsvd σ n (m n) := by
   rfl
-
-end
-
 end TsvdDiscrepancy
-
-end

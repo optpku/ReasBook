@@ -4,14 +4,16 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Project-level attribution: optpku/ReasBook@f40e785158f79d8f0e645890825b840af912e327:ReasBook/Books/ComputationalMethodsInverseProblems_Vogel_2002/README.md (Contributors).
 -/
 
-import ComputationalMethodsInverseProblems_Vogel_2002.Chap07.Definition_7_33
-import ComputationalMethodsInverseProblems_Vogel_2002.Chap07.Remark_7_17.AsymptoticOptimalBridge
-import ComputationalMethodsInverseProblems_Vogel_2002.Chap07.Remark_7_17.OptimalIndexProfile
-import ComputationalMethodsInverseProblems_Vogel_2002.Chap07.Theorem_7_16
-import ComputationalMethodsInverseProblems_Vogel_2002.Chap07.Theorem_7_30.OptimalFamily
-import Mathlib.MeasureTheory.Function.L2Space
+module
 
-section
+public import ComputationalMethodsInverseProblems_Vogel_2002.Chap07.Definition_7_33
+public import ComputationalMethodsInverseProblems_Vogel_2002.Chap07.Remark_7_17.AsymptoticOptimalBridge
+public import ComputationalMethodsInverseProblems_Vogel_2002.Chap07.Remark_7_17.OptimalIndexProfile
+public import ComputationalMethodsInverseProblems_Vogel_2002.Chap07.Theorem_7_16
+public import ComputationalMethodsInverseProblems_Vogel_2002.Chap07.Theorem_7_30.OptimalFamily
+public import Mathlib.MeasureTheory.Function.L2Space
+
+public section
 
 open scoped TsvdEstimation.Notation
 
@@ -305,7 +307,7 @@ lemma optimalIndex_eventually_lt_halfDataSize
   have hfloor_le :
       (optimalIndex b c p q σ n : ℝ) ≤ optimalIndexProfile b c p q σ n := by
     rw [optimalIndex_def]
-    exact Nat.floor_le hprofile_nonneg
+    simpa only [optimalIndexProfile_def] using (Nat.floor_le hprofile_nonneg)
   have hcast :
       ((2 * optimalIndex b c p q σ n : ℕ) : ℝ) < (n : ℝ) := by
     have hbeta_half : (optimalIndex b c p q σ n : ℝ) < (n : ℝ) / 2 :=
@@ -2127,7 +2129,7 @@ lemma optimalIndex_initialSignalLowerBound
         ((optimalIndex b c p q σ n : ℕ) : ℝ) ≤ optimalIndexProfile b c p q σ n := by
       -- The floor-defined benchmark is always below the explicit profile.
       rw [optimalIndex_def]
-      exact Nat.floor_le hprofile_pos.le
+      simpa only [optimalIndexProfile_def] using (Nat.floor_le hprofile_pos.le)
     exact le_trans (by exact_mod_cast h_init) hbeta_le_profile
   have hnegpow_le :
       (optimalIndexProfile b c p q σ n) ^ (-(p + q)) ≤ (j : ℝ) ^ (-(p + q)) := by
@@ -2636,7 +2638,7 @@ lemma leftScaledComparison_stepGainLowerBound
     -- The floor-defined benchmark lies below its explicit profile.
     dsimp [β, profile]
     rw [optimalIndex_def]
-    exact Nat.floor_le hprofile_nonneg
+    simpa only [profile, optimalIndexProfile_def] using (Nat.floor_le hprofile_nonneg)
   have hk_le_scaledβ :
       (leftScaledComparisonIndex δ β : ℝ) ≤ (1 - δ / 2) * (β : ℝ) := by
     -- The buffered comparison index is the floor of the scaled benchmark.
@@ -3245,7 +3247,7 @@ lemma leftScaledComparisonIndex_betaGapDominated_eventually
   have hβ_le_profile : (β : ℝ) ≤ optimalIndexProfile b c p q σ n := by
     dsimp [β]
     rw [optimalIndex_def]
-    exact Nat.floor_le (by positivity)
+    simpa only [optimalIndexProfile_def] using (Nat.floor_le hprofile_pos0)
   have hβ_frac :
       (β : ℝ) / (n : ℝ) < r := by
     exact lt_of_le_of_lt (by gcongr) hprofile_small
@@ -3806,7 +3808,7 @@ lemma gcvObjective_leftScaledComparison_eventually_lt_of_upperEnvelope
     have hβ_le_profile : (β : ℝ) ≤ optimalIndexProfile b c p q σ n := by
       dsimp [β]
       rw [optimalIndex_def]
-      exact Nat.floor_le (by positivity)
+      simpa only [optimalIndexProfile_def] using (Nat.floor_le hprofile_pos0)
     have hβ_frac :
         (β : ℝ) / (n : ℝ) < r := by
       exact lt_of_le_of_lt (by gcongr) hprofile_small
@@ -4137,10 +4139,10 @@ theorem gcvOptimalFamily_ratio_tendsto_one
       (optimalIndexCast_isEquivalent_profile b c p q σ h_b h_c h_p h_q h_σ)
 
 /-- Helper for Theorem 7.30: Theorem 7.16 packages the estimation-optimal
-family `mE` into eventual agreement with the explicit benchmark together with
+family `mE` into the eventual one-step window around the explicit benchmark together with
 the eventual interior bounds needed to keep that benchmark inside the
 denominator-valid GCV admissible set. -/
-lemma estimationOptimalFamily_eventually_eq_optimalIndex_andInterior
+lemma estimationOptimalFamily_eventually_optimalIndexWindow_andInterior
     (μ : MeasureTheory.Measure Ω)
     [MeasureTheory.IsProbabilityMeasure μ]
     (K : ℕ → H →L[ℝ] F)
@@ -4175,9 +4177,12 @@ lemma estimationOptimalFamily_eventually_eq_optimalIndex_andInterior
         (expectedSqErrorObjective μ K Rtsvd fTrue η)
         𝒵
         mE) :
-    ∀ᶠ n in Filter.atTop, mE n = optimalIndex b c p q σ n ∧ 0 < mE n ∧ mE n < n := by
-  have h_eq :
-      mE =ᶠ[Filter.atTop] optimalIndex b c p q σ :=
+    ∀ᶠ n in Filter.atTop,
+      (mE n = optimalIndex b c p q σ n ∨ mE n + 1 = optimalIndex b c p q σ n) ∧
+        0 < mE n ∧ mE n < n := by
+  have h_window :
+      ∀ᶠ n in Filter.atTop,
+        mE n = optimalIndex b c p q σ n ∨ mE n + 1 = optimalIndex b c p q σ n :=
     optimalFamily_eq_optimalIndex_eventually
       (μ := μ) (K := K) (S := S) (h_length := h_length) (fTrue := fTrue)
       (b := b) (c := c) (p := p) (q := q) (σ := σ) (η := η)
@@ -4200,69 +4205,24 @@ lemma estimationOptimalFamily_eventually_eq_optimalIndex_andInterior
       (h_singularDecay := h_singularDecay) (h_fourierDecay := h_fourierDecay)
       (h_tsvd := h_tsvd) (h_estOptimal := h_estOptimal)
       h_vanishingNullspaceComponent
-  -- Bundle the benchmark identity and the eventual interiority into the single
-  -- transport fact used by the GCV comparison route.
-  filter_upwards [h_eq, h_interior] with n hn_eq hn_interior
-  exact ⟨hn_eq, hn_interior.1, hn_interior.2⟩
+  -- Retain both possible minimizers when the threshold is an integer.
+  filter_upwards [h_window, h_interior] with n hn_window hn_interior
+  exact ⟨hn_window, hn_interior.1, hn_interior.2⟩
 
-/-- Helper for Theorem 7.30: Theorem 7.16 eventually places the benchmark
-`optimalIndex b c p q σ n` inside the denominator-valid GCV admissible set. -/
+/-- Helper for Theorem 7.30: sublinear growth of the benchmark places it
+inside the denominator-valid GCV admissible set, independently of estimation
+optimality and the integer tie case. -/
 lemma optimalIndex_eventually_mem_gcvAdmissible
-    (μ : MeasureTheory.Measure Ω)
-    [MeasureTheory.IsProbabilityMeasure μ]
-    (K : ℕ → H →L[ℝ] F)
-    (S : (n : ℕ) → ContinuousLinearMap.SingularSystem (K n))
-    (h_length : ∀ n, (S n).length = ⊤)
-    (fTrue : H)
     (b c p q σ : ℝ)
-    (η : ℕ → Ω → F)
-    (Rtsvd : ℕ → ℕ → F →L[ℝ] H)
-    (mE : ℕ → ℕ)
-    (h_b : 0 < b)
-    (h_c : 0 < c)
-    (h_p : 1 < p)
-    (h_q : 1 < q)
-    (h_σ : 0 < σ)
-    (h_noise_memLp : ∀ n, MeasureTheory.MemLp (η n) 2 μ)
-    (h_noise_meanZero : ∀ n, ∫ ω, η n ω ∂μ = 0)
-    (h_noise_modeVariance :
-      ∀ n i,
-        ∫ ω,
-          (inner ℝ ((S n).leftBasis ((S n).natIndex (h_length n) i) : F) (η n ω)) ^ 2 ∂μ =
-            σ ^ 2 / (n : ℝ))
-    (h_singularDecay :
-      ∀ n, (S n).HasAlgebraicSingularValueSquareDecay (h_length n) c p)
-    (h_fourierDecay :
-      ∀ n, (S n).HasAlgebraicFourierCoefficientSquareDecay (h_length n) fTrue b q)
-    (h_tsvd : IsTsvdReconstructionFamily K S h_length Rtsvd)
-    (h_vanishingNullspaceComponent :
-      FilterRegularization.HasVanishingNullspaceComponent K fTrue)
-    (h_estOptimal :
-      ParameterChoice.IsOptimalParameterFamily
-        (expectedSqErrorObjective μ K Rtsvd fTrue η)
-        𝒵
-        mE) :
+    (h_b : 0 < b) (h_c : 0 < c) (h_p : 1 < p) (h_q : 1 < q) (h_σ : 0 < σ) :
     ∀ᶠ n in Filter.atTop, optimalIndex b c p q σ n ∈ TsvdGcv.gcvAdmissibleIndexSet n := by
-  have h_est_bridge :
-      ∀ᶠ n in Filter.atTop, mE n = optimalIndex b c p q σ n ∧ 0 < mE n ∧ mE n < n :=
-    estimationOptimalFamily_eventually_eq_optimalIndex_andInterior
-      (μ := μ) (K := K) (S := S) (h_length := h_length) (fTrue := fTrue)
-      (b := b) (c := c) (p := p) (q := q) (σ := σ) (η := η)
-      (Rtsvd := Rtsvd) (mE := mE) (h_b := h_b) (h_c := h_c) (h_p := h_p)
-      (h_q := h_q) (h_σ := h_σ) (h_noise_memLp := h_noise_memLp)
-      (h_noise_meanZero := h_noise_meanZero)
-      (h_noise_modeVariance := h_noise_modeVariance)
-      (h_singularDecay := h_singularDecay) (h_fourierDecay := h_fourierDecay)
-      (h_tsvd := h_tsvd)
-      (h_vanishingNullspaceComponent := h_vanishingNullspaceComponent)
-      (h_estOptimal := h_estOptimal)
-  -- Transport the eventual interiority of `mE` across its eventual equality
-  -- with the benchmark floor formula.
-  filter_upwards [h_est_bridge] with n hn
+  -- The benchmark is sublinear in the data size, independently of a
+  -- particular estimation minimizer or the integer tie case.
+  filter_upwards [optimalIndex_eventually_lt_halfDataSize b c p q σ
+    h_b h_c h_p h_q h_σ] with n hn
+  have hlt : optimalIndex b c p q σ n < n := by omega
   rw [TsvdGcv.mem_gcvAdmissibleIndexSet_iff]
-  refine ⟨?_, ?_⟩
-  · exact ⟨Nat.zero_le _, Nat.le_of_lt <| by simpa [hn.1] using hn.2.2⟩
-  · simpa [hn.1] using hn.2.2
+  exact ⟨⟨Nat.zero_le _, hlt.le⟩, hlt⟩
 
 /-- Helper for Theorem 7.30: the eventual GCV minimizer is asymptotically
 equivalent to the estimation-optimal family once both are compared to the same
@@ -4307,8 +4267,10 @@ lemma gcvOptimalFamily_isEquivalent_estimationOptimalFamily
       (fun n ↦ (mV n : ℝ))
       (fun n ↦ (mE n : ℝ)) := by
   have h_est_bridge :
-      ∀ᶠ n in Filter.atTop, mE n = optimalIndex b c p q σ n ∧ 0 < mE n ∧ mE n < n :=
-    estimationOptimalFamily_eventually_eq_optimalIndex_andInterior
+      ∀ᶠ n in Filter.atTop,
+        (mE n = optimalIndex b c p q σ n ∨ mE n + 1 = optimalIndex b c p q σ n) ∧
+          0 < mE n ∧ mE n < n :=
+    estimationOptimalFamily_eventually_optimalIndexWindow_andInterior
       (μ := μ) (K := K) (S := S) (h_length := h_length) (fTrue := fTrue)
       (b := b) (c := c) (p := p) (q := q) (σ := σ) (η := η)
       (Rtsvd := Rtsvd) (mE := mE) (h_b := h_b) (h_c := h_c) (h_p := h_p)
@@ -4321,17 +4283,7 @@ lemma gcvOptimalFamily_isEquivalent_estimationOptimalFamily
       (h_estOptimal := h_estOptimal)
   have h_optimalIndex_mem :
       ∀ᶠ n in Filter.atTop, optimalIndex b c p q σ n ∈ TsvdGcv.gcvAdmissibleIndexSet n :=
-    optimalIndex_eventually_mem_gcvAdmissible
-      (μ := μ) (K := K) (S := S) (h_length := h_length) (fTrue := fTrue)
-      (b := b) (c := c) (p := p) (q := q) (σ := σ) (η := η)
-      (Rtsvd := Rtsvd) (mE := mE) (h_b := h_b) (h_c := h_c) (h_p := h_p)
-      (h_q := h_q) (h_σ := h_σ) (h_noise_memLp := h_noise_memLp)
-      (h_noise_meanZero := h_noise_meanZero)
-      (h_noise_modeVariance := h_noise_modeVariance)
-      (h_singularDecay := h_singularDecay) (h_fourierDecay := h_fourierDecay)
-      (h_tsvd := h_tsvd)
-      (h_vanishingNullspaceComponent := h_vanishingNullspaceComponent)
-      (h_estOptimal := h_estOptimal)
+    optimalIndex_eventually_mem_gcvAdmissible b c p q σ h_b h_c h_p h_q h_σ
   have h_mV_profile :
       Asymptotics.IsEquivalent Filter.atTop
         (fun n ↦ (mV n : ℝ))
@@ -4346,20 +4298,14 @@ lemma gcvOptimalFamily_isEquivalent_estimationOptimalFamily
       (h_singularDecay := h_singularDecay) (h_fourierDecay := h_fourierDecay)
       (h_tsvd := h_tsvd) (h_gcvOptimal := h_gcvOptimal)
       (h_optimalIndex_mem := h_optimalIndex_mem)
-  have h_mV_beta :
+  have h_mE_profile :
       Asymptotics.IsEquivalent Filter.atTop
-        (fun n ↦ (mV n : ℝ))
-        (fun n ↦ (optimalIndex b c p q σ n : ℝ)) :=
-    h_mV_profile.trans
-      (optimalIndexCast_isEquivalent_profile b c p q σ h_b h_c h_p h_q h_σ).symm
-  have h_mE_eq_beta :
-      (fun n ↦ (mE n : ℝ)) =ᶠ[Filter.atTop]
-        (fun n ↦ (optimalIndex b c p q σ n : ℝ)) := by
-    filter_upwards [h_est_bridge] with n hn
-    simp [hn.1]
-  -- Transport the common benchmark profile back to the estimation-optimal
-  -- family using Theorem 7.16's eventual equality.
-  exact h_mV_beta.trans_eventuallyEq h_mE_eq_beta.symm
+        (fun n ↦ (mE n : ℝ)) (optimalIndexProfile b c p q σ) :=
+    optimalIndexWindow_isEquivalent_profile h_b h_c h_p h_q h_σ
+      (h_est_bridge.mono fun _ hn ↦ hn.1)
+  -- Both integer minimizers share the benchmark profile, so an exact
+  -- equality with its floor is unnecessary.
+  exact h_mV_profile.trans h_mE_profile.symm
 
 /-- Theorem 7.30 (GCV for TSVD Regularization). Main labeled
 source-facing entry.

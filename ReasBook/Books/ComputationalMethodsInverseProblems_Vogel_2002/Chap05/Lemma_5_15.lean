@@ -84,24 +84,7 @@ theorem dft_circulantRightShift_col_zero (n : ℕ) [NeZero n] :
   rw [Matrix.dft, Matrix.mulVecLin_apply, circulantRightShift_col_zero_eq_single,
     Matrix.mulVec_single_one, fourierMatrix_col_one]
 
-/-- Lemma 5.15. The Chapter 5 circulant right shift matrix is diagonalized by the normalized
-Fourier matrix, with diagonal entries `1, w, …, w^(n - 1)` encoded by
-`fourierSpectrum n`. -/
-theorem circulantRightShift_eq_fourierDiagonalization (n : ℕ) [NeZero n] :
-    circulantRightShift n = (fourierMatrix n)ᴴ * diagonal (fourierSpectrum n) * fourierMatrix n :=
-  by
-    -- Route correction: instead of reproducing the geometric-sum argument entrywise, instantiate
-    -- the general circulant diagonalization theorem at the shift's first column.
-    have hdiag :=
-      smul_circulant_eq_fourierDiagonalization n ((circulantRightShift n).col 0)
-    rw [circulantRightShift_eq_circulant_col_zero, dft_circulantRightShift_col_zero] at hdiag
-    -- Rewrite the right-hand side so the same scalar multiplies both sides, then cancel it.
-    have hscale : (1 / Real.sqrt n : ℂ) ≠ 0 := by
-      have hn : (0 : ℝ) < n := by
-        exact_mod_cast Nat.pos_of_neZero n
-      have hsqrt : Real.sqrt (n : ℝ) ≠ 0 := Real.sqrt_ne_zero'.2 hn
-      exact one_div_ne_zero (by exact_mod_cast hsqrt)
-    exact (smul_right_injective _ hscale) <| by
-      simpa [Matrix.diagonal_smul, mul_assoc, smul_mul_assoc, mul_smul_comm] using hdiag
+/- Lemma 5.15 is the right-shift diagonalization proved in
+`Prop_5_6.Diagonalization`; reuse that declaration here. -/
 
 end Matrix

@@ -7,6 +7,9 @@ Project-level attribution: optpku/ReasBook@f40e785158f79d8f0e645890825b840af912e
 module
 
 public import ComputationalMethodsInverseProblems_Vogel_2002.Chap08.Definition_8_9
+public import ComputationalMethodsInverseProblems_Vogel_2002.Chap08.Example_8_12.Boundary.FlattenedField
+public import ComputationalMethodsInverseProblems_Vogel_2002.Chap08.Example_8_12.Boundary.CylinderFlux
+public import ComputationalMethodsInverseProblems_Vogel_2002.Chap08.Example_8_12.Boundary.GraphArea
 public import Mathlib.Analysis.Complex.Tietze
 public import Mathlib.Analysis.Calculus.Gradient.Basic
 public import Mathlib.Analysis.Calculus.ContDiff.Defs
@@ -19,6 +22,7 @@ public import Mathlib.Data.Real.Sign
 public import Mathlib.Geometry.Manifold.SmoothApprox
 public import Mathlib.Geometry.Euclidean.Volume.Measure
 public import Mathlib.MeasureTheory.Integral.DivergenceTheorem
+public import Mathlib.MeasureTheory.Integral.Bochner.ContinuousLinearMap
 public import Mathlib.MeasureTheory.Function.LpSpace.Indicator
 public import Mathlib.Topology.ShrinkingLemma
 public import Mathlib.Topology.UrysohnsLemma
@@ -28,6 +32,9 @@ public section
 noncomputable section
 
 namespace VariationalRegularization
+
+open MeasureTheory
+open scoped ENNReal
 
 /-- `C2BoundaryIn Ω E` packages a source-faithful `C²` boundary presentation of
 `frontier E` in `Ω` by a regular defining function. -/
@@ -482,8 +489,9 @@ lemma removeCoordinateMap_single_self
       ((0 : EuclideanSpace ℝ (Fin n)), t) := by
   -- The deleted coordinate becomes the scalar component, and every surviving base coordinate
   -- vanishes on the distinguished ambient basis vector.
-  ext
-  · ext j
+  apply Prod.ext
+  · apply PiLp.ext
+    intro j
     simp [removeCoordinateMap_apply_succAbove, EuclideanSpace.single]
   · simp [removeCoordinateMap_apply_self, EuclideanSpace.single]
 
@@ -498,8 +506,9 @@ lemma removeCoordinateMap_single_succAbove
       ((EuclideanSpace.single j t : EuclideanSpace ℝ (Fin n)), 0) := by
   -- The complementary ambient basis vector survives entirely in the base coordinates while the
   -- deleted scalar slot is zero.
-  ext
-  · ext k
+  apply Prod.ext
+  · apply PiLp.ext
+    intro k
     by_cases hk : k = j
     · subst hk
       simp [removeCoordinateMap_apply_succAbove, EuclideanSpace.single]
@@ -1919,7 +1928,7 @@ lemma fixedCoordinateSignedGraphBox
         Convex ℝ C ∧
         IsCompact T ∧
         Convex ℝ T ∧
-        ContDiffOn ℝ 1 ψ C ∧
+        ContDiffOn ℝ 2 ψ C ∧
         (∀ z ∈ C, ψ z ∈ T) ∧
         removeCoordinateMap i x₀ ∈ interior (C ×ˢ T) ∧
         insertCoordinateMap i '' (C ×ˢ T) ⊆ U ∧
@@ -2010,13 +2019,13 @@ lemma fixedCoordinateSignedGraphBox
         simp [g, ContinuousLinearMap.smulRight_apply, mul_assoc, hgrad_ne, mul_comm, mul_left_comm]
     simpa [hF_inr_eq] using hsmul_invertible
   let ψ := hF_contDiffAt.implicitFunction (pn := by norm_num) hF_inr_invertible
-  have hψ_contDiffAt : ContDiffAt ℝ 1 ψ u₀.1 := by
-    -- The implicit chart inherits `C¹` regularity from the defining equation.
+  have hψ_contDiffAt : ContDiffAt ℝ 2 ψ u₀.1 := by
+    -- Retain the full `C²` implicit regularity; differentiating the flattened
+    -- vector field later also differentiates the graph's first derivative.
     exact
-      (hF_contDiffAt.contDiffAt_implicitFunction (pn := by norm_num) hF_inr_invertible).of_le
-        (by norm_num)
+      hF_contDiffAt.contDiffAt_implicitFunction (pn := by norm_num) hF_inr_invertible
   obtain ⟨Bψ, hBψ_nhds, hψ_contDiffOn⟩ :=
-    hψ_contDiffAt.contDiffOn (m := 1) le_rfl (by simp)
+    hψ_contDiffAt.contDiffOn (m := 2) le_rfl (by simp)
   have hgraphEq_nhds :
       {p : EuclideanSpace ℝ (Fin n) × ℝ | F p = 0 ↔ ψ p.1 = p.2} ∈ nhds u₀ := by
     -- Near `u₀`, the zero set of `F` is exactly the graph of the implicit function.
@@ -2800,6 +2809,105 @@ lemma fixedCoordinateGraphTangentIdentity
     _ = fderiv ℝ f point (insertCoordinateMap i (e, slope)) := by
           simp [slope]
     _ = 0 := happly
+
+/-- The surface measure of a regular graph patch is the pushforward of its
+base volume with the normal-coordinate area density. -/
+theorem fixedCoordinateGraph_surfaceMeasure
+    {n : ℕ}
+    {Ω : TopologicalSpace.Opens (EuclideanSpace ℝ (Fin (n + 1)))}
+    {E : Set (EuclideanSpace ℝ (Fin (n + 1)))}
+    (h_boundary : HasC2BoundaryIn Ω E) (i : Fin (n + 1))
+    {C : Set (EuclideanSpace ℝ (Fin n))} {T : Set ℝ}
+    {ψ : EuclideanSpace ℝ (Fin n) → ℝ} {σ : ℝ}
+    (hC : IsCompact C) (hconv : Convex ℝ C) (hψ : ContDiffOn ℝ 1 ψ C)
+    (hbox : insertCoordinateMap i '' (C ×ˢ T) ⊆ (Ω : Set (EuclideanSpace ℝ (Fin (n + 1)))))
+    (hψT : ∀ z ∈ C, ψ z ∈ T)
+    (hzero : ∀ p ∈ C ×ˢ T,
+      h_boundary.boundary.definingFunction (insertCoordinateMap i p) = 0 ↔ ψ p.1 = p.2)
+    (hσ : σ = 1 ∨ σ = -1)
+    (hsign : ∀ p ∈ C ×ˢ T,
+      0 < σ * gradient h_boundary.boundary.definingFunction (insertCoordinateMap i p) i) :
+    Measure.map (fun z ↦ insertCoordinateMap i (z, ψ z))
+        ((volume.restrict C).withDensity (fun z ↦ ENNReal.ofReal
+          (‖gradient h_boundary.boundary.definingFunction (insertCoordinateMap i (z, ψ z))‖ /
+            (σ * gradient h_boundary.boundary.definingFunction (insertCoordinateMap i (z, ψ z)) i)))) =
+      (Measure.euclideanHausdorffMeasure n).restrict
+        ((fun z ↦ insertCoordinateMap i (z, ψ z)) '' C) := by
+  let g : EuclideanSpace ℝ (Fin n) → EuclideanSpace ℝ (Fin (n + 1)) :=
+    fun z ↦ insertCoordinateMap i (z, ψ z)
+  let w : EuclideanSpace ℝ (Fin n) → ℝ := fun z ↦
+    ‖gradient h_boundary.boundary.definingFunction (g z)‖ /
+      (σ * gradient h_boundary.boundary.definingFunction (g z) i)
+  let A : EuclideanSpace ℝ (Fin n) →
+      EuclideanSpace ℝ (Fin n) →L[ℝ] EuclideanSpace ℝ (Fin (n + 1)) := fun z ↦
+    (insertCoordinateMap i).comp
+      ((ContinuousLinearMap.id ℝ (EuclideanSpace ℝ (Fin n))).prod (fderiv ℝ ψ z))
+  have hg : Function.Injective g := by
+    intro z y h
+    have h' := congrArg (removeCoordinateMap i) h
+    have hp : (z, ψ z) = (y, ψ y) := by
+      simpa only [g, removeCoordinateMap_insertCoordinateMap] using h'
+    exact congrArg Prod.fst hp
+  have hgc : ContinuousOn g C :=
+    (insertCoordinateMap i).continuous.comp_continuousOn
+      (continuousOn_id.prodMk hψ.continuousOn)
+  obtain ⟨K, hK⟩ := hψ.exists_lipschitzOnWith (by norm_num) hconv hC
+  have hpair : LipschitzOnWith (max 1 K)
+      (fun z : EuclideanSpace ℝ (Fin n) ↦ (z, ψ z)) C :=
+    (LipschitzWith.id.lipschitzOnWith (s := C)).prodMk hK
+  have hglip : LipschitzOnWith (‖insertCoordinateMap i‖₊ * max 1 K) g C :=
+    (insertCoordinateMap_lipschitz i).comp_lipschitzOnWith hpair
+  have hpoint : ∀ z ∈ C, g z ∈ (Ω : Set (EuclideanSpace ℝ (Fin (n + 1)))) := by
+    intro z hz
+    exact hbox ⟨(z, ψ z), ⟨hz, hψT z hz⟩, rfl⟩
+  have hden : ∀ z ∈ C, 0 < σ * gradient h_boundary.boundary.definingFunction (g z) i := by
+    intro z hz
+    exact hsign (z, ψ z) ⟨hz, hψT z hz⟩
+  have hgrad : ContinuousOn (fun z ↦ gradient h_boundary.boundary.definingFunction (g z)) C :=
+    (h_boundary.contDiffOn_gradient Ω.isOpen (fun _ hx ↦ hx)).continuousOn.comp hgc hpoint
+  have hw : ContinuousOn w C := by
+    apply hgrad.norm.div (continuousOn_const.mul
+      ((PiLp.continuous_apply (p := 2) (β := fun _ : Fin (n + 1) => ℝ) i).comp_continuousOn hgrad))
+    exact fun z hz ↦ (hden z hz).ne'
+  have hwpos : ∀ z ∈ C, 0 < w z := by
+    intro z hz
+    apply div_pos _ (hden z hz)
+    apply norm_pos_iff.mpr
+    intro h
+    have hd := hden z hz
+    rw [h] at hd
+    simp at hd
+  have hstrict : ∀ z ∈ interior C, HasStrictFDerivAt g (A z) z := by
+    intro z hz
+    have hψstrict := (hψ.contDiffAt
+      (Filter.mem_of_superset (isOpen_interior.mem_nhds hz) interior_subset)).hasStrictFDerivAt
+        (by norm_num)
+    exact (insertCoordinateMap i).hasStrictFDerivAt.comp z
+      ((hasStrictFDerivAt_id z).prodMk hψstrict)
+  have hfd : ∀ z ∈ interior C, fderiv ℝ g z = A z :=
+    fun z hz ↦ (hstrict z hz).hasFDerivAt.fderiv
+  have hcoords : ∀ z v j, A z v (i.succAbove j) = v j := by
+    intro z v j
+    exact insertCoordinateMap_apply_succAbove i (v, fderiv ℝ ψ z v) j
+  have hvertical : ∀ z v, A z v i = fderiv ℝ ψ z v := by
+    intro z v
+    exact insertCoordinateMap_apply_self i (v, fderiv ℝ ψ z v)
+  have hnorm : ∀ z ∈ interior C, (fderiv ℝ g z).normDet = w z := by
+    intro z hz
+    rw [hfd z hz]
+    apply GraphArea.normDet_eq_normal_ratio (A z) i
+      (gradient h_boundary.boundary.definingFunction (g z)) σ (hcoords z)
+    · intro j
+      rw [hvertical]
+      exact fixedCoordinateGraphTangentIdentity h_boundary i (fun _ hx ↦ hx)
+        hψ hbox hψT hzero hz j
+    · rcases hσ with rfl | rfl <;> norm_num
+    · exact hden z (interior_subset hz)
+  exact GraphArea.map_withDensity_area_of_compact_convex hC hconv hg.injOn hgc hglip
+    (hw.mono interior_subset) (fun z hz ↦ hwpos z (interior_subset hz))
+    (fun z hz ↦ by rw [hfd z hz]; exact hstrict z hz)
+    (fun z hz v ↦ by rw [hfd z hz]; exact GraphArea.graph_derivative_expands (A z) i (hcoords z) v)
+    hnorm
 
 /-- Helper for Example 8.12: on the local graph boundary, multiplying the outward-normal
 pairing by `‖∇f‖` removes the normalization and leaves the tangent-corrected ambient
@@ -3785,6 +3893,35 @@ lemma flattenedChartField_eq_zero_of_top_outside_baseInterior
 /-- Helper for Example 8.12: on a regular neighborhood where the defining
 function gradient never vanishes, the divergence integral equals the outward
 normal flux across `frontier E`. -/
+lemma divergence_insertCoordinateMap
+    {n : ℕ} (i : Fin (n + 1))
+    (F : EuclideanSpace ℝ (Fin n) × ℝ → EuclideanSpace ℝ (Fin n) × ℝ)
+    (q : EuclideanSpace ℝ (Fin n) × ℝ) (hF : DifferentiableAt ℝ F q) :
+    (∑ j : Fin (n + 1),
+      fderiv ℝ (fun p ↦ insertCoordinateMap i (F p)) q
+        (removeCoordinateMap i (EuclideanSpace.single j 1)) j) =
+      (∑ j : Fin n, (fderiv ℝ F q (EuclideanSpace.single j 1, 0)).1 j) +
+        (fderiv ℝ F q (0, 1)).2 := by
+  have hfd := ((insertCoordinateMap i).hasFDerivAt.comp q hF.hasFDerivAt).fderiv
+  change fderiv ℝ (fun p ↦ insertCoordinateMap i (F p)) q = _ at hfd
+  rw [hfd, Fin.sum_univ_succAbove _ i]
+  simp only [ContinuousLinearMap.comp_apply, removeCoordinateMap_single_self,
+    removeCoordinateMap_single_succAbove, insertCoordinateMap_apply_self,
+    insertCoordinateMap_apply_succAbove]
+  exact add_comm _ _
+
+lemma sum_removeCoordinateMap_trace
+    {n : ℕ} (i : Fin (n + 1))
+    (A : EuclideanSpace ℝ (Fin (n + 1)) →L[ℝ] EuclideanSpace ℝ (Fin (n + 1))) :
+    (∑ j : Fin n, (removeCoordinateMap i
+      (A (insertCoordinateMap i (EuclideanSpace.single j 1, 0)))).1 j) +
+        (removeCoordinateMap i (A (insertCoordinateMap i (0, 1)))).2 =
+      ∑ j : Fin (n + 1), A (EuclideanSpace.single j 1) j := by
+  rw [Fin.sum_univ_succAbove _ i]
+  simp only [insertCoordinateMap_zero_eq_single, insertCoordinateMap_single_zero_eq_single_succAbove,
+    removeCoordinateMap_apply_self, removeCoordinateMap_apply_succAbove]
+  exact add_comm _ _
+
 theorem regularNeighborhoodFlux_eq_boundary
     {n : ℕ}
     {Ω : TopologicalSpace.Opens (EuclideanSpace ℝ (Fin (n + 1)))}
@@ -3845,7 +3982,7 @@ theorem regularNeighborhoodFlux_eq_boundary
             Convex ℝ C ∧
             IsCompact T ∧
             Convex ℝ T ∧
-            ContDiffOn ℝ 1 ψ C ∧
+            ContDiffOn ℝ 2 ψ C ∧
             (∀ z ∈ C, ψ z ∈ T) ∧
             removeCoordinateMap i (x : EuclideanSpace ℝ (Fin (n + 1))) ∈ interior (C ×ˢ T) ∧
             insertCoordinateMap i '' (C ×ˢ T) ⊆ V i ∧
@@ -3863,8 +4000,10 @@ theorem regularNeighborhoodFlux_eq_boundary
     refine ⟨i, σ, C, T, ψ, hσ_cases, hC_compact, hC_convex, hT_compact, hT_convex,
       hψ_cont, hψ_memT, hxBox, hbox_subset, hzero_graph, hsign⟩
   classical
-  choose i σ C T ψ hσ_cases hC_compact hC_convex hT_compact hT_convex hψ_cont hψ_memT
+  choose i σ C T ψ hσ_cases hC_compact hC_convex hT_compact hT_convex hψ_c2 hψ_memT
     hxBox hbox_subset hzero_graph hsign using hlocalBox
+  have hψ_cont (x : K) : ContDiffOn ℝ 1 (ψ x) (C x) :=
+    (hψ_c2 x).of_le (by norm_num)
   have hchartOpen :
       ∀ x : K,
         IsOpen (insertCoordinateMap (i x) '' interior (C x ×ˢ T x)) := by
@@ -4457,15 +4596,14 @@ theorem regularNeighborhoodFlux_eq_boundary
         -- change-of-variables formula for `shear` on the measurable source set `lowerSource`.
         -- Then rewrite the transported density as the raw divergence of `flatField` and collapse
         -- the lower-half-box divergence to the top face.
-        have hshearImageIntegral_eq_lowerSourceIntegral :
-            ∫ q in shear '' lowerSource, rawDiv (splitPull q) ∂MeasureTheory.volume =
+        have hshearTransport : MeasurableSet lowerSource ∧
+            (∫ q in shear '' lowerSource, rawDiv (splitPull q) ∂MeasureTheory.volume) =
               ∫ q in lowerSource, rawDiv (chartMap q) ∂MeasureTheory.volume := by
           have hC_meas : MeasurableSet (C a.1) := (hC_compact a.1).measurableSet
           let ψbase : C a.1 → ℝ := fun z ↦ ψ a.1 z
           have hψbase_meas : Measurable ψbase := by
             -- Restrict the chart graph to the compact base before extending it measurably.
-            simpa [ψbase] using
-              (continuousOn_iff_continuous_restrict.mp (hψ_cont a.1).continuousOn).measurable
+            exact (hψ_cont a.1).continuousOn.restrict.measurable
           obtain ⟨ψext, hψext_meas, hψext_comp⟩ :=
             (MeasurableEmbedding.subtype_coe hC_meas).exists_measurable_extend hψbase_meas
               (fun _ ↦ ⟨(0 : ℝ)⟩)
@@ -4479,37 +4617,28 @@ theorem regularNeighborhoodFlux_eq_boundary
             simpa [ψbase] using hcomp
           have hshearExt_meas : Measurable shearExt := by
             -- The measurable extension lets the product-coordinate shear exist on the whole space.
-            refine measurable_fst.prod_mk ?_
+            refine measurable_fst.prodMk ?_
             exact hψext_meas.comp measurable_fst |>.add
               ((measurable_const.mul measurable_snd))
           have hshearExt_pres :
               MeasureTheory.MeasurePreserving shearExt MeasureTheory.volume MeasureTheory.volume := by
-            rcases hσ_cases a.1 with hσ | hσ
-            · -- When `σ = 1`, the shear is a measurable skew product of translations.
-              subst hσ
-              simpa [shearExt] using
-                (MeasureTheory.MeasurePreserving.id MeasureTheory.volume).skew_product
-                  (hψext_meas.comp measurable_fst).add measurable_snd
+            have hpres : MeasurePreserving shearExt
+                ((volume : Measure (EuclideanSpace ℝ (Fin n))).prod (volume : Measure ℝ))
+                ((volume : Measure (EuclideanSpace ℝ (Fin n))).prod (volume : Measure ℝ)) := by
+              rcases hσ_cases a.1 with hσ | hσ
+              · simpa only [shearExt, hσ, one_mul] using!
+                  (MeasurePreserving.id (volume : Measure (EuclideanSpace ℝ (Fin n)))).skew_product
+                    (g := fun z t ↦ ψext z + t)
+                    ((hψext_meas.comp measurable_fst).add measurable_snd)
+                    (Filter.Eventually.of_forall fun z ↦
+                      (measurePreserving_add_left volume (ψext z)).map_eq)
+              · simp only [shearExt, hσ, neg_one_mul, ← sub_eq_add_neg]
+                exact (MeasurePreserving.id volume).skew_product
+                  (g := fun z t ↦ ψext z - t)
+                  ((hψext_meas.comp measurable_fst).sub measurable_snd)
                   (Filter.Eventually.of_forall fun z ↦
-                    (measurePreserving_add_right MeasureTheory.volume (ψext z)).map_eq)
-            · -- When `σ = -1`, compose negation with the translated fiber map.
-              subst hσ
-              refine
-                (MeasureTheory.MeasurePreserving.id MeasureTheory.volume).skew_product
-                  ((hψext_meas.comp measurable_fst).sub measurable_snd) ?_
-              refine Filter.Eventually.of_forall ?_
-              intro z
-              calc
-                Measure.map (fun s : ℝ ↦ ψext z - s) MeasureTheory.volume
-                    = Measure.map (fun t : ℝ ↦ t + ψext z)
-                        (Measure.map (fun s : ℝ ↦ -s) MeasureTheory.volume) := by
-                          rw [Measure.map_map measurable_neg (measurable_id.add measurable_const)]
-                          rfl
-                _ = Measure.map (fun t : ℝ ↦ t + ψext z) MeasureTheory.volume := by
-                      rw [Measure.map_neg_eq_self]
-                _ = MeasureTheory.volume := by
-                      simpa using
-                        (measurePreserving_add_right MeasureTheory.volume (ψext z)).map_eq
+                    (volume.measurePreserving_sub_left (ψext z)).map_eq)
+            exact hpres
           have hshearExt_bijective : Function.Bijective shearExt := by
             refine ⟨?_, ?_⟩
             · -- The signed graph shear is injective for any graph function.
@@ -4518,7 +4647,7 @@ theorem regularNeighborhoodFlux_eq_boundary
               refine ⟨(p.1, σ a.1 * (p.2 - ψext p.1)), ?_⟩
               rcases hσ_cases a.1 with hσ | hσ <;> simp [shearExt, hσ]
           let shearExtEquiv :
-              (EuclideanSpace ℝ (Fin n) × ℝ) ≃ᵐ (EuclideanSpace ℝ (Fin n) × ℝ) where
+              (EuclideanSpace ℝ (Fin n) × ℝ) ≃ᵐ (EuclideanSpace ℝ (Fin n) × ℝ) := {
             toEquiv := Equiv.ofBijective shearExt hshearExt_bijective
             measurable_toFun := hshearExt_meas
             measurable_invFun := by
@@ -4528,11 +4657,12 @@ theorem regularNeighborhoodFlux_eq_boundary
                       (p.1, σ a.1 * (p.2 - ψext p.1)) := by
                 funext p
                 apply (hshearExt_bijective.1)
-                simpa [shearExt] using
-                  (Equiv.ofBijective_apply_symm_apply shearExt hshearExt_bijective p)
+                change shearExt ((Equiv.ofBijective shearExt hshearExt_bijective).symm p) = _
+                rw [Equiv.ofBijective_apply_symm_apply shearExt hshearExt_bijective p]
+                rcases hσ_cases a.1 with hσ | hσ <;> simp [shearExt, hσ]
               rw [hsymm]
-              exact measurable_fst.prod_mk <|
-                measurable_const.mul ((measurable_snd).sub (hψext_meas.comp measurable_fst))
+              exact measurable_fst.prodMk <|
+                measurable_const.mul ((measurable_snd).sub (hψext_meas.comp measurable_fst)) }
           have hshearExt_image_eq :
               shearExt '' lowerSource = shear '' lowerSource := by
             ext p
@@ -4566,7 +4696,7 @@ theorem regularNeighborhoodFlux_eq_boundary
             -- The lower source is measurable once the chart graph is replaced by the globalized
             -- measurable shear extension.
             rw [hlowerSource_eq]
-            exact hshearExt_meas measurableSet_prod hC_meas (hT_compact a.1).measurableSet |>.inter
+            exact (hshearExt_meas (hC_meas.prod (hT_compact a.1).measurableSet)).inter
               (measurable_snd measurableSet_Iic)
           have hshearExt_map_volumeRestrict_lowerSource :
               Measure.map shearExt (MeasureTheory.volume.restrict lowerSource) =
@@ -4578,34 +4708,33 @@ theorem regularNeighborhoodFlux_eq_boundary
                   =
                     (Measure.map shearExt MeasureTheory.volume).restrict
                       (shearExt '' lowerSource) := by
-                        simpa [preimage_image_eq _ hshearExt_bijective.1] using
-                          (hshearExtEquiv.measurableEmbedding.restrict_map MeasureTheory.volume
-                            (shearExt '' lowerSource)).symm
+                        have hm := (shearExtEquiv.measurableEmbedding.restrict_map volume
+                          (shearExt '' lowerSource)).symm
+                        change Measure.map shearExt
+                          (volume.restrict (shearExt ⁻¹' (shearExt '' lowerSource))) =
+                          (Measure.map shearExt volume).restrict (shearExt '' lowerSource) at hm
+                        simpa only [Set.preimage_image_eq _ hshearExt_bijective.1] using hm
               _ = MeasureTheory.volume.restrict (shearExt '' lowerSource) := by
                     rw [hshearExt_pres.map_eq]
-          -- Route correction: use the measurable extension only to build a global measure-level
-          -- transport; on `lowerSource` it agrees with the original signed graph coordinates.
+          -- Retain measurability for the subsequent comparison with the fixed cylinder.
+          refine ⟨hlowerSource_meas, ?_⟩
           calc
             ∫ q in shear '' lowerSource, rawDiv (splitPull q) ∂MeasureTheory.volume
                 = ∫ q in shearExt '' lowerSource, rawDiv (splitPull q) ∂MeasureTheory.volume := by
                     rw [hshearExt_image_eq]
             _ =
-                ∫ q in shearExt '' lowerSource,
-                  rawDiv (splitPull q)
+                ∫ q, rawDiv (splitPull q)
                     ∂Measure.map shearExt (MeasureTheory.volume.restrict lowerSource) := by
-                  rw [← hshearExt_map_volumeRestrict_lowerSource]
+                  rw [hshearExt_map_volumeRestrict_lowerSource]
             _ =
-                ∫ q in lowerSource, rawDiv (splitPull (shearExt q)) ∂MeasureTheory.volume := by
-                  simpa [preimage_image_eq _ hshearExt_bijective.1] using
-                    (hshearExtEquiv.measurableEmbedding.setIntegral_map
-                      (μ := MeasureTheory.volume.restrict lowerSource)
-                      (g := fun q : EuclideanSpace ℝ (Fin n) × ℝ ↦ rawDiv (splitPull q))
-                      (s := shearExt '' lowerSource))
+                ∫ q in lowerSource, rawDiv (splitPull (shearExt q)) ∂MeasureTheory.volume :=
+                  shearExtEquiv.measurableEmbedding.integral_map _
             _ =
                 ∫ q in lowerSource, rawDiv (chartMap q) ∂MeasureTheory.volume := by
                   refine MeasureTheory.setIntegral_congr_fun hlowerSource_meas ?_
                   intro q hq
                   simp [hsplitPull_shearExt_eq_chartMap q hq]
+        obtain ⟨hlowerSource_meas, hshearImageIntegral_eq_lowerSourceIntegral⟩ := hshearTransport
         have hlowerSourceIntegral_eq_topFaceIntegral :
             ∫ q in lowerSource, rawDiv (chartMap q) ∂MeasureTheory.volume =
               topFaceIntegral := by
@@ -4716,35 +4845,173 @@ theorem regularNeighborhoodFlux_eq_boundary
                 have hremoved := congrArg (removeCoordinateMap (i a.1)) hp_eq
                 simpa [chartMap, removeCoordinateMap_insertCoordinateMap] using hremoved
               simpa [hp_eq_chart] using hp_prod.1
+            let G : EuclideanSpace ℝ (Fin n) × ℝ → EuclideanSpace ℝ (Fin n) × ℝ :=
+              fun p ↦ removeCoordinateMap (i a.1) (ψloc (insertCoordinateMap (i a.1) p))
+            have hG_cont : ContDiff ℝ 1 G :=
+              (removeCoordinateMap (i a.1)).contDiff.comp
+                (hψloc_cont.comp (insertCoordinateMap (i a.1)).contDiff)
+            have hflat_eq : flatField = GraphFlattening.field (ψ a.1) (σ a.1) G := by
+              funext q
+              dsimp [flatField, GraphFlattening.field, GraphFlattening.chart, chartMap, G]
+              apply Prod.ext
+              · rfl
+              · rw [GraphFlattening.clm_apply_eq_sum_single]
+                simp only [removeCoordinateMap_apply_self, removeCoordinateMap_apply_succAbove]
+            have heSplit_symm (x : EuclideanSpace ℝ (Fin (n + 1))) :
+                eSplit.symm x = removeCoordinateMap (i a.1) x := by
+              apply eSplit.injective
+              rw [eSplit.apply_symm_apply]
+              exact ((congrFun hsplitPull_eq _).trans (insertCoordinateMap_removeCoordinateMap _ _)).symm
+            have hflat_zero_near
+                (q : EuclideanSpace ℝ (Fin n) × ℝ)
+                (hq_support : chartMap q ∉ tsupport ψloc) :
+                flatField =ᶠ[nhds q] 0 := by
+              have hzero : ∀ᶠ p in nhds q, ψloc (chartMap p) = 0 := by
+                by_cases hbase : q.1 ∈ interior (C a.1)
+                · have hψ_at : ContinuousAt (ψ a.1) q.1 :=
+                    (hψ_cont a.1).continuousOn.continuousAt
+                      (mem_interior_iff_mem_nhds.mp hbase)
+                  have hchart_at : ContinuousAt chartMap q := by
+                    exact (insertCoordinateMap (i a.1)).continuous.continuousAt.comp
+                      (continuousAt_fst.prodMk
+                        ((hψ_at.comp continuousAt_fst).add
+                          (continuousAt_const.mul continuousAt_snd)))
+                  exact hchart_at.eventually
+                    (notMem_tsupport_iff_eventuallyEq.mp hq_support)
+                · let P := Prod.fst '' (removeCoordinateMap (i a.1) '' tsupport ψloc)
+                  have hP_closed : IsClosed P :=
+                    ((hψloc_compact.isCompact.image
+                      (removeCoordinateMap (i a.1)).continuous).image continuous_fst).isClosed
+                  have hqP : q.1 ∉ P := by
+                    rintro ⟨p, ⟨x, hx, rfl⟩, hp⟩
+                    rcases hψloc_subset hx with ⟨y, hy, hyx⟩
+                    have hxy : removeCoordinateMap (i a.1) x = y := by
+                      rw [← hyx, removeCoordinateMap_insertCoordinateMap]
+                    have hys : y ∈ interior (C a.1) ×ˢ interior (T a.1) := by
+                      simpa only [interior_prod_eq] using hy
+                    apply hbase
+                    rw [← hp, hxy]
+                    exact hys.1
+                  filter_upwards [continuousAt_fst.eventually
+                    (hP_closed.isOpen_compl.mem_nhds hqP)] with p hp
+                  apply image_eq_zero_of_notMem_tsupport
+                  intro hsupport
+                  apply hp
+                  refine ⟨removeCoordinateMap (i a.1) (chartMap p),
+                    ⟨chartMap p, hsupport, rfl⟩, ?_⟩
+                  simp [chartMap, removeCoordinateMap_insertCoordinateMap]
+              filter_upwards [hzero] with p hp
+              simp [flatField, hp]
+            have hflat_cont : ContDiff ℝ 1 flatField := by
+              apply contDiff_iff_contDiffAt.mpr
+              intro q
+              by_cases hq_support : chartMap q ∈ tsupport ψloc
+              · have hq_baseInterior : q.1 ∈ interior (C a.1) :=
+                  hchartMap_mem_tsupport_imp_baseInterior hq_support
+                rw [hflat_eq]
+                exact GraphFlattening.contDiffAt_field
+                  ((hψ_c2 a.1).contDiffAt (mem_interior_iff_mem_nhds.mp hq_baseInterior))
+                  hG_cont.contDiffAt
+              · exact contDiffAt_const.congr_of_eventuallyEq (hflat_zero_near q hq_support)
+            have hflat_support_box : Function.support flatField ⊆ flattenedBox := by
+              intro q hq
+              have hx_support : chartMap q ∈ tsupport ψloc := by
+                by_contra hn
+                apply hq
+                have hz := image_eq_zero_of_notMem_tsupport hn
+                simp [flatField, hz]
+              apply interior_subset
+              apply hflat_subset
+              refine ⟨removeCoordinateMap (i a.1) (chartMap q),
+                ⟨chartMap q, hx_support, rfl⟩, ?_⟩
+              simp only [chartMap, removeCoordinateMap_insertCoordinateMap]
+              apply Prod.ext
+              · rfl
+              · change σ a.1 * ((ψ a.1 q.1 + σ a.1 * q.2) - ψ a.1 q.1) = q.2
+                rw [show σ a.1 * ((ψ a.1 q.1 + σ a.1 * q.2) - ψ a.1 q.1) =
+                    (σ a.1 * σ a.1) * q.2 by ring]
+                simp [hσ_sq]
+            have hflat_compact : HasCompactSupport flatField :=
+              HasCompactSupport.of_support_subset_isCompact
+                ((isCompact_closedBall (0 : EuclideanSpace ℝ (Fin n)) R).prod isCompact_Icc)
+                hflat_support_box
+            have hflat_tsupport_box : tsupport flatField ⊆ flattenedBox :=
+              closure_minimal hflat_support_box (Metric.isClosed_closedBall.prod isClosed_Icc)
+            have hflatDiv_eq_divProd (q : EuclideanSpace ℝ (Fin n) × ℝ) :
+                flatDiv q = CylinderFlux.divProd flatField q := by
+              dsimp only [flatDiv]
+              simp only [heSplit_symm]
+              have heq : (fun p ↦ eSplit (flatField p)) =
+                  (fun p ↦ insertCoordinateMap (i a.1) (flatField p)) := by
+                funext p
+                exact congrFun hsplitPull_eq _
+              rw [heq]
+              exact divergence_insertCoordinateMap (i a.1) flatField q
+                (hflat_cont.differentiable one_ne_zero q)
             have hflatDiv_eq_rawDivChartMap :
                 ∀ q ∈ lowerHalfBox, flatDiv q = rawDiv (chartMap q) := by
               intro q hq
               by_cases hq_support : chartMap q ∈ tsupport ψloc
               · have hq_baseInterior : q.1 ∈ interior (C a.1) :=
                   hchartMap_mem_tsupport_imp_baseInterior hq_support
-                -- TODO: on the support branch, expand the chain rule for `eSplit ∘ flatField`,
-                -- split the ambient sum into the distinguished `i` coordinate and the
-                -- `succAbove` coordinates, and use `hq_baseInterior` to unlock the local `C¹`
-                -- regularity of `ψ a.1` before rewriting the product basis vectors through
-                -- `removeCoordinateMap_single_self` and `removeCoordinateMap_single_succAbove`.
-                sorry
+                have hψ_at : ContDiffAt ℝ 2 (ψ a.1) q.1 :=
+                  (hψ_c2 a.1).contDiffAt (mem_interior_iff_mem_nhds.mp hq_baseInterior)
+                have hF_at : ContDiffAt ℝ 1 flatField q := by
+                  rw [hflat_eq]
+                  exact GraphFlattening.contDiffAt_field hψ_at hG_cont.contDiffAt
+                have hsplit : flatDiv q =
+                    (∑ j : Fin n, (fderiv ℝ flatField q (EuclideanSpace.single j 1, 0)).1 j) +
+                      (fderiv ℝ flatField q (0, 1)).2 := by
+                  dsimp only [flatDiv]
+                  simp only [heSplit_symm]
+                  have heq : (fun p ↦ eSplit (flatField p)) =
+                      (fun p ↦ insertCoordinateMap (i a.1) (flatField p)) := by
+                    funext p
+                    exact congrFun hsplitPull_eq _
+                  rw [heq]
+                  exact divergence_insertCoordinateMap (i a.1) flatField q
+                    (hF_at.differentiableAt (by norm_num))
+                rw [hsplit, hflat_eq]
+                rw [GraphFlattening.divergence_eq hψ_at hσ_sq hG_cont.differentiable_one.differentiableAt]
+                have hfd := ((removeCoordinateMap (i a.1)).hasFDerivAt.comp
+                    (insertCoordinateMap (i a.1) (GraphFlattening.chart (ψ a.1) (σ a.1) q))
+                    ((hψloc_cont.differentiable_one _).hasFDerivAt)).comp
+                      (GraphFlattening.chart (ψ a.1) (σ a.1) q)
+                      (insertCoordinateMap (i a.1)).hasFDerivAt
+                have hfd_eq : fderiv ℝ G (GraphFlattening.chart (ψ a.1) (σ a.1) q) =
+                    (removeCoordinateMap (i a.1)).comp
+                      ((fderiv ℝ ψloc (chartMap q)).comp (insertCoordinateMap (i a.1))) := by
+                  exact hfd.fderiv
+                rw [hfd_eq]
+                simpa only [ContinuousLinearMap.comp_apply, rawDiv] using
+                  sum_removeCoordinateMap_trace (i a.1) (fderiv ℝ ψloc (chartMap q))
               · have hrawDiv_zero :
                     rawDiv (chartMap q) = 0 := by
                   -- Outside the ambient support, the original localized divergence already
                   -- vanishes.
                   exact rawDivergence_eq_zero_of_notMem_tsupport (φ := ψloc) hq_support
                 rw [hrawDiv_zero]
-                -- TODO: prove the matching off-support zero-germ statement for
-                -- `fun p ↦ eSplit (flatField p)` and then close by
-                -- `rawDivergence_eq_zero_of_notMem_tsupport`.
-                sorry
+                have hflat_zero :
+                    (fun p ↦ eSplit (flatField p)) =ᶠ[nhds q] 0 := by
+                  filter_upwards [hflat_zero_near q hq_support] with p hp
+                  simp [hp]
+                have hfd : fderiv ℝ (fun p ↦ eSplit (flatField p)) q = 0 := by
+                  rw [hflat_zero.fderiv_eq]
+                  simp
+                simp only [flatDiv, hfd, zero_apply, PiLp.zero_apply,
+                  Finset.sum_const_zero]
             have hlowerHalfBoxFlatDiv_eq_topFaceIntegral :
                 ∫ q in lowerHalfBox, flatDiv q ∂MeasureTheory.volume =
                   topFaceIntegral := by
-              -- TODO: apply the divergence theorem in the product coordinates transported by
-              -- `eSplit`, then use `hflattenedChartField_second_zero` to kill the side and bottom
-              -- faces and keep only the top face contribution.
-              sorry
+              calc
+                ∫ q in lowerHalfBox, flatDiv q ∂MeasureTheory.volume =
+                    ∫ q in lowerHalfBox, CylinderFlux.divProd flatField q := by
+                      apply MeasureTheory.setIntegral_congr_fun hlowerHalfBox_meas
+                      intro q _
+                      exact hflatDiv_eq_divProd q
+                _ = topFaceIntegral :=
+                  CylinderFlux.integral_divProd_cylinder hflat_cont hflat_compact
+                    hflat_tsupport_box
             -- Route correction: isolate the algebraic divergence adapter from the geometric
             -- lower-half-box closure so the remaining ambient blocker is no longer monolithic.
             calc
@@ -4826,10 +5093,8 @@ theorem regularNeighborhoodFlux_eq_boundary
                       (q.1, ψ a.1 q.1 + σ a.1 * q.2) ∈ C a.1 ×ˢ T a.1 ∧ q.2 = 0},
                   inner ℝ (ψloc x) (h_boundary.outwardNormal x) ∂μb := by
                   rw [hboxImage_eq_topImage]
-        -- TODO: only the codimension-`1` transport remains on the boundary side.
-        -- Transport the localized top-image integral to the graph base, rewrite the transported
-        -- density with `hflatField_top_commonDensity` on `interior (C a.1)`, and then remove
-        -- the off-base contribution using `hflatField_topSecond_zero_outside`.
+        -- Transport the surface measure through the graph area formula, then
+        -- cancel the density against the normalized outward normal.
         let graphMap : EuclideanSpace ℝ (Fin n) →
             EuclideanSpace ℝ (Fin n) × ℝ := fun z ↦
           (z, ψ a.1 z)
@@ -4851,12 +5116,8 @@ theorem regularNeighborhoodFlux_eq_boundary
               · simpa using ⟨hz, hψ_memT a.1 z hz⟩
               · simp
             · simp [graphMap, splitPull, chartMap]
-        -- TODO: the remaining boundary bridge is now isolated to the explicit graph-patch
-        -- parameterization and its density cancellation to `topFaceIntegral`.
-        -- Route correction: `splitPull : EuclideanSpace ℝ (Fin n) × ℝ → EuclideanSpace ℝ (Fin (n + 1))`
-        -- is not an isometry for the source product norm (`Prod.norm_def` is the max norm), so
-        -- the next plan must avoid a fake `μHE[n]` isometry transport and instead provide a
-        -- boundary-space bridge that works in the actual product-coordinate metric.
+        -- Apply the area formula directly in the ambient Euclidean space.
+        -- This accounts for the graph slope and uses the actual source metric.
         have hchartTopImageIntegral_eq_baseWeightedIntegral :
             ∫ x in chartMap '' topSource,
               inner ℝ (ψloc x) (h_boundary.outwardNormal x) ∂μb =
@@ -4900,9 +5161,10 @@ theorem regularNeighborhoodFlux_eq_boundary
                   ((MeasureTheory.volume.restrict (C a.1)).withDensity
                     (fun z ↦ ENNReal.ofReal (weight z))) =
                 μb.restrict (γ '' C a.1) := by
-            -- TODO: prove the direct graph-image pushforward identity on `γ '' C a.1`, then use
-            -- it as the only boundary transport input for the remaining integral rewrite.
-            sorry
+            simpa only [γ, weight, μb, chartMap, mul_zero, add_zero, Function.comp_def] using
+              fixedCoordinateGraph_surfaceMeasure h_boundary (i a.1)
+                (hC_compact a.1) (hC_convex a.1) (hψ_cont a.1) hbox_subsetΩ
+                (hψ_memT a.1) (hzero_graph a.1) (hσ_cases a.1) (hsign a.1)
           -- Route correction: the remaining boundary task is now a single direct ambient
           -- pushforward along `γ z = chartMap (z, 0)`, with the false `splitPull` isometry route
           -- removed from the proof state entirely.
@@ -4918,9 +5180,9 @@ theorem regularNeighborhoodFlux_eq_boundary
                 ContinuousOn
                   (fun z : EuclideanSpace ℝ (Fin n) ↦ (z, ψ a.1 z))
                   (C a.1) := by
-              exact continuousOn_id.prod (hψ_cont a.1).continuousOn
-            simpa [γ, chartMap] using
-              (insertCoordinateMap (i a.1)).continuous.continuousOn.comp hgraph_cont
+              exact continuousOn_id.prodMk (hψ_cont a.1).continuousOn
+            simpa only [γ, chartMap, mul_zero, add_zero, Function.comp_def] using
+              (insertCoordinateMap (i a.1)).continuous.comp_continuousOn hgraph_cont
           have hγC_meas :
               MeasurableEmbedding γC := by
             -- Restrict to the compact base so the graph parameterization becomes a measurable
@@ -4935,7 +5197,7 @@ theorem regularNeighborhoodFlux_eq_boundary
             -- The weighted base measure is already supported on `C a.1`.
             dsimp [ν]
             rw [restrict_withDensity (hC_compact a.1).measurableSet]
-            simp
+            rw [Measure.restrict_restrict_of_subset (Set.Subset.refl _)]
           have hmap_gammaC :
               Measure.map γC
                   (Measure.comap ((↑) : C a.1 → EuclideanSpace ℝ (Fin n)) ν) =
@@ -4952,7 +5214,11 @@ theorem regularNeighborhoodFlux_eq_boundary
                           rw [show γC = γ ∘ ((↑) : C a.1 → EuclideanSpace ℝ (Fin n)) by
                                 funext z
                                 rfl]
-                          rw [← Measure.map_map hγC_meas.measurable measurable_subtype_coe]
+                          apply (AEMeasurable.map_map_of_aemeasurable _
+                            measurable_subtype_coe.aemeasurable).symm
+                          rw [map_comap_subtype_coe (hC_compact a.1).measurableSet, hν_restrict]
+                          exact (hγ_cont.aemeasurable (hC_compact a.1).measurableSet).mono'
+                            (withDensity_absolutelyContinuous _ _)
               _ = Measure.map γ (ν.restrict (C a.1)) := by
                     rw [map_comap_subtype_coe (hC_compact a.1).measurableSet]
               _ = Measure.map γ ν := by rw [hν_restrict]
@@ -4964,50 +5230,18 @@ theorem regularNeighborhoodFlux_eq_boundary
                     inner ℝ
                       (ψloc (γ z))
                       (h_boundary.outwardNormal (γ z)) ∂ν := by
-            -- First transport the boundary integral to the compact base through the chart graph.
             calc
-              ∫ x in γ '' C a.1,
-                  inner ℝ (ψloc x) (h_boundary.outwardNormal x) ∂μb
-                =
-                  ∫ x in γ '' C a.1,
-                    inner ℝ (ψloc x) (h_boundary.outwardNormal x)
-                      ∂Measure.map γC
-                        (Measure.comap ((↑) : C a.1 → EuclideanSpace ℝ (Fin n)) ν) := by
-                          rw [hmap_gammaC]
-              _ =
-                  ∫ z in γC ⁻¹' (γ '' C a.1),
-                    inner ℝ
-                      (ψloc (γC z))
-                      (h_boundary.outwardNormal (γC z))
+              _ = ∫ z : C a.1,
+                    inner ℝ (ψloc (γC z)) (h_boundary.outwardNormal (γC z))
                       ∂Measure.comap ((↑) : C a.1 → EuclideanSpace ℝ (Fin n)) ν := by
-                        symm
-                        exact
-                          MeasurableEmbedding.setIntegral_map
-                            (μ := Measure.comap ((↑) : C a.1 → EuclideanSpace ℝ (Fin n)) ν)
-                            hγC_meas
-                            (fun x ↦ inner ℝ (ψloc x) (h_boundary.outwardNormal x))
-                            (γ '' C a.1)
-              _ =
-                  ∫ z : C a.1,
-                    inner ℝ
-                      (ψloc (γ z))
-                      (h_boundary.outwardNormal (γ z))
-                      ∂Measure.comap ((↑) : C a.1 → EuclideanSpace ℝ (Fin n)) ν := by
-                        simp [γC, hgamma_injective.preimage_image]
-              _ =
-                  ∫ z in C a.1,
-                    inner ℝ
-                      (ψloc (γ z))
-                      (h_boundary.outwardNormal (γ z)) ∂ν := by
-                        simpa [ν] using
-                          (MeasureTheory.integral_subtype_comap
-                            (μ := ν)
-                            (s := C a.1)
-                            (hs := (hC_compact a.1).measurableSet)
-                            (f := fun z ↦
-                              inner ℝ
-                                (ψloc (γ z))
-                                (h_boundary.outwardNormal (γ z))))
+                change (∫ x, inner ℝ (ψloc x) (h_boundary.outwardNormal x)
+                  ∂μb.restrict (γ '' C a.1)) = _
+                rw [← hmap_gammaC]
+                exact hγC_meas.integral_map _
+              _ = _ := by
+                simpa only [γC] using!
+                  (integral_subtype_comap (μ := ν) (hC_compact a.1).measurableSet
+                    (fun z ↦ inner ℝ (ψloc (γ z)) (h_boundary.outwardNormal (γ z))))
           have hγ_memΩ :
               ∀ z ∈ C a.1, γ z ∈ (Ω : Set (EuclideanSpace ℝ (Fin (n + 1)))) := by
             intro z hz
@@ -5026,7 +5260,7 @@ theorem regularNeighborhoodFlux_eq_boundary
                   (fun z : EuclideanSpace ℝ (Fin n) ↦
                     ‖gradient h_boundary.boundary.definingFunction (γ z)‖)
                   (C a.1) := by
-              exact continuous_norm.continuousOn.comp hgrad_cont
+              exact continuous_norm.comp_continuousOn hgrad_cont
             have hcoord_cont :
                 ContinuousOn
                   (fun z : EuclideanSpace ℝ (Fin n) ↦
@@ -5034,7 +5268,7 @@ theorem regularNeighborhoodFlux_eq_boundary
                   (C a.1) := by
               exact
                 (PiLp.continuous_apply (p := 2) (β := fun _ : Fin (n + 1) => ℝ)
-                  (i a.1)).continuousOn.comp hgrad_cont
+                  (i a.1)).comp_continuousOn hgrad_cont
             have hden_cont :
                 ContinuousOn
                   (fun z : EuclideanSpace ℝ (Fin n) ↦
@@ -5047,14 +5281,14 @@ theorem regularNeighborhoodFlux_eq_boundary
             have hden_pos :
                 0 <
                   σ a.1 * gradient h_boundary.boundary.definingFunction (γ z) (i a.1) := by
-              simpa [γ, chartMap] using hsign a.1 (z, ψ a.1 z) hz_box
+              simpa only [γ, chartMap, mul_zero, add_zero, Function.comp_def] using hsign a.1 (z, ψ a.1 z) hz_box
             exact hden_pos.ne'
           have hdensity_aemeas :
               AEMeasurable
                 (fun z ↦ ENNReal.ofReal (weight z))
                 (MeasureTheory.volume.restrict (C a.1)) := by
             exact
-              (ENNReal.continuous_ofReal.continuousOn.comp hweight_cont).aemeasurable
+              (ENNReal.continuous_ofReal.comp_continuousOn hweight_cont).aemeasurable
                 (hC_compact a.1).measurableSet
           have hdensity_lt_top :
               ∀ᵐ z ∂MeasureTheory.volume.restrict (C a.1),
@@ -5073,19 +5307,19 @@ theorem regularNeighborhoodFlux_eq_boundary
                         (ψloc (γ z))
                         (h_boundary.outwardNormal (γ z)) ∂MeasureTheory.volume := by
             -- Then rewrite the `withDensity` source measure to the explicit scalar weight on `C`.
-            dsimp [ν]
-            rw [MeasureTheory.setIntegral_withDensity_eq_setIntegral_toReal_smul₀'
-              (μ := MeasureTheory.volume)
-              (s := C a.1)
-              hdensity_aemeas hdensity_lt_top
-              (g := fun z ↦ inner ℝ (ψloc (γ z)) (h_boundary.outwardNormal (γ z)))]
+            change (∫ z, inner ℝ (ψloc (γ z)) (h_boundary.outwardNormal (γ z))
+                ∂ν.restrict (C a.1)) = _
+            rw [hν_restrict]
+            change (∫ z, inner ℝ (ψloc (γ z)) (h_boundary.outwardNormal (γ z))
+                ∂(volume.restrict (C a.1)).withDensity (fun z ↦ ENNReal.ofReal (weight z))) = _
+            rw [integral_withDensity_eq_integral_toReal_smul₀ hdensity_aemeas hdensity_lt_top]
             refine MeasureTheory.setIntegral_congr_fun (hC_compact a.1).measurableSet ?_
             intro z hz
             have hz_box : (z, ψ a.1 z) ∈ C a.1 ×ˢ T a.1 := ⟨hz, hψ_memT a.1 z hz⟩
             have hden_pos :
                 0 <
                   σ a.1 * gradient h_boundary.boundary.definingFunction (γ z) (i a.1) := by
-              simpa [γ, chartMap] using hsign a.1 (z, ψ a.1 z) hz_box
+              simpa only [γ, chartMap, mul_zero, add_zero, Function.comp_def] using hsign a.1 (z, ψ a.1 z) hz_box
             have hweight_nonneg : 0 ≤ weight z := by
               exact div_nonneg (norm_nonneg _) (le_of_lt hden_pos)
             simp [weight, hweight_nonneg, smul_eq_mul]

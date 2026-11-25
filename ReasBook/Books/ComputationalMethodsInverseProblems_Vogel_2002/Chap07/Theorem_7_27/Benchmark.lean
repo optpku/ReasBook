@@ -31,8 +31,10 @@ variable {H : Type u} {F : Type v}
 variable [NormedAddCommGroup H] [NormedSpace ℝ H]
 variable [NormedAddCommGroup F] [NormedSpace ℝ F]
 
-/-- The pointwise Tikhonov discrepancy equation `(7.90)` for data size
-`n : ℕ+`. -/
+/-- The source pointwise discrepancy equation `(7.90)`, retaining its
+`1/n` Euclidean residual convention. The rate theorems use the separate
+renormalized scalar hypothesis `SequenceModel.HasBalance`; no bridge from
+this samplewise equation to that expected sequence model is asserted. -/
 @[expose]
 def IsTikhonovDiscrepancyParameter
     (K : ℕ → H →L[ℝ] F) (d : ℕ → F)

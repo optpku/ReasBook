@@ -28,14 +28,14 @@ theorem toLp_memLp
     [Fact (1 ≤ p)]
     (hd : 1 ≤ d)
     (hΩ : Bornology.IsBounded (Ω : Set (EuclideanSpace ℝ (Fin d))))
+    [HasBoundedBVExtension Ω]
     (hp : p ≤ criticalExponent d)
     (u : BV Ω) :
     MeasureTheory.MemLp u.toL1 p (domainMeasure Ω) := by
   by_cases h1 : d = 1
   · subst h1
     -- Route correction: in one dimension, descend from the exact endpoint `L∞` owner.
-    have hp_top : p ≤ (⊤ : ENNReal) := by
-      simpa [criticalExponent_one] using hp
+    have hp_top : p ≤ (⊤ : ENNReal) := le_top
     exact (endpointExponentEstimate (Ω := Ω) hΩ u).mono_exponent hp_top
   · have h1d : 1 < d := lt_of_le_of_ne hd (by simpa [eq_comm] using h1)
     -- Away from `d = 1`, descend from the exact critical exponent owner.
@@ -49,6 +49,7 @@ def toLp
     [Fact (1 ≤ p)]
     (hd : 1 ≤ d)
     (hΩ : Bornology.IsBounded (Ω : Set (EuclideanSpace ℝ (Fin d))))
+    [HasBoundedBVExtension Ω]
     (hp : p ≤ criticalExponent d) :
     BV Ω → MeasureTheory.Lp ℝ p (domainMeasure Ω) :=
   fun u ↦ MeasureTheory.MemLp.toLp u.toL1 (toLp_memLp hd hΩ hp u)
@@ -60,6 +61,7 @@ def toLp
     [Fact (1 ≤ p)]
     (hd : 1 ≤ d)
     (hΩ : Bornology.IsBounded (Ω : Set (EuclideanSpace ℝ (Fin d))))
+    [HasBoundedBVExtension Ω]
     (hp : p ≤ criticalExponent d)
     (u : BV Ω) :
     ((toLp (d := d) (Ω := Ω) (p := p) hd hΩ hp u :
@@ -77,6 +79,7 @@ def toSubcriticalLp
     [Fact (1 ≤ p)]
     (hd : 1 ≤ d)
     (hΩ : Bornology.IsBounded (Ω : Set (EuclideanSpace ℝ (Fin d))))
+    [HasBoundedBVExtension Ω]
     (hp : p < criticalExponent d) :
     BV Ω → MeasureTheory.Lp ℝ p (domainMeasure Ω) :=
   toLp (d := d) (Ω := Ω) (p := p) hd hΩ (le_of_lt hp)
@@ -89,6 +92,7 @@ class. -/
     [Fact (1 ≤ p)]
     (hd : 1 ≤ d)
     (hΩ : Bornology.IsBounded (Ω : Set (EuclideanSpace ℝ (Fin d))))
+    [HasBoundedBVExtension Ω]
     (hp : p < criticalExponent d)
     (u : BV Ω) :
     ((toSubcriticalLp (d := d) (Ω := Ω) (p := p) hd hΩ hp u :
@@ -111,6 +115,7 @@ class. -/
     [Fact (1 ≤ p)]
     (hd : 1 ≤ d)
     (hΩ : Bornology.IsBounded (Ω : Set (EuclideanSpace ℝ (Fin d))))
+    [HasBoundedBVExtension Ω]
     (hp : p ≤ criticalExponent d)
     (S : Set (BV Ω)) :
     Set (MeasureTheory.Lp ℝ p (domainMeasure Ω)) :=
@@ -124,6 +129,7 @@ theorem lpImage_mono
     [Fact (1 ≤ p)]
     (hd : 1 ≤ d)
     (hΩ : Bornology.IsBounded (Ω : Set (EuclideanSpace ℝ (Fin d))))
+    [HasBoundedBVExtension Ω]
     (hp : p ≤ criticalExponent d)
     {S T : Set (BV Ω)}
     (hST : S ⊆ T) :
@@ -141,6 +147,7 @@ theorem lpImage_mono
     [Fact (1 ≤ p)]
     (hd : 1 ≤ d)
     (hΩ : Bornology.IsBounded (Ω : Set (EuclideanSpace ℝ (Fin d))))
+    [HasBoundedBVExtension Ω]
     (hp : p < criticalExponent d)
     (S : Set (BV Ω)) :
     Set (MeasureTheory.Lp ℝ p (domainMeasure Ω)) :=
@@ -153,6 +160,7 @@ theorem subcriticalLpImage_mono
     [Fact (1 ≤ p)]
     (hd : 1 ≤ d)
     (hΩ : Bornology.IsBounded (Ω : Set (EuclideanSpace ℝ (Fin d))))
+    [HasBoundedBVExtension Ω]
     (hp : p < criticalExponent d)
     {S T : Set (BV Ω)}
     (hST : S ⊆ T) :
@@ -202,7 +210,8 @@ Theorem 8.16 (2). -/
 def toCriticalLp
     [MeasureTheory.IsFiniteMeasure (domainMeasure Ω)]
     (hd : 1 ≤ d)
-    (hΩ : Bornology.IsBounded (Ω : Set (EuclideanSpace ℝ (Fin d)))) :
+    (hΩ : Bornology.IsBounded (Ω : Set (EuclideanSpace ℝ (Fin d))))
+    [HasBoundedBVExtension Ω] :
     BV Ω → criticalLpSpace Ω hd :=
   let _ : Fact (1 ≤ criticalExponent d) := factOneLeCriticalExponent hd
   toLp (d := d) (Ω := Ω) (p := criticalExponent d) hd hΩ le_rfl
@@ -213,6 +222,7 @@ class. -/
     [MeasureTheory.IsFiniteMeasure (domainMeasure Ω)]
     (hd : 1 ≤ d)
     (hΩ : Bornology.IsBounded (Ω : Set (EuclideanSpace ℝ (Fin d))))
+    [HasBoundedBVExtension Ω]
     (u : BV Ω) :
     ((toCriticalLp (d := d) (Ω := Ω) hd hΩ u : criticalLpSpace Ω hd) :
         (EuclideanSpace ℝ (Fin d)) →ₘ[domainMeasure Ω] ℝ) =
@@ -233,6 +243,7 @@ from Theorem 8.16 (2). -/
     [MeasureTheory.IsFiniteMeasure (domainMeasure Ω)]
     (h1d : 1 < d)
     (hΩ : Bornology.IsBounded (Ω : Set (EuclideanSpace ℝ (Fin d))))
+    [HasBoundedBVExtension Ω]
     (S : Set (BV Ω)) :
     Set (WeakSpace ℝ (criticalLpSpace Ω (Nat.le_of_lt h1d))) :=
   toWeakSpace ℝ (criticalLpSpace Ω (Nat.le_of_lt h1d)) ''
@@ -243,6 +254,7 @@ theorem criticalWeakImage_mono
     [MeasureTheory.IsFiniteMeasure (domainMeasure Ω)]
     (h1d : 1 < d)
     (hΩ : Bornology.IsBounded (Ω : Set (EuclideanSpace ℝ (Fin d))))
+    [HasBoundedBVExtension Ω]
     {S T : Set (BV Ω)}
     (hST : S ⊆ T) :
     criticalWeakImage (d := d) (Ω := Ω) h1d hΩ S ⊆
@@ -257,7 +269,8 @@ theorem criticalWeakImage_mono
 def toEndpointLp
     {Ω : TopologicalSpace.Opens (EuclideanSpace ℝ (Fin 1))}
     [MeasureTheory.IsFiniteMeasure (domainMeasure Ω)]
-    (hΩ : Bornology.IsBounded (Ω : Set (EuclideanSpace ℝ (Fin 1)))) :
+    (hΩ : Bornology.IsBounded (Ω : Set (EuclideanSpace ℝ (Fin 1))))
+    [HasBoundedBVExtension Ω] :
     BV Ω → MeasureTheory.Lp ℝ ⊤ (domainMeasure Ω) :=
   toLp (d := 1) (Ω := Ω) (p := ⊤) (show 1 ≤ (1 : ℕ) from le_rfl) hΩ
     (show (⊤ : ENNReal) ≤ criticalExponent 1 by rw [criticalExponent_one])
@@ -268,6 +281,7 @@ class. -/
     {Ω : TopologicalSpace.Opens (EuclideanSpace ℝ (Fin 1))}
     [MeasureTheory.IsFiniteMeasure (domainMeasure Ω)]
     (hΩ : Bornology.IsBounded (Ω : Set (EuclideanSpace ℝ (Fin 1))))
+    [HasBoundedBVExtension Ω]
     (u : BV Ω) :
     ((toEndpointLp (Ω := Ω) hΩ u : MeasureTheory.Lp ℝ ⊤ (domainMeasure Ω)) :
         (EuclideanSpace ℝ (Fin 1)) →ₘ[domainMeasure Ω] ℝ) =
@@ -311,6 +325,7 @@ def endpointWeakStarOfLp
     {Ω : TopologicalSpace.Opens (EuclideanSpace ℝ (Fin 1))}
     [MeasureTheory.IsFiniteMeasure (domainMeasure Ω)]
     (hΩ : Bornology.IsBounded (Ω : Set (EuclideanSpace ℝ (Fin 1))))
+    [HasBoundedBVExtension Ω]
     (S : Set (BV Ω)) :
     Set (WeakDual ℝ (MeasureTheory.Lp ℝ 1 (domainMeasure Ω))) :=
   endpointWeakStarOfLp '' (toEndpointLp hΩ '' S)
@@ -321,6 +336,7 @@ theorem endpointWeakStarImage_mono
     {Ω : TopologicalSpace.Opens (EuclideanSpace ℝ (Fin 1))}
     [MeasureTheory.IsFiniteMeasure (domainMeasure Ω)]
     (hΩ : Bornology.IsBounded (Ω : Set (EuclideanSpace ℝ (Fin 1))))
+    [HasBoundedBVExtension Ω]
     {S T : Set (BV Ω)}
     (hST : S ⊆ T) :
     endpointWeakStarImage (Ω := Ω) hΩ S ⊆ endpointWeakStarImage (Ω := Ω) hΩ T := by

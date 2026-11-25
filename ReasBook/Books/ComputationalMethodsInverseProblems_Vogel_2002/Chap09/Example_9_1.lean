@@ -6,6 +6,7 @@ Project-level attribution: optpku/ReasBook@f40e785158f79d8f0e645890825b840af912e
 
 module
 
+public import ComputationalMethodsInverseProblems_Vogel_2002.Chap09.Example_9_1.Objectives
 public import ComputationalMethodsInverseProblems_Vogel_2002.Chap01.Remark_1_2_2.Reconstruction
 public import ComputationalMethodsInverseProblems_Vogel_2002.Chap02.Example_2_36
 public import ComputationalMethodsInverseProblems_Vogel_2002.Chap02.Notation_2_4
@@ -58,50 +59,6 @@ abbrev HasMixedDataModel
   Iff.rfl
 
 end Example91
-
-/-- Helper for Example 9.1-extra-1: the shifted Poisson-likelihood functional
-with the displayed formula `(9.5)`, using data truncation
-`d̄_i = max {d_i, 0}` and variance shift `σ2`. -/
-def example91LikelihoodFunctional (n : ℕ) (K : Matrix (Fin n) (Fin n) ℝ)
-    (d : EuclideanSpace ℝ (Fin n)) (σ2 α : ℝ) :
-    EuclideanSpace ℝ (Fin n) → ℝ :=
-  fun f ↦
-    (∑ i : Fin n, (Matrix.toEuclideanLin K f i + σ2)) -
-      ∑ i : Fin n, (max (d i) 0 + σ2) * Real.log (Matrix.toEuclideanLin K f i + σ2) +
-        (α / 2) * ‖f‖ ^ 2
-
-/-- Helper for Example 9.1-extra-1: the defining formula for
-`example91LikelihoodFunctional`. -/
-@[simp] theorem example91LikelihoodFunctional_def (n : ℕ)
-    (K : Matrix (Fin n) (Fin n) ℝ) (d : EuclideanSpace ℝ (Fin n))
-    (σ2 α : ℝ) (f : EuclideanSpace ℝ (Fin n)) :
-    example91LikelihoodFunctional n K d σ2 α f =
-      (∑ i : Fin n, (Matrix.toEuclideanLin K f i + σ2)) -
-        ∑ i : Fin n, (max (d i) 0 + σ2) * Real.log (Matrix.toEuclideanLin K f i + σ2) +
-          (α / 2) * ‖f‖ ^ 2 :=
-by
-  simp [example91LikelihoodFunctional]
-
-/-- Helper for Example 9.1-extra-1: the diagonal matrix `D(f)` from `(9.8)`
-for the shifted likelihood Hessian. -/
-def example91LikelihoodDiagonal (n : ℕ) (K : Matrix (Fin n) (Fin n) ℝ)
-    (d : EuclideanSpace ℝ (Fin n)) (σ2 : ℝ) (f : EuclideanSpace ℝ (Fin n)) :
-    Matrix (Fin n) (Fin n) ℝ :=
-  Matrix.diagonal
-    (fun i ↦ (max (d i) 0 + σ2) / (Matrix.toEuclideanLin K f i + σ2) ^ 2)
-
-/-- Helper for Example 9.1-extra-1: the matrix `D(f)` from `(9.8)` is
-diagonal with entries `(d̄_i + σ2) / ([K f]_i + σ2)^2`. -/
-@[simp] theorem example91LikelihoodDiagonal_def (n : ℕ)
-    (K : Matrix (Fin n) (Fin n) ℝ) (d : EuclideanSpace ℝ (Fin n))
-    (σ2 : ℝ) (f : EuclideanSpace ℝ (Fin n)) (i j : Fin n) :
-    example91LikelihoodDiagonal n K d σ2 f i j =
-      if i = j then
-        (max (d i) 0 + σ2) / (Matrix.toEuclideanLin K f i + σ2) ^ 2
-      else 0 := by
-  by_cases h : i = j
-  · simp [example91LikelihoodDiagonal, h]
-  · simp [example91LikelihoodDiagonal, h]
 
 /-- Example 9.1-extra-1 (1). The least-squares objective `(9.2)` is the
 canonical Tikhonov functional after transporting the matrix `K` to

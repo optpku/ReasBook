@@ -8,6 +8,11 @@ import ComputationalMethodsInverseProblems_Vogel_2002.Chap08.Definition_8_4_1.Ap
 import ComputationalMethodsInverseProblems_Vogel_2002.Chap08.Definition_8_14.BV
 import ComputationalMethodsInverseProblems_Vogel_2002.Chap08.Prop_8_22.BVBounded
 import ComputationalMethodsInverseProblems_Vogel_2002.Chap08.Theorem_8_18.Comparison
+import ComputationalMethodsInverseProblems_Vogel_2002.Chap08.Theorem_8_19.Objective
+import ComputationalMethodsInverseProblems_Vogel_2002.Chap08.Theorem_8_20.Minimizer
+import ComputationalMethodsInverseProblems_Vogel_2002.Chap08.Exercise_8_16
+import ComputationalMethodsInverseProblems_Vogel_2002.Chap08.Poincare
+import ComputationalMethodsInverseProblems_Vogel_2002.Chap08.Theorem_8_23.TVSublevel
 import ComputationalMethodsInverseProblems_Vogel_2002.Chap08.Theorem_8_16
 import ComputationalMethodsInverseProblems_Vogel_2002.Chap02.Definition_2_24
 import Mathlib.Order.Filter.AtTopBot.CountablyGenerated
@@ -24,661 +29,10 @@ open scoped VariationalRegularization.Approximation
 
 variable {d : ℕ}
 
-/-- Helper for Theorem 8.23: local objective owner used to avoid the aggregate/split import
-collision between `Exercise_8_16` and `Theorem_8_19.Objective`. -/
-def regularizedLeastSquaresFunctional
-    {Ω : TopologicalSpace.Opens (EuclideanSpace ℝ (Fin d))}
-    {p : ENNReal} [Fact ((1 : ENNReal) ≤ p)]
-    [MeasureTheory.IsFiniteMeasure (domainMeasure Ω)]
-    (K : MeasureTheory.Lp ℝ p (domainMeasure Ω) →L[ℝ]
-      MeasureTheory.Lp ℝ 2 (domainMeasure Ω))
-    (g : MeasureTheory.Lp ℝ 2 (domainMeasure Ω))
-    (α : ℝ)
-    (J : MeasureTheory.Lp ℝ 1 (domainMeasure Ω) → EReal) :
-    MeasureTheory.Lp ℝ p (domainMeasure Ω) → EReal :=
-  fun f ↦ ((‖K f - g‖ ^ 2 / 2 : ℝ) : EReal) + (α : EReal) * J (lpToL1 f)
-
-/-- Helper for Theorem 8.23: the defining formula for
-`regularizedLeastSquaresFunctional`. -/
-theorem regularizedLeastSquaresFunctional_def
-    {Ω : TopologicalSpace.Opens (EuclideanSpace ℝ (Fin d))}
-    {p : ENNReal} [Fact ((1 : ENNReal) ≤ p)]
-    [MeasureTheory.IsFiniteMeasure (domainMeasure Ω)]
-    (K : MeasureTheory.Lp ℝ p (domainMeasure Ω) →L[ℝ]
-      MeasureTheory.Lp ℝ 2 (domainMeasure Ω))
-    (g : MeasureTheory.Lp ℝ 2 (domainMeasure Ω))
-    (α : ℝ)
-    (J : MeasureTheory.Lp ℝ 1 (domainMeasure Ω) → EReal)
-    (f : MeasureTheory.Lp ℝ p (domainMeasure Ω)) :
-    regularizedLeastSquaresFunctional K g α J f =
-      ((‖K f - g‖ ^ 2 / 2 : ℝ) : EReal) + (α : EReal) * J (lpToL1 f) := by
-  rfl
-
-/-- Helper for Theorem 8.23: the TV specialization of the local objective owner. -/
-def tvRegularizedLeastSquaresFunctional
-    {Ω : TopologicalSpace.Opens (EuclideanSpace ℝ (Fin d))}
-    {p : ENNReal} [Fact ((1 : ENNReal) ≤ p)]
-    [MeasureTheory.IsFiniteMeasure (domainMeasure Ω)]
-    (K : MeasureTheory.Lp ℝ p (domainMeasure Ω) →L[ℝ]
-      MeasureTheory.Lp ℝ 2 (domainMeasure Ω))
-    (g : MeasureTheory.Lp ℝ 2 (domainMeasure Ω))
-    (α : ℝ) :
-    MeasureTheory.Lp ℝ p (domainMeasure Ω) → EReal :=
-  regularizedLeastSquaresFunctional K g α totalVariation
-
-/-- Helper for Theorem 8.23: the defining formula for
-`tvRegularizedLeastSquaresFunctional`. -/
-theorem tvRegularizedLeastSquaresFunctional_def
-    {Ω : TopologicalSpace.Opens (EuclideanSpace ℝ (Fin d))}
-    {p : ENNReal} [Fact ((1 : ENNReal) ≤ p)]
-    [MeasureTheory.IsFiniteMeasure (domainMeasure Ω)]
-    (K : MeasureTheory.Lp ℝ p (domainMeasure Ω) →L[ℝ]
-      MeasureTheory.Lp ℝ 2 (domainMeasure Ω))
-    (g : MeasureTheory.Lp ℝ 2 (domainMeasure Ω))
-    (α : ℝ)
-    (f : MeasureTheory.Lp ℝ p (domainMeasure Ω)) :
-    tvRegularizedLeastSquaresFunctional K g α f =
-      ((‖K f - g‖ ^ 2 / 2 : ℝ) : EReal) +
-        (α : EReal) * totalVariation (lpToL1 f) := by
-  rfl
-
-/-- Helper for Theorem 8.23: a constrained minimizer of the exact TV objective. -/
-def IsTvRegularizedMinimizer
-    {Ω : TopologicalSpace.Opens (EuclideanSpace ℝ (Fin d))}
-    {p : ENNReal} [Fact ((1 : ENNReal) ≤ p)]
-    [MeasureTheory.IsFiniteMeasure (domainMeasure Ω)]
-    (C : Set (MeasureTheory.Lp ℝ p (domainMeasure Ω)))
-    (K : MeasureTheory.Lp ℝ p (domainMeasure Ω) →L[ℝ]
-      MeasureTheory.Lp ℝ 2 (domainMeasure Ω))
-    (datum : MeasureTheory.Lp ℝ 2 (domainMeasure Ω))
-    (α : ℝ)
-    (f : MeasureTheory.Lp ℝ p (domainMeasure Ω)) : Prop :=
-  f ∈ C ∧ IsMinOn (tvRegularizedLeastSquaresFunctional K datum α) C f
-
-namespace IsTvRegularizedMinimizer
-
-/-- Helper for Theorem 8.23: package admissibility and minimality as an exact TV minimizer. -/
-theorem ofMemAndIsMinOn
-    {Ω : TopologicalSpace.Opens (EuclideanSpace ℝ (Fin d))}
-    {p : ENNReal} [Fact ((1 : ENNReal) ≤ p)]
-    [MeasureTheory.IsFiniteMeasure (domainMeasure Ω)]
-    {C : Set (MeasureTheory.Lp ℝ p (domainMeasure Ω))}
-    {K : MeasureTheory.Lp ℝ p (domainMeasure Ω) →L[ℝ]
-      MeasureTheory.Lp ℝ 2 (domainMeasure Ω)}
-    {datum : MeasureTheory.Lp ℝ 2 (domainMeasure Ω)}
-    {α : ℝ}
-    {f : MeasureTheory.Lp ℝ p (domainMeasure Ω)}
-    (hf_mem : f ∈ C)
-    (hf_isMinOn : IsMinOn (tvRegularizedLeastSquaresFunctional K datum α) C f) :
-    IsTvRegularizedMinimizer C K datum α f :=
-  ⟨hf_mem, hf_isMinOn⟩
-
-/-- Helper for Theorem 8.23: an exact TV minimizer is admissible. -/
-theorem mem
-    {Ω : TopologicalSpace.Opens (EuclideanSpace ℝ (Fin d))}
-    {p : ENNReal} [Fact ((1 : ENNReal) ≤ p)]
-    [MeasureTheory.IsFiniteMeasure (domainMeasure Ω)]
-    {C : Set (MeasureTheory.Lp ℝ p (domainMeasure Ω))}
-    {K : MeasureTheory.Lp ℝ p (domainMeasure Ω) →L[ℝ]
-      MeasureTheory.Lp ℝ 2 (domainMeasure Ω)}
-    {datum : MeasureTheory.Lp ℝ 2 (domainMeasure Ω)}
-    {α : ℝ}
-    {f : MeasureTheory.Lp ℝ p (domainMeasure Ω)}
-    (hf : IsTvRegularizedMinimizer C K datum α f) :
-    f ∈ C :=
-  hf.1
-
-/-- Helper for Theorem 8.23: an exact TV minimizer minimizes the exact objective. -/
-theorem isMinOn
-    {Ω : TopologicalSpace.Opens (EuclideanSpace ℝ (Fin d))}
-    {p : ENNReal} [Fact ((1 : ENNReal) ≤ p)]
-    [MeasureTheory.IsFiniteMeasure (domainMeasure Ω)]
-    {C : Set (MeasureTheory.Lp ℝ p (domainMeasure Ω))}
-    {K : MeasureTheory.Lp ℝ p (domainMeasure Ω) →L[ℝ]
-      MeasureTheory.Lp ℝ 2 (domainMeasure Ω)}
-    {datum : MeasureTheory.Lp ℝ 2 (domainMeasure Ω)}
-    {α : ℝ}
-    {f : MeasureTheory.Lp ℝ p (domainMeasure Ω)}
-    (hf : IsTvRegularizedMinimizer C K datum α f) :
-    IsMinOn (tvRegularizedLeastSquaresFunctional K datum α) C f :=
-  hf.2
-
-end IsTvRegularizedMinimizer
-
-/-- Helper for Theorem 8.23: a uniquely determined constrained minimizer of the exact TV
-objective. -/
-def IsUniqueTvRegularizedMinimizer
-    {Ω : TopologicalSpace.Opens (EuclideanSpace ℝ (Fin d))}
-    {p : ENNReal} [Fact ((1 : ENNReal) ≤ p)]
-    [MeasureTheory.IsFiniteMeasure (domainMeasure Ω)]
-    (C : Set (MeasureTheory.Lp ℝ p (domainMeasure Ω)))
-    (K : MeasureTheory.Lp ℝ p (domainMeasure Ω) →L[ℝ]
-      MeasureTheory.Lp ℝ 2 (domainMeasure Ω))
-    (datum : MeasureTheory.Lp ℝ 2 (domainMeasure Ω))
-    (α : ℝ)
-    (fStar : MeasureTheory.Lp ℝ p (domainMeasure Ω)) : Prop :=
-  IsTvRegularizedMinimizer C K datum α fStar ∧
-    ∀ f : MeasureTheory.Lp ℝ p (domainMeasure Ω),
-      IsTvRegularizedMinimizer C K datum α f → f = fStar
-
-namespace IsUniqueTvRegularizedMinimizer
-
-/-- Helper for Theorem 8.23: any exact TV minimizer agrees with the unique one. -/
-theorem eq
-    {Ω : TopologicalSpace.Opens (EuclideanSpace ℝ (Fin d))}
-    {p : ENNReal} [Fact ((1 : ENNReal) ≤ p)]
-    [MeasureTheory.IsFiniteMeasure (domainMeasure Ω)]
-    {C : Set (MeasureTheory.Lp ℝ p (domainMeasure Ω))}
-    {K : MeasureTheory.Lp ℝ p (domainMeasure Ω) →L[ℝ]
-      MeasureTheory.Lp ℝ 2 (domainMeasure Ω)}
-    {datum : MeasureTheory.Lp ℝ 2 (domainMeasure Ω)}
-    {α : ℝ}
-    {fStar f : MeasureTheory.Lp ℝ p (domainMeasure Ω)}
-    (hfStar : IsUniqueTvRegularizedMinimizer C K datum α fStar)
-    (hf : IsTvRegularizedMinimizer C K datum α f) :
-    f = fStar :=
-  hfStar.2 f hf
-
-end IsUniqueTvRegularizedMinimizer
-
-namespace ApproximationUniformConvergence
-
-/-- Helper for Theorem 8.23: negating an admissible field negates its divergence. -/
-@[simp] lemma admissibleDivergence_neg
-    {Ω : TopologicalSpace.Opens (EuclideanSpace ℝ (Fin d))}
-    (v : AdmissibleTestField Ω)
-    (x : EuclideanSpace ℝ (Fin d)) :
-    admissibleDivergence v.neg x = -admissibleDivergence v x := by
-  -- Rewrite the derivative of the negated test field once, then simplify the coordinate sum.
-  have hneg : fderiv ℝ (⇑(-v.toTestFunction)) x = -fderiv ℝ v.toTestFunction x := by
-    change fderiv ℝ (fun y ↦ -v.toTestFunction y) x = -fderiv ℝ v.toTestFunction x
-    simp
-  rw [admissibleDivergence_def, admissibleDivergence_def, AdmissibleTestField.neg_toTestFunction]
-  rw [hneg]
-  simp
-
-/-- Helper for Theorem 8.23: the divergence pairing integrand is integrable. -/
-lemma pairingIntegrable
-    {Ω : TopologicalSpace.Opens (EuclideanSpace ℝ (Fin d))}
-    (f : MeasureTheory.Lp ℝ 1 (domainMeasure Ω))
-    (v : AdmissibleTestField Ω) :
-    MeasureTheory.Integrable (fun x ↦ f x * admissibleDivergence v x) (domainMeasure Ω) := by
-  -- The `L¹` representative of `f` pairs integrably with the `L∞` divergence factor.
-  have hf : MeasureTheory.MemLp (fun x ↦ f x) 1 (domainMeasure Ω) := by
-    simpa using MeasureTheory.Lp.memLp f
-  exact hf.integrable_mul (VariationalRegularization.admissibleDivergenceMemLpTop v)
-
-/-- Helper for Theorem 8.23: the negated pairing owner agrees with pairing against `v.neg`. -/
-lemma negPairingIntegral_eq_pairing_neg
-    {Ω : TopologicalSpace.Opens (EuclideanSpace ℝ (Fin d))}
-    (f : MeasureTheory.Lp ℝ 1 (domainMeasure Ω))
-    (v : AdmissibleTestField Ω) :
-    (∫ x, (-(f x)) * admissibleDivergence v x ∂domainMeasure Ω) =
-      admissibleDivergencePairing f v.neg := by
-  -- Rewrite the negated divergence through `v.neg` and simplify the pointwise product.
-  rw [admissibleDivergencePairing_def]
-  simp [admissibleDivergence_neg, mul_comm]
-
-/-- Helper for Theorem 8.23: the smooth penalty integrand is integrable on the finite domain. -/
-lemma smoothPenaltyIntegrable
-    {Ω : TopologicalSpace.Opens (EuclideanSpace ℝ (Fin d))}
-    [MeasureTheory.IsFiniteMeasure (domainMeasure Ω)]
-    (β : ℝ)
-    (hβ : 0 < β)
-    (v : AdmissibleTestField Ω) :
-    MeasureTheory.Integrable
-      (fun x ↦ β * Real.sqrt (1 - ‖v.toTestFunction x‖ ^ 2))
-      (domainMeasure Ω) := by
-  -- On a finite-measure domain, continuity plus the uniform bound by `β` gives integrability.
-  have hcont :
-      Continuous fun x : EuclideanSpace ℝ (Fin d) ↦
-        β * Real.sqrt (1 - ‖v.toTestFunction x‖ ^ 2) := by
-    have hv : Continuous v.toTestFunction := v.toTestFunction.continuous
-    exact (Real.continuous_sqrt.comp
-      (continuous_const.sub ((hv.norm).pow 2))).const_mul β
-  refine MeasureTheory.Integrable.of_bound hcont.aestronglyMeasurable β ?_
-  rw [domainMeasure_def, MeasureTheory.ae_restrict_iff']
-  · filter_upwards with x hx
-    have hnormle : ‖v.toTestFunction x‖ ≤ 1 := v.norm_le_one x hx
-    have hsq_le : ‖v.toTestFunction x‖ ^ 2 ≤ 1 := by
-      nlinarith [hnormle, norm_nonneg (v.toTestFunction x)]
-    have hinside_nonneg : 0 ≤ 1 - ‖v.toTestFunction x‖ ^ 2 := sub_nonneg.mpr hsq_le
-    have hsqrt_nonneg : 0 ≤ Real.sqrt (1 - ‖v.toTestFunction x‖ ^ 2) :=
-      Real.sqrt_nonneg _
-    have hsqrt_le_one : Real.sqrt (1 - ‖v.toTestFunction x‖ ^ 2) ≤ 1 := by
-      nlinarith [Real.sq_sqrt hinside_nonneg, hsqrt_nonneg]
-    have hmul_nonneg :
-        0 ≤ β * Real.sqrt (1 - ‖v.toTestFunction x‖ ^ 2) :=
-      mul_nonneg (le_of_lt hβ) hsqrt_nonneg
-    simpa [Real.norm_of_nonneg hmul_nonneg] using
-      mul_le_mul_of_nonneg_left hsqrt_le_one (le_of_lt hβ)
-  · exact Ω.2.measurableSet
-
-/-- Helper for Theorem 8.23: the smooth penalty integrand is nonnegative almost everywhere. -/
-lemma smoothPenalty_nonneg_ae
-    {Ω : TopologicalSpace.Opens (EuclideanSpace ℝ (Fin d))}
-    (β : ℝ)
-    (hβ : 0 < β)
-    (v : AdmissibleTestField Ω) :
-    ∀ᵐ x ∂domainMeasure Ω,
-      0 ≤ β * Real.sqrt (1 - ‖v.toTestFunction x‖ ^ 2) := by
-  -- The square-root factor is nonnegative, and the scalar `β` is positive.
-  rw [domainMeasure_def, MeasureTheory.ae_restrict_iff']
-  · filter_upwards with x hx
-    have hnormle : ‖v.toTestFunction x‖ ≤ 1 := v.norm_le_one x hx
-    have hsq_le : ‖v.toTestFunction x‖ ^ 2 ≤ 1 := by
-      nlinarith [hnormle, norm_nonneg (v.toTestFunction x)]
-    have hinside_nonneg : 0 ≤ 1 - ‖v.toTestFunction x‖ ^ 2 := sub_nonneg.mpr hsq_le
-    exact mul_nonneg (le_of_lt hβ) (Real.sqrt_nonneg _)
-  · exact Ω.2.measurableSet
-
-/-- Helper for Theorem 8.23: the smooth penalty integral is bounded by `β * Vol(Ω)`. -/
-lemma smoothPenaltyIntegral_le_volume
-    {Ω : TopologicalSpace.Opens (EuclideanSpace ℝ (Fin d))}
-    [MeasureTheory.IsFiniteMeasure (domainMeasure Ω)]
-    (β : ℝ)
-    (hβ : 0 < β)
-    (v : AdmissibleTestField Ω) :
-    ∫ x, β * Real.sqrt (1 - ‖v.toTestFunction x‖ ^ 2) ∂domainMeasure Ω ≤
-      β * (domainMeasure Ω Set.univ).toReal := by
-  -- Compare the penalty integrand with the constant function `β` and integrate that bound.
-  have hbound :
-      ∀ᵐ x ∂domainMeasure Ω,
-        β * Real.sqrt (1 - ‖v.toTestFunction x‖ ^ 2) ≤ β := by
-    rw [domainMeasure_def, MeasureTheory.ae_restrict_iff']
-    · filter_upwards with x hx
-      have hnormle : ‖v.toTestFunction x‖ ≤ 1 := v.norm_le_one x hx
-      have hsq_le : ‖v.toTestFunction x‖ ^ 2 ≤ 1 := by
-        nlinarith [hnormle, norm_nonneg (v.toTestFunction x)]
-      have hinside_nonneg : 0 ≤ 1 - ‖v.toTestFunction x‖ ^ 2 := sub_nonneg.mpr hsq_le
-      have hsqrt_le_one : Real.sqrt (1 - ‖v.toTestFunction x‖ ^ 2) ≤ 1 := by
-        have hsqrt_nonneg : 0 ≤ Real.sqrt (1 - ‖v.toTestFunction x‖ ^ 2) := Real.sqrt_nonneg _
-        nlinarith [Real.sq_sqrt hinside_nonneg, hsqrt_nonneg]
-      exact mul_le_of_le_one_right (le_of_lt hβ) hsqrt_le_one
-    · exact Ω.2.measurableSet
-  have hmono := MeasureTheory.integral_mono_ae
-    (smoothPenaltyIntegrable β hβ v)
-    (MeasureTheory.integrable_const β)
-    hbound
-  simpa [MeasureTheory.integral_const, MeasureTheory.measureReal_def, mul_comm] using hmono
-
-/-- Helper for Theorem 8.23: the Huber penalty integrand is integrable on the finite domain. -/
-lemma huberPenaltyIntegrable
-    {Ω : TopologicalSpace.Opens (EuclideanSpace ℝ (Fin d))}
-    [MeasureTheory.IsFiniteMeasure (domainMeasure Ω)]
-    (ε : ℝ)
-    (hε : 0 < ε)
-    (v : AdmissibleTestField Ω) :
-    MeasureTheory.Integrable
-      (fun x ↦ (ε / 2) * ‖v.toTestFunction x‖ ^ 2)
-      (domainMeasure Ω) := by
-  -- On a finite-measure domain, continuity plus the uniform bound by `ε / 2` gives integrability.
-  have hcont :
-      Continuous fun x : EuclideanSpace ℝ (Fin d) ↦
-        (ε / 2) * ‖v.toTestFunction x‖ ^ 2 := by
-    have hv : Continuous v.toTestFunction := v.toTestFunction.continuous
-    exact ((hv.norm).pow 2).const_mul (ε / 2)
-  refine MeasureTheory.Integrable.of_bound hcont.aestronglyMeasurable (ε / 2) ?_
-  rw [domainMeasure_def, MeasureTheory.ae_restrict_iff']
-  · filter_upwards with x hx
-    have hnormle : ‖v.toTestFunction x‖ ≤ 1 := v.norm_le_one x hx
-    have hsq_le : ‖v.toTestFunction x‖ ^ 2 ≤ 1 := by
-      nlinarith [hnormle, norm_nonneg (v.toTestFunction x)]
-    have hmul_nonneg :
-        0 ≤ (ε / 2) * ‖v.toTestFunction x‖ ^ 2 := by
-      positivity
-    simpa [Real.norm_of_nonneg hmul_nonneg] using
-      mul_le_mul_of_nonneg_left hsq_le (by positivity : 0 ≤ ε / 2)
-  · exact Ω.2.measurableSet
-
-/-- Helper for Theorem 8.23: the Huber penalty is nonnegative almost everywhere. -/
-lemma huberPenalty_nonneg_ae
-    {Ω : TopologicalSpace.Opens (EuclideanSpace ℝ (Fin d))}
-    (ε : ℝ)
-    (hε : 0 < ε)
-    (v : AdmissibleTestField Ω) :
-    ∀ᵐ x ∂domainMeasure Ω,
-      0 ≤ (ε / 2) * ‖v.toTestFunction x‖ ^ 2 := by
-  -- Both factors in the Huber penalty are nonnegative.
-  filter_upwards with x
-  positivity
-
-/-- Helper for Theorem 8.23: the Huber penalty integral is bounded by `(ε / 2) * Vol(Ω)`. -/
-lemma huberPenaltyIntegral_le_volume
-    {Ω : TopologicalSpace.Opens (EuclideanSpace ℝ (Fin d))}
-    [MeasureTheory.IsFiniteMeasure (domainMeasure Ω)]
-    (ε : ℝ)
-    (hε : 0 < ε)
-    (v : AdmissibleTestField Ω) :
-    ∫ x, (ε / 2) * ‖v.toTestFunction x‖ ^ 2 ∂domainMeasure Ω ≤
-      (ε / 2) * (domainMeasure Ω Set.univ).toReal := by
-  -- Compare the Huber penalty with the constant function `ε / 2` and integrate that bound.
-  have hbound :
-      ∀ᵐ x ∂domainMeasure Ω,
-        (ε / 2) * ‖v.toTestFunction x‖ ^ 2 ≤ ε / 2 := by
-    rw [domainMeasure_def, MeasureTheory.ae_restrict_iff']
-    · filter_upwards with x hx
-      have hnormle : ‖v.toTestFunction x‖ ≤ 1 := v.norm_le_one x hx
-      have hsq_le : ‖v.toTestFunction x‖ ^ 2 ≤ 1 := by
-        nlinarith [hnormle, norm_nonneg (v.toTestFunction x)]
-      exact mul_le_of_le_one_right (by positivity : 0 ≤ ε / 2) hsq_le
-    · exact Ω.2.measurableSet
-  have hmono := MeasureTheory.integral_mono_ae
-    (huberPenaltyIntegrable ε hε v)
-    (MeasureTheory.integrable_const (ε / 2))
-    hbound
-  simpa [MeasureTheory.integral_const, MeasureTheory.measureReal_def, mul_comm] using hmono
-
-/-- Helper for Theorem 8.23: the Chapter 8 smooth approximation satisfies the source order window
-around `TV`. -/
-lemma smoothNormApproxTotalVariation_orderBounds
-    {Ω : TopologicalSpace.Opens (EuclideanSpace ℝ (Fin d))}
-    [MeasureTheory.IsFiniteMeasure (domainMeasure Ω)]
-    (β : ℝ)
-    (hβ : 0 < β)
-    (f : MeasureTheory.Lp ℝ 1 (domainMeasure Ω)) :
-    totalVariation f ≤ J_β β f ∧
-      J_β β f ≤ totalVariation f + (((β * (domainMeasure Ω Set.univ).toReal) : ℝ) : EReal) := by
-  constructor
-  · -- Compare each divergence pairing with the `J_β` witness given by the negated test field.
-    refine totalVariation_le_of_forall_admissibleDivergencePairing_le f ?_
-    intro v
-    rw [smoothNormApproxTotalVariation_def]
-    have hmono :
-        ∫ x, f x * admissibleDivergence v x ∂domainMeasure Ω ≤
-          ∫ x, f x * admissibleDivergence v x +
-            β * Real.sqrt (1 - ‖v.neg.toTestFunction x‖ ^ 2) ∂domainMeasure Ω := by
-      have hleft :
-          MeasureTheory.Integrable
-            (fun x ↦ f x * admissibleDivergence v x) (domainMeasure Ω) :=
-        pairingIntegrable f v
-      have hright := smoothPenaltyIntegrable β hβ v.neg
-      refine MeasureTheory.integral_mono_ae hleft (hleft.add hright) ?_
-      filter_upwards [smoothPenalty_nonneg_ae β hβ v.neg] with x hx
-      linarith
-    have hwitness_eq :
-        (((∫ x, f x * admissibleDivergence v x +
-            β * Real.sqrt (1 - ‖v.neg.toTestFunction x‖ ^ 2)
-          ∂domainMeasure Ω) : ℝ) : EReal) =
-          (((∫ x, (-(f x)) * admissibleDivergence v.neg x +
-              β * Real.sqrt (1 - ‖v.neg.toTestFunction x‖ ^ 2)
-            ∂domainMeasure Ω) : ℝ) : EReal) := by
-      -- Route correction: rewrite the `v.neg` witness pointwise instead of fighting the `Lp`-neg
-      -- normal form inside the main inequality.
-      congr 1
-      refine MeasureTheory.integral_congr_ae ?_
-      filter_upwards with x
-      simp [admissibleDivergence_neg, mul_comm]
-    calc
-      (admissibleDivergencePairing f v : EReal)
-          = (((∫ x, f x * admissibleDivergence v x ∂domainMeasure Ω) : ℝ) : EReal) := by
-              rw [admissibleDivergencePairing_def]
-      _ ≤ (((∫ x, f x * admissibleDivergence v x +
-            β * Real.sqrt (1 - ‖v.neg.toTestFunction x‖ ^ 2)
-          ∂domainMeasure Ω) : ℝ) : EReal) := by
-              exact_mod_cast hmono
-      _ = (((∫ x, (-(f x)) * admissibleDivergence v.neg x +
-            β * Real.sqrt (1 - ‖v.neg.toTestFunction x‖ ^ 2)
-          ∂domainMeasure Ω) : ℝ) : EReal) := hwitness_eq
-      _ ≤ sSup (Set.range fun u : AdmissibleTestField Ω ↦
-            (((∫ x, (-(f x)) * admissibleDivergence u x +
-                    β * Real.sqrt (1 - ‖u.toTestFunction x‖ ^ 2)
-                  ∂domainMeasure Ω) : ℝ) : EReal)) := by
-              exact le_sSup ⟨v.neg, rfl⟩
-  · -- Split the defining integral and bound the pairing and penalty terms separately.
-    rw [smoothNormApproxTotalVariation_def]
-    refine sSup_le ?_
-    rintro _ ⟨v, rfl⟩
-    calc
-      (((∫ x, (-(f x)) * admissibleDivergence v x +
-              β * Real.sqrt (1 - ‖v.toTestFunction x‖ ^ 2)
-            ∂domainMeasure Ω) : ℝ) : EReal)
-          = (((∫ x, (-(f x)) * admissibleDivergence v x ∂domainMeasure Ω) : ℝ) : EReal) +
-              (((∫ x, β * Real.sqrt (1 - ‖v.toTestFunction x‖ ^ 2)
-                  ∂domainMeasure Ω) : ℝ) : EReal) := by
-              have hleft₀ :
-                  MeasureTheory.Integrable
-                    (fun x ↦ ((-f) x) * admissibleDivergence v x) (domainMeasure Ω) :=
-                pairingIntegrable (-f) v
-              have hleft :
-                  MeasureTheory.Integrable
-                    (fun x ↦ (-(f x)) * admissibleDivergence v x) (domainMeasure Ω) := by
-                refine hleft₀.congr ?_
-                filter_upwards [MeasureTheory.Lp.coeFn_neg f] with x hx
-                rw [hx]
-                simp [neg_mul]
-              have hright := smoothPenaltyIntegrable β hβ v
-              rw [MeasureTheory.integral_add hleft hright]
-              norm_num
-      _ = (admissibleDivergencePairing f v.neg : EReal) +
-            (((∫ x, β * Real.sqrt (1 - ‖v.toTestFunction x‖ ^ 2)
-                ∂domainMeasure Ω) : ℝ) : EReal) := by
-              rw [negPairingIntegral_eq_pairing_neg]
-      _ ≤ totalVariation f + (((β * (domainMeasure Ω Set.univ).toReal) : ℝ) : EReal) := by
-              exact add_le_add
-                (admissibleDivergencePairing_le_totalVariation f v.neg)
-                (by exact_mod_cast smoothPenaltyIntegral_le_volume β hβ v)
-
-/-- Helper for Theorem 8.23: the Chapter 8 Huber approximation satisfies the source order window
-around `TV`. -/
-lemma huberApproxTotalVariation_orderBounds
-    {Ω : TopologicalSpace.Opens (EuclideanSpace ℝ (Fin d))}
-    [MeasureTheory.IsFiniteMeasure (domainMeasure Ω)]
-    (ε : ℝ)
-    (hε : 0 < ε)
-    (f : MeasureTheory.Lp ℝ 1 (domainMeasure Ω)) :
-    totalVariation f -
-        (((((ε / 2) * (domainMeasure Ω Set.univ).toReal) : ℝ) : EReal)) ≤
-      J_ε ε f ∧
-      J_ε ε f ≤ totalVariation f := by
-  let err : EReal := (((ε / 2) * (domainMeasure Ω Set.univ).toReal : ℝ) : EReal)
-  constructor
-  · -- First prove the additive version `TV ≤ J_ε + ((ε / 2)Vol(Ω))`, then rewrite it back.
-    have hadd :
-        totalVariation f ≤
-          J_ε ε f + err := by
-      refine totalVariation_le_of_forall_admissibleDivergencePairing_le f ?_
-      intro v
-      rw [huberApproxTotalVariation_def]
-      have hpair₀ :
-          MeasureTheory.Integrable
-            (fun x ↦ ((-f) x) * admissibleDivergence v.neg x) (domainMeasure Ω) :=
-        pairingIntegrable (-f) v.neg
-      have hpair :
-          MeasureTheory.Integrable
-            (fun x ↦ (-(f x)) * admissibleDivergence v.neg x) (domainMeasure Ω) := by
-        -- Normalize the negated `Lp` representative to the pointwise spelling used in the
-        -- witness integrand.
-        refine hpair₀.congr ?_
-        filter_upwards [MeasureTheory.Lp.coeFn_neg f] with x hx
-        rw [hx]
-        simp
-      have hwitness :
-          MeasureTheory.Integrable
-            (fun x ↦
-              (-(f x)) * admissibleDivergence v.neg x -
-                (ε / 2) * ‖v.neg.toTestFunction x‖ ^ 2) (domainMeasure Ω) :=
-        hpair.sub (huberPenaltyIntegrable ε hε v.neg)
-      have hdecomp :
-          (admissibleDivergencePairing f v : EReal) =
-            (((∫ x, (-(f x)) * admissibleDivergence v.neg x -
-                    (ε / 2) * ‖v.neg.toTestFunction x‖ ^ 2
-                  ∂domainMeasure Ω) : ℝ) : EReal) +
-              (((∫ x, (ε / 2) * ‖v.neg.toTestFunction x‖ ^ 2
-                    ∂domainMeasure Ω) : ℝ) : EReal) := by
-        -- Split the pairing into the `J_ε` witness term plus the Huber penalty remainder.
-        rw [admissibleDivergencePairing_def]
-        calc
-          (((∫ x, f x * admissibleDivergence v x ∂domainMeasure Ω) : ℝ) : EReal)
-              = (((∫ x,
-                    ((-(f x)) * admissibleDivergence v.neg x -
-                        (ε / 2) * ‖v.neg.toTestFunction x‖ ^ 2) +
-                      (ε / 2) * ‖v.neg.toTestFunction x‖ ^ 2
-                  ∂domainMeasure Ω) : ℝ) : EReal) := by
-                    congr 1
-                    refine MeasureTheory.integral_congr_ae ?_
-                    filter_upwards with x
-                    simp [admissibleDivergence_neg, sub_eq_add_neg, add_assoc, mul_comm]
-          _ = (((∫ x, (-(f x)) * admissibleDivergence v.neg x -
-                    (ε / 2) * ‖v.neg.toTestFunction x‖ ^ 2
-                  ∂domainMeasure Ω) : ℝ) : EReal) +
-                (((∫ x, (ε / 2) * ‖v.neg.toTestFunction x‖ ^ 2
-                    ∂domainMeasure Ω) : ℝ) : EReal) := by
-                    rw [MeasureTheory.integral_add hwitness (huberPenaltyIntegrable ε hε v.neg)]
-                    norm_num
-      calc
-        (admissibleDivergencePairing f v : EReal)
-            = (((∫ x, (-(f x)) * admissibleDivergence v.neg x -
-                    (ε / 2) * ‖v.neg.toTestFunction x‖ ^ 2
-                  ∂domainMeasure Ω) : ℝ) : EReal) +
-                (((∫ x, (ε / 2) * ‖v.neg.toTestFunction x‖ ^ 2
-                    ∂domainMeasure Ω) : ℝ) : EReal) := hdecomp
-        _ ≤ sSup (Set.range fun u : AdmissibleTestField Ω ↦
-              (((∫ x, (-(f x)) * admissibleDivergence u x -
-                      (ε / 2) * ‖u.toTestFunction x‖ ^ 2
-                    ∂domainMeasure Ω) : ℝ) : EReal)) + err := by
-              have hwitness_le :
-                  (((∫ x, (-(f x)) * admissibleDivergence v.neg x -
-                          (ε / 2) * ‖v.neg.toTestFunction x‖ ^ 2
-                        ∂domainMeasure Ω) : ℝ) : EReal) ≤
-                    sSup (Set.range fun u : AdmissibleTestField Ω ↦
-                      (((∫ x, (-(f x)) * admissibleDivergence u x -
-                              (ε / 2) * ‖u.toTestFunction x‖ ^ 2
-                            ∂domainMeasure Ω) : ℝ) : EReal)) := by
-                exact le_sSup
-                  (s := Set.range fun u : AdmissibleTestField Ω ↦
-                    (((∫ x, (-(f x)) * admissibleDivergence u x -
-                            (ε / 2) * ‖u.toTestFunction x‖ ^ 2
-                          ∂domainMeasure Ω) : ℝ) : EReal))
-                  ⟨v.neg, rfl⟩
-              have hpen :
-                  (((∫ x, (ε / 2) * ‖v.neg.toTestFunction x‖ ^ 2
-                        ∂domainMeasure Ω) : ℝ) : EReal) ≤ err := by
-                simpa [err] using
-                  (show
-                    (((∫ x, (ε / 2) * ‖v.neg.toTestFunction x‖ ^ 2
-                          ∂domainMeasure Ω) : ℝ) : EReal) ≤
-                      (((((ε / 2) * (domainMeasure Ω Set.univ).toReal) : ℝ) : EReal)) by
-                      exact_mod_cast huberPenaltyIntegral_le_volume ε hε v.neg)
-              exact add_le_add hwitness_le hpen
-    -- Convert the additive window back to the textbook subtraction form.
-    have herr_bot : err ≠ ⊥ := by
-      simpa [err, EReal.coe_mul] using
-        (EReal.coe_ne_bot ((ε / 2) * (domainMeasure Ω Set.univ).toReal))
-    have herr_top : err ≠ ⊤ := by
-      simpa [err, EReal.coe_mul] using
-        (EReal.coe_ne_top ((ε / 2) * (domainMeasure Ω Set.univ).toReal))
-    simpa [err] using
-      (EReal.sub_le_iff_le_add (Or.inl herr_bot) (Or.inl herr_top)).2 hadd
-  · -- Bound each Huber witness above by the unpenalized total-variation pairing.
-    rw [huberApproxTotalVariation_def]
-    refine sSup_le ?_
-    rintro _ ⟨v, rfl⟩
-    have hpair₀ :
-        MeasureTheory.Integrable
-          (fun x ↦ ((-f) x) * admissibleDivergence v x) (domainMeasure Ω) :=
-      pairingIntegrable (-f) v
-    have hpair :
-        MeasureTheory.Integrable
-          (fun x ↦ (-(f x)) * admissibleDivergence v x) (domainMeasure Ω) := by
-      -- Normalize the negated `Lp` representative to the pointwise spelling used here.
-      refine hpair₀.congr ?_
-      filter_upwards [MeasureTheory.Lp.coeFn_neg f] with x hx
-      rw [hx]
-      simp
-    have hmono :
-        ∫ x, (-(f x)) * admissibleDivergence v x -
-            (ε / 2) * ‖v.toTestFunction x‖ ^ 2 ∂domainMeasure Ω ≤
-          ∫ x, (-(f x)) * admissibleDivergence v x ∂domainMeasure Ω := by
-      -- The Huber penalty is nonnegative, so subtracting it can only decrease the witness.
-      refine MeasureTheory.integral_mono_ae
-        (hpair.sub (huberPenaltyIntegrable ε hε v))
-        hpair ?_
-      filter_upwards [huberPenalty_nonneg_ae ε hε v] with x hx
-      linarith
-    calc
-      (((∫ x, (-(f x)) * admissibleDivergence v x -
-              (ε / 2) * ‖v.toTestFunction x‖ ^ 2
-            ∂domainMeasure Ω) : ℝ) : EReal)
-          ≤ (((∫ x, (-(f x)) * admissibleDivergence v x
-                ∂domainMeasure Ω) : ℝ) : EReal) := by
-              exact_mod_cast hmono
-      _ = (admissibleDivergencePairing f v.neg : EReal) := by
-            rw [negPairingIntegral_eq_pairing_neg]
-      _ ≤ totalVariation f := admissibleDivergencePairing_le_totalVariation f v.neg
-
-end ApproximationUniformConvergence
-
-/-- Helper for Theorem 8.23: `lpToL1` preserves addition on finite-measure domains. -/
-lemma lpToL1_add
-    {Ω : TopologicalSpace.Opens (EuclideanSpace ℝ (Fin d))}
-    {p : ENNReal} [Fact (1 ≤ p)] [MeasureTheory.IsFiniteMeasure (domainMeasure Ω)]
-    (f g : MeasureTheory.Lp ℝ p (domainMeasure Ω)) :
-    lpToL1 (f + g) = lpToL1 f + lpToL1 g := by
-  -- Both sides are represented by the same almost-everywhere sum.
-  refine MeasureTheory.Lp.ext ?_
-  filter_upwards with x
-  rfl
-
-/-- Helper for Theorem 8.23: `lpToL1` preserves scalar multiplication on finite-measure domains. -/
-lemma lpToL1_smul
-    {Ω : TopologicalSpace.Opens (EuclideanSpace ℝ (Fin d))}
-    {p : ENNReal} [Fact (1 ≤ p)] [MeasureTheory.IsFiniteMeasure (domainMeasure Ω)]
-    (c : ℝ)
-    (f : MeasureTheory.Lp ℝ p (domainMeasure Ω)) :
-    lpToL1 (c • f) = c • lpToL1 f := by
-  -- Both sides are represented by the same almost-everywhere scalar multiple.
-  refine MeasureTheory.Lp.ext ?_
-  filter_upwards with x
-  rfl
-
-/-- Helper for Theorem 8.23: the canonical inclusion `lpToL1` satisfies the standard finite-measure
-norm bound. -/
-lemma lpToL1_norm_le
-    {Ω : TopologicalSpace.Opens (EuclideanSpace ℝ (Fin d))}
-    {p : ENNReal} [Fact (1 ≤ p)] [MeasureTheory.IsFiniteMeasure (domainMeasure Ω)]
-    (f : MeasureTheory.Lp ℝ p (domainMeasure Ω)) :
-    ‖lpToL1 f‖ ≤
-      (domainMeasure Ω Set.univ ^ (1 / (1 : ENNReal).toReal - 1 / p.toReal)).toReal * ‖f‖ := by
-  -- Compare the `eLpNorm`s first; the `Lp` norm statement is just the corresponding `toReal`
-  -- normalization.
-  let fμ : (EuclideanSpace ℝ (Fin d)) →ₘ[domainMeasure Ω] ℝ := f
-  let C : ENNReal :=
-    domainMeasure Ω Set.univ ^ (1 / (1 : ENNReal).toReal - 1 / p.toReal)
-  have hLp1 : MeasureTheory.MemLp fμ 1 (domainMeasure Ω) := by
-    exact MeasureTheory.Lp.mem_Lp_iff_memLp.mp <|
-      MeasureTheory.Lp.antitone (E := ℝ) (μ := domainMeasure Ω)
-        (show (1 : ENNReal) ≤ p from Fact.out) f.2
-  have hcompare :
-      MeasureTheory.eLpNorm fμ 1 (domainMeasure Ω) ≤
-        MeasureTheory.eLpNorm fμ p (domainMeasure Ω) * C :=
-    MeasureTheory.eLpNorm_le_eLpNorm_mul_rpow_measure_univ
-      (show (1 : ENNReal) ≤ p from Fact.out) fμ.aestronglyMeasurable
-  have hC_ne_top : C ≠ ⊤ := by
-    have hp_inv_le_one : 1 / p.toReal ≤ 1 := by
-      by_cases hp_top : p = ⊤
-      · simp [hp_top]
-      · have hp_one : 1 ≤ p.toReal := by
-          simpa using ENNReal.toReal_mono hp_top (show (1 : ENNReal) ≤ p from Fact.out)
-        simpa [one_div] using inv_le_one_of_one_le₀ hp_one
-    have hC_nonneg : 0 ≤ 1 / (1 : ENNReal).toReal - 1 / p.toReal := by
-      simpa using sub_nonneg.mpr hp_inv_le_one
-    exact
-      (ENNReal.rpow_lt_top_of_nonneg
-        hC_nonneg
-        (MeasureTheory.measure_ne_top (domainMeasure Ω) Set.univ)).ne
-  have hcompareRealENN :
-      ENNReal.toReal (MeasureTheory.eLpNorm fμ 1 (domainMeasure Ω)) ≤
-        ENNReal.toReal (MeasureTheory.eLpNorm fμ p (domainMeasure Ω) * C) := by
-    exact
-      (ENNReal.toReal_le_toReal hLp1.2.ne
-        (ENNReal.mul_ne_top f.2.ne hC_ne_top)).2 hcompare
-  -- Rewrite both `Lp` norms to the same `eLpNorm` spelling and apply the real-valued inequality.
-  have hcompareReal :
-      ‖lpToL1 f‖ ≤ C.toReal * ‖f‖ := by
-    rw [MeasureTheory.Lp.norm_def, MeasureTheory.Lp.norm_def, lpToL1_toAEEqFun]
-    simpa [C, fμ, ENNReal.toReal_mul, mul_comm, mul_left_comm, mul_assoc] using hcompareRealENN
-  simpa [C] using hcompareReal
+/- The minimizer predicates are shared with Theorem 8.20; penalty envelopes
+and finite-measure inclusion estimates are imported from Exercise 8.16 and
+Theorem 8.18. Keeping one owner allows these chapter modules to be imported
+together. -/
 
 /-- Helper for Theorem 8.23: `lpToL1` upgrades to a continuous linear map on finite-measure
 domains. -/
@@ -1189,97 +543,6 @@ lemma eq_tvSolution_of_tendsto_of_eventually_exactObjectiveGap
       exact (hobjectiveLiminf.trans hupperLiminf).trans (h_tv_solution.isMinOn hy)
     exact h_tv_unique.eq <| IsTvRegularizedMinimizer.ofMemAndIsMinOn hxC hxMin
 
-/-- Helper for Theorem 8.23: an exact-objective upper bound controls the total-variation term. -/
-lemma tvObjectiveSublevel_totalVariationBound
-    {Ω : TopologicalSpace.Opens (EuclideanSpace ℝ (Fin d))}
-    {p : ENNReal} [Fact ((1 : ENNReal) ≤ p)]
-    [MeasureTheory.IsFiniteMeasure (domainMeasure Ω)]
-    (K : MeasureTheory.Lp ℝ p (domainMeasure Ω) →L[ℝ]
-      MeasureTheory.Lp ℝ 2 (domainMeasure Ω))
-    (g : MeasureTheory.Lp ℝ 2 (domainMeasure Ω))
-    (α : ℝ)
-    {B : EReal}
-    {f : MeasureTheory.Lp ℝ p (domainMeasure Ω)}
-    (hObj :
-      tvRegularizedLeastSquaresFunctional K g α f ≤ B) :
-    (α : EReal) * totalVariation (lpToL1 f) ≤ B := by
-  -- Drop the nonnegative residual term from the exact objective.
-  have hres_nonneg :
-      (0 : EReal) ≤ (((‖K f - g‖ ^ 2 / 2 : ℝ) : EReal)) := by
-    exact_mod_cast (show 0 ≤ ‖K f - g‖ ^ 2 / 2 by positivity)
-  have hpenalty_le :
-      (α : EReal) * totalVariation (lpToL1 f) ≤
-        (((‖K f - g‖ ^ 2 / 2 : ℝ) : EReal) +
-          (α : EReal) * totalVariation (lpToL1 f)) := by
-    simpa [add_comm] using
-      (le_add_of_nonneg_left hres_nonneg :
-        (α : EReal) * totalVariation (lpToL1 f) ≤
-          (((‖K f - g‖ ^ 2 / 2 : ℝ) : EReal)) +
-            (α : EReal) * totalVariation (lpToL1 f))
-  calc
-    (α : EReal) * totalVariation (lpToL1 f)
-        ≤ (((‖K f - g‖ ^ 2 / 2 : ℝ) : EReal) +
-            (α : EReal) * totalVariation (lpToL1 f)) :=
-      hpenalty_le
-    _ = tvRegularizedLeastSquaresFunctional K g α f := by
-      rw [tvRegularizedLeastSquaresFunctional_def]
-    _ ≤ B := hObj
-
-/-- Helper for Theorem 8.23: an exact-objective upper bound also controls the quadratic residual
-term. -/
-lemma tvObjectiveSublevel_residualBound
-    {Ω : TopologicalSpace.Opens (EuclideanSpace ℝ (Fin d))}
-    {p : ENNReal} [Fact ((1 : ENNReal) ≤ p)]
-    [MeasureTheory.IsFiniteMeasure (domainMeasure Ω)]
-    (K : MeasureTheory.Lp ℝ p (domainMeasure Ω) →L[ℝ]
-      MeasureTheory.Lp ℝ 2 (domainMeasure Ω))
-    (g : MeasureTheory.Lp ℝ 2 (domainMeasure Ω))
-    (α : ℝ)
-    (hα : 0 < α)
-    {B : EReal}
-    {f : MeasureTheory.Lp ℝ p (domainMeasure Ω)}
-    (hObj :
-      tvRegularizedLeastSquaresFunctional K g α f ≤ B) :
-    (((‖K f - g‖ ^ 2 / 2 : ℝ) : EReal)) ≤ B := by
-  have hpenalty_nonneg :
-      (0 : EReal) ≤ (α : EReal) * totalVariation (lpToL1 f) := by
-    have htv_nonneg : (0 : EReal) ≤ totalVariation (lpToL1 f) := by
-      have hdiv_zero :
-          ∀ x : EuclideanSpace ℝ (Fin d),
-            admissibleDivergence (AdmissibleTestField.zero Ω) x = 0 := by
-        intro x
-        have hfd :
-            fderiv ℝ (⇑(0 : TestFunction Ω (EuclideanSpace ℝ (Fin d)) 1)) x = 0 := by
-          change fderiv ℝ (fun _ : EuclideanSpace ℝ (Fin d) =>
-            (0 : EuclideanSpace ℝ (Fin d))) x = 0
-          simp
-        rw [admissibleDivergence_def, AdmissibleTestField.zero_toTestFunction, hfd]
-        simp
-      rw [totalVariation_def]
-      refine le_sSup ?_
-      refine ⟨AdmissibleTestField.zero Ω, by
-        change
-          ((admissibleDivergencePairing
-              (lpToL1 f) (AdmissibleTestField.zero Ω) : ℝ) : EReal) = 0
-        rw [admissibleDivergencePairing_def]
-        simp [hdiv_zero]⟩
-    exact mul_nonneg (by exact_mod_cast le_of_lt hα)
-      htv_nonneg
-  -- Drop the nonnegative TV penalty to keep only the least-squares residual term.
-  have hresidual_le :
-      (((‖K f - g‖ ^ 2 / 2 : ℝ) : EReal)) ≤
-        (((‖K f - g‖ ^ 2 / 2 : ℝ) : EReal)) +
-          (α : EReal) * totalVariation (lpToL1 f) := by
-    exact le_add_of_nonneg_right hpenalty_nonneg
-  calc
-    (((‖K f - g‖ ^ 2 / 2 : ℝ) : EReal))
-        ≤ (((‖K f - g‖ ^ 2 / 2 : ℝ) : EReal)) +
-            (α : EReal) * totalVariation (lpToL1 f) :=
-      hresidual_le
-    _ = tvRegularizedLeastSquaresFunctional K g α f := by
-      rw [tvRegularizedLeastSquaresFunctional_def]
-    _ ≤ B := hObj
-
 /-- Helper for Theorem 8.23: strong `L^p` convergence preserves exact-objective upper bounds. -/
 lemma tvObjective_le_of_tendsto_of_eventually_le
     {Ω : TopologicalSpace.Opens (EuclideanSpace ℝ (Fin d))}
@@ -1397,79 +660,6 @@ lemma ltCriticalExponentOfLtSourceRatio
   · -- Outside the one-dimensional endpoint, rewrite once to the source ratio and reuse `hp_lt`.
     simpa [criticalExponent_eq_sourceRatio_of_ne_one (d := d) hd1] using hp_lt
 
-/-- Helper for Theorem 8.23: a finite exact-objective upper bound yields an unscaled total
-variation bound. -/
-lemma tvObjectiveSublevel_totalVariationBound_of_ltTop
-    {Ω : TopologicalSpace.Opens (EuclideanSpace ℝ (Fin d))}
-    {p : ENNReal} [Fact ((1 : ENNReal) ≤ p)]
-    [MeasureTheory.IsFiniteMeasure (domainMeasure Ω)]
-    (K : MeasureTheory.Lp ℝ p (domainMeasure Ω) →L[ℝ]
-      MeasureTheory.Lp ℝ 2 (domainMeasure Ω))
-    (g : MeasureTheory.Lp ℝ 2 (domainMeasure Ω))
-    (α : ℝ)
-    (hα : 0 < α)
-    (B : EReal)
-    (hB : B < ⊤)
-    {f : MeasureTheory.Lp ℝ p (domainMeasure Ω)}
-    (hObj :
-      tvRegularizedLeastSquaresFunctional K g α f ≤ B) :
-    totalVariation (lpToL1 f) ≤ (B / (α : EReal)).toReal := by
-  -- First isolate the scaled TV term already controlled by the objective bound.
-  have hscaled :
-      (α : EReal) * totalVariation (lpToL1 f) ≤ B :=
-    tvObjectiveSublevel_totalVariationBound K g α hObj
-  have hαE_pos : (0 : EReal) < (α : EReal) := by
-    exact_mod_cast hα
-  have hαE_ne_top : (α : EReal) ≠ ⊤ :=
-    EReal.coe_ne_top α
-  have hdiv_ne_top : B / (α : EReal) ≠ ⊤ := by
-    -- The quotient stays finite because both `B` and `α` are finite and `α > 0`.
-    rw [EReal.div_eq_inv_mul]
-    refine (EReal.mul_ne_top ((α : EReal)⁻¹) B).2 ?_
-    constructor
-    · exact Or.inl <| ne_bot_of_gt <| EReal.inv_pos_of_pos_ne_top hαE_pos hαE_ne_top
-    constructor
-    · exact Or.inl <| EReal.inv_nonneg_of_nonneg <| le_of_lt hαE_pos
-    constructor
-    · exact Or.inl <| (EReal.inv_lt_top (α : EReal)).ne
-    · exact Or.inr <| ne_of_lt hB
-  have htv_div :
-      totalVariation (lpToL1 f) ≤ B / (α : EReal) := by
-    -- Divide the scaled bound by the positive regularization parameter.
-    exact (EReal.le_div_iff_mul_le hαE_pos hαE_ne_top).2 <| by
-      simpa [mul_comm] using hscaled
-  exact htv_div.trans <| EReal.le_coe_toReal hdiv_ne_top
-
-/-- Helper for Theorem 8.23: a finite exact-TV sublevel should admit an eventual `L¹(Ω)` bound
-once the constant mode is controlled on bounded domains. -/
-lemma eventualLpToL1Bound_of_eventually_tvSublevel
-    {Ω : TopologicalSpace.Opens (EuclideanSpace ℝ (Fin d))}
-    {p : ENNReal} [Fact ((1 : ENNReal) ≤ p)]
-    [MeasureTheory.IsFiniteMeasure (domainMeasure Ω)]
-    (hΩ : Bornology.IsBounded (Ω : Set (EuclideanSpace ℝ (Fin d))))
-    (K : MeasureTheory.Lp ℝ p (domainMeasure Ω) →L[ℝ]
-      MeasureTheory.Lp ℝ 2 (domainMeasure Ω))
-    (g : MeasureTheory.Lp ℝ 2 (domainMeasure Ω))
-    (α : ℝ)
-    (hα : 0 < α)
-    (hK_one : K (MeasureTheory.Lp.const p (domainMeasure Ω) (1 : ℝ)) ≠ 0)
-    (B : EReal)
-    (hB : B < ⊤)
-    (u : ℕ → MeasureTheory.Lp ℝ p (domainMeasure Ω))
-    (huB :
-      ∀ᶠ n in Filter.atTop,
-        tvRegularizedLeastSquaresFunctional K g α (u n) ≤
-          B) :
-    ∃ M : ℝ, ∀ᶠ n in Filter.atTop, ‖lpToL1 (u n)‖ ≤ M := by
-  -- Route correction: the remaining analytic core is the sequence-level constant-mode coercivity
-  -- estimate needed before any BV compactness argument can start.
-  -- TODO: normalize a contradiction subsequence using the finite sublevel `B`, use the resulting
-  -- uniform TV and residual bounds to extract a nonzero `L^p` limit with `TV = 0` and `K x = 0`,
-  -- and then close with a source-backed zero-TV rigidity lemma.
-  have _hB := hB
-  have _huB := huB
-  sorry
-
 /-- Helper for Theorem 8.23: lifting an `L^p(Ω)` point to `BV(Ω)` and back through
 `BVCompactness.toLp` recovers the original point. -/
 lemma toLp_of_bvLift_eq
@@ -1479,6 +669,7 @@ lemma toLp_of_bvLift_eq
     [MeasureTheory.IsFiniteMeasure (domainMeasure Ω)]
     (hd : 1 ≤ d)
     (hΩ : Bornology.IsBounded (Ω : Set (EuclideanSpace ℝ (Fin d))))
+    [HasBoundedBVExtension Ω]
     (hp_le : p ≤ BVCompactness.criticalExponent d)
     (f : MeasureTheory.Lp ℝ p (domainMeasure Ω))
     (hf : IsBV (lpToL1 f)) :
@@ -1595,6 +786,7 @@ lemma exactGapSequence_subseq_tendsto
     [MeasureTheory.IsFiniteMeasure (domainMeasure Ω)]
     (hd : 1 ≤ d)
     (hΩ : Bornology.IsBounded (Ω : Set (EuclideanSpace ℝ (Fin d))))
+    [HasBoundedBVExtension Ω]
     (hp_lt : p < ((d : ENNReal) / ((d - 1 : ℕ) : ENNReal)))
     (C : Set (MeasureTheory.Lp ℝ p (domainMeasure Ω)))
     (hC_closed : IsClosed C)
@@ -1692,22 +884,25 @@ selections. -/
 /-- thm_8_23 (1). Theorem 8.23 (1). Fix `α > 0` and the Chapter 8
 least-squares/TV objective
 `tvRegularizedLeastSquaresFunctional K g α` on a closed constraint set `C ⊆ L^p(Ω)`
-with `1 ≤ p < d / (d - 1)` and `K 1 ≠ 0`. If `fAlpha` is the unique corresponding
+with `1 ≤ p < d / (d - 1)`, `K 1 ≠ 0`, and the explicit mean-value
+Poincaré inequality `HasLpTVPoincare Ω p`. If `fAlpha` is the unique corresponding
 TV-regularized solution and `fAlphaBeta β` is the corresponding regularized solution after
 replacing `TV` by `J_β β`, then `fAlphaBeta` converges to `fAlpha` in `L^p`
-norm as `β → 0⁺` on bounded `Ω`. -/
+norm as `β → 0⁺` on bounded `Ω` with `HasBoundedBVExtension Ω`. -/
 theorem smoothNormApproxRegularizedSolutions_tendsto_tvSolution
     {Ω : TopologicalSpace.Opens (EuclideanSpace ℝ (Fin d))}
     {p : ENNReal} [Fact ((1 : ENNReal) ≤ p)]
     [MeasureTheory.IsFiniteMeasure (domainMeasure Ω)]
     (hd : 1 ≤ d)
     (hΩ : Bornology.IsBounded (Ω : Set (EuclideanSpace ℝ (Fin d))))
+    [HasBoundedBVExtension Ω]
     (hp_lt : p < ((d : ENNReal) / ((d - 1 : ℕ) : ENNReal)))
     (C : Set (MeasureTheory.Lp ℝ p (domainMeasure Ω))) (hC_closed : IsClosed C)
     (K : MeasureTheory.Lp ℝ p (domainMeasure Ω) →L[ℝ]
       MeasureTheory.Lp ℝ 2 (domainMeasure Ω))
     (g : MeasureTheory.Lp ℝ 2 (domainMeasure Ω)) (α : ℝ) (hα : 0 < α)
     (hK_one : K (MeasureTheory.Lp.const p (domainMeasure Ω) (1 : ℝ)) ≠ 0)
+    (h_poincare : HasLpTVPoincare Ω p)
     (fAlpha : MeasureTheory.Lp ℝ p (domainMeasure Ω))
     (fAlphaBeta : ℝ → MeasureTheory.Lp ℝ p (domainMeasure Ω))
     (h_tv_solution : IsTvRegularizedMinimizer C K g α fAlpha)
@@ -1760,7 +955,7 @@ theorem smoothNormApproxRegularizedSolutions_tendsto_tvSolution
     have hL1 :
         ∃ M : ℝ, ∀ᶠ n in Filter.atTop, ‖lpToL1 (fAlphaBeta (βs n))‖ ≤ M :=
       eventualLpToL1Bound_of_eventually_tvSublevel
-        (Ω := Ω) (p := p) hΩ K g α hα hK_one
+        (Ω := Ω) (p := p) h_poincare K g α hα hK_one
         (tvRegularizedLeastSquaresFunctional K g α fAlpha + 1) hB
         (fun n ↦ fAlphaBeta (βs n)) (hu.mono fun _ hn ↦ hn.2)
     rcases exactGapSequence_isBVBounded
@@ -1800,22 +995,25 @@ theorem smoothNormApproxRegularizedSolutions_tendsto_tvSolution
 /-- thm_8_23 (2). Theorem 8.23 (2). Fix `α > 0` and the Chapter 8
 least-squares/TV objective
 `tvRegularizedLeastSquaresFunctional K g α` on a closed constraint set `C ⊆ L^p(Ω)`
-with `1 ≤ p < d / (d - 1)` and `K 1 ≠ 0`. If `fAlpha` is the unique corresponding
+with `1 ≤ p < d / (d - 1)`, `K 1 ≠ 0`, and the explicit mean-value
+Poincaré inequality `HasLpTVPoincare Ω p`. If `fAlpha` is the unique corresponding
 TV-regularized solution and `fAlphaEpsilon ε` is the corresponding regularized solution after
 replacing `TV` by `J_ε ε`, then `fAlphaEpsilon` converges to `fAlpha` in `L^p`
-norm as `ε → 0⁺` on bounded `Ω`. -/
+norm as `ε → 0⁺` on bounded `Ω` with `HasBoundedBVExtension Ω`. -/
 theorem huberApproxRegularizedSolutions_tendsto_tvSolution
     {Ω : TopologicalSpace.Opens (EuclideanSpace ℝ (Fin d))}
     {p : ENNReal} [Fact ((1 : ENNReal) ≤ p)]
     [MeasureTheory.IsFiniteMeasure (domainMeasure Ω)]
     (hd : 1 ≤ d)
     (hΩ : Bornology.IsBounded (Ω : Set (EuclideanSpace ℝ (Fin d))))
+    [HasBoundedBVExtension Ω]
     (hp_lt : p < ((d : ENNReal) / ((d - 1 : ℕ) : ENNReal)))
     (C : Set (MeasureTheory.Lp ℝ p (domainMeasure Ω))) (hC_closed : IsClosed C)
     (K : MeasureTheory.Lp ℝ p (domainMeasure Ω) →L[ℝ]
       MeasureTheory.Lp ℝ 2 (domainMeasure Ω))
     (g : MeasureTheory.Lp ℝ 2 (domainMeasure Ω)) (α : ℝ) (hα : 0 < α)
     (hK_one : K (MeasureTheory.Lp.const p (domainMeasure Ω) (1 : ℝ)) ≠ 0)
+    (h_poincare : HasLpTVPoincare Ω p)
     (fAlpha : MeasureTheory.Lp ℝ p (domainMeasure Ω))
     (fAlphaEpsilon : ℝ → MeasureTheory.Lp ℝ p (domainMeasure Ω))
     (h_tv_solution : IsTvRegularizedMinimizer C K g α fAlpha)
@@ -1869,7 +1067,7 @@ theorem huberApproxRegularizedSolutions_tendsto_tvSolution
     have hL1 :
         ∃ M : ℝ, ∀ᶠ n in Filter.atTop, ‖lpToL1 (fAlphaEpsilon (εs n))‖ ≤ M :=
       eventualLpToL1Bound_of_eventually_tvSublevel
-        (Ω := Ω) (p := p) hΩ K g α hα hK_one
+        (Ω := Ω) (p := p) h_poincare K g α hα hK_one
         (tvRegularizedLeastSquaresFunctional K g α fAlpha + 1) hB
         (fun n ↦ fAlphaEpsilon (εs n)) (hu.mono fun _ hn ↦ hn.2)
     rcases exactGapSequence_isBVBounded

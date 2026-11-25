@@ -9,7 +9,7 @@ module
 public import ComputationalMethodsInverseProblems_Vogel_2002.Chap07.Remark_7_12
 public import ComputationalMethodsInverseProblems_Vogel_2002.Chap07.Definition_7_33
 public import ComputationalMethodsInverseProblems_Vogel_2002.Chap07.Theorem_7_31.ExpectedCurve
-public import ComputationalMethodsInverseProblems_Vogel_2002.Chap07.Theorem_7_31.ProfilePackage
+public import ComputationalMethodsInverseProblems_Vogel_2002.Chap07.Exercise_7_25
 
 public section
 
@@ -23,75 +23,14 @@ section
 
 variable {Ω : Type u} [MeasurableSpace Ω]
 variable {H : Type v} {F : Type w}
-variable [NormedAddCommGroup H] [InnerProductSpace ℝ H] [CompleteSpace H]
-variable [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
-variable (μ : MeasureTheory.Measure Ω) [MeasureTheory.IsProbabilityMeasure μ]
+variable [NormedAddCommGroup H] [InnerProductSpace ℝ H]
+variable [NormedAddCommGroup F] [InnerProductSpace ℝ F]
+variable (μ : MeasureTheory.Measure Ω)
 variable (K : ℕ → H →L[ℝ] F)
 variable (Rtikh : ℕ → ℝ → F →L[ℝ] H)
 variable (fTrue : H)
 variable (η : ℕ → Ω → F)
 variable (alphaL : ℕ → ℝ)
-
-/-- Helper for Theorem 7.31: the common denominator in the normalized expected
-curvature formula along `alphaL`. -/
-@[expose] def expectedCurvatureDenominatorAlong : ℕ → ℝ :=
-  fun n ↦
-    Real.rpow
-      ((expectedResidualSq μ K Rtikh fTrue η n (alphaL n)) ^ 2 +
-        (alphaL n) ^ 2 * (expectedSolutionSq μ K Rtikh fTrue η n (alphaL n)) ^ 2)
-      (3 / 2 : ℝ)
-
-/-- The defining evaluation rule for `expectedCurvatureDenominatorAlong`. -/
-theorem expectedCurvatureDenominatorAlong_apply (n : ℕ) :
-    expectedCurvatureDenominatorAlong μ K Rtikh fTrue η alphaL n =
-      Real.rpow
-        ((expectedResidualSq μ K Rtikh fTrue η n (alphaL n)) ^ 2 +
-          (alphaL n) ^ 2 * (expectedSolutionSq μ K Rtikh fTrue η n (alphaL n)) ^ 2)
-        (3 / 2 : ℝ) := by
-  -- Expose the denominator owner once before rewriting the curvature formula.
-  rfl
-
-/-- Helper for Theorem 7.31: the non-derivative normalized term in the expected
-curvature formula along `alphaL`. -/
-@[expose] def expectedCurvatureLeadingNormalizedAlong : ℕ → ℝ :=
-  fun n ↦
-    (expectedResidualSq μ K Rtikh fTrue η n (alphaL n) *
-        expectedSolutionSq μ K Rtikh fTrue η n (alphaL n) *
-        (alphaL n * expectedResidualSq μ K Rtikh fTrue η n (alphaL n) +
-          (alphaL n) ^ 2 * expectedSolutionSq μ K Rtikh fTrue η n (alphaL n))) /
-      expectedCurvatureDenominatorAlong μ K Rtikh fTrue η alphaL n
-
-/-- The defining evaluation rule for
-`expectedCurvatureLeadingNormalizedAlong`. -/
-theorem expectedCurvatureLeadingNormalizedAlong_apply (n : ℕ) :
-    expectedCurvatureLeadingNormalizedAlong μ K Rtikh fTrue η alphaL n =
-      (expectedResidualSq μ K Rtikh fTrue η n (alphaL n) *
-          expectedSolutionSq μ K Rtikh fTrue η n (alphaL n) *
-          (alphaL n * expectedResidualSq μ K Rtikh fTrue η n (alphaL n) +
-            (alphaL n) ^ 2 * expectedSolutionSq μ K Rtikh fTrue η n (alphaL n))) /
-        expectedCurvatureDenominatorAlong μ K Rtikh fTrue η alphaL n := by
-  -- Expose the normalized leading-term owner once before the assembly proof.
-  rfl
-
-/-- Helper for Theorem 7.31: the derivative-dependent normalized term in the
-expected curvature formula along `alphaL`. -/
-@[expose] def expectedCurvatureDerivativeNormalizedAlong : ℕ → ℝ :=
-  fun n ↦
-    (((expectedResidualSq μ K Rtikh fTrue η n (alphaL n) *
-          expectedSolutionSq μ K Rtikh fTrue η n (alphaL n)) ^ 2) /
-        deriv (expectedSolutionSq μ K Rtikh fTrue η n) (alphaL n)) /
-      expectedCurvatureDenominatorAlong μ K Rtikh fTrue η alphaL n
-
-/-- The defining evaluation rule for
-`expectedCurvatureDerivativeNormalizedAlong`. -/
-theorem expectedCurvatureDerivativeNormalizedAlong_apply (n : ℕ) :
-    expectedCurvatureDerivativeNormalizedAlong μ K Rtikh fTrue η alphaL n =
-      (((expectedResidualSq μ K Rtikh fTrue η n (alphaL n) *
-            expectedSolutionSq μ K Rtikh fTrue η n (alphaL n)) ^ 2) /
-          deriv (expectedSolutionSq μ K Rtikh fTrue η n) (alphaL n)) /
-        expectedCurvatureDenominatorAlong μ K Rtikh fTrue η alphaL n := by
-  -- Expose the derivative-term owner once before the assembly proof.
-  rfl
 
 /-- Helper for Theorem 7.31: rewrite the expected curvature along `alphaL`
 into the exact normalized quotient terms coming from
@@ -273,32 +212,25 @@ theorem normalizedCurvatureTerms_tendsto_zero_of_profilePackage
       (μ := μ) (K := K) (Rtikh := Rtikh) (fTrue := fTrue) (η := η)
       (alphaL := alphaL) h_leading_profile h_derivative_profile hu hz
 
-/-- Helper for Theorem 7.31: the only remaining source-facing frontier is to
-package the Exercise 7.25 asymptotics into the local normalized-profile
-interface consumed downstream. -/
-theorem sourceProfilePackage_of_cornerMeanSquareConvergent
-    (h_corner :
+/-- The Exercise 7.25 construction under the explicit finite spectral regime.
+The corner hypothesis records the intended application; the energy estimates
+in fact prove flatness along every parameter sequence in this regime. -/
+@[expose] def sourceProfilePackage_of_cornerMeanSquareConvergent
+    (_h_corner :
       ∀ n,
         LCurve.IsCornerParameter
           (expectedCurvature μ K Rtikh fTrue η n) (alphaL n))
-    (h_alpha_pos : ∀ n, 0 < alphaL n)
+    (_h_alpha_pos : ∀ n, 0 < alphaL n)
+    (h_regime : EnergyBounds.FlatnessRegime
+      (expectedResidualSq μ K Rtikh fTrue η)
+      (expectedSolutionSq μ K Rtikh fTrue η)
+      (TikhonovEstimation.expectedObjective μ K Rtikh fTrue η) alphaL)
     (h_ms :
       ParameterChoice.IsMeanSquareConvergent
         (TikhonovEstimation.objectiveAlong
           (TikhonovEstimation.expectedObjective μ K Rtikh fTrue η) alphaL)) :
-    NormalizedCurvatureProfilePackage μ K Rtikh fTrue η alphaL := by
-  -- Route correction: isolate the missing Exercise 7.25 asymptotics behind one
-  -- support-level theorem instead of leaving the downstream wrapper open.
-  -- TODO: destruct the earlier-owner theorem
-  -- `Book.Ch7.Exercise_7_25.expectedCurvatureNormalizedProfiles_of_cornerMeanSquareConvergent`
-  -- once it exists, audit any extra standing-assumption hypotheses it
-  -- requires, and repackage its witnesses
-  -- `⟨u, z, h_leading_profile, h_derivative_profile, hu, hz⟩`
-  -- directly into `NormalizedCurvatureProfilePackage`.
-  -- Current blocker: `Book/Ch7/Exercise_7_25.lean` still exports only the
-  -- labeled blocker theorem `exercise725Blocker`, so there is no source-owned
-  -- profile theorem available to destruct here.
-  sorry
+    NormalizedCurvatureProfilePackage μ K Rtikh fTrue η alphaL :=
+  profilePackage_of_meanSquareConvergent μ K fTrue Rtikh η alphaL h_regime h_ms
 
 /-- Helper for Theorem 7.31: mean-square convergence at pointwise expected
 L-curve corners should force both normalized curvature terms to vanish. -/
@@ -308,6 +240,10 @@ theorem normalizedCurvatureTerms_tendsto_zero_of_cornerMeanSquareConvergent
         LCurve.IsCornerParameter
           (expectedCurvature μ K Rtikh fTrue η n) (alphaL n))
     (h_alpha_pos : ∀ n, 0 < alphaL n)
+    (h_regime : EnergyBounds.FlatnessRegime
+      (expectedResidualSq μ K Rtikh fTrue η)
+      (expectedSolutionSq μ K Rtikh fTrue η)
+      (TikhonovEstimation.expectedObjective μ K Rtikh fTrue η) alphaL)
     (h_ms :
       ParameterChoice.IsMeanSquareConvergent
         (TikhonovEstimation.objectiveAlong
@@ -321,7 +257,7 @@ theorem normalizedCurvatureTerms_tendsto_zero_of_cornerMeanSquareConvergent
   obtain hPkg :=
     sourceProfilePackage_of_cornerMeanSquareConvergent
       (μ := μ) (K := K) (Rtikh := Rtikh) (fTrue := fTrue) (η := η)
-      (alphaL := alphaL) h_corner h_alpha_pos h_ms
+      (alphaL := alphaL) h_corner h_alpha_pos h_regime h_ms
   -- Once the source-facing package is available, the flatness conclusion is immediate.
   exact
     normalizedCurvatureTerms_tendsto_zero_of_profilePackage

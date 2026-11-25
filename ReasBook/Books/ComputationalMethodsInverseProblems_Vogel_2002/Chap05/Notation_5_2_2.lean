@@ -171,16 +171,6 @@ theorem periodicExtension_httb_eq_circulantVec {n_x n_y : ℕ}
   rw [periodicIndex_sub_eq_finSub_of_pos h_x i k, periodicIndex_sub_eq_finSub_of_pos h_y j l]
   rfl
 
-/-- Helper for Notation 5.2.2-extra-3: the local unnormalized Fourier spectrum used for the 1D
-right-shift diagonalization is `k ↦ Matrix.fourierRoot n ^ k`. -/
-abbrev fourierSpectrum (n : ℕ) [NeZero n] : ℂ^[n] :=
-  WithLp.toLp 2 fun k : Fin n ↦ Matrix.fourierRoot n ^ (k : ℕ)
-
-/-- Helper for Notation 5.2.2-extra-3: the local Fourier spectrum abbreviation evaluates to the
-corresponding power of `Matrix.fourierRoot`. -/
-theorem fourierSpectrum_apply (n : ℕ) [NeZero n] (k : Fin n) :
-    Matrix.fourierSpectrum n k = Matrix.fourierRoot n ^ (k : ℕ) := rfl
-
 /-- Helper for Notation 5.2.2-extra-3: the complex right-shift matrix sends the `k`th standard
 basis vector to the basis vector at `finRotate n k`. -/
 theorem circulantRightShift_mulVec_single_complex
@@ -291,7 +281,7 @@ theorem fourier_mul_rightShift_eq_diagonal_mul_fourier (n : ℕ) [NeZero n] :
           simpa using hxval
         rw [Matrix.circulantRightShift, Matrix.circulant_apply]
         simp [hsubval]
-      simp [hzero]
+      simp only [hzero, mul_zero]
   rw [hsum]
   by_cases hj : j = Fin.last m
   · subst hj

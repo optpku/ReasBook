@@ -49,7 +49,7 @@ theorem tsvdResidualSq_mul_sq_le_alphaSq
 
 /-- Helper for Exercise 1.10: an orthogonal matrix preserves the Euclidean norm
 of the vector obtained from `Matrix.toEuclideanLin`. -/
-theorem orthogonal_toEuclideanLin_norm_sq_eq
+private theorem orthogonal_toEuclideanLin_norm_sq_eq
     [Fintype n] [DecidableEq n]
     (V : Matrix n n ℝ)
     (hV : V ∈ Matrix.orthogonalGroup n ℝ)
@@ -158,7 +158,7 @@ theorem tsvdOperatorMatrix_mul_eq
 
 /-- Helper for Exercise 1.10: applying `Matrix.toEuclideanLin` twice is the
 same as applying the product matrix once. -/
-theorem toEuclideanLin_mul_apply
+private theorem toEuclideanLin_mul_apply
     [Fintype n] [DecidableEq n]
     (A B : Matrix n n ℝ) (x : EuclideanSpace ℝ n) :
     Matrix.toEuclideanLin A (Matrix.toEuclideanLin B x) =
@@ -168,7 +168,7 @@ theorem toEuclideanLin_mul_apply
 
 /-- Helper for Exercise 1.10: an orthogonal matrix followed by its transpose
 acts as the identity on `EuclideanSpace ℝ n`. -/
-theorem orthogonal_toEuclideanLin_apply_transpose
+private theorem orthogonal_toEuclideanLin_apply_transpose
     [Fintype n] [DecidableEq n]
     (V : Matrix n n ℝ)
     (hV : V ∈ Matrix.orthogonalGroup n ℝ)
@@ -187,7 +187,7 @@ theorem orthogonal_toEuclideanLin_apply_transpose
 
 /-- Helper for Exercise 1.10: the transpose of an orthogonal matrix cancels
 the original matrix on `EuclideanSpace ℝ n`. -/
-theorem orthogonal_toEuclideanLin_transpose_apply
+private theorem orthogonal_toEuclideanLin_transpose_apply
     [Fintype n] [DecidableEq n]
     (V : Matrix n n ℝ)
     (hV : V ∈ Matrix.orthogonalGroup n ℝ)
@@ -205,7 +205,7 @@ theorem orthogonal_toEuclideanLin_transpose_apply
 
 /-- Helper for Exercise 1.10: the TSVD noise term satisfies the standard
 `δ / Real.sqrt α` bound from the earlier Chapter 1 TSVD analysis. -/
-theorem tsvdNoiseError_norm_le
+private theorem tsvdNoiseError_norm_le
     [Fintype n] [DecidableEq n]
     (K U V : Matrix n n ℝ) (s : n → ℝ)
     (η : EuclideanSpace ℝ n) {α δ : ℝ}
