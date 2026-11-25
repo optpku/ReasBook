@@ -21,7 +21,7 @@ public section
 noncomputable section
 
 open Filter
-open scoped Topology
+open scoped Matrix Topology
 
 namespace DFPWolfe.MP20251124
 
@@ -55,24 +55,133 @@ theorem theorem2
           Tendsto (fun k ↦ ‖gradient f (x k)‖) atTop (𝓝 0))) := by
   exact DFPWolfe.Latest.planarConvergenceCases orbit hf hμ hHessian hH₀ hWolfe hNeighborhood
 
-/-- Lemma 3 of `20251124-DFP/MP.zip`: the exact raw matrix recurrence
-used by the fixed and general polar constructions. -/
+/-- Lemma 3 of `20251124-DFP/MP.zip`: the exact polar step interface.
+The source search step, positive step length, inverse DFP update, and raw
+matrix recurrence are exposed on one actual `Parameters` orbit. -/
 theorem lemma3_matrixStep (p : Parameters) (hβ : 0 < p.beta)
-    (hstart : 0 < p.startIndex) (k : ℕ) :
+    (hstart : 0 < p.startIndex) (k : ℕ)
+    (hZ : (p.matrix k).PosDef) (hC : 0 < p.matrix k 0 1)
+    (hsin : 0 < Real.sin (p.angleIncrement k))
+    (hr : 0 < p.radiusRatio k)
+    (hbalance : p.radius k = p.radiusRatio k * p.radius (k + 1))
+    (hrNext : 0 < p.radius (k + 1))
+    (hσ : 0 < DFP.Polar.sigmaOf (p.matrix k) (p.angleIncrement k)
+      (p.zeta k) (p.zeta (k + 1))) :
     p.matrix (k + 1) = DFP.Polar.matrixStep (p.matrix k) (p.angleIncrement k)
-      (p.zeta k) (p.zeta (k + 1)) := by
-  exact Parameters.matrix_step p hβ hstart k
+        (p.zeta k) (p.zeta (k + 1)) ∧
+      0 < p.stepLength k ∧
+      WithLp.ofLp (p.point (k + 1) - p.point k) =
+        (-p.stepLength k) •
+          (p.inverseHessian k *ᵥ WithLp.ofLp (p.gradients k)) ∧
+      0 < WithLp.ofLp (p.point (k + 1) - p.point k) ⬝ᵥ
+        WithLp.ofLp (p.gradients (k + 1) - p.gradients k) ∧
+      p.inverseHessian (k + 1) = Matrix.inverseDFPUpdate (p.inverseHessian k)
+        (WithLp.ofLp (p.point (k + 1) - p.point k))
+        (WithLp.ofLp (p.gradients (k + 1) - p.gradients k)) := by
+  refine ⟨Parameters.matrix_step p hβ hstart k, ?_, ?_, ?_, ?_⟩
+  · exact p.stepLength_pos k hZ hC hsin hr
+  · exact p.chord_search k hZ hC hr hbalance
+  · exact p.secant_pairing_pos k hbalance hrNext hsin hσ
+  · exact p.inverseHessian_step hβ hstart k hbalance hZ
+      hrNext hsin hσ
 
-/-- Theorem 4 of `20251124-DFP/MP.zip`: the fixed `(1/4,1/2)` and
-`beta=1/2` construction is an instance of the fully retained planar source. -/
+/-- Helper for `lem:polar-dfp`: the explicit polar search step and its
+ positive coefficient for one feasible source stage. -/
+ theorem lemma3_polarSearchStep (Z : Matrix (Fin 2) (Fin 2) ℝ)
+     (θ δ r rNext ζ : ℝ) (hZ : Z.PosDef) (hC : 0 < Z 0 1)
+     (hζ : 0 < ζ) (hsin : 0 < Real.sin δ) (hW : 0 < DFP.Polar.radiusRatioOf Z δ)
+     (hr : rNext * DFP.Polar.radiusRatioOf Z δ = r) :
+     0 < Z.det * Real.sin δ / (ζ * Z 0 1 * DFP.Polar.radiusRatioOf Z δ) ∧
+       WithLp.ofLp (rNext • DFP.Polar.polarUnit (θ + δ) -
+         r • DFP.Polar.polarUnit θ) =
+         (-(Z.det * Real.sin δ /
+           (ζ * Z 0 1 * DFP.Polar.radiusRatioOf Z δ))) •
+           ((DFP.Polar.rotationMatrix θ * Z⁻¹ *
+             (DFP.Polar.rotationMatrix θ).transpose) *ᵥ
+             WithLp.ofLp (ζ • (r • DFP.Polar.polarUnit θ))) := by
+   constructor
+   · exact DFP.Polar.PhysicalRealization.stepLength_pos Z δ ζ hZ hC hζ hsin hW
+   · exact DFP.Polar.PhysicalRealization.search_step Z θ δ r rNext ζ hr
+       hZ.isHermitian hC.ne' hZ.det_pos.ne' hζ.ne' hW.ne'
+
+/-- Helper for `lem:polar-dfp`: a positive polar secant scalar gives the
+strict physical curvature and hence the nonzero DFP denominator. -/
+theorem lemma3_polarSecantPairing_pos (Z : Matrix (Fin 2) (Fin 2) ℝ)
+    (θ δ r rNext ζ ζNext : ℝ) (hZ : Z.PosDef) (hC : 0 < Z 0 1)
+    (hζ : 0 < ζ) (hsin : 0 < Real.sin δ)
+    (hW : 0 < DFP.Polar.radiusRatioOf Z δ)
+    (hr : rNext * DFP.Polar.radiusRatioOf Z δ = r)
+    (hrNext : 0 < rNext)
+    (hσ : 0 < DFP.Polar.sigmaOf Z δ ζ ζNext) :
+    0 <
+      WithLp.ofLp (rNext • DFP.Polar.polarUnit (θ + δ) -
+        r • DFP.Polar.polarUnit θ) ⬝ᵥ
+        WithLp.ofLp (ζNext • (rNext • DFP.Polar.polarUnit (θ + δ)) -
+          ζ • (r • DFP.Polar.polarUnit θ)) := by
+  exact DFP.Polar.PhysicalRealization.secant_pairing_pos Z θ δ r rNext ζ ζNext
+    hr hrNext hsin hσ
+
+/-- Helper for `lem:polar-dfp`: the positive polar secant scalar makes the
+inverse DFP update agree with the prescribed rotated matrix update. -/
+theorem lemma3_polarInverseUpdate (Z : Matrix (Fin 2) (Fin 2) ℝ)
+    (θ δ r rNext ζ ζNext : ℝ) (hZ : Z.PosDef) (hsin : 0 < Real.sin δ)
+    (hr : rNext * DFP.Polar.radiusRatioOf Z δ = r)
+    (hrNext : 0 < rNext)
+    (hσ : 0 < DFP.Polar.sigmaOf Z δ ζ ζNext) :
+    DFP.Polar.rotationMatrix (θ + δ) *
+        (DFP.Polar.matrixStep Z δ ζ ζNext)⁻¹ *
+        (DFP.Polar.rotationMatrix (θ + δ)).transpose =
+      Matrix.inverseDFPUpdate
+        (DFP.Polar.rotationMatrix θ * Z⁻¹ *
+          (DFP.Polar.rotationMatrix θ).transpose)
+        (WithLp.ofLp (rNext • DFP.Polar.polarUnit (θ + δ) -
+          r • DFP.Polar.polarUnit θ))
+        (WithLp.ofLp (ζNext • (rNext • DFP.Polar.polarUnit (θ + δ)) -
+          ζ • (r • DFP.Polar.polarUnit θ))) := by
+  exact DFP.Polar.PhysicalRealization.physicalInverseHessian_step Z θ δ r rNext ζ ζNext
+    hr hZ hrNext hsin hσ
+
+/-- Helper for `lem:polar-dfp`: a nonzero search direction has a unique scalar
+step coefficient. -/
+theorem lemma3_stepCoefficient_unique {E : Type*} [NormedAddCommGroup E]
+    [NormedSpace ℝ E] {v : E} (hv : v ≠ 0) {α₁ α₂ : ℝ}
+    (hα : (-α₁) • v = (-α₂) • v) : α₁ = α₂ := by
+  have hz : ((-α₁) - (-α₂)) • v = 0 := by
+    rw [sub_smul, hα, sub_self]
+  rcases smul_eq_zero.mp hz with hcoeff | hv'
+  · linarith
+  · exact (hv hv').elim
+
+/-- Helper for `lem:polar-dfp`: the source radius balance is equivalent to
+the multiplicative radius recurrence used by the actual parameter sequence. -/
+theorem lemma3_radiusBalance_iff (p : Parameters) (k : ℕ)
+    (hW : 0 < p.radiusRatio k) :
+    p.radius k = p.radiusRatio k * p.radius (k + 1) ↔
+      p.radius (k + 1) = p.radius k / p.radiusRatio k := by
+  constructor
+  · intro h
+    apply (eq_div_iff hW.ne').2
+    simpa [mul_comm] using h.symm
+  · intro h
+    have h' := (eq_div_iff hW.ne').mp h
+    simpa [mul_comm] using h'.symm
+
+/-- Helper for `lem:polar-dfp`: the geometric radius balance is exactly the
+paper's scalar condition `r = rNext * (cos δ + h sin δ)`. -/
+theorem lemma3_radiusCondition_iff (Z : Matrix (Fin 2) (Fin 2) ℝ)
+    (δ r rNext : ℝ) :
+    rNext * DFP.Polar.radiusRatioOf Z δ = r ↔
+      r = rNext * (Real.cos δ + (Z 1 1 / Z 0 1) * Real.sin δ) := by
+  rw [DFP.Polar.radiusRatioOf_def, DFP.Polar.omegaOf_def]
+  exact eq_comm
+
+/-- Support witness for Theorem 4 of `20251124-DFP/MP.zip`: the existing
+general source construction at the paper's fixed Wolfe pair and exponent.
+Its structure retains the objective, orbit, and regularity certificates. -/
 theorem theorem4_concrete :
     Nonempty (DFPWolfe.Latest.PlanarConstruction (1 / 4) (1 / 2) (1 / 2) (1 / 2)) := by
-  apply DFPWolfe.Latest.planarSource
-  · norm_num
-  · norm_num
-  · norm_num
-  · norm_num
-  · norm_num
+  exact DFPWolfe.Latest.planarSource (1 / 4) (1 / 2) (1 / 2) (1 / 2)
+    (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num)
 
 /-- Lemma 5 of `20251124-DFP/MP.zip`: the fixed limiting polar stages close
 the explicit even and odd reference states. -/
@@ -85,6 +194,48 @@ theorem lemma5_fixedSingleLimit :
     constructor <;> norm_num
   have hmatch := And.intro (evenToOdd hcycle) (oddToEven hcycle)
   simpa only [Parameters.leadingStage_eq_original] using hmatch
+
+/-- Lemma 5 of `20251124-DFP/MP.zip`: the one-step normalized map has the
+explicit limiting formula for every nonzero angular coefficient and regular
+positive off-diagonal state. -/
+theorem lemma5_fixedSingleLimit_general (a : ℝ) (x : ℝ × ℝ × ℝ)
+    (ha : a ≠ 0) (hC : x.2.1 ≠ 0) :
+    Tendsto (fun t : ℝ ↦ Normalized.stage a t x 1 1) (𝓝 0)
+      (𝓝 (Normalized.leadingStage a x)) := by
+  have hAnalytic : AnalyticAt ℝ (fun t : ℝ ↦ Normalized.stage a t x 1 1) 0 := by
+    have h := Normalized.stageAlong_analyticAt
+      (a := fun _ : ℝ ↦ a) (t := fun y : ℝ ↦ y) (X := fun _ : ℝ ↦ x)
+      (ζ := fun _ : ℝ ↦ 1) (η := fun _ : ℝ ↦ 1) (z := 0)
+      analyticAt_const analyticAt_id analyticAt_const analyticAt_const
+      analyticAt_const ha rfl hC (by
+        simp [Normalized.stageSigma_def, Normalized.stepV_def,
+          Normalized.stepW_def])
+    simpa only using h
+  have hcont : Tendsto (fun t : ℝ ↦ Normalized.stage a t x 1 1) (𝓝 0)
+      (𝓝 (Normalized.stage a 0 x 1 1)) := hAnalytic.continuousAt
+  simpa only [Normalized.stage_zero] using hcont
+
+/-- Source-facing analytic-path form of `lem:fixed-single-limit`: analytic
+gradient factors that equal one at zero scale have the same canceled-stage
+limit as the unit-factor path. -/
+theorem lemma5_analyticPathLimit (a : ℝ) (x : ℝ × ℝ × ℝ)
+    (ζ η : ℝ → ℝ) (ha : a ≠ 0) (hC : x.2.1 ≠ 0)
+    (hζ : AnalyticAt ℝ ζ 0) (hη : AnalyticAt ℝ η 0)
+    (hζ0 : ζ 0 = 1) (hη0 : η 0 = 1) :
+    Tendsto (fun t : ℝ ↦ Normalized.stage a t x (ζ t) (η t)) (𝓝 0)
+      (𝓝 (Normalized.leadingStage a x)) := by
+  have hσ : Normalized.stageSigma a 0 x (ζ 0) (η 0) ≠ 0 := by
+    rw [hζ0, hη0]
+    simp [Normalized.stageSigma_def, Normalized.stepV_def,
+      Normalized.stepW_def]
+  have hAnalytic : AnalyticAt ℝ
+      (fun t : ℝ ↦ Normalized.stage a t x (ζ t) (η t)) 0 := by
+    exact Normalized.stageAlong_analyticAt
+      (a := fun _ : ℝ ↦ a) (t := fun y : ℝ ↦ y)
+      (X := fun _ : ℝ ↦ x) (ζ := ζ) (η := η) (z := 0)
+      analyticAt_const analyticAt_id analyticAt_const hζ hη ha rfl hC hσ
+  have hcont := hAnalytic.continuousAt.tendsto
+  simpa only [hζ0, hη0, Normalized.stage_zero] using hcont
 
 /-- Helper for lem:fixed-single-limit: the canceled normalized stage at zero
 scale is the explicit limiting map used in the manuscript. -/
@@ -115,6 +266,14 @@ theorem lemma6_cycleAnalytic (p : Parameters) (hβ : 0 < p.beta)
   · exact hC
   · exact hCNext
 
+/-- Source-facing form of `lem:fixed-cycle`: the normalized two-step map has
+the uniform local fast, slow, and regularity estimates used by the
+continuation argument. -/
+theorem lemma6_localCycleBounds (p : Parameters) (hβ : 0 < p.beta) :
+    ∃ C > 0, ∃ r > 0, ∃ ρ > 0, ∃ ε > 0,
+      Continuation.LocalCycleBounds p C r ρ ε := by
+  exact Continuation.exists_localCycleBounds p hβ
+
 /-- Lemma 6 of `20251124-DFP/MP.zip`: the normalized recurrence has a
 uniform trajectory bound before the starting index is chosen. -/
 theorem lemma6_fixedCycle (p : Parameters) (hβ : 0 < p.beta) (hβone : p.beta < 1) :
@@ -127,12 +286,24 @@ for every later index and its odd phase has a uniform transverse estimate. -/
 theorem lemma7_fixedContinuation (p : Parameters) (hβ : 0 < p.beta) (hβone : p.beta < 1) :
     ∃ N > 0, ∃ M > 0, ∃ K : ℝ, 0 < K ∧ ∃ J : ℕ, 0 < J ∧ ∀ j0 : ℕ, J ≤ j0 →
       Continuation.TrajectoryBounds p j0 N M ∧
+        (∀ j : ℕ,
+          Continuation.fastSize p (Continuation.stateAt p j0 j) ≤
+              N / ((j0 + j : ℕ) : ℝ) ∧
+            |Continuation.slowError p (Continuation.stateAt p j0 j)| ≤
+              M * scale p.beta j0 j ^ (1 - p.beta)) ∧
         (∀ k : ℕ, Continuation.RawFeasible (p.withStartIndex j0) k) ∧
         ∀ j : ℕ,
           ‖(p.withStartIndex j0).normalizedOddState j -
               p.oddReference (Continuation.stateAt p j0 j).1‖ ≤
             K / ((j0 + j : ℕ) : ℝ) := by
-  exact Continuation.existsContinuationEstimates p hβ hβone
+  obtain ⟨N, hN, M, hM, K, hK, J, hJ, h⟩ :=
+    Continuation.existsContinuationEstimates p hβ hβone
+  refine ⟨N, hN, M, hM, K, hK, J, hJ, ?_⟩
+  intro j0 hj0
+  obtain ⟨htrajectory, hraw, hodd⟩ := h j0 hj0
+  refine ⟨htrajectory, ?_, hraw, hodd⟩
+  intro j
+  exact ⟨htrajectory.fast_bound j, htrajectory.slow_bound j⟩
 
 /-- Lemma 8 of `20251124-DFP/MP.zip`: the actual points have uniform
 separation, linear step bounds and the complete unit-circle cluster set. -/
@@ -166,13 +337,20 @@ theorem lemma11_generalContinuation (p : Parameters) (hβ : 0 < p.beta)
     (hβone : p.beta < 1) :
     ∃ N > 0, ∃ M > 0, ∃ K : ℝ, 0 < K ∧ ∃ J : ℕ, 0 < J ∧ ∀ j0 : ℕ, J ≤ j0 →
       Continuation.TrajectoryBounds p j0 N M ∧
+        (∀ j : ℕ,
+          Continuation.fastSize p (Continuation.stateAt p j0 j) ≤
+              N / ((j0 + j : ℕ) : ℝ) ∧
+            |Continuation.slowError p (Continuation.stateAt p j0 j)| ≤
+              M * scale p.beta j0 j ^ (1 - p.beta)) ∧
         (∀ k : ℕ, Continuation.RawFeasible (p.withStartIndex j0) k) := by
   obtain ⟨N, hN, M, hM, K, hK, J, hJ, h⟩ :=
     Continuation.existsContinuationEstimates p hβ hβone
   refine ⟨N, hN, M, hM, K, hK, J, hJ, ?_⟩
   intro j0 hj0
   have hdata := h j0 hj0
-  exact ⟨hdata.1, hdata.2.1⟩
+  refine ⟨hdata.1, ?_, hdata.2.1⟩
+  intro j
+  exact ⟨hdata.1.fast_bound j, hdata.1.slow_bound j⟩
 
 /-- Corollary 12 of `20251124-DFP/MP.zip`: identity initialization in every
 finite dimension at least two. -/

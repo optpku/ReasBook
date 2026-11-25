@@ -5,7 +5,7 @@
     "title": "DFP 20251124 polar proof",
     "kind": "papers",
     "branch": "paper/dfp-20251124-sync",
-    "commit": "cada95d7e478df7492aa6cd55d71a932e3ee0036",
+    "commit": "433b706b233124ef219e748dcaeaf70c37266e3f",
     "repository": "https://github.com/optpku/ReasBook",
     "sourceRoot": "ReasBook"
   },
@@ -84,7 +84,7 @@
       "statementDependencies": [],
       "proofDependencies": [],
       "dependencyEvidence": "curated-paper-dependencies",
-      "sourceSha256": "f86f2f9f224df430411d9bdc59872e0ea0828e8a52e0d5198834a562fb8e30fb"
+      "sourceSha256": "b5f240b65a9c72079366d0f497d51ce0afe844b62690ef24976298bfb3e46a3a"
     },
     {
       "id": "mp24-theorem-2",
@@ -95,7 +95,7 @@
       "declaration": "DFPWolfe.MP20251124.theorem2",
       "file": "Papers/DFP_wolfe_local/DFPWolfe/MP20251124/Results.lean",
       "line": 42,
-      "endLine": 60,
+      "endLine": 61,
       "statement": "\\label{thm:planar-convergence}\nUnder these assumptions, every classical DFP sequence with positive\nstep lengths satisfying \\eqref{eq:armijo}--\\eqref{eq:weak-curvature}\neither reaches the unique minimizer $x_*$ in finitely many iterations\nor satisfies $x_k\\to x_*$ and $\\|\\nabla f(x_k)\\|\\to0$.",
       "statementHtml": "<p><code>Under these assumptions, every classical DFP sequence with positive step lengths satisfying [eq:armijo]--[eq:weak-curvature] either reaches the unique minimizer $x_*$ in finitely many iterations or satisfies $x_k\\to x_*$ and $\\|\\nabla f(x_k)\\|\\to0$.</code></p>",
       "statementSha256": "c23700c21605e9ae67b0212ef2cdfd746cbb3779dfc7f7f140d2cbb5b566f09e",
@@ -119,7 +119,7 @@
           "declaration": "DFPWolfe.MP20251124.theorem2",
           "file": "Papers/DFP_wolfe_local/DFPWolfe/MP20251124/Results.lean",
           "line": 42,
-          "leanCode": "theorem theorem2\n    {f : EuclideanSpace ℝ (Fin 2) → ℝ} {α : ℕ → ℝ}\n    {x g : ℕ → EuclideanSpace ℝ (Fin 2)} {H : ℕ → Matrix (Fin 2) (Fin 2) ℝ}\n    (orbit : DFP.IsOrbit f α x g H) {μ c₁ c₂ : ℝ}\n    (hf : ContDiff ℝ 2 f) (hμ : 0 < μ)\n    (hHessian : ∀ z v, μ * ‖v‖ ^ 2 ≤ inner ℝ (fderiv ℝ (gradient f) z v) v)\n    (hH₀ : (H 0).PosDef)\n    (hWolfe : ∀ k, LineSearch.IsWeakWolfe c₁ c₂ f (x k) (x (k + 1) - x k))\n    (hNeighborhood : ∃ U : Set (EuclideanSpace ℝ (Fin 2)), IsOpen U ∧\n      {z | f z ≤ f (x 0)} ⊆ U ∧ LocallyLipschitzOn U (fderiv ℝ (gradient f))) :\n    ∃ xstar, (∀ z, f xstar ≤ f z) ∧ (∀ y, (∀ z, f y ≤ f z) → y = xstar) ∧\n      ((∃ K : ℕ, gradient f (x K) = 0 ∧ x K = xstar ∧ ∀ k, K ≤ k → x k = xstar) ∨\n        ((∀ k, gradient f (x k) ≠ 0) ∧ Tendsto x atTop (𝓝 xstar) ∧\n          Tendsto (fun k ↦ ‖gradient f (x k)‖) atTop (𝓝 0))) := by\n  exact DFPWolfe.Latest.planarConvergenceCases orbit hf hμ hHessian hH₀ hWolfe hNeighborhood\n\n/-- Lemma 3 of `20251124-DFP/MP.zip`: the exact raw matrix recurrence\nused by the fixed and general polar constructions. -/\n"
+          "leanCode": "theorem theorem2\n    {f : EuclideanSpace ℝ (Fin 2) → ℝ} {α : ℕ → ℝ}\n    {x g : ℕ → EuclideanSpace ℝ (Fin 2)} {H : ℕ → Matrix (Fin 2) (Fin 2) ℝ}\n    (orbit : DFP.IsOrbit f α x g H) {μ c₁ c₂ : ℝ}\n    (hf : ContDiff ℝ 2 f) (hμ : 0 < μ)\n    (hHessian : ∀ z v, μ * ‖v‖ ^ 2 ≤ inner ℝ (fderiv ℝ (gradient f) z v) v)\n    (hH₀ : (H 0).PosDef)\n    (hWolfe : ∀ k, LineSearch.IsWeakWolfe c₁ c₂ f (x k) (x (k + 1) - x k))\n    (hNeighborhood : ∃ U : Set (EuclideanSpace ℝ (Fin 2)), IsOpen U ∧\n      {z | f z ≤ f (x 0)} ⊆ U ∧ LocallyLipschitzOn U (fderiv ℝ (gradient f))) :\n    ∃ xstar, (∀ z, f xstar ≤ f z) ∧ (∀ y, (∀ z, f y ≤ f z) → y = xstar) ∧\n      ((∃ K : ℕ, gradient f (x K) = 0 ∧ x K = xstar ∧ ∀ k, K ≤ k → x k = xstar) ∨\n        ((∀ k, gradient f (x k) ≠ 0) ∧ Tendsto x atTop (𝓝 xstar) ∧\n          Tendsto (fun k ↦ ‖gradient f (x k)‖) atTop (𝓝 0))) := by\n  exact DFPWolfe.Latest.planarConvergenceCases orbit hf hμ hHessian hH₀ hWolfe hNeighborhood\n\n/-- Lemma 3 of `20251124-DFP/MP.zip`: the exact polar step interface.\nThe source search step, positive step length, inverse DFP update, and raw\nmatrix recurrence are exposed on one actual `Parameters` orbit. -/\n"
         }
       ],
       "dependencies": [
@@ -128,18 +128,18 @@
       "statementDependencies": [],
       "proofDependencies": [],
       "dependencyEvidence": "curated-paper-dependencies",
-      "sourceSha256": "f86f2f9f224df430411d9bdc59872e0ea0828e8a52e0d5198834a562fb8e30fb"
+      "sourceSha256": "b5f240b65a9c72079366d0f497d51ce0afe844b62690ef24976298bfb3e46a3a"
     },
     {
       "id": "mp24-lemma-3",
       "label": "Lemma 3",
-      "title": "Exact polar DFP matrix recurrence",
+      "title": "Exact polar search step, curvature, and DFP update",
       "type": "Lemma",
       "section": "construction",
       "declaration": "DFPWolfe.MP20251124.lemma3_matrixStep",
       "file": "Papers/DFP_wolfe_local/DFPWolfe/MP20251124/Results.lean",
-      "line": 60,
-      "endLine": 68,
+      "line": 61,
+      "endLine": 90,
       "statement": "\\label{lem:polar-dfp}\nFix $k\\ge0$. Suppose that $\\rho_k,\\rho_{k+1},\\zeta_k,\\zeta_{k+1}>0$,\n$Z_k\\succ0$, $(Z_k)_{12}>0$, and $0<\\delta_k<\\pi$.\nThen the following statements hold.\n\\begin{itemize}\n\\item[\\textup{i)}] There exists a positive step length $\\alpha_k$ satisfying\n$s_k=-\\alpha_kH_kg_k$ if and only if\n\\begin{equation}\\label{eq:fixed-step}\n r_k=\\cos\\delta_k+h_k\\sin\\delta_k.\n\\end{equation}\nIn this case, the step length $\\alpha_k$ is unique and is given by \\eqref{eq:fixed-realization}.\n\\item[\\textup{ii)}] If \\eqref{eq:fixed-step} and $p_k^Tq_k>0$ hold,\nthen $s_k^Ty_k>0$ and the DFP update \\eqref{eq:dfp-update} is equivalent to\n\\begin{equation}\\label{eq:fixed-update}\n Z_{k+1}=R(\\delta_k)^T\n \\left[\\left(I-\\frac{q_kp_k^T}{p_k^Tq_k}\\right)Z_k\n       \\left(I-\\frac{p_kq_k^T}{p_k^Tq_k}\\right)\n       +\\frac{q_kq_k^T}{p_k^Tq_k}\\right]R(\\delta_k)\\succ0.\n\\end{equation}\n\\end{itemize}",
       "statementHtml": "<p><code>Fix $k\\ge0$. Suppose that $\\rho_k,\\rho_{k+1},\\zeta_k,\\zeta_{k+1}&gt;0$, $Z_k\\succ0$, $(Z_k)_{12}&gt;0$, and $0&lt;\\delta_k&lt;\\pi$. Then the following statements hold. \\item[\\textup{i)}] There exists a positive step length $\\alpha_k$ satisfying $s_k=-\\alpha_kH_kg_k$ if and only if r_k=\\cos\\delta_k+h_k\\sin\\delta_k. In this case, the step length $\\alpha_k$ is unique and is given by [eq:fixed-realization]. \\item[\\textup{ii)}] If [eq:fixed-step] and $p_k^Tq_k&gt;0$ hold, then $s_k^Ty_k&gt;0$ and the DFP update [eq:dfp-update] is equivalent to Z_{k+1}=R(\\delta_k)^T \\left[\\left(I-\\frac{q_kp_k^T}{p_k^Tq_k}\\right)Z_k \\left(I-\\frac{p_kq_k^T}{p_k^Tq_k}\\right) +\\frac{q_kq_k^T}{p_k^Tq_k}\\right]R(\\delta_k)\\succ0.</code></p>",
       "statementSha256": "b52819774fd3e88b1a72668cc49b902151b77f65e6c1f74719add60231904e77",
@@ -155,33 +155,33 @@
         {
           "declaration": "DFPWolfe.MP20251124.lemma3_matrixStep",
           "file": "Papers/DFP_wolfe_local/DFPWolfe/MP20251124/Results.lean",
-          "line": 60
+          "line": 61
         }
       ],
       "leanExcerpts": [
         {
           "declaration": "DFPWolfe.MP20251124.lemma3_matrixStep",
           "file": "Papers/DFP_wolfe_local/DFPWolfe/MP20251124/Results.lean",
-          "line": 60,
-          "leanCode": "theorem lemma3_matrixStep (p : Parameters) (hβ : 0 < p.beta)\n    (hstart : 0 < p.startIndex) (k : ℕ) :\n    p.matrix (k + 1) = DFP.Polar.matrixStep (p.matrix k) (p.angleIncrement k)\n      (p.zeta k) (p.zeta (k + 1)) := by\n  exact Parameters.matrix_step p hβ hstart k\n\n/-- Theorem 4 of `20251124-DFP/MP.zip`: the fixed `(1/4,1/2)` and\n`beta=1/2` construction is an instance of the fully retained planar source. -/\n"
+          "line": 61,
+          "leanCode": "theorem lemma3_matrixStep (p : Parameters) (hβ : 0 < p.beta)\n    (hstart : 0 < p.startIndex) (k : ℕ)\n    (hZ : (p.matrix k).PosDef) (hC : 0 < p.matrix k 0 1)\n    (hsin : 0 < Real.sin (p.angleIncrement k))\n    (hr : 0 < p.radiusRatio k)\n    (hbalance : p.radius k = p.radiusRatio k * p.radius (k + 1))\n    (hrNext : 0 < p.radius (k + 1))\n    (hσ : 0 < DFP.Polar.sigmaOf (p.matrix k) (p.angleIncrement k)\n      (p.zeta k) (p.zeta (k + 1))) :\n    p.matrix (k + 1) = DFP.Polar.matrixStep (p.matrix k) (p.angleIncrement k)\n        (p.zeta k) (p.zeta (k + 1)) ∧\n      0 < p.stepLength k ∧\n      WithLp.ofLp (p.point (k + 1) - p.point k) =\n        (-p.stepLength k) •\n          (p.inverseHessian k *ᵥ WithLp.ofLp (p.gradients k)) ∧\n      0 < WithLp.ofLp (p.point (k + 1) - p.point k) ⬝ᵥ\n        WithLp.ofLp (p.gradients (k + 1) - p.gradients k) ∧\n      p.inverseHessian (k + 1) = Matrix.inverseDFPUpdate (p.inverseHessian k)\n        (WithLp.ofLp (p.point (k + 1) - p.point k))\n        (WithLp.ofLp (p.gradients (k + 1) - p.gradients k)) := by\n  refine ⟨Parameters.matrix_step p hβ hstart k, ?_, ?_, ?_, ?_⟩\n  · exact p.stepLength_pos k hZ hC hsin hr\n  · exact p.chord_search k hZ hC hr hbalance\n  · exact p.secant_pairing_pos k hbalance hrNext hsin hσ\n  · exact p.inverseHessian_step hβ hstart k hbalance hZ\n      hrNext hsin hσ\n\n/-- Helper for `lem:polar-dfp`: the explicit polar search step and its\n positive coefficient for one feasible source stage. -/\n"
         }
       ],
       "dependencies": [],
       "statementDependencies": [],
       "proofDependencies": [],
       "dependencyEvidence": "curated-paper-dependencies",
-      "sourceSha256": "f86f2f9f224df430411d9bdc59872e0ea0828e8a52e0d5198834a562fb8e30fb"
+      "sourceSha256": "b5f240b65a9c72079366d0f497d51ce0afe844b62690ef24976298bfb3e46a3a"
     },
     {
       "id": "mp24-theorem-4",
       "label": "Theorem 4",
-      "title": "Fixed concrete polar construction",
+      "title": "Source witness for the fixed Wolfe pair and exponent",
       "type": "Theorem",
       "section": "main",
       "declaration": "DFPWolfe.MP20251124.theorem4_concrete",
       "file": "Papers/DFP_wolfe_local/DFPWolfe/MP20251124/Results.lean",
-      "line": 68,
-      "endLine": 79,
+      "line": 181,
+      "endLine": 188,
       "statement": "\\label{thm:concrete}\nThere exists $\\bar\\sigma>0$ such that, for each fixed\n$0<\\sigma_*<\\bar\\sigma$ and all sufficiently large $j_0$, the construction\nis well defined and yields a uniformly convex $f\\in C^2(\\R^2)$ with\na globally $1/2$-H\\\"older Hessian satisfying\n\\eqref{eq:prescribed-jets}--\\eqref{eq:fixed-hessian-bound}.\nThe positive step lengths \\eqref{eq:fixed-realization} generate exactly\n$\\{x_k,H_k\\}$ by classical DFP with strong Wolfe parameters $(1/4,1/2)$,\nwith $\\|\\nabla f(x_k)\\|\\to1$ and the unit circle as accumulation set.",
       "statementHtml": "<p><code>There exists $\\bar\\sigma&gt;0$ such that, for each fixed $0&lt;\\sigma_*&lt;\\bar\\sigma$ and all sufficiently large $j_0$, the construction is well defined and yields a uniformly convex $f\\in C^2(\\R^2)$ with a globally $1/2$-H\\&quot;older Hessian satisfying [eq:prescribed-jets]--[eq:fixed-hessian-bound]. The positive step lengths [eq:fixed-realization] generate exactly $\\{x_k,H_k\\}$ by classical DFP with strong Wolfe parameters $(1/4,1/2)$, with $\\|\\nabla f(x_k)\\|\\to1$ and the unit circle as accumulation set.</code></p>",
       "statementSha256": "521611a1fb02e1a2cc3fdc36c39443d1eb635129a46bd0e84c5e222c49499f01",
@@ -197,15 +197,15 @@
         {
           "declaration": "DFPWolfe.MP20251124.theorem4_concrete",
           "file": "Papers/DFP_wolfe_local/DFPWolfe/MP20251124/Results.lean",
-          "line": 68
+          "line": 181
         }
       ],
       "leanExcerpts": [
         {
           "declaration": "DFPWolfe.MP20251124.theorem4_concrete",
           "file": "Papers/DFP_wolfe_local/DFPWolfe/MP20251124/Results.lean",
-          "line": 68,
-          "leanCode": "theorem theorem4_concrete :\n    Nonempty (DFPWolfe.Latest.PlanarConstruction (1 / 4) (1 / 2) (1 / 2) (1 / 2)) := by\n  apply DFPWolfe.Latest.planarSource\n  · norm_num\n  · norm_num\n  · norm_num\n  · norm_num\n  · norm_num\n\n/-- Lemma 5 of `20251124-DFP/MP.zip`: the fixed limiting polar stages close\nthe explicit even and odd reference states. -/\n"
+          "line": 181,
+          "leanCode": "theorem theorem4_concrete :\n    Nonempty (DFPWolfe.Latest.PlanarConstruction (1 / 4) (1 / 2) (1 / 2) (1 / 2)) := by\n  exact DFPWolfe.Latest.planarSource (1 / 4) (1 / 2) (1 / 2) (1 / 2)\n    (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num)\n\n/-- Lemma 5 of `20251124-DFP/MP.zip`: the fixed limiting polar stages close\nthe explicit even and odd reference states. -/\n"
         }
       ],
       "dependencies": [
@@ -219,18 +219,18 @@
       "statementDependencies": [],
       "proofDependencies": [],
       "dependencyEvidence": "curated-paper-dependencies",
-      "sourceSha256": "f86f2f9f224df430411d9bdc59872e0ea0828e8a52e0d5198834a562fb8e30fb"
+      "sourceSha256": "b5f240b65a9c72079366d0f497d51ce0afe844b62690ef24976298bfb3e46a3a"
     },
     {
       "id": "mp24-lemma-5",
       "label": "Lemma 5",
-      "title": "Fixed one-step limiting map",
+      "title": "Analytic one-step polar limit",
       "type": "Lemma",
       "section": "construction",
-      "declaration": "DFPWolfe.MP20251124.lemma5_fixedSingleLimit",
+      "declaration": "DFPWolfe.MP20251124.lemma5_analyticPathLimit",
       "file": "Papers/DFP_wolfe_local/DFPWolfe/MP20251124/Results.lean",
-      "line": 79,
-      "endLine": 91,
+      "line": 221,
+      "endLine": 242,
       "statement": "\\label{lem:fixed-single-limit}\nFix $X\\succ0$ with $X_{12}>0$ and put $Z=S_\\tau^{-1}XS_\\tau^{-1}$.\nSuppose $\\delta=\\bar\\delta\\tau$ with $\\bar\\delta>0$ fixed and\n$\\zeta,\\zeta_+\\to1$ as $\\tau\\downarrow0$. Then $p^Tq>0$ for all\nsufficiently small $\\tau>0$, and the update \\eqref{eq:fixed-scaled-update} satisfies\n\\begin{equation}\\label{eq:fixed-limiting-map}\n S_\\tau Z_+S_\\tau\\longrightarrow L_{\\bar\\delta}(X)\n =\\begin{pmatrix}\n \\gamma&\\gamma(\\bar h-\\bar\\delta)\\\\\n \\gamma(\\bar h-\\bar\\delta)&1+\\gamma(\\bar h-\\bar\\delta)^2\n \\end{pmatrix}.\n\\end{equation}\nThe limit is positive definite and has determinant $\\gamma$.",
       "statementHtml": "<p><code>Fix $X\\succ0$ with $X_{12}&gt;0$ and put $Z=S_\\tau^{-1}XS_\\tau^{-1}$. Suppose $\\delta=\\bar\\delta\\tau$ with $\\bar\\delta&gt;0$ fixed and $\\zeta,\\zeta_+\\to1$ as $\\tau\\downarrow0$. Then $p^Tq&gt;0$ for all sufficiently small $\\tau&gt;0$, and the update [eq:fixed-scaled-update] satisfies S_\\tau Z_+S_\\tau\\longrightarrow L_{\\bar\\delta}(X) = \\gamma&amp;\\gamma(\\bar h-\\bar\\delta)\\\\ \\gamma(\\bar h-\\bar\\delta)&amp;1+\\gamma(\\bar h-\\bar\\delta)^2 . The limit is positive definite and has determinant $\\gamma$.</code></p>",
       "statementSha256": "585d39887317beffa56883b3abc7cb78e4509976489db2303cb832b52a4e14b5",
@@ -244,35 +244,35 @@
       "paperMapping": "Paper-numbered result with a source-facing Lean declaration.",
       "relatedDeclarations": [
         {
-          "declaration": "DFPWolfe.MP20251124.lemma5_fixedSingleLimit",
+          "declaration": "DFPWolfe.MP20251124.lemma5_analyticPathLimit",
           "file": "Papers/DFP_wolfe_local/DFPWolfe/MP20251124/Results.lean",
-          "line": 79
+          "line": 221
         }
       ],
       "leanExcerpts": [
         {
-          "declaration": "DFPWolfe.MP20251124.lemma5_fixedSingleLimit",
+          "declaration": "DFPWolfe.MP20251124.lemma5_analyticPathLimit",
           "file": "Papers/DFP_wolfe_local/DFPWolfe/MP20251124/Results.lean",
-          "line": 79,
-          "leanCode": "theorem lemma5_fixedSingleLimit :\n    Normalized.leadingStage (1 : ℝ) (evenState 1 1 (1 / 3)) =\n        oddState 1 1 (1 / 3) ∧\n      Normalized.leadingStage (1 : ℝ) (oddState 1 1 (1 / 3)) =\n        evenState 1 1 (1 / 3) := by\n  have hcycle : CycleDomain (1 : ℝ) 1 (1 / 3) := by\n    constructor <;> norm_num\n  have hmatch := And.intro (evenToOdd hcycle) (oddToEven hcycle)\n  simpa only [Parameters.leadingStage_eq_original] using hmatch\n\n/-- Helper for lem:fixed-single-limit: the canceled normalized stage at zero\nscale is the explicit limiting map used in the manuscript. -/\n"
+          "line": 221,
+          "leanCode": "theorem lemma5_analyticPathLimit (a : ℝ) (x : ℝ × ℝ × ℝ)\n    (ζ η : ℝ → ℝ) (ha : a ≠ 0) (hC : x.2.1 ≠ 0)\n    (hζ : AnalyticAt ℝ ζ 0) (hη : AnalyticAt ℝ η 0)\n    (hζ0 : ζ 0 = 1) (hη0 : η 0 = 1) :\n    Tendsto (fun t : ℝ ↦ Normalized.stage a t x (ζ t) (η t)) (𝓝 0)\n      (𝓝 (Normalized.leadingStage a x)) := by\n  have hσ : Normalized.stageSigma a 0 x (ζ 0) (η 0) ≠ 0 := by\n    rw [hζ0, hη0]\n    simp [Normalized.stageSigma_def, Normalized.stepV_def,\n      Normalized.stepW_def]\n  have hAnalytic : AnalyticAt ℝ\n      (fun t : ℝ ↦ Normalized.stage a t x (ζ t) (η t)) 0 := by\n    exact Normalized.stageAlong_analyticAt\n      (a := fun _ : ℝ ↦ a) (t := fun y : ℝ ↦ y)\n      (X := fun _ : ℝ ↦ x) (ζ := ζ) (η := η) (z := 0)\n      analyticAt_const analyticAt_id analyticAt_const hζ hη ha rfl hC hσ\n  have hcont := hAnalytic.continuousAt.tendsto\n  simpa only [hζ0, hη0, Normalized.stage_zero] using hcont\n\n/-- Helper for lem:fixed-single-limit: the canceled normalized stage at zero\nscale is the explicit limiting map used in the manuscript. -/\n"
         }
       ],
       "dependencies": [],
       "statementDependencies": [],
       "proofDependencies": [],
       "dependencyEvidence": "curated-paper-dependencies",
-      "sourceSha256": "f86f2f9f224df430411d9bdc59872e0ea0828e8a52e0d5198834a562fb8e30fb"
+      "sourceSha256": "b5f240b65a9c72079366d0f497d51ce0afe844b62690ef24976298bfb3e46a3a"
     },
     {
       "id": "mp24-lemma-6",
       "label": "Lemma 6",
-      "title": "Fixed limiting two-cycle",
+      "title": "Local two-step continuation bounds",
       "type": "Lemma",
       "section": "construction",
-      "declaration": "DFPWolfe.MP20251124.lemma6_fixedCycle",
+      "declaration": "DFPWolfe.MP20251124.lemma6_localCycleBounds",
       "file": "Papers/DFP_wolfe_local/DFPWolfe/MP20251124/Results.lean",
-      "line": 120,
-      "endLine": 127,
+      "line": 272,
+      "endLine": 279,
       "statement": "\\label{lem:fixed-cycle}\nThe map $\\Phi(\\tau^2,t,\\gamma,u)$ defined in \\eqref{eq:fixed-two-step-map}\nextends analytically to a neighborhood of $(0,0,\\gamma_*,0)$.\nFor sufficiently small $\\tau^2,t\\ge0$ in this neighborhood, it satisfies\n\\begin{align}\n &\\|u_+\\|_*\\le \\kappa_1\\|u\\|_*+\\kappa_2(t+\\tau^2),\n \\label{eq:fixed-transverse}\\\\\n &\\gamma_+=\\gamma-\\frac43 t(\\gamma-\\gamma_*)\n   +O(t\\|u\\|_*+t^2+\\tau^2),\n \\label{eq:fixed-scalar}\n\\end{align}\nfor a fixed norm $\\|\\cdot\\|_*$, $0<\\kappa_1<1$, and $\\kappa_2>0$.\nThe estimates are uniform on sufficiently small closed neighborhoods\nof $\\gamma_*$ and $u=0$.\nFor $\\tau>0$ in these neighborhoods, both stages are well defined with\n$Z\\succ0$, $Z_{12}>0$, and $r,p^Tq>0$.",
       "statementHtml": "<p><code>The map $\\Phi(\\tau^2,t,\\gamma,u)$ defined in [eq:fixed-two-step-map] extends analytically to a neighborhood of $(0,0,\\gamma_*,0)$. For sufficiently small $\\tau^2,t\\ge0$ in this neighborhood, it satisfies &amp;\\|u_+\\|_*\\le \\kappa_1\\|u\\|_*+\\kappa_2(t+\\tau^2), \\\\ &amp;\\gamma_+=\\gamma-\\frac43 t(\\gamma-\\gamma_*) +O(t\\|u\\|_*+t^2+\\tau^2), for a fixed norm $\\|\\cdot\\|_*$, $0&lt;\\kappa_1&lt;1$, and $\\kappa_2&gt;0$. The estimates are uniform on sufficiently small closed neighborhoods of $\\gamma_*$ and $u=0$. For $\\tau&gt;0$ in these neighborhoods, both stages are well defined with $Z\\succ0$, $Z_{12}&gt;0$, and $r,p^Tq&gt;0$.</code></p>",
       "statementSha256": "7173580789a42eaffb4337110838927cb145c3ece4e462e216dbe19b93382db1",
@@ -286,17 +286,17 @@
       "paperMapping": "Paper-numbered result with a source-facing Lean declaration.",
       "relatedDeclarations": [
         {
-          "declaration": "DFPWolfe.MP20251124.lemma6_fixedCycle",
+          "declaration": "DFPWolfe.MP20251124.lemma6_localCycleBounds",
           "file": "Papers/DFP_wolfe_local/DFPWolfe/MP20251124/Results.lean",
-          "line": 120
+          "line": 272
         }
       ],
       "leanExcerpts": [
         {
-          "declaration": "DFPWolfe.MP20251124.lemma6_fixedCycle",
+          "declaration": "DFPWolfe.MP20251124.lemma6_localCycleBounds",
           "file": "Papers/DFP_wolfe_local/DFPWolfe/MP20251124/Results.lean",
-          "line": 120,
-          "leanCode": "theorem lemma6_fixedCycle (p : Parameters) (hβ : 0 < p.beta) (hβone : p.beta < 1) :\n    ∃ N > 0, ∃ M > 0, ∃ J : ℕ, 0 < J ∧\n      ∀ j0 : ℕ, J ≤ j0 → Continuation.TrajectoryBounds p j0 N M := by\n  exact Continuation.existsTrajectoryBounds p hβ hβone\n\n/-- Lemma 7 of `20251124-DFP/MP.zip`: the actual recurrence remains feasible\nfor every later index and its odd phase has a uniform transverse estimate. -/\n"
+          "line": 272,
+          "leanCode": "theorem lemma6_localCycleBounds (p : Parameters) (hβ : 0 < p.beta) :\n    ∃ C > 0, ∃ r > 0, ∃ ρ > 0, ∃ ε > 0,\n      Continuation.LocalCycleBounds p C r ρ ε := by\n  exact Continuation.exists_localCycleBounds p hβ\n\n/-- Lemma 6 of `20251124-DFP/MP.zip`: the normalized recurrence has a\nuniform trajectory bound before the starting index is chosen. -/\n"
         }
       ],
       "dependencies": [
@@ -305,7 +305,7 @@
       "statementDependencies": [],
       "proofDependencies": [],
       "dependencyEvidence": "curated-paper-dependencies",
-      "sourceSha256": "f86f2f9f224df430411d9bdc59872e0ea0828e8a52e0d5198834a562fb8e30fb"
+      "sourceSha256": "b5f240b65a9c72079366d0f497d51ce0afe844b62690ef24976298bfb3e46a3a"
     },
     {
       "id": "mp24-lemma-7",
@@ -315,8 +315,8 @@
       "section": "construction",
       "declaration": "DFPWolfe.MP20251124.lemma7_fixedContinuation",
       "file": "Papers/DFP_wolfe_local/DFPWolfe/MP20251124/Results.lean",
-      "line": 127,
-      "endLine": 139,
+      "line": 286,
+      "endLine": 310,
       "statement": "\\label{lem:fixed-continuation}\nFor sufficiently large $j_0$, the recurrence is well defined for all $k\\ge0$\nwith $Z_k\\succ0$, $(Z_k)_{12}>0$, and $r_k,p_k^Tq_k>0$.\nFor every $j\\ge0$,\n\\begin{equation}\\label{eq:fixed-tube}\n\\begin{gathered}\n \\gamma_j-\\gamma_*=O(N_j^{-1/3}),\\qquad\n X_j-X_{\\mathrm E}(\\gamma_j)=O(N_j^{-1}),\\\\\n S_{\\tau_j}Z_{2j+1}S_{\\tau_j}-X_{\\mathrm O}(\\gamma_j)\n =O(N_j^{-1}).\n\\end{gathered}\n\\end{equation}\nThe constants in \\eqref{eq:fixed-tube} are independent of $j$ and $j_0$\nonce $j_0$ is sufficiently large.",
       "statementHtml": "<p><code>For sufficiently large $j_0$, the recurrence is well defined for all $k\\ge0$ with $Z_k\\succ0$, $(Z_k)_{12}&gt;0$, and $r_k,p_k^Tq_k&gt;0$. For every $j\\ge0$, \\gamma_j-\\gamma_*=O(N_j^{-1/3}),\\qquad X_j-X_{\\mathrm E}(\\gamma_j)=O(N_j^{-1}),\\\\ S_{\\tau_j}Z_{2j+1}S_{\\tau_j}-X_{\\mathrm O}(\\gamma_j) =O(N_j^{-1}). The constants in [eq:fixed-tube] are independent of $j$ and $j_0$ once $j_0$ is sufficiently large.</code></p>",
       "statementSha256": "4d74630b125c396ec71e8322d3a77fd9fd97dd1bd3f95541b3bd252529fcaa57",
@@ -332,15 +332,15 @@
         {
           "declaration": "DFPWolfe.MP20251124.lemma7_fixedContinuation",
           "file": "Papers/DFP_wolfe_local/DFPWolfe/MP20251124/Results.lean",
-          "line": 127
+          "line": 286
         }
       ],
       "leanExcerpts": [
         {
           "declaration": "DFPWolfe.MP20251124.lemma7_fixedContinuation",
           "file": "Papers/DFP_wolfe_local/DFPWolfe/MP20251124/Results.lean",
-          "line": 127,
-          "leanCode": "theorem lemma7_fixedContinuation (p : Parameters) (hβ : 0 < p.beta) (hβone : p.beta < 1) :\n    ∃ N > 0, ∃ M > 0, ∃ K : ℝ, 0 < K ∧ ∃ J : ℕ, 0 < J ∧ ∀ j0 : ℕ, J ≤ j0 →\n      Continuation.TrajectoryBounds p j0 N M ∧\n        (∀ k : ℕ, Continuation.RawFeasible (p.withStartIndex j0) k) ∧\n        ∀ j : ℕ,\n          ‖(p.withStartIndex j0).normalizedOddState j -\n              p.oddReference (Continuation.stateAt p j0 j).1‖ ≤\n            K / ((j0 + j : ℕ) : ℝ) := by\n  exact Continuation.existsContinuationEstimates p hβ hβone\n\n/-- Lemma 8 of `20251124-DFP/MP.zip`: the actual points have uniform\nseparation, linear step bounds and the complete unit-circle cluster set. -/\n"
+          "line": 286,
+          "leanCode": "theorem lemma7_fixedContinuation (p : Parameters) (hβ : 0 < p.beta) (hβone : p.beta < 1) :\n    ∃ N > 0, ∃ M > 0, ∃ K : ℝ, 0 < K ∧ ∃ J : ℕ, 0 < J ∧ ∀ j0 : ℕ, J ≤ j0 →\n      Continuation.TrajectoryBounds p j0 N M ∧\n        (∀ j : ℕ,\n          Continuation.fastSize p (Continuation.stateAt p j0 j) ≤\n              N / ((j0 + j : ℕ) : ℝ) ∧\n            |Continuation.slowError p (Continuation.stateAt p j0 j)| ≤\n              M * scale p.beta j0 j ^ (1 - p.beta)) ∧\n        (∀ k : ℕ, Continuation.RawFeasible (p.withStartIndex j0) k) ∧\n        ∀ j : ℕ,\n          ‖(p.withStartIndex j0).normalizedOddState j -\n              p.oddReference (Continuation.stateAt p j0 j).1‖ ≤\n            K / ((j0 + j : ℕ) : ℝ) := by\n  obtain ⟨N, hN, M, hM, K, hK, J, hJ, h⟩ :=\n    Continuation.existsContinuationEstimates p hβ hβone\n  refine ⟨N, hN, M, hM, K, hK, J, hJ, ?_⟩\n  intro j0 hj0\n  obtain ⟨htrajectory, hraw, hodd⟩ := h j0 hj0\n  refine ⟨htrajectory, ?_, hraw, hodd⟩\n  intro j\n  exact ⟨htrajectory.fast_bound j, htrajectory.slow_bound j⟩\n\n/-- Lemma 8 of `20251124-DFP/MP.zip`: the actual points have uniform\nseparation, linear step bounds and the complete unit-circle cluster set. -/\n"
         }
       ],
       "dependencies": [
@@ -349,7 +349,7 @@
       "statementDependencies": [],
       "proofDependencies": [],
       "dependencyEvidence": "curated-paper-dependencies",
-      "sourceSha256": "f86f2f9f224df430411d9bdc59872e0ea0828e8a52e0d5198834a562fb8e30fb"
+      "sourceSha256": "b5f240b65a9c72079366d0f497d51ce0afe844b62690ef24976298bfb3e46a3a"
     },
     {
       "id": "mp24-lemma-8",
@@ -359,8 +359,8 @@
       "section": "construction",
       "declaration": "DFPWolfe.MP20251124.lemma8_fixedGeometry",
       "file": "Papers/DFP_wolfe_local/DFPWolfe/MP20251124/Results.lean",
-      "line": 139,
-      "endLine": 148,
+      "line": 310,
+      "endLine": 319,
       "statement": "\\label{lem:fixed-geometry}\nFor sufficiently large $j_0$, the tail products in\n\\eqref{eq:fixed-radii} converge and satisfy $\\rho_k\\downarrow1$.\nThe accumulation set of the prescribed points is the unit circle\n$\\Gamma$, and there is a constant $\\kappa>0$, independent of $j_0$,\nsuch that for every $m\\ne k$,\n\\begin{equation}\\label{eq:fixed-separation}\n \\|x_m-x_k\\|\\ge\\kappa\n \\max\\{\\tau_{\\lfloor m/2\\rfloor},\\tau_{\\lfloor k/2\\rfloor}\\}.\n\\end{equation}\nThe prescribed values $\\rho_k^2/2$ and gradients $g_k$ satisfy the\nstrong Wolfe conditions with $(\\eta_1,\\eta_2)=(1/4,1/2)$.",
       "statementHtml": "<p><code>For sufficiently large $j_0$, the tail products in [eq:fixed-radii] converge and satisfy $\\rho_k\\downarrow1$. The accumulation set of the prescribed points is the unit circle $\\Gamma$, and there is a constant $\\kappa&gt;0$, independent of $j_0$, such that for every $m\\ne k$, \\|x_m-x_k\\|\\ge\\kappa \\max\\{\\tau_{\\lfloor m/2\\rfloor},\\tau_{\\lfloor k/2\\rfloor}\\}. The prescribed values $\\rho_k^2/2$ and gradients $g_k$ satisfy the strong Wolfe conditions with $(\\eta_1,\\eta_2)=(1/4,1/2)$.</code></p>",
       "statementSha256": "da21eb447986a6bfd1990dbac18c0ab7cb92878072f08ecbcd3630eebb875569",
@@ -376,14 +376,14 @@
         {
           "declaration": "DFPWolfe.MP20251124.lemma8_fixedGeometry",
           "file": "Papers/DFP_wolfe_local/DFPWolfe/MP20251124/Results.lean",
-          "line": 139
+          "line": 310
         }
       ],
       "leanExcerpts": [
         {
           "declaration": "DFPWolfe.MP20251124.lemma8_fixedGeometry",
           "file": "Papers/DFP_wolfe_local/DFPWolfe/MP20251124/Results.lean",
-          "line": 139,
+          "line": 310,
           "leanCode": "theorem lemma8_fixedGeometry (p : Parameters) (hβ : 0 < p.beta) (hβone : p.beta < 1) :\n    ∃ N > 0, ∃ M > 0, ∃ B > 0, ∃ K > 0, ∃ c > 0, ∃ U > 0,\n      ∃ a > 0, ∃ b > 0, ∃ s > 0, ∃ V > 0, ∃ J : ℕ, 0 < J ∧\n        ∀ j0 : ℕ, J ≤ j0 →\n          ActualGeometry.SourceGeometricData p j0 N M B K c U a b s V := by\n  exact ActualGeometry.existsSourceGeometry p hβ hβone\n\n/-- Lemma 9 of `20251124-DFP/MP.zip`: the explicit cutoff sum realizes\nall endpoint jets and the requested global Hessian bounds. -/\n"
         }
       ],
@@ -394,7 +394,7 @@
       "statementDependencies": [],
       "proofDependencies": [],
       "dependencyEvidence": "curated-paper-dependencies",
-      "sourceSha256": "f86f2f9f224df430411d9bdc59872e0ea0828e8a52e0d5198834a562fb8e30fb"
+      "sourceSha256": "b5f240b65a9c72079366d0f497d51ce0afe844b62690ef24976298bfb3e46a3a"
     },
     {
       "id": "mp24-lemma-9",
@@ -404,8 +404,8 @@
       "section": "construction",
       "declaration": "DFPWolfe.MP20251124.lemma9_fixedRealization",
       "file": "Papers/DFP_wolfe_local/DFPWolfe/MP20251124/Results.lean",
-      "line": 148,
-      "endLine": 158,
+      "line": 319,
+      "endLine": 329,
       "statement": "\\label{lem:fixed-realization}\nFor sufficiently large $j_0$, the function \\eqref{eq:objective} is\n$C^2$ with a globally $1/2$-H\\\"older continuous Hessian and satisfies\n\\eqref{eq:prescribed-jets} and \\eqref{eq:fixed-hessian-bound}.",
       "statementHtml": "<p><code>For sufficiently large $j_0$, the function [eq:objective] is $C^2$ with a globally $1/2$-H\\&quot;older continuous Hessian and satisfies [eq:prescribed-jets] and [eq:fixed-hessian-bound].</code></p>",
       "statementSha256": "22a922373c996e6f2222ff977f37e84ed1593bb2e500217d82ac861772ac04e5",
@@ -421,14 +421,14 @@
         {
           "declaration": "DFPWolfe.MP20251124.lemma9_fixedRealization",
           "file": "Papers/DFP_wolfe_local/DFPWolfe/MP20251124/Results.lean",
-          "line": 148
+          "line": 319
         }
       ],
       "leanExcerpts": [
         {
           "declaration": "DFPWolfe.MP20251124.lemma9_fixedRealization",
           "file": "Papers/DFP_wolfe_local/DFPWolfe/MP20251124/Results.lean",
-          "line": 148,
+          "line": 319,
           "leanCode": "theorem lemma9_fixedRealization (p : Parameters) (hβ : 0 < p.beta) (hβone : p.beta < 1)\n    (ε : ℝ) (hεpos : 0 < ε) (hε : ε < 1) :\n    ∃ N > 0, ∃ M > 0, ∃ κ > 0, ∃ H ≥ 0, ∃ s > 0, ∃ Ustep > 0, ∃ Cobj ≥ 0,\n      ∃ J : ℕ, 0 < J ∧ ∀ j0 : ℕ, J ≤ j0 →\n        Objective.SourceObjectiveData p j0 N M κ ε H ∧\n          Objective.SourceGeometricData (p.withStartIndex j0) κ s Ustep Cobj := by\n  exact Objective.existsSourceObjectiveData p hβ hβone ε hεpos hε\n\n/-- Lemma 10 of `20251124-DFP/MP.zip`: every admissible Wolfe pair\nadmits the strict stable reference parameters used by the general family. -/\n"
         }
       ],
@@ -438,7 +438,7 @@
       "statementDependencies": [],
       "proofDependencies": [],
       "dependencyEvidence": "curated-paper-dependencies",
-      "sourceSha256": "f86f2f9f224df430411d9bdc59872e0ea0828e8a52e0d5198834a562fb8e30fb"
+      "sourceSha256": "b5f240b65a9c72079366d0f497d51ce0afe844b62690ef24976298bfb3e46a3a"
     },
     {
       "id": "mp24-lemma-10",
@@ -448,8 +448,8 @@
       "section": "generalization",
       "declaration": "DFPWolfe.MP20251124.lemma10_generalReference",
       "file": "Papers/DFP_wolfe_local/DFPWolfe/MP20251124/Results.lean",
-      "line": 158,
-      "endLine": 165,
+      "line": 329,
+      "endLine": 336,
       "statement": "\\label{lem:general-reference}\nThe prescription \\eqref{eq:general-parameter-prescription} can be completed\nto give positive angular coefficients and an analytic family of positive\ndefinite two-cycles \\eqref{eq:general-family} for \\eqref{eq:fixed-limiting-map}.\nAt $\\gamma_*$, both stages have strict limiting strong Wolfe margins,\n$J_*$ has spectral radius less than one, and $\\gamma'(\\nu_*)>0$.",
       "statementHtml": "<p><code>The prescription [eq:general-parameter-prescription] can be completed to give positive angular coefficients and an analytic family of positive definite two-cycles [eq:general-family] for [eq:fixed-limiting-map]. At $\\gamma_*$, both stages have strict limiting strong Wolfe margins, $J_*$ has spectral radius less than one, and $\\gamma&#x27;(\\nu_*)&gt;0$.</code></p>",
       "statementSha256": "cdd3ad51fa56f1fc8d3d9a33fdeba8049925e45e007c4b21cadead7891cfc00b",
@@ -465,14 +465,14 @@
         {
           "declaration": "DFPWolfe.MP20251124.lemma10_generalReference",
           "file": "Papers/DFP_wolfe_local/DFPWolfe/MP20251124/Results.lean",
-          "line": 158
+          "line": 329
         }
       ],
       "leanExcerpts": [
         {
           "declaration": "DFPWolfe.MP20251124.lemma10_generalReference",
           "file": "Papers/DFP_wolfe_local/DFPWolfe/MP20251124/Results.lean",
-          "line": 158,
+          "line": 329,
           "leanCode": "theorem lemma10_generalReference {c1 c2 : ℝ} (hc1 : 0 < c1)\n    (hc12 : c1 < c2) (hc2 : c2 < 1) :\n    ∃ ell z : ℝ, StrictWolfeBase c1 c2 ell z := by\n  exact strictWolfeBaseExists hc1 hc12 hc2\n\n/-- Lemma 11 of `20251124-DFP/MP.zip`: the general continuation interface\nis available for every admissible exponent. -/\n"
         }
       ],
@@ -482,7 +482,7 @@
       "statementDependencies": [],
       "proofDependencies": [],
       "dependencyEvidence": "curated-paper-dependencies",
-      "sourceSha256": "f86f2f9f224df430411d9bdc59872e0ea0828e8a52e0d5198834a562fb8e30fb"
+      "sourceSha256": "b5f240b65a9c72079366d0f497d51ce0afe844b62690ef24976298bfb3e46a3a"
     },
     {
       "id": "mp24-lemma-11",
@@ -492,8 +492,8 @@
       "section": "generalization",
       "declaration": "DFPWolfe.MP20251124.lemma11_generalContinuation",
       "file": "Papers/DFP_wolfe_local/DFPWolfe/MP20251124/Results.lean",
-      "line": 165,
-      "endLine": 179,
+      "line": 336,
+      "endLine": 357,
       "statement": "\\label{lem:general-continuation}\nFor sufficiently large $j_0$, the recurrence is defined for every $k\\ge0$,\nwith $Z_k\\succ0$, $(Z_k)_{12}>0$, $r_k>0$, and $p_k^Tq_k>0$.\nIn a fixed norm $\\|\\cdot\\|_*$ there are constants $\\kappa_6,\\kappa_8>0$ such that\n\\begin{equation}\\label{eq:general-tube}\n \\|u_j\\|_*\\le \\kappa_6N_j^{-1},\\qquad\n |\\gamma_j-\\gamma_*|\\le \\kappa_8N_j^{1-2\\mu}\n =\\kappa_8\\tau_j^{1-\\beta}\\qquad(j\\ge0).\n\\end{equation}",
       "statementHtml": "<p><code>For sufficiently large $j_0$, the recurrence is defined for every $k\\ge0$, with $Z_k\\succ0$, $(Z_k)_{12}&gt;0$, $r_k&gt;0$, and $p_k^Tq_k&gt;0$. In a fixed norm $\\|\\cdot\\|_*$ there are constants $\\kappa_6,\\kappa_8&gt;0$ such that \\|u_j\\|_*\\le \\kappa_6N_j^{-1},\\qquad |\\gamma_j-\\gamma_*|\\le \\kappa_8N_j^{1-2\\mu} =\\kappa_8\\tau_j^{1-\\beta}\\qquad(j\\ge0).</code></p>",
       "statementSha256": "e787c92065df6b9f6c41b0f7050cdf3370c95215f481f2830697a0cd8a396b9f",
@@ -509,15 +509,15 @@
         {
           "declaration": "DFPWolfe.MP20251124.lemma11_generalContinuation",
           "file": "Papers/DFP_wolfe_local/DFPWolfe/MP20251124/Results.lean",
-          "line": 165
+          "line": 336
         }
       ],
       "leanExcerpts": [
         {
           "declaration": "DFPWolfe.MP20251124.lemma11_generalContinuation",
           "file": "Papers/DFP_wolfe_local/DFPWolfe/MP20251124/Results.lean",
-          "line": 165,
-          "leanCode": "theorem lemma11_generalContinuation (p : Parameters) (hβ : 0 < p.beta)\n    (hβone : p.beta < 1) :\n    ∃ N > 0, ∃ M > 0, ∃ K : ℝ, 0 < K ∧ ∃ J : ℕ, 0 < J ∧ ∀ j0 : ℕ, J ≤ j0 →\n      Continuation.TrajectoryBounds p j0 N M ∧\n        (∀ k : ℕ, Continuation.RawFeasible (p.withStartIndex j0) k) := by\n  obtain ⟨N, hN, M, hM, K, hK, J, hJ, h⟩ :=\n    Continuation.existsContinuationEstimates p hβ hβone\n  refine ⟨N, hN, M, hM, K, hK, J, hJ, ?_⟩\n  intro j0 hj0\n  have hdata := h j0 hj0\n  exact ⟨hdata.1, hdata.2.1⟩\n\n/-- Corollary 12 of `20251124-DFP/MP.zip`: identity initialization in every\nfinite dimension at least two. -/\n"
+          "line": 336,
+          "leanCode": "theorem lemma11_generalContinuation (p : Parameters) (hβ : 0 < p.beta)\n    (hβone : p.beta < 1) :\n    ∃ N > 0, ∃ M > 0, ∃ K : ℝ, 0 < K ∧ ∃ J : ℕ, 0 < J ∧ ∀ j0 : ℕ, J ≤ j0 →\n      Continuation.TrajectoryBounds p j0 N M ∧\n        (∀ j : ℕ,\n          Continuation.fastSize p (Continuation.stateAt p j0 j) ≤\n              N / ((j0 + j : ℕ) : ℝ) ∧\n            |Continuation.slowError p (Continuation.stateAt p j0 j)| ≤\n              M * scale p.beta j0 j ^ (1 - p.beta)) ∧\n        (∀ k : ℕ, Continuation.RawFeasible (p.withStartIndex j0) k) := by\n  obtain ⟨N, hN, M, hM, K, hK, J, hJ, h⟩ :=\n    Continuation.existsContinuationEstimates p hβ hβone\n  refine ⟨N, hN, M, hM, K, hK, J, hJ, ?_⟩\n  intro j0 hj0\n  have hdata := h j0 hj0\n  refine ⟨hdata.1, ?_, hdata.2.1⟩\n  intro j\n  exact ⟨hdata.1.fast_bound j, hdata.1.slow_bound j⟩\n\n/-- Corollary 12 of `20251124-DFP/MP.zip`: identity initialization in every\nfinite dimension at least two. -/\n"
         }
       ],
       "dependencies": [
@@ -527,7 +527,7 @@
       "statementDependencies": [],
       "proofDependencies": [],
       "dependencyEvidence": "curated-paper-dependencies",
-      "sourceSha256": "f86f2f9f224df430411d9bdc59872e0ea0828e8a52e0d5198834a562fb8e30fb"
+      "sourceSha256": "b5f240b65a9c72079366d0f497d51ce0afe844b62690ef24976298bfb3e46a3a"
     },
     {
       "id": "mp24-corollary-12",
@@ -537,8 +537,8 @@
       "section": "main",
       "declaration": "DFPWolfe.MP20251124.corollary12_identityInitialization",
       "file": "Papers/DFP_wolfe_local/DFPWolfe/MP20251124/Results.lean",
-      "line": 179,
-      "endLine": 190,
+      "line": 357,
+      "endLine": 368,
       "statement": "\\label{cor:identity-initialization}\nFor every $n\\ge2$, $0<\\eta_1<\\eta_2<1$, and $\\beta\\in(0,1)$,\nthere exist $\\widetilde f\\in C^2(\\R^n)$ and $\\widetilde x_0$ such that\n$\\nabla^2\\widetilde f$ is globally $\\beta$-H\\\"older continuous and\n$mI\\preceq\\nabla^2\\widetilde f(x)\\preceq MI$ on $\\R^n$, for some\n$0<m\\le M<\\infty$. Classical DFP from $(\\widetilde x_0,I)$ admits an\ninfinite strong Wolfe sequence with parameters $\\eta_1,\\eta_2$ and\n$\\liminf_k\\|\\nabla\\widetilde f(\\widetilde x_k)\\|>0$.\nIts accumulation set is an ellipse centered at the origin in a\ntwo-dimensional subspace.",
       "statementHtml": "<p><code>For every $n\\ge2$, $0&lt;\\eta_1&lt;\\eta_2&lt;1$, and $\\beta\\in(0,1)$, there exist $\\widetilde f\\in C^2(\\R^n)$ and $\\widetilde x_0$ such that $\\nabla^2\\widetilde f$ is globally $\\beta$-H\\&quot;older continuous and $mI\\preceq\\nabla^2\\widetilde f(x)\\preceq MI$ on $\\R^n$, for some $0&lt;m\\le M&lt;\\infty$. Classical DFP from $(\\widetilde x_0,I)$ admits an infinite strong Wolfe sequence with parameters $\\eta_1,\\eta_2$ and $\\liminf_k\\|\\nabla\\widetilde f(\\widetilde x_k)\\|&gt;0$. Its accumulation set is an ellipse centered at the origin in a two-dimensional subspace.</code></p>",
       "statementSha256": "bb2e869ca26561247bc28239f1e3e6b91abb7c0cffd3dd91bfc49a08b4d98941",
@@ -554,14 +554,14 @@
         {
           "declaration": "DFPWolfe.MP20251124.corollary12_identityInitialization",
           "file": "Papers/DFP_wolfe_local/DFPWolfe/MP20251124/Results.lean",
-          "line": 179
+          "line": 357
         }
       ],
       "leanExcerpts": [
         {
           "declaration": "DFPWolfe.MP20251124.corollary12_identityInitialization",
           "file": "Papers/DFP_wolfe_local/DFPWolfe/MP20251124/Results.lean",
-          "line": 179,
+          "line": 357,
           "leanCode": "theorem corollary12_identityInitialization (n : ℕ) (hn : 2 ≤ n) (c1 c2 β : ℝ)\n    (hc1 : 0 < c1) (hc12 : c1 < c2) (hc2 : c2 < 1) (hβ : β ∈ Set.Ioo 0 1) :\n    ∃ m > 0, ∃ M ≥ m,\n      ∃ result : DFP.WolfeCounterexample.MatrixIdentityLiminfStrongWolfeCertificate n m M c1 c2,\n        StrongConvexOn Set.univ m result.iteration.objective ∧\n          ∃ i : EuclideanSpace ℝ (Fin 2) →ₗ[ℝ] EuclideanSpace ℝ (Fin n),\n            Transport.EllipseObjectiveProperties β result.iteration i := by\n  exact DFPWolfe.Latest.identityInitialization n hn c1 c2 β hc1 hc12 hc2 hβ\n\n/-- Lemma 13 of `20251124-DFP/MP.zip`: nonconvergence forces the planar\nDFP secant coefficient and the smallest inverse-Hessian eigenvalue to vanish. -/\n"
         }
       ],
@@ -571,7 +571,7 @@
       "statementDependencies": [],
       "proofDependencies": [],
       "dependencyEvidence": "curated-paper-dependencies",
-      "sourceSha256": "f86f2f9f224df430411d9bdc59872e0ea0828e8a52e0d5198834a562fb8e30fb"
+      "sourceSha256": "b5f240b65a9c72079366d0f497d51ce0afe844b62690ef24976298bfb3e46a3a"
     },
     {
       "id": "mp24-lemma-13",
@@ -581,8 +581,8 @@
       "section": "convergence",
       "declaration": "DFPWolfe.MP20251124.lemma13_planarDegeneration",
       "file": "Papers/DFP_wolfe_local/DFPWolfe/MP20251124/Results.lean",
-      "line": 190,
-      "endLine": 203,
+      "line": 368,
+      "endLine": 381,
       "statement": "\\label{lem:planar-degeneration}\nUnder these assumptions, if $x_k\\not\\to x_*$, then $\\{H_k\\}$ is bounded\nand, for all sufficiently large $k$,\n\\begin{equation}\\label{eq:planar-degeneration}\n0<\\lambda_k\\le C\\|s_{k-1}\\|\\|s_k\\|\\longrightarrow0.\n\\end{equation}\nIn particular, $\\lambda_{\\min}(H_k)\\to0$.",
       "statementHtml": "<p><code>Under these assumptions, if $x_k\\not\\to x_*$, then $\\{H_k\\}$ is bounded and, for all sufficiently large $k$, 0&lt;\\lambda_k\\le C\\|s_{k-1}\\|\\|s_k\\|\\longrightarrow0. In particular, $\\lambda_{\\min}(H_k)\\to0$.</code></p>",
       "statementSha256": "0fb596a186bc85129a8a9d981961958935092b1e380f2f13c30b18365c72c6a8",
@@ -598,14 +598,14 @@
         {
           "declaration": "DFPWolfe.MP20251124.lemma13_planarDegeneration",
           "file": "Papers/DFP_wolfe_local/DFPWolfe/MP20251124/Results.lean",
-          "line": 190
+          "line": 368
         }
       ],
       "leanExcerpts": [
         {
           "declaration": "DFPWolfe.MP20251124.lemma13_planarDegeneration",
           "file": "Papers/DFP_wolfe_local/DFPWolfe/MP20251124/Results.lean",
-          "line": 190,
+          "line": 368,
           "leanCode": "theorem lemma13_planarDegeneration (iteration : DFP.SecantIteration 2) {μ c₁ c₂ : ℝ}\n    (hf : ContDiff ℝ 2 iteration.objective)\n    (hstrong : StrongConvexOn Set.univ μ iteration.objective)\n    (hμ : 0 < μ) (hStep : ∀ k, 0 < iteration.stepLength k)\n    (hw : ∀ k, LineSearch.IsWeakWolfe c₁ c₂ iteration.objective\n      (iteration.point k) (iteration.point (k + 1) - iteration.point k)) :\n    ∃! xstar : EuclideanSpace ℝ (Fin 2),\n      (∀ z, iteration.objective xstar ≤ iteration.objective z) ∧\n        (¬ Tendsto iteration.point atTop (𝓝 xstar) →\n          DFP.PlanarConvergence.SecantDegeneration.DegenerationEstimates iteration) := by\n  exact DFPWolfe.Latest.planarDegeneration iteration hf hstrong hμ hStep hw\n\nend DFPWolfe.MP20251124\n"
         }
       ],
@@ -613,7 +613,7 @@
       "statementDependencies": [],
       "proofDependencies": [],
       "dependencyEvidence": "curated-paper-dependencies",
-      "sourceSha256": "f86f2f9f224df430411d9bdc59872e0ea0828e8a52e0d5198834a562fb8e30fb"
+      "sourceSha256": "b5f240b65a9c72079366d0f497d51ce0afe844b62690ef24976298bfb3e46a3a"
     }
   ],
   "generation": {
@@ -626,7 +626,7 @@
     "dependencyCoverage": "reviewed-paper-dependencies",
     "dependencyModel": "curated-paper-proof-v2",
     "scope": "20251124-DFP/MP.zip; theorem-like blocks follow the manuscript source order.",
-    "sourceSnapshot": "cada95d7e478df7492aa6cd55d71a932e3ee0036",
+    "sourceSnapshot": "433b706b233124ef219e748dcaeaf70c37266e3f",
     "manuscriptSha256": "6a35c7bb5e2ffc6d5ede723ca8ebcc6909bf16bac10f27980e4fabb40ca23a2c",
     "numbering": "Shared theorem counter in the manuscript source order; 13 theorem-like results.",
     "edges": 19,
