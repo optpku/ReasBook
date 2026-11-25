@@ -55,15 +55,56 @@ theorem theorem2
           Tendsto (fun k ↦ ‖gradient f (x k)‖) atTop (𝓝 0))) := by
   exact DFPWolfe.Latest.planarConvergenceCases orbit hf hμ hHessian hH₀ hWolfe hNeighborhood
 
-/-- Lemma 3 of `20251124-DFP/MP.zip`: the exact raw matrix recurrence
-used by the fixed and general polar constructions. -/
+/-- Lemma 3 of `20251124-DFP/MP.zip`: the exact polar step interface.
+The source search step, positive step length, inverse DFP update, and raw
+matrix recurrence are exposed on one actual `Parameters` orbit. -/
 theorem lemma3_matrixStep (p : Parameters) (hβ : 0 < p.beta)
-    (hstart : 0 < p.startIndex) (k : ℕ) :
+    (hstart : 0 < p.startIndex) (k : ℕ)
+    (hZ : (p.matrix k).PosDef) (hC : 0 < p.matrix k 0 1)
+    (hsin : 0 < Real.sin (p.angleIncrement k))
+    (hr : 0 < p.radiusRatio k)
+    (hbalance : p.radius k = p.radiusRatio k * p.radius (k + 1))
+    (hrNext : 0 < p.radius (k + 1))
+    (hσ : 0 < DFP.Polar.sigmaOf (p.matrix k) (p.angleIncrement k)
+      (p.zeta k) (p.zeta (k + 1))) :
     p.matrix (k + 1) = DFP.Polar.matrixStep (p.matrix k) (p.angleIncrement k)
-      (p.zeta k) (p.zeta (k + 1)) := by
-  exact Parameters.matrix_step p hβ hstart k
+        (p.zeta k) (p.zeta (k + 1)) ∧
+      0 < p.stepLength k ∧
+      WithLp.ofLp (p.point (k + 1) - p.point k) =
+        (-p.stepLength k) •
+          (p.inverseHessian k *ᵥ WithLp.ofLp (p.gradients k)) ∧
+      0 < WithLp.ofLp (p.point (k + 1) - p.point k) ⬝ᵥ
+        WithLp.ofLp (p.gradients (k + 1) - p.gradients k) ∧
+      p.inverseHessian (k + 1) = Matrix.inverseDFPUpdate (p.inverseHessian k)
+        (WithLp.ofLp (p.point (k + 1) - p.point k))
+        (WithLp.ofLp (p.gradients (k + 1) - p.gradients k)) := by
+  refine ⟨Parameters.matrix_step p hβ hstart k, ?_, ?_, ?_, ?_⟩
+  · exact p.stepLength_pos k hZ hC hsin hr
+  · exact p.chord_search k hZ hC hr hbalance
+  · exact p.secant_pairing_pos k hbalance hrNext hsin hσ
+  · exact p.inverseHessian_step k hβ hstart hbalance hZ
+      hrNext hsin hσ
 
-/-- Theorem 4 of `20251124-DFP/MP.zip`: the fixed `(1/4,1/2)` and
+ /-- Helper for `lem:polar-dfp`: the explicit polar search step and its
+ positive coefficient for one feasible source stage. -/
+ theorem lemma3_polarSearchStep (Z : Matrix (Fin 2) (Fin 2) ℝ)
+     (θ δ r rNext ζ : ℝ) (hZ : Z.PosDef) (hC : 0 < Z 0 1)
+     (hζ : 0 < ζ) (hsin : 0 < Real.sin δ) (hW : 0 < DFP.Polar.radiusRatioOf Z δ)
+     (hr : rNext * DFP.Polar.radiusRatioOf Z δ = r) :
+     0 < Z.det * Real.sin δ / (ζ * Z 0 1 * DFP.Polar.radiusRatioOf Z δ) ∧
+       WithLp.ofLp (rNext • DFP.Polar.polarUnit (θ + δ) -
+         r • DFP.Polar.polarUnit θ) =
+         (-(Z.det * Real.sin δ /
+           (ζ * Z 0 1 * DFP.Polar.radiusRatioOf Z δ))) •
+           ((DFP.Polar.rotationMatrix θ * Z⁻¹ *
+             (DFP.Polar.rotationMatrix θ).transpose) *ᵥ
+             WithLp.ofLp (ζ • (r • DFP.Polar.polarUnit θ))) := by
+   constructor
+   · exact DFP.Polar.PhysicalRealization.stepLength_pos Z δ ζ hZ hC hζ hsin hW
+   · exact DFP.Polar.PhysicalRealization.search_step Z θ δ r rNext ζ hr
+       hZ.isHermitian hC.ne' hZ.det_pos.ne' hζ.ne' hW.ne'
+
+ /-- Theorem 4 of `20251124-DFP/MP.zip`: the fixed `(1/4,1/2)` and
 `beta=1/2` construction exposes its actual objective, Wolfe orbit, and
 regularity certificate. -/
 theorem theorem4_concrete :
@@ -73,8 +114,12 @@ theorem theorem4_concrete :
         s.sourceData.objectiveEstimates.hessian_bounds ∧
         s.sourceData.objectiveEstimates.strongConvex ∧
         s.sourceData.objectiveEstimates.hessian_holder ∧
+        (∀ k, s.sourceData.objectiveEstimates.endpoints k) ∧
+        (∀ x, ‖x‖ ≤ 1 → s.sourceData.objectiveEstimates.disk x) ∧
+        (∀ x, s.sourceData.objectiveEstimates.hessian_near_identity x) ∧
         s.sourceData.clusterSet = Metric.sphere 0 1 ∧
         s.sourceData.gradientNorm_tendsto ∧
+        s.sourceIdentity ∧
         (∀ k, LineSearch.IsStrongWolfe (1 / 4) (1 / 2)
           ((s.parameters.withStartIndex s.startIndex).objective s.supportScale)
           ((s.parameters.withStartIndex s.startIndex).point k)
@@ -85,8 +130,13 @@ theorem theorem4_concrete :
   refine ⟨s, s.supportScale_pos, s.sourceData.objectiveEstimates.contDiff,
     s.sourceData.objectiveEstimates.hessian_bounds,
     s.sourceData.objectiveEstimates.strongConvex,
-    s.sourceData.objectiveEstimates.hessian_holder, s.sourceData.clusterSet,
-    s.sourceData.gradientNorm_tendsto, ?_⟩
+    s.sourceData.objectiveEstimates.hessian_holder,
+    s.sourceData.objectiveEstimates.endpoints,
+    s.sourceData.objectiveEstimates.disk,
+    s.sourceData.objectiveEstimates.hessian_near_identity,
+    s.sourceData.clusterSet,
+    s.sourceData.gradientNorm_tendsto,
+    s.sourceIdentity, ?_⟩
   intro k
   have hc1 := s.parameters.withStartIndex_c1 s.startIndex
   have hc2 := s.parameters.withStartIndex_c2 s.startIndex
@@ -122,7 +172,9 @@ theorem lemma5_fixedSingleLimit_general (a : ℝ) (x : ℝ × ℝ × ℝ)
         simp [Normalized.stageSigma_def, Normalized.stepV_def,
           Normalized.stepW_def])
     simpa only using h
-  simpa only [Normalized.stage_zero] using hAnalytic.continuousAt
+  have hcont : Tendsto (fun t : ℝ ↦ Normalized.stage a t x 1 1) (𝓝 0)
+      (𝓝 (Normalized.stage a 0 x 1 1)) := hAnalytic.continuousAt
+  simpa only [Normalized.stage_zero] using hcont
 
 /-- Helper for lem:fixed-single-limit: the canceled normalized stage at zero
 scale is the explicit limiting map used in the manuscript. -/

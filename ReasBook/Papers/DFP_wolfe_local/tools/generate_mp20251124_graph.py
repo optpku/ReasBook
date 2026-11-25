@@ -14,7 +14,7 @@ from pathlib import Path
 RESULTS = [
     ("mp24-theorem-1", "Theorem 1", "General strong-Wolfe counterexample", "thm:main", "main", "DFPWolfe.MP20251124.theorem1", ["mp24-theorem-4", "mp24-lemma-10", "mp24-lemma-11"], "Results.lean", "theorem1"),
     ("mp24-theorem-2", "Theorem 2", "Planar convergence with a locally Lipschitz Hessian", "thm:planar-convergence", "convergence", "DFPWolfe.MP20251124.theorem2", ["mp24-lemma-13"], "Results.lean", "theorem2"),
-    ("mp24-lemma-3", "Lemma 3", "Exact polar DFP matrix recurrence", "lem:polar-dfp", "construction", "DFPWolfe.MP20251124.lemma3_matrixStep", [], "Results.lean", "lemma3_matrixStep"),
+    ("mp24-lemma-3", "Lemma 3", "Exact polar DFP matrix recurrence", "lem:polar-dfp", "construction", "DFPWolfe.MP20251124.lemma3_polarSearchStep", [], "Results.lean", "lemma3_polarSearchStep"),
     ("mp24-theorem-4", "Theorem 4", "Fixed concrete polar construction", "thm:concrete", "main", "DFPWolfe.MP20251124.theorem4_concrete", ["mp24-lemma-3", "mp24-lemma-5", "mp24-lemma-6", "mp24-lemma-7", "mp24-lemma-8", "mp24-lemma-9"], "Results.lean", "theorem4_concrete"),
     ("mp24-lemma-5", "Lemma 5", "Fixed one-step limiting map", "lem:fixed-single-limit", "construction", "DFPWolfe.MP20251124.lemma5_fixedSingleLimit_general", [], "Results.lean", "lemma5_fixedSingleLimit_general"),
     ("mp24-lemma-6", "Lemma 6", "Fixed limiting two-cycle", "lem:fixed-cycle", "construction", "DFPWolfe.MP20251124.lemma6_fixedCycle", ["mp24-lemma-5"], "Results.lean", "lemma6_fixedCycle"),
