@@ -2,15 +2,13 @@
 
 **Published reading (v4.32.0):** [Verso](https://optpku.github.io/ReasBook/versions/v4.32.0/papers/dfp_wolfe_local/) · [Documentation](https://optpku.github.io/ReasBook/versions/v4.32.0/docs/ReasBook/DFP_wolfe_local/Paper.html) · [Theorem map](https://optpku.github.io/ReasBook/versions/v4.32.0/theorem-maps/papers/dfp_wolfe_local/)
 
-This ReasBook entry preserves three source routes under the same Lean project:
-the original center-manifold construction, the October 2026 fixed-exponent v21
-snapshot, and the current `20251117-DFP/arXiv.tex` general polar construction.
+The project contains the original center-manifold construction and three manuscript versions of the polar proof.
 
 | Route | Entry | Paper-facing resource |
 | --- | --- | --- |
 | Original center-manifold | [`DFPWolfe.Paper`](DFPWolfe/Paper.lean) | [Original theorem map](theorem-map/index.html?view=paper) |
 | October 2026 v21 snapshot | [`DFPWolfe.V21.Paper`](DFPWolfe/V21/Paper.lean) | [Historical v21 map](theorem-map/v21/index.html?view=paper) |
-| 20251117 latest polar proof | [`DFPWolfe.Latest.Paper`](DFPWolfe/Latest/Paper.lean) | [Latest theorem DAG](theorem-map/latest/index.html?view=paper) |
+| 20251117 polar proof | [`DFPWolfe.Latest.Paper`](DFPWolfe/Latest/Paper.lean) | [Latest theorem DAG](theorem-map/latest/index.html?view=paper) |
 | 20251124 polar proof | [`DFPWolfe.MP20251124.Paper`](DFPWolfe/MP20251124/Paper.lean) | [20251124 paper-numbered DAG](theorem-map/mp20251124/index.html?view=paper) |
 
 The 20251117 manuscript uses the shared amsthm counter in source order. Its
@@ -25,7 +23,7 @@ paper-numbered results are:
 - Lemma 12: planar secant degeneration;
 - Theorem 13: planar convergence.
 
-The 20251117 DAG has 13 nodes and 15 reviewed paper-order edges. It is generated
+The 20251117 DAG has 13 nodes and 19 reviewed proof dependencies. It is generated
 from the 20251117 manuscript SHA256
 `2a22ecf8e12959dd584a11732ba1836319eb16dd583059c283e4513b3dbbbdca`; its Lean
 source links use immutable source commit
@@ -38,9 +36,9 @@ with Theorems 1–2, Lemmas 3 and 5–11, Corollary 12, and Lemma 13, and the
 fixed construction recorded as Theorem 4.  The corresponding DAG has 13
 nodes and 19 reviewed paper-order edges.  Its statement source is
 `20251124-DFP/MP.zip/main.tex` with SHA256
-`6a35c7bb5e2ffc6d5ede723ca8ebcc6909bf16bac10f27980e4fabb40ca23a2c`.  Its
-Lean source links use the immutable ReasBook commit
-[`575db2e0`](https://github.com/optpku/ReasBook/commit/575db2e062732b467d0011824f8da4d4631615a9).
+`6a35c7bb5e2ffc6d5ede723ca8ebcc6909bf16bac10f27980e4fabb40ca23a2c`.  Its [Lean source links](https://github.com/optpku/ReasBook/tree/b905281c47d431d12c94af30c6d98ceae75ede76/ReasBook/Papers/DFP_wolfe_local/DFPWolfe/MP20251124) point to the declarations in the graph.
+
+Lemma 3 includes the search-step criterion and uniqueness. Lemma 5 covers arbitrary gradient factors tending to one. The fixed recurrence, its restoring derivative and reference contraction are formalized. The nonlinear continuation estimates and the resulting fixed-orbit geometry and interpolation needed for Theorem 4 remain open.
 
 - **Authors:** Benqi Liu, Zichen Wang, Zaiwen Wen, Liwei Zhang, and Yaxiang Yuan
 - **Contributor:** Zichen Wang ([@imathwy](https://github.com/imathwy))

@@ -14,18 +14,27 @@ from pathlib import Path
 RESULTS = [
     ("mp24-theorem-1", "Theorem 1", "General strong-Wolfe counterexample", "thm:main", "main", "DFPWolfe.MP20251124.theorem1", ["mp24-theorem-4", "mp24-lemma-10", "mp24-lemma-11"], "Results.lean", "theorem1"),
     ("mp24-theorem-2", "Theorem 2", "Planar convergence with a locally Lipschitz Hessian", "thm:planar-convergence", "convergence", "DFPWolfe.MP20251124.theorem2", ["mp24-lemma-13"], "Results.lean", "theorem2"),
-    ("mp24-lemma-3", "Lemma 3", "Exact polar search step, curvature, and DFP update", "lem:polar-dfp", "construction", "DFPWolfe.MP20251124.lemma3_matrixStep", [], "Results.lean", "lemma3_matrixStep"),
-    ("mp24-theorem-4", "Theorem 4", "General source witness interface for the Wolfe pair and exponent", "thm:concrete", "main", "DFPWolfe.MP20251124.theorem4_concrete", ["mp24-lemma-3", "mp24-lemma-5", "mp24-lemma-6", "mp24-lemma-7", "mp24-lemma-8", "mp24-lemma-9"], "Results.lean", "theorem4_concrete"),
-    ("mp24-lemma-5", "Lemma 5", "Generalized analytic one-step polar support", "lem:fixed-single-limit", "construction", "DFPWolfe.MP20251124.lemma5_analyticPathLimit", [], "Results.lean", "lemma5_analyticPathLimit"),
-    ("mp24-lemma-6", "Lemma 6", "Generalized local two-step continuation support", "lem:fixed-cycle", "construction", "DFPWolfe.MP20251124.lemma6_localCycleBounds", ["mp24-lemma-5"], "Results.lean", "lemma6_localCycleBounds"),
+    ("mp24-lemma-3", "Lemma 3", "Exact polar search step, curvature, and DFP update", "lem:polar-dfp", "construction", "DFPWolfe.MP20251124.lemma3_positiveStep_iff", [], "Results.lean", "lemma3_positiveStep_iff"),
+    ("mp24-theorem-4", "Theorem 4", "Fixed recurrence and a general existence witness (partial)", "thm:concrete", "main", "DFPWolfe.MP20251124.theorem4_concrete", ["mp24-lemma-3", "mp24-lemma-5", "mp24-lemma-6", "mp24-lemma-7", "mp24-lemma-8", "mp24-lemma-9"], "Results.lean", "theorem4_concrete"),
+    ("mp24-lemma-5", "Lemma 5", "Limit of a single scaled DFP step", "lem:fixed-single-limit", "construction", "DFPWolfe.MP20251124.SingleStepLimit.singleStepLimitMatrix", [], "SingleStepLimit.lean", "singleStepLimitMatrix"),
+    ("mp24-lemma-6", "Lemma 6", "Fixed-cycle derivative and reference contraction (partial)", "lem:fixed-cycle", "construction", "DFPWolfe.MP20251124.FixedCycle.restoringDerivative", ["mp24-lemma-5"], "FixedCycle.lean", "restoringDerivative"),
     ("mp24-lemma-7", "Lemma 7", "Generalized polar continuation support", "lem:fixed-continuation", "construction", "DFPWolfe.MP20251124.lemma7_fixedContinuation", ["mp24-lemma-6"], "Results.lean", "lemma7_fixedContinuation"),
-    ("mp24-lemma-8", "Lemma 8", "Generalized geometry and Wolfe support", "lem:fixed-geometry", "construction", "DFPWolfe.MP20251124.lemma8_fixedGeometry", ["mp24-lemma-3", "mp24-lemma-7"], "Results.lean", "lemma8_fixedGeometry"),
+    ("mp24-lemma-8", "Lemma 8", "Generalized geometric estimates (fixed Wolfe margins pending)", "lem:fixed-geometry", "construction", "DFPWolfe.MP20251124.lemma8_fixedGeometry", ["mp24-lemma-3", "mp24-lemma-7"], "Results.lean", "lemma8_fixedGeometry"),
     ("mp24-lemma-9", "Lemma 9", "Generalized objective realization support", "lem:fixed-realization", "construction", "DFPWolfe.MP20251124.lemma9_fixedRealization", ["mp24-lemma-8"], "Results.lean", "lemma9_fixedRealization"),
     ("mp24-lemma-10", "Lemma 10", "General Wolfe reference family", "lem:general-reference", "generalization", "DFPWolfe.MP20251124.lemma10_generalReference", ["mp24-lemma-5"], "Results.lean", "lemma10_generalReference"),
     ("mp24-lemma-11", "Lemma 11", "General Hölder continuation", "lem:general-continuation", "generalization", "DFPWolfe.MP20251124.lemma11_generalContinuation", ["mp24-lemma-6", "mp24-lemma-10"], "Results.lean", "lemma11_generalContinuation"),
     ("mp24-corollary-12", "Corollary 12", "Identity initialization", "cor:identity-initialization", "main", "DFPWolfe.MP20251124.corollary12_identityInitialization", ["mp24-theorem-1"], "Results.lean", "corollary12_identityInitialization"),
     ("mp24-lemma-13", "Lemma 13", "Planar secant degeneration", "lem:planar-degeneration", "convergence", "DFPWolfe.MP20251124.lemma13_planarDegeneration", [], "Results.lean", "lemma13_planarDegeneration"),
 ]
+
+
+SUPPORT = {
+    "mp24-lemma-3": [("Results.lean", name) for name in (
+        "lemma3_stepFormulaAndUniqueness", "lemma3_polarSecantPairing_pos", "lemma3_polarInverseUpdate")],
+    "mp24-theorem-4": [("FixedRecurrence.lean", "initialData"), ("FixedRecurrence.lean", "normalizedState_succ")],
+    "mp24-lemma-6": [("FixedCycle.lean", name) for name in (
+        "referenceStages", "map_analyticAt", "transverseDerivative", "referenceContraction")],
+}
 
 
 def locate_decl(path: Path, short_name: str) -> tuple[int, str]:
@@ -35,10 +44,10 @@ def locate_decl(path: Path, short_name: str) -> tuple[int, str]:
         if pattern.search(line):
             end = len(lines)
             for next_index in range(index + 1, len(lines)):
-                if re.match(r"\s*(?:theorem|lemma|def|structure)\s+", lines[next_index]):
+                if re.match(r"^(?:/--|end(?:\s|$)|\s*(?:theorem|lemma|def|structure)\s+)", lines[next_index]):
                     end = next_index
                     break
-            return index + 1, "".join(lines[index:end])
+            return index + 1, "".join(lines[index:end]).rstrip()
     raise ValueError(f"declaration not found: {short_name}")
 
 
@@ -79,6 +88,18 @@ def main() -> None:
         relative_file = source_file.relative_to(args.source_root).as_posix()
         declaration_entry = {"declaration": declaration, "file": relative_file, "line": line}
         excerpt = {**declaration_entry, "leanCode": code}
+        excerpts = [excerpt]
+        declarations = [declaration_entry]
+        for other_file, other_name in SUPPORT.get(item_id, []):
+            other_path = source_file.parent / other_file
+            other_line, other_code = locate_decl(other_path, other_name)
+            namespace = "DFPWolfe.MP20251124"
+            if other_file != "Results.lean":
+                namespace += "." + Path(other_file).stem
+            entry = {"declaration": namespace + "." + other_name,
+                     "file": other_path.relative_to(args.source_root).as_posix(), "line": other_line}
+            declarations.append(entry)
+            excerpts.append({**entry, "leanCode": other_code})
         items.append({
             "id": item_id,
             "label": label,
@@ -94,9 +115,9 @@ def main() -> None:
             "statementSha256": hashlib.sha256(statement.encode()).hexdigest(),
             "statementSource": {"manuscript": "20251124-DFP/MP.zip/main.tex", "manuscriptSha256": manuscript_digest, "startLine": start_line, "endLine": end_line},
             "texLabel": tex_label,
-            "paperMapping": "Paper-numbered result with a source-facing Lean declaration; some entries are generalized support interfaces pending the fixed-cycle bridge.",
-            "relatedDeclarations": [declaration_entry],
-            "leanExcerpts": [excerpt],
+            "paperMapping": label,
+            "relatedDeclarations": declarations,
+            "leanExcerpts": excerpts,
             "dependencies": dependencies,
             "statementDependencies": [],
             "proofDependencies": [],
@@ -110,7 +131,7 @@ def main() -> None:
         {"id": "main", "label": "Main results", "short": "Main results", "color": "#315fb5", "wash": "#e9effa"},
         {"id": "convergence", "label": "Convergence", "short": "Convergence", "color": "#7654a6", "wash": "#eee8f8"},
     ]
-    project = {"id": "DFP_wolfe_local", "title": "DFP 20251124 polar proof", "kind": "papers", "branch": "paper/dfp-20251124-sync", "commit": args.commit, "repository": "https://github.com/optpku/ReasBook", "sourceRoot": "ReasBook"}
+    project = {"id": "DFP_wolfe_local", "title": "DFP 20251124 polar proof", "kind": "papers", "branch": "v4.32.0", "commit": args.commit, "repository": "https://github.com/optpku/ReasBook", "sourceRoot": "ReasBook"}
     edge_witnesses = []
     evidence = {
         "mp24-theorem-1": (1455, 1560), "mp24-theorem-2": (1665, 1720),
