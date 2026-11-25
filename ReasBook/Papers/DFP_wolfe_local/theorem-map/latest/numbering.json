@@ -1,0 +1,20 @@
+{
+  "manuscript": "20251117-DFP/arXiv.tex",
+  "manuscriptSha256": "2a22ecf8e12959dd584a11732ba1836319eb16dd583059c283e4513b3dbbbdca",
+  "counter": "shared theorem counter in source order",
+  "results": [
+    ["Lemma 1", "lem:polar-direction-update"],
+    ["Lemma 2", "lem:polar-endpoint-wolfe"],
+    ["Proposition 3", "prop:polar-realization"],
+    ["Lemma 4", "lem:polar-limiting-cycle"],
+    ["Lemma 5", "lem:polar-parameter-choice"],
+    ["Lemma 6", "lem:polar-cycle-estimates"],
+    ["Lemma 7", "lem:polar-continuation"],
+    ["Lemma 8", "lem:polar-geometry"],
+    ["Lemma 9", "lem:polar-interpolation"],
+    ["Theorem 10", "thm:main"],
+    ["Corollary 11", "cor:identity-initialization"],
+    ["Lemma 12", "lem:planar-degeneration"],
+    ["Theorem 13", "thm:planar-convergence"]
+  ]
+}

@@ -5,6 +5,13 @@ Theorems 1 and 3, Corollary 2, Proposition 4, and Lemmas 5–11.
 The LaTeX labels identify statements independently of their printed numbers.
 Import `DFPWolfe` (or `DFPWolfe.Paper`) to access all the results below.
 
+The 20251124 manuscript is exported separately through
+[`MP20251124/Paper.lean`](MP20251124/Paper.lean).  Its paper-numbered
+interface keeps the current general polar proofs and exposes the fixed
+construction, limiting map, continuation, geometry, interpolation, identity
+initialization, and planar degeneration under the manuscript's 13-result
+counter.
+
 Each numbered paper statement has its own `.lean` file directly in this
 directory. The first column links to that file; the last column links to the
 proof sources. Each navigation file records the paper label and mathematical
@@ -59,6 +66,10 @@ definiteness, without assuming the DFP matrix update. Its zero-based Lean
 coefficient `lam k` corresponds to the paper's `λₖ₊₁`.
 
 ## Source organization
+
+`MP20251124/Results.lean` is the source-facing export for the latest
+`20251124-DFP/MP.zip` manuscript.  The older center-manifold, October 2026,
+and 20251117 polar routes remain available through their existing exports.
 
 `Main.lean` contains the public convergence and nonconvergence interfaces.
 `Paper.lean` imports all eleven numbered navigation files and preserves the

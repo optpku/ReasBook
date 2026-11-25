@@ -1,5 +1,7 @@
 # Computational Methods for Inverse Problems
 
+**Publication:** Source only; not included in the [published catalog](https://optpku.github.io/ReasBook/).
+
 Curtis R. Vogel, first edition (2002), SIAM.
 
 Lean 4 formalization covering the inverse-problem framework, regularization,
@@ -13,6 +15,8 @@ book in the `Chap01/` through `Chap09/` directories.
 - Yifan Bai (@TTony2019)
 - Wanli Ma
 - Zichen Wang
+
+Project-level formalization credit is recorded in the [catalog](https://github.com/optpku/ReasBook/blob/90ac3dd3a968313d0da7a3137680aa895af6a69a/README.md#books) and [`book.yml`](book.yml); it is separate from the original reference authors and per-file Lean authorship.
 
 ## Statistics
 

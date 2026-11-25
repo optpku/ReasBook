@@ -1,0 +1,211 @@
+[
+  {
+    "id": "theorem-2-1",
+    "label": "Theorem 2.1",
+    "type": "Theorem",
+    "section": "section-2",
+    "title": "Convergence of the constraint images and multiplier",
+    "statement": "Let f and g be closed proper convex functions on finite-dimensional spaces and suppose a KKT triple exists. For every positive penalty and 0 < gamma <= L = 1.886882470025, every well-defined exact ADMM trajectory has convergent constraint images, vanishing primal residual and second-image increment, objective values tending to the optimum, and a multiplier tending to an optimal multiplier. If both constraint maps are injective, the primal-dual trajectory converges to a KKT triple.",
+    "correspondence": "The closed updated main theorem retains arbitrary dimensions, initial states and minimizer choices. The claim definition expands to all separate image limits and the four convergence conclusions; no certificate premise remains in this theorem.",
+    "declarations": [
+      "ADMM.UpdatedTargets.mainConvergence"
+    ],
+    "statementProvenance": "Reviewed summary of the revised manuscript; the separate Lean correspondence states the mapped proof components."
+  },
+  {
+    "id": "theorem-2-2",
+    "label": "Theorem 2.2",
+    "type": "Theorem",
+    "section": "section-2",
+    "title": "Periodic orbits and geometric growth",
+    "statement": "For unit-penalty consensus ADMM in dimension 96, one fixed pair of compact convex polytopes admits exact period-48 orbits with constant positive residual for every gamma >= 542407991247/287451196000. At the critical factor, smooth strongly convex objectives with globally Lipschitz gradients and finite closed convex piecewise-quadratic objectives admit period-48 orbits of positive constant objective value. The smooth pair has the origin as its unique primal optimum. A second piecewise-quadratic pair gives residual c_r chi^k and objective c_f chi^(2k), with c_r,c_f > 0 and chi > 1. The origin is KKT with optimal value zero and each block minimizer is unique.",
+    "correspondence": "Four closed construction theorems cover the fixed-polytopes, smooth periodic, piecewise-quadratic periodic and geometric-growth cases. They are separate witnesses for the different objective pairs in the statement.",
+    "declarations": [
+      "ConsensusADMM.fixedPolytopes",
+      "ConsensusADMM.smoothCounterexample",
+      "ConsensusADMM.periodicPiecewiseQuadratic",
+      "ConsensusADMM.growingPiecewiseQuadratic"
+    ],
+    "statementProvenance": "Reviewed summary of the revised manuscript; the separate Lean correspondence states the mapped proof components."
+  },
+  {
+    "id": "corollary-2-3",
+    "label": "Corollary 2.3",
+    "type": "Corollary",
+    "section": "section-2",
+    "title": "Bounds on the uniform convergence interval",
+    "statement": "Let C_gamma require the stated convergence conclusions for every finite-dimensional problem with closed proper convex objectives and a KKT triple, every positive penalty and every well-defined exact trajectory, including primal-dual KKT convergence when both constraint maps are injective. If Gamma* is the supremum of positive c for which C_gamma holds at every 0 < gamma < c, then L < Gamma* < U, where L = 1.886882470025 and U = 1.886882643762680. The exact width is U - L = 1.7373768e-7.",
+    "correspondence": "The closed endpoint theorem proves both strict inequalities and the exact rational width. The separate strict lower-bound theorem is also linked. The upper-bound component belongs to Appendix C.3 and is not counted twice as a mapping owner.",
+    "declarations": [
+      "ADMM.UpdatedTargets.endpointBounds",
+      "ADMM.UpdatedTargets.refinedLowerBound"
+    ],
+    "statementProvenance": "Reviewed summary of the revised manuscript; the separate Lean correspondence states the mapped proof components."
+  },
+  {
+    "id": "lemma-3-1",
+    "label": "Lemma 3.1",
+    "type": "Lemma",
+    "section": "section-3",
+    "title": "Reduction to the constraint images",
+    "statement": "For closed proper convex original objectives with a KKT triple, a well-defined exact trajectory, and positive penalty beta and multiplier gamma, the image-reduced objectives are closed proper convex, the reduced KKT set is nonempty, and the reduced optimal value equals the original optimum divided by beta. At every step, both block objective values and both image updates agree with their reduced proximal counterparts, with the scaled multiplier following the reduced update.",
+    "correspondence": "Nine actual proved interfaces cover the two reduced convexity results, KKT existence, the optimum, the two value identities, the two proximal updates, and the multiplier update. The old file name lemma_3_1_2 is retained as a compatibility interface; the displayed number follows the revised manuscript.",
+    "declarations": [
+      "ADMM.Problem.reducedFirst_isClosedProperConvex",
+      "ADMM.Problem.reducedSecond_isClosedProperConvex",
+      "ADMM.Problem.reduced_exists_kkt",
+      "ADMM.Problem.reduced_optimalValue",
+      "ADMM.Trajectory.firstImage_values",
+      "ADMM.Trajectory.secondImage_values",
+      "ADMM.Trajectory.firstImage_isProxPoint",
+      "ADMM.Trajectory.secondImage_isProxPoint",
+      "ADMM.Trajectory.scaledMultiplier_imageUpdate"
+    ],
+    "statementProvenance": "Reviewed summary of the revised manuscript; the separate Lean correspondence states the mapped proof components."
+  },
+  {
+    "id": "lemma-3-2",
+    "label": "Lemma 3.2",
+    "type": "Lemma",
+    "section": "section-3",
+    "title": "An interval certificate",
+    "statement": "Assume the descent and lower tests at positive distinct interval endpoints with common nonnegative weights and common positive margins. If the reduced KKT set is nonempty, every reduced trajectory at a fixed factor in the closed interval converges to a reduced KKT triple. Residuals and second-image increments are square summable, and both tilted objective values tend to zero.",
+    "correspondence": "The direct arbitrary-reduced-trajectory theorem supplies the KKT limit, both square-summability conclusions and both extended-real objective limits. The generic generated-certificate summability theorem supplies the normalized objective values relative to the KKT anchor chosen before the iteration.",
+    "declarations": [
+      "ADMM.FiniteMemory.ReducedTrajectory.interval_conclusions",
+      "ADMM.ConvergenceProof.generated_certificate_summable"
+    ],
+    "statementProvenance": "Reviewed summary of the revised manuscript; the separate Lean correspondence states the mapped proof components."
+  },
+  {
+    "id": "lemma-4-1",
+    "label": "Lemma 4.1",
+    "type": "Lemma",
+    "section": "section-4",
+    "title": "Projection cycles",
+    "statement": "For the phase data and support inequalities specified in Section 4 with N >= 2 and gamma > 0, the prescribed sequences form an exact indicator-objective consensus ADMM trajectory on the two convex hulls. Updates are unique, the origin is KKT with optimal value zero, and a nonzero phase residual prevents convergence. The minimal positive period divides N.",
+    "correspondence": "The linked proved properties expose the trajectory, unique updates, origin optimality, failure of residual convergence and the minimal-period statement for the same projection-cycle data.",
+    "declarations": [
+      "ConsensusADMM.IsProjectionCycle.isTrajectory",
+      "ConsensusADMM.IsProjectionCycle.hasUniqueUpdates",
+      "ConsensusADMM.IsProjectionCycle.isKKT",
+      "ConsensusADMM.IsProjectionCycle.isOptimalValueZero",
+      "ConsensusADMM.IsProjectionCycle.residual_not_tendsto",
+      "ConsensusADMM.IsProjectionCycle.minimalPeriod_dvd"
+    ],
+    "statementProvenance": "Reviewed summary of the revised manuscript; the separate Lean correspondence states the mapped proof components."
+  },
+  {
+    "id": "proposition-4-2",
+    "label": "Proposition 4.2",
+    "type": "Proposition",
+    "section": "section-4",
+    "title": "Cyclic reduction",
+    "statement": "Every N-periodic unit-penalty consensus ADMM trajectory for fixed closed proper convex objectives with a nonzero residual, for N >= 2 and gamma > 0, admits cyclic projection data at the same factor in dimension at most 2N - 2. The resulting residual norm is constant and positive, and the three Gram blocks are circulant.",
+    "correspondence": "The existence theorem returns the dimension bound and IsCyclicReduction. Expanding that predicate gives the actual support inequalities, constant positive residual and circulant Gram blocks. N-periodic does not assert that the minimal period equals N.",
+    "declarations": [
+      "ConsensusADMM.existsCyclicReduction"
+    ],
+    "statementProvenance": "Reviewed summary of the revised manuscript; the separate Lean correspondence states the mapped proof components."
+  },
+  {
+    "id": "proposition-4-3",
+    "label": "Proposition 4.3",
+    "type": "Proposition",
+    "section": "section-4",
+    "title": "A fixed pair of polytopes",
+    "statement": "The explicit period-48 Gram matrix is positive definite. Its realized hulls are the same compact convex polytopes for all factors at or above the critical factor and support exact period-48 trajectories with constant positive residual. At the critical factor the second block is strict, while the first-block nonself equality occurs exactly at displacement -10.",
+    "correspondence": "The linked constants include actual Gram positivity, the fixed-hull identity, the projection cycle, exact period, positive residual, strict supports and compact-polytope properties. The construction's data and rational checks remain compiled dependencies rather than separate manuscript nodes.",
+    "declarations": [
+      "ConsensusADMM.Period48.FixedPolytopes.isProjectionCycle",
+      "ConsensusADMM.Period48.FixedPolytopes.gramMatrix_posDef",
+      "ConsensusADMM.Period48.FixedPolytopes.xSet_ySet_eq",
+      "ConsensusADMM.Period48.FixedPolytopes.trajectory_exactPeriod",
+      "ConsensusADMM.Period48.FixedPolytopes.constantPositiveResidual",
+      "ConsensusADMM.Period48.FixedPolytopes.secondSupports_strict",
+      "ConsensusADMM.Period48.FixedPolytopes.firstSupports_zero_iff",
+      "ConsensusADMM.Period48.FixedPolytopes.xSet_ySet_isCompactConvexPolytope"
+    ],
+    "statementProvenance": "Reviewed summary of the revised manuscript; the separate Lean correspondence states the mapped proof components."
+  },
+  {
+    "id": "lemma-5-1",
+    "label": "Lemma 5.1",
+    "type": "Lemma",
+    "section": "section-5",
+    "title": "Strict support inequalities in both blocks",
+    "statement": "For 0 < gamma < 2, a projection cycle with nonzero residual and one strict block admits a cycle at the same factor in dimension at most 2N, with nonzero residual and both blocks strict. Orthogonal cyclic symmetry is preserved when present. Moreover Gamma* < gamma.",
+    "correspondence": "The first theorem constructs the strictified cycle with dimension and symmetry guarantees. The second proves the strict inequality for the uniform convergence endpoint.",
+    "declarations": [
+      "ConsensusADMM.IsProjectionCycle.strictifyOneBlock",
+      "ConsensusADMM.IsProjectionCycle.uniformConvergenceEndpoint_lt"
+    ],
+    "statementProvenance": "Reviewed summary of the revised manuscript; the separate Lean correspondence states the mapped proof components."
+  },
+  {
+    "id": "lemma-5-2",
+    "label": "Lemma 5.2",
+    "type": "Lemma",
+    "section": "section-5",
+    "title": "Smooth strongly convex realization",
+    "statement": "Strict finite projection-cycle data in dimension d with a nonzero residual admit finite strongly convex objectives on the same space with globally Lipschitz gradients that realize the prescribed ADMM orbit at the same factor. The objective is a positive constant along the orbit and the origin is the unique KKT triple with value zero.",
+    "correspondence": "The actual realization theorem gives the same dimension and factor, the prescribed orbit and its minimal period, globally unique block minimizers, positive constant objective, and unique origin KKT triple.",
+    "declarations": [
+      "ConsensusADMM.IsStrictProjectionCycle.smoothStronglyConvexRealization"
+    ],
+    "statementProvenance": "Reviewed summary of the revised manuscript; the separate Lean correspondence states the mapped proof components."
+  },
+  {
+    "id": "proposition-5-3",
+    "label": "Proposition 5.3",
+    "type": "Proposition",
+    "section": "section-5",
+    "title": "Piecewise-quadratic realizations",
+    "statement": "Suppose a projection cycle has nonzero residual, strict supports in both blocks and an orthogonal map advancing both vertex families. At the same factor, one pair of finite closed convex piecewise-quadratic objectives realizes the cycle with positive constant objective. Another such pair gives residual c_r chi^k and objective c_f chi^(2k), for positive constants and chi > 1. Both pairs have the origin as a zero-valued KKT triple.",
+    "correspondence": "The combined existence theorem supplies both objective pairs, exact trajectory and geometric-growth formulas, finite polyhedral/quadratic representations and unique finite block minimizers. Its compatibility source name finite_objectives_and_growth is retained.",
+    "declarations": [
+      "ConsensusADMM.IsStrictProjectionCycle.finiteObjectivesAndGrowth"
+    ],
+    "statementProvenance": "Reviewed summary of the revised manuscript; the separate Lean correspondence states the mapped proof components."
+  },
+  {
+    "id": "lemma-c-1",
+    "label": "Lemma C.1",
+    "type": "Lemma",
+    "section": "section-C",
+    "title": "Convergence from a unit-circle bound",
+    "statement": "For a reduced convex problem with a KKT triple, fix 1 < gamma < 2 and nonnegative lag weights of integer length ell >= 1 with equal block first moments and positive origin and residual margins. If the Hermitian symbol satisfies Q_1(z) >= kappa |1 - z^(-1)|^2 I on the entire unit circle for some kappa > 0, every reduced trajectory from every initial state converges to a fixed point, its residual tends to zero and both tilted objective values tend to zero.",
+    "correspondence": "The closed analytic implication establishes the discount membership, coercivity and boundary estimates rather than assuming them. The additional linked theorem proves the tilted objective limits relative to every KKT anchor fixed before the trajectory.",
+    "declarations": [
+      "ADMM.UpdatedTargets.unitCircleConvergence",
+      "ADMM.FiniteMemory.ReducedTrajectory.circle_fixedAnchor_tiltedValues"
+    ],
+    "statementProvenance": "Reviewed summary of the revised manuscript; the separate Lean correspondence states the mapped proof components."
+  },
+  {
+    "id": "appendix-c-2",
+    "label": "Appendix C.2",
+    "type": "Certificate",
+    "section": "section-C",
+    "title": "Verification of the lower bound",
+    "statement": "The exact 256-lag rational data, with epsilon = kappa = 1e-14, satisfy the unit-circle bound for every factor from 377/200 through L and on a positive extension beyond L. Laurent divisions have zero remainder and the Bernstein tests cover the entire real frequency interval, including the zero-frequency quotient at z = 1. The strict extension preserves the same kappa.",
+    "correspondence": "The closed concrete lower-circle theorem connects the actual weights, divisions and determinant polynomials to fully covered positivity certificates and returns a positive continuation delta. This is an unnumbered appendix certificate, not an additional numbered lemma.",
+    "declarations": [
+      "ADMM.UpdatedTargets.lowerCircleCertificate"
+    ],
+    "statementProvenance": "Reviewed summary of the revised manuscript; the separate Lean correspondence states the mapped proof components."
+  },
+  {
+    "id": "appendix-c-3",
+    "label": "Appendix C.3",
+    "type": "Certificate",
+    "section": "section-C",
+    "title": "A periodic counterexample for the upper bound",
+    "statement": "The 75 exact rational complex Fourier factors realize a 1024-phase orbit. Rational outward intervals certify all 2048 phase-zero strict supports and a positive residual at U. These strict inequalities persist at some positive factor below U, yielding Gamma* < U.",
+    "correspondence": "The closed upper theorem uses the actual normalized Fourier orbit, root enclosures, Gram bounds and strict supports. The final endpoint inequality has no unproved numerical-certificate premise. This is the unnumbered Appendix C.3 task.",
+    "declarations": [
+      "ADMM.UpdatedTargets.refinedUpperBound"
+    ],
+    "statementProvenance": "Reviewed summary of the revised manuscript; the separate Lean correspondence states the mapped proof components."
+  }
+]

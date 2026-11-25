@@ -1,0 +1,886 @@
+{
+  "schemaVersion": 2,
+  "project": {
+    "id": "DFP_wolfe_local",
+    "title": "DFP 20251117 polar proof",
+    "kind": "papers",
+    "branch": "latest-20251117",
+    "commit": "97fe7b8f1a2fa524f9ce5588a4190603db93946c",
+    "repository": "https://github.com/imathwy/DFP_wolfe_local",
+    "sourceRoot": ""
+  },
+  "sections": [
+    {
+      "id": "construction",
+      "label": "Polar construction",
+      "short": "Construction",
+      "color": "#23745d",
+      "wash": "#e4f2ed"
+    },
+    {
+      "id": "main",
+      "label": "Main results",
+      "short": "Main results",
+      "color": "#315fb5",
+      "wash": "#e9effa"
+    },
+    {
+      "id": "convergence",
+      "label": "Convergence",
+      "short": "Convergence",
+      "color": "#7654a6",
+      "wash": "#eee8f8"
+    }
+  ],
+  "items": [
+    {
+      "id": "latest-direction-update",
+      "label": "Lemma 1",
+      "title": "Polar direction update",
+      "type": "Lemma",
+      "section": "construction",
+      "declaration": "DFP.Polar.General.Parameters.matrix_step",
+      "file": "ReasLib/Optimization/DFP/Polar/General/PhysicalRecurrence.lean",
+      "line": 244,
+      "endLine": 257,
+      "statement": "\\label{lem:polar-direction-update}\nLet $j\\ge0$. Suppose that the polar data have $\\rho_k,\\zeta_k>0$\nand $Z_k\\succ0$ for $k=2j,2j+1,2j+2$, and that\n$0<\\delta_k<\\pi$ and $(Z_k)_{12}>0$ for $k=2j,2j+1$.\nThe following statements hold for $k=2j,2j+1$:\n\\textup{i)} a unique $\\alpha_k>0$ satisfying\n$s_k=-\\alpha_kH_kg_k$ exists if and only if\n$r_k=\\cos\\delta_k+h_k\\sin\\delta_k$;\n\\textup{ii)} if the relations in part~\\textup{i)} hold and $p_k^Tq_k>0$ at both stages, then\n\\eqref{eq:dfp-update} is equivalent to\n\\begin{equation}\\label{eq:polar-matrix-map}\n\\begin{aligned}\n Z_{k+1}=R(\\delta_k)^T\n \\left[\n \\left(I-\\frac{q_kp_k^T}{p_k^Tq_k}\\right)Z_k\n \\left(I-\\frac{p_kq_k^T}{p_k^Tq_k}\\right)\n +\\frac{q_kq_k^T}{p_k^Tq_k}\n \\right]R(\\delta_k).\n\\end{aligned}\n\\end{equation}",
+      "statementHtml": "<p><code>Let $j\\ge0$. Suppose that the polar data have $\\rho_k,\\zeta_k&gt;0$ and $Z_k\\succ0$ for $k=2j,2j+1,2j+2$, and that $0&lt;\\delta_k&lt;\\pi$ and $(Z_k)_{12}&gt;0$ for $k=2j,2j+1$. The following statements hold for $k=2j,2j+1$: \\textup{i)} a unique $\\alpha_k&gt;0$ satisfying $s_k=-\\alpha_kH_kg_k$ exists if and only if $r_k=\\cos\\delta_k+h_k\\sin\\delta_k$; \\textup{ii)} if the relations in part~\\textup{i)} hold and $p_k^Tq_k&gt;0$ at both stages, then [eq:dfp-update] is equivalent to Z_{k+1}=R(\\delta_k)^T \\left[ \\left(I-\\frac{q_kp_k^T}{p_k^Tq_k}\\right)Z_k \\left(I-\\frac{p_kq_k^T}{p_k^Tq_k}\\right) +\\frac{q_kq_k^T}{p_k^Tq_k} \\right]R(\\delta_k).</code></p>",
+      "statementSha256": "75a2f27da1db3d3a0405448dabb177a5bb4f68883f6dd9280bac3090aadf6e9d",
+      "statementSource": {
+        "manuscript": "20251117-DFP/arXiv.tex",
+        "manuscriptSha256": "2a22ecf8e12959dd584a11732ba1836319eb16dd583059c283e4513b3dbbbdca",
+        "startLine": 442,
+        "endLine": 462
+      },
+      "texLabel": "lem:polar-direction-update",
+      "paperMapping": "Paper-numbered result with reviewed Lean declarations and source links.",
+      "relatedDeclarations": [
+        {
+          "declaration": "DFP.Polar.General.Parameters.matrix_step",
+          "file": "ReasLib/Optimization/DFP/Polar/General/PhysicalRecurrence.lean",
+          "line": 244
+        }
+      ],
+      "leanExcerpts": [
+        {
+          "declaration": "DFP.Polar.General.Parameters.matrix_step",
+          "file": "ReasLib/Optimization/DFP/Polar/General/PhysicalRecurrence.lean",
+          "line": 244,
+          "leanCode": "theorem matrix_step (p : Parameters) (hβ : 0 < p.beta) (hstart : 0 < p.startIndex) (k : ℕ) :\n    p.matrix (k + 1) = DFP.Polar.matrixStep (p.matrix k) (p.angleIncrement k)\n      (p.zeta k) (p.zeta (k + 1)) := by\n  rcases Nat.even_or_odd' k with ⟨j, rfl | rfl⟩\n  · rw [matrix_odd, matrix_even, zeta_even, zeta_odd]\n    exact oddMatrix_step p hβ hstart j\n  · have hindex : 2 * j + 1 + 1 = 2 * (j + 1) := by omega\n    rw [hindex, matrix_even, matrix_odd, zeta_odd, zeta_even]\n    exact evenMatrix_step p hβ hstart j\n\n\n/-- Helper for lem:polar-continuation: normalized positive definiteness at\nboth phases implies positive definiteness of every concrete raw matrix. -/\n"
+        }
+      ],
+      "dependencies": [],
+      "statementDependencies": [],
+      "proofDependencies": [],
+      "dependencyEvidence": "curated",
+      "sourceSha256": "2344561bf72510038105380f0671497c17789ea63b00f96a56ed1c3ad03f90d6"
+    },
+    {
+      "id": "latest-endpoint-wolfe",
+      "label": "Lemma 2",
+      "title": "Polar endpoint Wolfe ratios",
+      "type": "Lemma",
+      "section": "construction",
+      "declaration": "DFP.Polar.General.WolfeRatios.sourceStrongWolfe_of_phaseMargins",
+      "file": "ReasLib/Optimization/DFP/Polar/General/WolfeRatios.lean",
+      "line": 245,
+      "endLine": 269,
+      "statement": "\\label{lem:polar-endpoint-wolfe}\nLet $0<\\eta_1<\\eta_2<1$. Suppose $0<\\delta_k<\\pi$, $h_k>0$,\n$\\rho_k,\\rho_{k+1},\\zeta_k,\\zeta_{k+1}>0$, and\n$r_k=\\rho_k/\\rho_{k+1}=\\cos\\delta_k+h_k\\sin\\delta_k$.\nThen $g_k^Ts_k<0$, and the prescribed values and gradients satisfy the\nstrong Wolfe conditions if and only if(分别编号)\n\\begin{equation}\\label{eq:polar-wolfe-ratios}\n\\begin{aligned}\n \\frac{\\rho_k^2-\\rho_{k+1}^2}{-2g_k^Ts_k}\n &=\\frac{r_k^2-1}{2\\zeta_kh_k\\sin\\delta_k\\,r_k}\\ge\\eta_1,\\\\\n \\frac{|g_{k+1}^Ts_k|}{|g_k^Ts_k|}\n &=\\frac{\\zeta_{k+1}}{\\zeta_k}\n \\frac{|h_k\\cos\\delta_k-\\sin\\delta_k|}{h_kr_k}\\le\\eta_2.\n\\end{aligned}\n\\end{equation}",
+      "statementHtml": "<p><code>Let $0&lt;\\eta_1&lt;\\eta_2&lt;1$. Suppose $0&lt;\\delta_k&lt;\\pi$, $h_k&gt;0$, $\\rho_k,\\rho_{k+1},\\zeta_k,\\zeta_{k+1}&gt;0$, and $r_k=\\rho_k/\\rho_{k+1}=\\cos\\delta_k+h_k\\sin\\delta_k$. Then $g_k^Ts_k&lt;0$, and the prescribed values and gradients satisfy the strong Wolfe conditions if and only if(分别编号) \\frac{\\rho_k^2-\\rho_{k+1}^2}{-2g_k^Ts_k} &amp;=\\frac{r_k^2-1}{2\\zeta_kh_k\\sin\\delta_k\\,r_k}\\ge\\eta_1,\\\\ \\frac{|g_{k+1}^Ts_k|}{|g_k^Ts_k|} &amp;=\\frac{\\zeta_{k+1}}{\\zeta_k} \\frac{|h_k\\cos\\delta_k-\\sin\\delta_k|}{h_kr_k}\\le\\eta_2.</code></p>",
+      "statementSha256": "6a5d064fc30e0c3e0f480c8b10d82f3e0fe6e1e0551d5a9b9e19cbc4a0a782fd",
+      "statementSource": {
+        "manuscript": "20251117-DFP/arXiv.tex",
+        "manuscriptSha256": "2a22ecf8e12959dd584a11732ba1836319eb16dd583059c283e4513b3dbbbdca",
+        "startLine": 536,
+        "endLine": 551
+      },
+      "texLabel": "lem:polar-endpoint-wolfe",
+      "paperMapping": "Paper-numbered result with reviewed Lean declarations and source links.",
+      "relatedDeclarations": [
+        {
+          "declaration": "DFP.Polar.General.WolfeRatios.sourceStrongWolfe_of_phaseMargins",
+          "file": "ReasLib/Optimization/DFP/Polar/General/WolfeRatios.lean",
+          "line": 245
+        }
+      ],
+      "leanExcerpts": [
+        {
+          "declaration": "DFP.Polar.General.WolfeRatios.sourceStrongWolfe_of_phaseMargins",
+          "file": "ReasLib/Optimization/DFP/Polar/General/WolfeRatios.lean",
+          "line": 245,
+          "leanCode": "theorem sourceStrongWolfe_of_phaseMargins (p : Parameters) (κ δ H : ℝ)\n    (hβ : 0 < p.beta) (hstart : 0 < p.startIndex)\n    (hc1 : 0 < p.c1) (hc12 : p.c1 < p.c2) (hc2 : p.c2 < 1)\n    (hobjective : Objective.ObjectiveEstimates p κ δ H)\n    (hZ : ∀ k, (p.matrix k).PosDef) (hC : ∀ k, 0 < p.matrix k 0 1)\n    (hSin : ∀ k, 0 < Real.sin (p.angleIncrement k)) (hW : ∀ k, 0 < p.radiusRatio k)\n    (hr : ∀ k, 0 < p.radius k)\n    (hlog : Summable (fun j ↦ Real.log (p.radiusRatio (2 * j) * p.radiusRatio (2 * j + 1))))\n    (hphase : ∀ j : ℕ, ∀ i : Fin 2,\n      p.c1 < RadiusBounds.phaseArmijo p i (p.scale j) (p.inverseIndex j) (p.normalizedEvenState j) ∧\n        RadiusBounds.phaseCurvature p i (p.scale j) (p.inverseIndex j)\n          (p.normalizedEvenState j) < p.c2)\n    (k : ℕ) :\n    LineSearch.IsStrongWolfe p.c1 p.c2 (p.objective κ) (p.point k)\n      (p.point (k + 1) - p.point k) := by\n  apply sourceStrongWolfe_of_rawQuotients p κ δ H hc1 hc12 hc2 hobjective\n    hZ hC hSin hW hr hlog\n  intro k\n  rcases Nat.even_or_odd' k with ⟨j, rfl | rfl⟩\n  · have h := hphase j 0\n    have hquot := sourceQuotients_eq_phase p hβ hstart j 0\n    rw [← hquot.1, ← hquot.2] at h\n    simpa only [Fin.val_zero, Nat.add_zero] using And.intro h.1.le h.2.le\n  · have h := hphase j 1\n"
+        }
+      ],
+      "dependencies": [],
+      "statementDependencies": [],
+      "proofDependencies": [],
+      "dependencyEvidence": "curated",
+      "sourceSha256": "5c7029f2841c26b2e7418d2c2dd5206458888d20c004c94abc714e079c9d6c1d"
+    },
+    {
+      "id": "latest-realization",
+      "label": "Proposition 3",
+      "title": "Polar DFP realization",
+      "type": "Proposition",
+      "section": "construction",
+      "declaration": "DFP.Polar.General.PlanarCounterexample.existsSourceCertificate",
+      "file": "ReasLib/Optimization/DFP/Polar/General/PlanarCounterexample.lean",
+      "line": 34,
+      "endLine": 100,
+      "statement": "\\label{prop:polar-realization}\nSuppose that\n\\textup{i)} for every $k\\ge0$, the polar data satisfy\n$\\rho_k,\\zeta_k>0$, $Z_k\\succ0$, $(Z_k)_{12}>0$,\n$0<\\delta_k<\\pi$, $p_k^Tq_k>0$, and\n$r_k=\\cos\\delta_k+h_k\\sin\\delta_k$;\n\\textup{ii)} for fixed $0<\\eta_1<\\eta_2<1$,\n\\eqref{eq:polar-matrix-map} and \\eqref{eq:polar-wolfe-ratios}\nhold for every $k\\ge0$;\n\\textup{iii)} a single function $f\\in C^1(\\mathbb R^2)$ satisfies\n$f(x_k)=F_k$ and $\\nabla f(x_k)=g_k$ for all $k\\ge0$.\nThen there are positive step lengths for which classical DFP initialized at\n$x_0,H_0$ generates exactly the prescribed points and matrices and\nsatisfies the strong Wolfe conditions at every step.",
+      "statementHtml": "<p><code>Suppose that \\textup{i)} for every $k\\ge0$, the polar data satisfy $\\rho_k,\\zeta_k&gt;0$, $Z_k\\succ0$, $(Z_k)_{12}&gt;0$, $0&lt;\\delta_k&lt;\\pi$, $p_k^Tq_k&gt;0$, and $r_k=\\cos\\delta_k+h_k\\sin\\delta_k$; \\textup{ii)} for fixed $0&lt;\\eta_1&lt;\\eta_2&lt;1$, [eq:polar-matrix-map] and [eq:polar-wolfe-ratios] hold for every $k\\ge0$; \\textup{iii)} a single function $f\\in C^1(\\mathbb R^2)$ satisfies $f(x_k)=F_k$ and $\\nabla f(x_k)=g_k$ for all $k\\ge0$. Then there are positive step lengths for which classical DFP initialized at $x_0,H_0$ generates exactly the prescribed points and matrices and satisfies the strong Wolfe conditions at every step.</code></p>",
+      "statementSha256": "bbeedb059eb1d8d45a9b4f987517778b83ff6d302fec55df7a77520e6e31f855",
+      "statementSource": {
+        "manuscript": "20251117-DFP/arXiv.tex",
+        "manuscriptSha256": "2a22ecf8e12959dd584a11732ba1836319eb16dd583059c283e4513b3dbbbdca",
+        "startLine": 617,
+        "endLine": 631
+      },
+      "texLabel": "prop:polar-realization",
+      "paperMapping": "Paper-numbered result with reviewed Lean declarations and source links.",
+      "relatedDeclarations": [
+        {
+          "declaration": "DFP.Polar.General.PlanarCounterexample.existsSourceCertificate",
+          "file": "ReasLib/Optimization/DFP/Polar/General/PlanarCounterexample.lean",
+          "line": 34
+        }
+      ],
+      "leanExcerpts": [
+        {
+          "declaration": "DFP.Polar.General.PlanarCounterexample.existsSourceCertificate",
+          "file": "ReasLib/Optimization/DFP/Polar/General/PlanarCounterexample.lean",
+          "line": 34,
+          "leanCode": "theorem existsSourceCertificate (p : Parameters) (κ : ℝ)\n    (horbit : DFP.IsOrbit (p.objective κ) p.stepLength p.point p.gradients p.inverseHessian)\n    (hpos : ∀ k, (p.inverseHessian k).PosDef)\n    (hden : ∀ k,\n      WithLp.ofLp (DFP.steps p.stepLength (DFP.directions p.inverseHessian p.gradients) k) ⬝ᵥ\n        WithLp.ofLp (DFP.gradientChanges p.gradients k) ≠ 0)\n    (hC2 : ContDiff ℝ 2 (p.objective κ))\n    (hBounds : HasHessianBounds (1 / 2) (3 / 2) (p.objective κ))\n    (hWolfe : ∀ k, LineSearch.IsStrongWolfe p.c1 p.c2 (p.objective κ)\n      (p.point k) (p.point (k + 1) - p.point k))\n    (hLimit : Tendsto (fun k ↦ ‖p.gradients k‖) atTop (𝓝 1)) :\n    ∃ w : DFP.StrongWolfeCounterexample (Fin 2) (1 / 2) (3 / 2) p.c1 p.c2,\n      SourceIdentity p κ w ∧ w.gradientLimit = 1 := by\n  let it := horbit.toInverseIteration hpos hden\n  have hobjective : it.objective = p.objective κ := horbit.toInverseIteration_objective hpos hden\n  have hpoint : it.point = p.point := horbit.toInverseIteration_point_eq hpos hden\n  have hstepLength : it.stepLength = p.stepLength := horbit.toInverseIteration_stepLength hpos hden\n  have hmatrix : it.inverseHessian = p.inverseHessian :=\n    horbit.toInverseIteration_inverseHessian_eq hpos hden\n  have hgradients : DFP.gradients it.objective it.point = p.gradients := by\n    rw [hobjective, hpoint]\n    exact horbit.gradients_eq\n  have hStep (k : ℕ) : 0 < it.stepLength k := by\n    rw [hstepLength]\n    exact horbit.stepLengthPos k\n  have hStrong (k : ℕ) : LineSearch.IsStrongWolfe p.c1 p.c2 it.objective\n      (it.point k) (it.point (k + 1) - it.point k) := by\n    simpa only [hobjective, hpoint] using hWolfe k\n  have hWeak (k : ℕ) : LineSearch.IsWeakWolfe p.c1 p.c2 it.objective\n      (it.point k) (it.point (k + 1) - it.point k) := by\n    apply (hStrong k).toWeakWolfe\n    simpa only [DFP.gradients_apply] using (it.gradientInnerDisplacementNeg k (hStep k)).le\n  have hContDiff : ContDiff ℝ 2 it.objective := by\n    rwa [hobjective]\n  have hHessian : HasHessianBounds (1 / 2) (3 / 2) it.objective := by\n    rwa [hobjective]\n  have hTendsto : Tendsto (fun k ↦ ‖DFP.gradients it.objective it.point k‖) atTop (𝓝 1) := by\n    simpa only [hgradients] using hLimit\n  let weak : DFP.WolfeCounterexample (Fin 2) (1 / 2) (3 / 2) p.c1 p.c2 := {\n    iteration := it\n    gradientLimit := 1\n    objectiveContDiff := hContDiff\n    stepLengthPos := hStep\n    hessianBounds := hHessian\n    weakWolfe := hWeak\n    gradientLimitPos := zero_lt_one\n    gradientNormTendsto := hTendsto\n  }\n  let w : DFP.StrongWolfeCounterexample (Fin 2) (1 / 2) (3 / 2) p.c1 p.c2 := {\n    toWolfeCounterexample := weak\n    strongWolfe := hStrong\n  }\n  have hw : w.iteration = it := rfl\n  have hsource : SourceIdentity p κ w := by\n    constructor\n    · exact (congrArg DFP.InverseIteration.objective hw).trans hobjective\n    · exact congrArg DFP.InverseIteration.point hw |>.trans hpoint\n    · exact congrArg DFP.InverseIteration.stepLength hw |>.trans hstepLength\n    · exact congrArg DFP.InverseIteration.inverseHessian hw |>.trans hmatrix\n    · simpa only [hw] using hgradients\n  have hgradientLimit : w.gradientLimit = 1 := rfl\n  exact ⟨w, hsource, hgradientLimit⟩\n\n\n/-- Helper for eq:counterexample-nonlipschitz: the canonical certificate's\nsecant-residual ratio is exactly the same source correction quotient. -/\n"
+        }
+      ],
+      "dependencies": [
+        "latest-direction-update",
+        "latest-endpoint-wolfe"
+      ],
+      "statementDependencies": [],
+      "proofDependencies": [],
+      "dependencyEvidence": "curated",
+      "sourceSha256": "11dc94a4229d56b077fc0cd710a8e7121eaaabe1ceef08500cd52777dce685be"
+    },
+    {
+      "id": "latest-limiting-cycle",
+      "label": "Lemma 4",
+      "title": "Limiting two-cycle",
+      "type": "Lemma",
+      "section": "construction",
+      "declaration": "DFP.Polar.General.cycleMatchingEven",
+      "file": "ReasLib/Optimization/DFP/Polar/General/CycleFamily.lean",
+      "line": 103,
+      "endLine": 111,
+      "statement": "\\label{lem:polar-limiting-cycle}\nFix $X\\succ0$ with $\\xi>0$, and for each $\\tau>0$ set\n$Z_k=S_\\tau^{-1}XS_\\tau^{-1}$.\nIf $\\delta_k/\\tau\\to\\bar\\delta>0$ and\n$\\zeta_k,\\zeta_{k+1}\\to1$ as $\\tau\\downarrow0$, then the update\n\\eqref{eq:polar-matrix-map} is well defined for all sufficiently small\n$\\tau>0$, and $S_\\tau Z_{k+1}S_\\tau$ tends to the symmetric matrix\n\\begin{equation}\\label{eq:polar-leading-map}\n X_+=\\begin{pmatrix}\\gamma_+&\\xi_+\\\\\\xi_+&\\eta_+\\end{pmatrix}\n =\\begin{pmatrix}\\gamma&\\gamma(\\bar h-\\bar\\delta)\\\\\\gamma(\\bar h-\\bar\\delta)&1+\\gamma(\\bar h-\\bar\\delta)^2\\end{pmatrix}.\n\\end{equation}",
+      "statementHtml": "<p><code>Fix $X\\succ0$ with $\\xi&gt;0$, and for each $\\tau&gt;0$ set $Z_k=S_\\tau^{-1}XS_\\tau^{-1}$. If $\\delta_k/\\tau\\to\\bar\\delta&gt;0$ and $\\zeta_k,\\zeta_{k+1}\\to1$ as $\\tau\\downarrow0$, then the update [eq:polar-matrix-map] is well defined for all sufficiently small $\\tau&gt;0$, and $S_\\tau Z_{k+1}S_\\tau$ tends to the symmetric matrix X_+=\\gamma_+&amp;\\xi_+\\\\\\xi_+&amp;\\eta_+ =\\gamma&amp;\\gamma(\\bar h-\\bar\\delta)\\\\\\gamma(\\bar h-\\bar\\delta)&amp;1+\\gamma(\\bar h-\\bar\\delta)^2.</code></p>",
+      "statementSha256": "463893ce38609e02c22509e3bf9dee1896dc2488cd1424dff27105a415ac0f41",
+      "statementSource": {
+        "manuscript": "20251117-DFP/arXiv.tex",
+        "manuscriptSha256": "2a22ecf8e12959dd584a11732ba1836319eb16dd583059c283e4513b3dbbbdca",
+        "startLine": 692,
+        "endLine": 703
+      },
+      "texLabel": "lem:polar-limiting-cycle",
+      "paperMapping": "Paper-numbered result with reviewed Lean declarations and source links.",
+      "relatedDeclarations": [
+        {
+          "declaration": "DFP.Polar.General.cycleMatchingEven",
+          "file": "ReasLib/Optimization/DFP/Polar/General/CycleFamily.lean",
+          "line": 103
+        },
+        {
+          "declaration": "DFP.Polar.General.cycleMatchingOdd",
+          "file": "ReasLib/Optimization/DFP/Polar/General/CycleFamily.lean",
+          "line": 111
+        }
+      ],
+      "leanExcerpts": [
+        {
+          "declaration": "DFP.Polar.General.cycleMatchingEven",
+          "file": "ReasLib/Optimization/DFP/Polar/General/CycleFamily.lean",
+          "line": 103,
+          "leanCode": "theorem cycleMatchingEven {δE δO ν : ℝ} (h : CycleDomain δE δO ν) :\n    cycleLambdaEven δE δO ν +\n        1 / (cycleGamma δE δO ν * cycleLambdaEven δE δO ν) - δE =\n      cycleLambdaOdd δE δO ν := by\n  rw [one_div_cycleGamma_mul_even h]\n  linarith [cycleLambdaEven_sub_odd h]\n\n/-- The second stage maps the odd coefficient to the even coefficient. -/\n"
+        },
+        {
+          "declaration": "DFP.Polar.General.cycleMatchingOdd",
+          "file": "ReasLib/Optimization/DFP/Polar/General/CycleFamily.lean",
+          "line": 111,
+          "leanCode": "theorem cycleMatchingOdd {δE δO ν : ℝ} (h : CycleDomain δE δO ν) :\n    cycleLambdaOdd δE δO ν +\n        1 / (cycleGamma δE δO ν * cycleLambdaOdd δE δO ν) - δO =\n      cycleLambdaEven δE δO ν := by\n  rw [one_div_cycleGamma_mul_odd h]\n  linarith [cycleLambdaEven_sub_odd h]\n\n/-- The symmetric state matrix used in `eq:polar-two-cycle`. -/\n"
+        }
+      ],
+      "dependencies": [
+        "latest-direction-update"
+      ],
+      "statementDependencies": [],
+      "proofDependencies": [],
+      "dependencyEvidence": "curated",
+      "sourceSha256": "a5e2db7d02ebd2d2a86bbe3cae47b98d44a4ab1dec96f52270a15dfb92da179c"
+    },
+    {
+      "id": "latest-parameter-choice",
+      "label": "Lemma 5",
+      "title": "Admissible parameter choice",
+      "type": "Lemma",
+      "section": "construction",
+      "declaration": "DFP.Polar.General.strictWolfeBaseExists",
+      "file": "ReasLib/Optimization/DFP/Polar/General/CycleFamily.lean",
+      "line": 486,
+      "endLine": 494,
+      "statement": "\\label{lem:polar-parameter-choice}\nFor every $0<\\eta_1<\\eta_2<1$, one can choose positive angular\ncoefficients and a base point $\\nu_*$ in the positivity interval of\n\\eqref{eq:polar-family} so that, with $\\gamma_*=\\gamma(\\nu_*)$,\nthe following hold: \\textup{i)} at both the even and odd stages,\nthe limiting Armijo and strong-curvature ratios are respectively\nabove $\\eta_1$ and below $\\eta_2$;\n\\textup{ii)} at the even state corresponding to $\\nu_*$, with\n$\\gamma=\\gamma_*$ fixed, the derivative of the complete limiting\ncycle in $(\\xi,\\eta)$ has spectral radius less than one;\n\\textup{iii)} $\\gamma'(\\nu_*)>0$, so $\\gamma(\\nu)$ has an analytic\nlocal inverse $\\nu(\\gamma)$ near $\\gamma_*$.",
+      "statementHtml": "<p><code>For every $0&lt;\\eta_1&lt;\\eta_2&lt;1$, one can choose positive angular coefficients and a base point $\\nu_*$ in the positivity interval of [eq:polar-family] so that, with $\\gamma_*=\\gamma(\\nu_*)$, the following hold: \\textup{i)} at both the even and odd stages, the limiting Armijo and strong-curvature ratios are respectively above $\\eta_1$ and below $\\eta_2$; \\textup{ii)} at the even state corresponding to $\\nu_*$, with $\\gamma=\\gamma_*$ fixed, the derivative of the complete limiting cycle in $(\\xi,\\eta)$ has spectral radius less than one; \\textup{iii)} $\\gamma&#x27;(\\nu_*)&gt;0$, so $\\gamma(\\nu)$ has an analytic local inverse $\\nu(\\gamma)$ near $\\gamma_*$.</code></p>",
+      "statementSha256": "b5f2bfcde2b43aa312ef86790e9419ab6a28f3c9d701d4c58196f88ece213814",
+      "statementSource": {
+        "manuscript": "20251117-DFP/arXiv.tex",
+        "manuscriptSha256": "2a22ecf8e12959dd584a11732ba1836319eb16dd583059c283e4513b3dbbbdca",
+        "startLine": 794,
+        "endLine": 806
+      },
+      "texLabel": "lem:polar-parameter-choice",
+      "paperMapping": "Paper-numbered result with reviewed Lean declarations and source links.",
+      "relatedDeclarations": [
+        {
+          "declaration": "DFP.Polar.General.strictWolfeBaseExists",
+          "file": "ReasLib/Optimization/DFP/Polar/General/CycleFamily.lean",
+          "line": 486
+        }
+      ],
+      "leanExcerpts": [
+        {
+          "declaration": "DFP.Polar.General.strictWolfeBaseExists",
+          "file": "ReasLib/Optimization/DFP/Polar/General/CycleFamily.lean",
+          "line": 486,
+          "leanCode": "theorem strictWolfeBaseExists {c1 c2 : ℝ} (hc1 : 0 < c1)\n    (hc12 : c1 < c2) (hc2 : c2 < 1) :\n    ∃ ell z : ℝ, StrictWolfeBase c1 c2 ell z := by\n  by_cases hthird : (1 : ℝ) / 3 < c2\n  · exact strictWolfeBaseAboveThird hc12 hc2 hthird\n  · exact strictWolfeBaseBelowThird (lt_trans hc1 hc12) hc12 (le_of_not_gt hthird)\n\n/-- The quotient derivative of the general normalization in `eq:polar-family`. -/\n"
+        }
+      ],
+      "dependencies": [
+        "latest-endpoint-wolfe",
+        "latest-limiting-cycle"
+      ],
+      "statementDependencies": [],
+      "proofDependencies": [],
+      "dependencyEvidence": "curated",
+      "sourceSha256": "a5e2db7d02ebd2d2a86bbe3cae47b98d44a4ab1dec96f52270a15dfb92da179c"
+    },
+    {
+      "id": "latest-cycle-estimates",
+      "label": "Lemma 6",
+      "title": "Two-cycle estimates",
+      "type": "Lemma",
+      "section": "construction",
+      "declaration": "DFP.Polar.General.Continuation.existsTrajectoryBounds",
+      "file": "ReasLib/Optimization/DFP/Polar/General/Continuation.lean",
+      "line": 722,
+      "endLine": 730,
+      "statement": "\\label{lem:polar-cycle-estimates}\nFix a positive analytic function $\\phi$ on a neighborhood of the\nchosen $\\gamma$ interval, and let $\\Phi$ be the complete cycle defined\nabove. Then $\\Phi$ extends analytically to $\\tau^2=v=0$.\nAfter shrinking the chosen $\\gamma$ interval about $\\gamma_*$ if\nnecessary, there are a fixed norm\n$|\\cdot|_*$, $0<q<1$, and $\\kappa_0>0$ such that\n\\begin{equation}\\label{eq:polar-fast-bound}\n\\begin{aligned}\n |u_+|_*&\\le q|u|_*+\\kappa_0(v+\\tau^2)+\\kappa_0|u|_*^2,\\\\\n \\gamma_+&=\\gamma+v\\psi_\\phi(\\gamma)\n          +O(v|u|_*+v^2+\\tau^2),\n\\end{aligned}\n\\end{equation}\nwhere\n\\begin{equation}\\label{eq:polar-slow-drift}\n \\psi_\\phi(\\gamma)\n =2\\gamma\\nu(\\gamma)\n \\left(\\bar\\delta_{\\mathrm E}^{-1}+\\bar\\delta_{\\mathrm O}^{-1}\\right)\n \\phi(\\gamma)-\\frac{2\\gamma}{1+\\beta}.\n\\end{equation}\nThe bounds are uniform for sufficiently small $\\tau^2,v\\ge0$ and states\nin a fixed neighborhood of the even reference curve, with constants\ndepending on $\\phi$.",
+      "statementHtml": "<p><code>Fix a positive analytic function $\\phi$ on a neighborhood of the chosen $\\gamma$ interval, and let $\\Phi$ be the complete cycle defined above. Then $\\Phi$ extends analytically to $\\tau^2=v=0$. After shrinking the chosen $\\gamma$ interval about $\\gamma_*$ if necessary, there are a fixed norm $|\\cdot|_*$, $0&lt;q&lt;1$, and $\\kappa_0&gt;0$ such that |u_+|_*&amp;\\le q|u|_*+\\kappa_0(v+\\tau^2)+\\kappa_0|u|_*^2,\\\\ \\gamma_+&amp;=\\gamma+v\\psi_\\phi(\\gamma) +O(v|u|_*+v^2+\\tau^2), where \\psi_\\phi(\\gamma) =2\\gamma\\nu(\\gamma) \\left(\\bar\\delta_{\\mathrm E}^{-1}+\\bar\\delta_{\\mathrm O}^{-1}\\right) \\phi(\\gamma)-\\frac{2\\gamma}{1+\\beta}. The bounds are uniform for sufficiently small $\\tau^2,v\\ge0$ and states in a fixed neighborhood of the even reference curve, with constants depending on $\\phi$.</code></p>",
+      "statementSha256": "042d91c03e9c2711eb7e0117372f983d9aab865afcffc0ec9ec6ac8f069fc727",
+      "statementSource": {
+        "manuscript": "20251117-DFP/arXiv.tex",
+        "manuscriptSha256": "2a22ecf8e12959dd584a11732ba1836319eb16dd583059c283e4513b3dbbbdca",
+        "startLine": 1159,
+        "endLine": 1183
+      },
+      "texLabel": "lem:polar-cycle-estimates",
+      "paperMapping": "Paper-numbered result with reviewed Lean declarations and source links.",
+      "relatedDeclarations": [
+        {
+          "declaration": "DFP.Polar.General.Continuation.existsTrajectoryBounds",
+          "file": "ReasLib/Optimization/DFP/Polar/General/Continuation.lean",
+          "line": 722
+        }
+      ],
+      "leanExcerpts": [
+        {
+          "declaration": "DFP.Polar.General.Continuation.existsTrajectoryBounds",
+          "file": "ReasLib/Optimization/DFP/Polar/General/Continuation.lean",
+          "line": 722,
+          "leanCode": "theorem existsTrajectoryBounds (p : Parameters) (hβ : 0 < p.beta) (hβone : p.beta < 1) :\n    ∃ N > 0, ∃ M > 0, ∃ J : ℕ, 0 < J ∧\n      ∀ j0 : ℕ, J ≤ j0 → TrajectoryBounds p j0 N M := by\n  obtain ⟨C, hC, r, hr, ρ, hρ, ε, hε, hlocal⟩ := exists_localCycleBounds p hβ\n  exact hlocal.existsTrajectoryBounds hβ hβone hC hr hρ hε\n\n/-- Helper for lem:polar-continuation: trajectory feasibility uses exactly the data and scale\nof the concrete shifted parameter record. -/\n"
+        }
+      ],
+      "dependencies": [
+        "latest-limiting-cycle",
+        "latest-parameter-choice"
+      ],
+      "statementDependencies": [],
+      "proofDependencies": [],
+      "dependencyEvidence": "curated",
+      "sourceSha256": "453b5bf024f7780d0290fffe7774d9b31a16aad149696725db34defbf570974e"
+    },
+    {
+      "id": "latest-continuation",
+      "label": "Lemma 7",
+      "title": "Infinite polar continuation",
+      "type": "Lemma",
+      "section": "construction",
+      "declaration": "DFP.Polar.General.Continuation.existsContinuationEstimates",
+      "file": "ReasLib/Optimization/DFP/Polar/General/Continuation.lean",
+      "line": 1027,
+      "endLine": 1051,
+      "statement": "\\label{lem:polar-continuation}\nFor every sufficiently large $j_0$, the recurrence\n\\eqref{eq:polar-matrix-map}, initialized by\n\\eqref{eq:polar-initial-matrix}, with the angles in\n\\eqref{eq:polar-angles} and the gradient factors in\n\\eqref{eq:polar-feedback}, defines an infinite matrix sequence. For all $j\\ge0$,\n\\begin{equation}\\label{eq:polar-tube-estimates}\n \\gamma_j=\\gamma_*+O(\\tau_j^{1-\\beta}),\\qquad\n X_j-X_{\\mathrm E}(\\gamma_j)=O(\\tau_j^{1+\\beta}).\n\\end{equation}\nThe odd normalized matrices satisfy\n$S_{\\tau_j}Z_{2j+1}S_{\\tau_j}=X_{\\mathrm O}(\\gamma_j)+O(\\tau_j^{1+\\beta})$.\nEvery matrix $Z_k$ is positive definite, and\n$(Z_k)_{12}>0$, $r_k>0$, and $p_k^Tq_k>0$.\nThe constants are independent of $j_0$ once $j_0$ exceeds a fixed threshold.",
+      "statementHtml": "<p><code>For every sufficiently large $j_0$, the recurrence [eq:polar-matrix-map], initialized by [eq:polar-initial-matrix], with the angles in [eq:polar-angles] and the gradient factors in [eq:polar-feedback], defines an infinite matrix sequence. For all $j\\ge0$, \\gamma_j=\\gamma_*+O(\\tau_j^{1-\\beta}),\\qquad X_j-X_{\\mathrm E}(\\gamma_j)=O(\\tau_j^{1+\\beta}). The odd normalized matrices satisfy $S_{\\tau_j}Z_{2j+1}S_{\\tau_j}=X_{\\mathrm O}(\\gamma_j)+O(\\tau_j^{1+\\beta})$. Every matrix $Z_k$ is positive definite, and $(Z_k)_{12}&gt;0$, $r_k&gt;0$, and $p_k^Tq_k&gt;0$. The constants are independent of $j_0$ once $j_0$ exceeds a fixed threshold.</code></p>",
+      "statementSha256": "94907b11fd5b0e7f8960ba6cde22535cfbba703d28f39b924ea9eda1fef8862b",
+      "statementSource": {
+        "manuscript": "20251117-DFP/arXiv.tex",
+        "manuscriptSha256": "2a22ecf8e12959dd584a11732ba1836319eb16dd583059c283e4513b3dbbbdca",
+        "startLine": 1344,
+        "endLine": 1359
+      },
+      "texLabel": "lem:polar-continuation",
+      "paperMapping": "Paper-numbered result with reviewed Lean declarations and source links.",
+      "relatedDeclarations": [
+        {
+          "declaration": "DFP.Polar.General.Continuation.existsContinuationEstimates",
+          "file": "ReasLib/Optimization/DFP/Polar/General/Continuation.lean",
+          "line": 1027
+        }
+      ],
+      "leanExcerpts": [
+        {
+          "declaration": "DFP.Polar.General.Continuation.existsContinuationEstimates",
+          "file": "ReasLib/Optimization/DFP/Polar/General/Continuation.lean",
+          "line": 1027,
+          "leanCode": "theorem existsContinuationEstimates (p : Parameters) (hβ : 0 < p.beta) (hβone : p.beta < 1) :\n    ∃ N > 0, ∃ M > 0, ∃ K > 0, ∃ J : ℕ, 0 < J ∧ ∀ j0 : ℕ, J ≤ j0 →\n      TrajectoryBounds p j0 N M ∧ (∀ k : ℕ, RawFeasible (p.withStartIndex j0) k) ∧\n        ∀ j : ℕ,\n          ‖(p.withStartIndex j0).normalizedOddState j - p.oddReference (stateAt p j0 j).1‖ ≤\n            K / ((j0 + j : ℕ) : ℝ) := by\n  obtain ⟨CO, hCO, rO, hrO, ρO, hρO, εO, hεO, hodd⟩ := exists_localOdd_bound p hβ\n  obtain ⟨N, hN, M, hM, J0, hJ0, hcontinuation⟩ := existsContinuation p hβ hβone\n  obtain ⟨J1, hinside⟩ := exists_barrier_threshold hβ hβone N M rO ρO hrO hρO\n  obtain ⟨J2, hsmall⟩ := exists_smallParameter_threshold hβ hεO\n  let K := CO * (N + 2)\n  have hK : 0 < K := by\n    dsimp [K]\n    positivity\n  refine ⟨N, hN, M, hM, K, hK, max J0 (max J1 J2), hJ0.trans_le (le_max_left _ _), ?_⟩\n  intro j0 hj0\n  have hj00 : J0 ≤ j0 := (le_max_left _ _).trans hj0\n  have hj01 : J1 ≤ j0 := (le_max_left _ _).trans ((le_max_right _ _).trans hj0)\n  have hj02 : J2 ≤ j0 := (le_max_right _ _).trans ((le_max_right _ _).trans hj0)\n  have hstart : 0 < j0 := hJ0.trans_le hj00\n  have hbase := hcontinuation j0 hj00\n  refine ⟨hbase.1, hbase.2, ?_⟩\n  intro j\n  have hi := hinside j0 hj01 j\n"
+        }
+      ],
+      "dependencies": [
+        "latest-cycle-estimates"
+      ],
+      "statementDependencies": [],
+      "proofDependencies": [],
+      "dependencyEvidence": "curated",
+      "sourceSha256": "453b5bf024f7780d0290fffe7774d9b31a16aad149696725db34defbf570974e"
+    },
+    {
+      "id": "latest-geometry",
+      "label": "Lemma 8",
+      "title": "Polar geometry and separation",
+      "type": "Lemma",
+      "section": "construction",
+      "declaration": "DFP.Polar.General.ActualGeometry.existsSourceGeometry",
+      "file": "ReasLib/Optimization/DFP/Polar/General/ActualGeometry.lean",
+      "line": 52,
+      "endLine": 76,
+      "statement": "\\label{lem:polar-geometry}\nFor sufficiently large $j_0$, the points in \\eqref{eq:polar-radii}\nhave accumulation set $\\Gamma=\\{x\\in\\mathbb R^2:\\|x\\|=1\\}$ and satisfy\n\\begin{equation}\\label{eq:polar-separation}\n \\|x_m-x_k\\|\\ge \\kappa_-\\max\\{\\tau_{\\lfloor k/2\\rfloor},\n                              \\tau_{\\lfloor m/2\\rfloor}\\}\n \\qquad(m\\ne k),\n\\end{equation}\nwhere $\\kappa_->0$ is independent of $j_0$.\nMoreover, $\\|s_k\\|\\asymp\\tau_{\\lfloor k/2\\rfloor}$,\n$\\|g_k-x_k\\|=O(\\tau_{\\lfloor k/2\\rfloor}^{1+\\beta})$, and the endpoint\ndata $F_k,g_k$ satisfy the strong Wolfe inequalities at every step.\nThe comparison constants are independent of $j_0$.",
+      "statementHtml": "<p><code>For sufficiently large $j_0$, the points in [eq:polar-radii] have accumulation set $\\Gamma=\\{x\\in\\mathbb R^2:\\|x\\|=1\\}$ and satisfy \\|x_m-x_k\\|\\ge \\kappa_-\\max\\{\\tau_{\\lfloor k/2\\rfloor}, \\tau_{\\lfloor m/2\\rfloor}\\} \\qquad(m\\ne k), where $\\kappa_-&gt;0$ is independent of $j_0$. Moreover, $\\|s_k\\|\\asymp\\tau_{\\lfloor k/2\\rfloor}$, $\\|g_k-x_k\\|=O(\\tau_{\\lfloor k/2\\rfloor}^{1+\\beta})$, and the endpoint data $F_k,g_k$ satisfy the strong Wolfe inequalities at every step. The comparison constants are independent of $j_0$.</code></p>",
+      "statementSha256": "4e15f106baef52ec5deb53b4b0ba5d8734c440cf6dbe293eaa14c9b9fa325575",
+      "statementSource": {
+        "manuscript": "20251117-DFP/arXiv.tex",
+        "manuscriptSha256": "2a22ecf8e12959dd584a11732ba1836319eb16dd583059c283e4513b3dbbbdca",
+        "startLine": 1490,
+        "endLine": 1503
+      },
+      "texLabel": "lem:polar-geometry",
+      "paperMapping": "Paper-numbered result with reviewed Lean declarations and source links.",
+      "relatedDeclarations": [
+        {
+          "declaration": "DFP.Polar.General.ActualGeometry.existsSourceGeometry",
+          "file": "ReasLib/Optimization/DFP/Polar/General/ActualGeometry.lean",
+          "line": 52
+        }
+      ],
+      "leanExcerpts": [
+        {
+          "declaration": "DFP.Polar.General.ActualGeometry.existsSourceGeometry",
+          "file": "ReasLib/Optimization/DFP/Polar/General/ActualGeometry.lean",
+          "line": 52,
+          "leanCode": "theorem existsSourceGeometry (p : Parameters) (hβ : 0 < p.beta) (hβone : p.beta < 1) :\n    ∃ N > 0, ∃ M > 0, ∃ B > 0, ∃ K > 0, ∃ c > 0, ∃ U > 0,\n      ∃ a > 0, ∃ b > 0, ∃ s > 0, ∃ V > 0, ∃ J : ℕ, 0 < J ∧\n        ∀ j0 : ℕ, J ≤ j0 → SourceGeometricData p j0 N M B K c U a b s V := by\n  obtain ⟨N, hN, M, hM, B, hB, K, hK, c, hc, U, hU, JR, hJR, hRadial⟩ :=\n    RadiusProducts.existsSourceRadialData p hβ hβone\n  obtain ⟨a, ha, b, hb, JA, hJA, hAngles⟩ := AngularBounds.existsAngleBoundsWithSin p hβ\n  let η := min 1 (Real.pi / b)\n  have hη : 0 < η := lt_min zero_lt_one (div_pos Real.pi_pos hb)\n  have hηone : η ≤ 1 := min_le_left _ _\n  have hspan : b * η ≤ Real.pi := by\n    have h := (le_div_iff₀ hb).mp (min_le_right 1 (Real.pi / b))\n    simpa only [mul_comm] using h\n  obtain ⟨s, hs, hSep⟩ := Geometry.exists_uniform_point_separation\n    hβ hη hηone ha hb.le hc hspan\n  have hsmall := (scale_tendsto_zero hβ 0).eventually (Iio_mem_nhds (half_pos hη))\n  obtain ⟨JS, hJS⟩ := eventually_atTop.mp hsmall\n  let V := U + B * b\n  have hV : 0 < V := add_pos hU (mul_pos hB hb)\n  refine ⟨N, hN, M, hM, B, hB, K, hK, c, hc, U, hU, a, ha, b, hb,\n    s, hs, V, hV, max JR (max JA JS), hJR.trans_le (le_max_left _ _), ?_⟩\n  intro j0 hj0\n  have hjR : JR ≤ j0 := (le_max_left _ _).trans hj0\n  have hjA : JA ≤ j0 := (le_max_left _ _).trans ((le_max_right _ _).trans hj0)\n"
+        }
+      ],
+      "dependencies": [
+        "latest-endpoint-wolfe",
+        "latest-parameter-choice",
+        "latest-continuation"
+      ],
+      "statementDependencies": [],
+      "proofDependencies": [],
+      "dependencyEvidence": "curated",
+      "sourceSha256": "2a34c9a8dc3b69b74a171aaaef1e0a9ad2219f63f68be8a6a5b1e95f4e1288a9"
+    },
+    {
+      "id": "latest-interpolation",
+      "label": "Lemma 9",
+      "title": "Explicit polar interpolation",
+      "type": "Lemma",
+      "section": "construction",
+      "declaration": "DFP.Polar.General.Objective.existsSourceObjectiveData",
+      "file": "ReasLib/Optimization/DFP/Polar/General/Objective.lean",
+      "line": 774,
+      "endLine": 798,
+      "statement": "\\label{lem:polar-interpolation}\nLet $x_k,g_k,F_k$ be the data in Lemma~\\ref{lem:polar-geometry},\nwith $j_0$ sufficiently large. Then there is a function\n$f\\in C^2(\\mathbb R^2)$ whose Hessian is globally $\\beta$-H\\\"older\ncontinuous and which agrees with $\\|x\\|^2/2$ on the closed unit disk.\nAt every prescribed point,\n\\begin{equation}\\label{eq:polar-endpoint-data}\nf(x_k)=F_k=\\frac{1}{2}\\rho_k^2,\\qquad\n\\nabla f(x_k)=g_k,\\qquad \\nabla^2f(x_k)=I.\n\\end{equation}\nWriting $\\Psi=f-\\|x\\|^2/2$, there is a constant $\\kappa$ independent\nof the final choice of $j_0$ such that\n\\begin{equation}\\label{eq:polar-interpolation-bound}\n\\sup_{x\\in\\mathbb R^2}\\|\\nabla^2\\Psi(x)\\|\\le \\kappa\\tau_0^\\beta.\n\\end{equation}",
+      "statementHtml": "<p><code>Let $x_k,g_k,F_k$ be the data in Lemma~[lem:polar-geometry], with $j_0$ sufficiently large. Then there is a function $f\\in C^2(\\mathbb R^2)$ whose Hessian is globally $\\beta$-H\\&quot;older continuous and which agrees with $\\|x\\|^2/2$ on the closed unit disk. At every prescribed point, f(x_k)=F_k=\\frac{1}{2}\\rho_k^2,\\qquad \\nabla f(x_k)=g_k,\\qquad \\nabla^2f(x_k)=I. Writing $\\Psi=f-\\|x\\|^2/2$, there is a constant $\\kappa$ independent of the final choice of $j_0$ such that \\sup_{x\\in\\mathbb R^2}\\|\\nabla^2\\Psi(x)\\|\\le \\kappa\\tau_0^\\beta.</code></p>",
+      "statementSha256": "73f18aec51bde0f5960aeb92df110ce4233f3d372e0cb22341af6582ace03a1b",
+      "statementSource": {
+        "manuscript": "20251117-DFP/arXiv.tex",
+        "manuscriptSha256": "2a22ecf8e12959dd584a11732ba1836319eb16dd583059c283e4513b3dbbbdca",
+        "startLine": 1621,
+        "endLine": 1637
+      },
+      "texLabel": "lem:polar-interpolation",
+      "paperMapping": "Paper-numbered result with reviewed Lean declarations and source links.",
+      "relatedDeclarations": [
+        {
+          "declaration": "DFP.Polar.General.Objective.existsSourceObjectiveData",
+          "file": "ReasLib/Optimization/DFP/Polar/General/Objective.lean",
+          "line": 774
+        }
+      ],
+      "leanExcerpts": [
+        {
+          "declaration": "DFP.Polar.General.Objective.existsSourceObjectiveData",
+          "file": "ReasLib/Optimization/DFP/Polar/General/Objective.lean",
+          "line": 774,
+          "leanCode": "theorem existsSourceObjectiveData (p : Parameters) (hβ : 0 < p.beta)\n    (hβone : p.beta < 1) (ε : ℝ) (hεpos : 0 < ε) (hε : ε < 1) :\n    ∃ N > 0, ∃ M > 0, ∃ κ > 0, ∃ H ≥ 0, ∃ s > 0, ∃ Ustep > 0, ∃ Cobj ≥ 0,\n      ∃ J : ℕ, 0 < J ∧ ∀ j0 : ℕ, J ≤ j0 →\n        SourceObjectiveData p j0 N M κ ε H ∧\n          SourceGeometricData (p.withStartIndex j0) κ s Ustep Cobj := by\n  obtain ⟨N, hN, M, hM, B, hB, K, hK, c, hc, U, hU,\n    a, ha, b, hb, s, hs, V, hV, J0, hJ0, hgeometry⟩ :=\n      ActualGeometry.existsSourceGeometry p hβ hβone\n  have hcluster (j0 : ℕ) (hj0 : J0 ≤ j0) :\n      {x | MapClusterPt x atTop (p.withStartIndex j0).point} = Metric.sphere 0 1 := by\n    ext x\n    simpa only [Set.mem_setOf_eq, Metric.mem_sphere, dist_zero_right] using\n      (hgeometry j0 hj0).cluster x\n  obtain ⟨κ, hκ, H, hH, Cobj, hCobj, J, hJ, hsource⟩ :=\n    existsSourceObjectiveData_of_uniformGeometry p hβ hβone hεpos hε hM.le hB hK hc hU hs hV\n      J0 hJ0 (fun j0 hj0 ↦ (hgeometry j0 hj0).radial)\n      (fun j0 hj0 ↦ ⟨B, hB, K, hK, c, hc, U, hU,\n        a, ha, b, hb, s, hs, V, hV, hgeometry j0 hj0⟩)\n      (fun j0 hj0 ↦ (hgeometry j0 hj0).sine_pos)\n      (fun j0 hj0 ↦ (hgeometry j0 hj0).separation)\n      (fun j0 hj0 k ↦ ((hgeometry j0 hj0).steps k).2) hcluster\n  exact ⟨N, hN, M, hM, κ, hκ, H, hH, s, hs, V, hV, Cobj, hCobj, J, hJ, hsource⟩\n\n"
+        }
+      ],
+      "dependencies": [
+        "latest-geometry"
+      ],
+      "statementDependencies": [],
+      "proofDependencies": [],
+      "dependencyEvidence": "curated",
+      "sourceSha256": "5d097b429c432aaa943597bf7dec5455767669755c04c97efaaa41fd57501aab"
+    },
+    {
+      "id": "latest-main",
+      "label": "Theorem 10",
+      "title": "Strong-Wolfe counterexample",
+      "type": "Theorem",
+      "section": "main",
+      "declaration": "DFPWolfe.Latest.main",
+      "file": "DFPWolfe/Latest/Main.lean",
+      "line": 342,
+      "endLine": 356,
+      "statement": "\\label{thm:main}\nFor every integer $n\\ge2$, $0<\\eta_1<\\eta_2<1$,\n$\\varepsilon\\in(0,1)$, and $\\beta\\in(0,1)$, there exist\n$f\\in C^2(\\R^n)$, $x_0\\in\\R^n$, a positive definite matrix\n$H_0\\in\\R^{n\\times n}$, and a sequence of positive step lengths\nsuch that:\n\\begin{enumerate}\n\\item[(i)]\n$(1-\\varepsilon)I\\preceq\\nabla^2f(x)\\preceq(1+\\varepsilon)I$\nfor all $x\\in\\R^n$, and the origin is the unique minimizer.\n\\item[(ii)]\nThe Hessian is globally $\\beta$-H\\\"older continuous and has no\nH\\\"older bound of any exponent $\\beta'\\in(\\beta,1]$ on the\ninitial level set $\\{x:f(x)\\le f(x_0)\\}$.\n\\item[(iii)]\nThe resulting infinite classical DFP sequence satisfies the\nstandard strong Wolfe conditions with parameters $(\\eta_1,\\eta_2)$\nat every iteration, but $\\|\\nabla f(x_k)\\|\\to1$.\nIts accumulation set is the unit circle centered at the origin\nin a two-dimensional subspace of $\\R^n$.\n\\end{enumerate}",
+      "statementHtml": "<p><code>For every integer $n\\ge2$, $0&lt;\\eta_1&lt;\\eta_2&lt;1$, $\\varepsilon\\in(0,1)$, and $\\beta\\in(0,1)$, there exist $f\\in C^2(\\R^n)$, $x_0\\in\\R^n$, a positive definite matrix $H_0\\in\\R^{n\\times n}$, and a sequence of positive step lengths such that: \\item[(i)] $(1-\\varepsilon)I\\preceq\\nabla^2f(x)\\preceq(1+\\varepsilon)I$ for all $x\\in\\R^n$, and the origin is the unique minimizer. \\item[(ii)] The Hessian is globally $\\beta$-H\\&quot;older continuous and has no H\\&quot;older bound of any exponent $\\beta&#x27;\\in(\\beta,1]$ on the initial level set $\\{x:f(x)\\le f(x_0)\\}$. \\item[(iii)] The resulting infinite classical DFP sequence satisfies the standard strong Wolfe conditions with parameters $(\\eta_1,\\eta_2)$ at every iteration, but $\\|\\nabla f(x_k)\\|\\to1$. Its accumulation set is the unit circle centered at the origin in a two-dimensional subspace of $\\R^n$.</code></p>",
+      "statementSha256": "a355ee2969251658a920749162bbdbe45412d244ae32c2aaece56c0b613b1175",
+      "statementSource": {
+        "manuscript": "20251117-DFP/arXiv.tex",
+        "manuscriptSha256": "2a22ecf8e12959dd584a11732ba1836319eb16dd583059c283e4513b3dbbbdca",
+        "startLine": 1778,
+        "endLine": 1799
+      },
+      "texLabel": "thm:main",
+      "paperMapping": "Paper-numbered result with reviewed Lean declarations and source links.",
+      "relatedDeclarations": [
+        {
+          "declaration": "DFPWolfe.Latest.main",
+          "file": "DFPWolfe/Latest/Main.lean",
+          "line": 342
+        },
+        {
+          "declaration": "DFPWolfe.Latest.mainWithSource",
+          "file": "DFPWolfe/Latest/Main.lean",
+          "line": 356
+        },
+        {
+          "declaration": "DFPWolfe.Latest.mainWithSequenceProperties",
+          "file": "DFPWolfe/Latest/Sequences.lean",
+          "line": 62
+        },
+        {
+          "declaration": "DFPWolfe.Latest.not_globalWeakWolfeConvergenceAt",
+          "file": "DFPWolfe/Latest/Main.lean",
+          "line": 435
+        },
+        {
+          "declaration": "DFPWolfe.Latest.not_levelSetGlobalWeakWolfeConvergenceAt",
+          "file": "DFPWolfe/Latest/Main.lean",
+          "line": 446
+        }
+      ],
+      "leanExcerpts": [
+        {
+          "declaration": "DFPWolfe.Latest.main",
+          "file": "DFPWolfe/Latest/Main.lean",
+          "line": 342,
+          "leanCode": "theorem main (n : ℕ) (hn : 2 ≤ n) (c1 c2 ε β : ℝ)\n    (hc1 : 0 < c1) (hc12 : c1 < c2) (hc2 : c2 < 1)\n    (hε : ε ∈ Set.Ioo 0 1) (hβ : β ∈ Set.Ioo 0 1) :\n    ∃ w : DFP.StrongWolfeCounterexample (Fin n) (1 / 2) (3 / 2) c1 c2,\n      Transport.CounterexampleProperties β ε w\n        (DFP.Polar.OrthogonalExtension.planeEmbedding n hn) := by\n  obtain ⟨s⟩ := planarSource c1 c2 ε β hc1 hc12 hc2 hε hβ\n  obtain ⟨c, hproperties⟩ := s.existsPlanarCertificate\n  obtain ⟨w, hsource, hfinal⟩ :=\n    Transport.extendPlanarCertificate n hn c hproperties hβ.1.le hε.1.le\n  exact ⟨w, hfinal⟩\n\n/-- Helper for thm:main: the same arbitrary-dimensional witness retains its complete\nactual planar construction and literal identity-block extension, for source sequence comparisons. -/\n"
+        },
+        {
+          "declaration": "DFPWolfe.Latest.mainWithSource",
+          "file": "DFPWolfe/Latest/Main.lean",
+          "line": 356,
+          "leanCode": "theorem mainWithSource (n : ℕ) (hn : 2 ≤ n) (c1 c2 ε β : ℝ)\n    (hc1 : 0 < c1) (hc12 : c1 < c2) (hc2 : c2 < 1)\n    (hε : ε ∈ Set.Ioo 0 1) (hβ : β ∈ Set.Ioo 0 1) :\n    ∃ s : PlanarConstruction c1 c2 β ε,\n      ∃ w : DFP.StrongWolfeCounterexample (Fin n) (1 / 2) (3 / 2)\n        (s.parameters.withStartIndex s.startIndex).c1 (s.parameters.withStartIndex s.startIndex).c2,\n        DFP.Polar.OrthogonalExtension.FinExtensionIdentity n hn s.certificate w ∧\n          Transport.CounterexampleProperties s.parameters.beta ε w\n            (DFP.Polar.OrthogonalExtension.planeEmbedding n hn) := by\n  obtain ⟨s⟩ := planarSource c1 c2 ε β hc1 hc12 hc2 hε hβ\n  have hβp : 0 ≤ s.parameters.beta := by\n    rw [s.beta_eq]\n    exact hβ.1.le\n  obtain ⟨w, hsource, hproperties⟩ :=\n    Transport.extendPlanarCertificate n hn s.certificate s.properties hβp hε.1.le\n  exact ⟨s, w, hsource, hproperties⟩\n\n/-- cor:identity-initialization. Every admissible Wolfe pair and exponent admits an\nidentity-initialized classical DFP counterexample in every dimension at least two.\nThe globally Hölder Hessian has positive global bounds, the gradient norm has positive\nliminf, and the exact cluster set is a centered ellipse in a two-dimensional subspace. -/\n"
+        },
+        {
+          "declaration": "DFPWolfe.Latest.mainWithSequenceProperties",
+          "file": "DFPWolfe/Latest/Sequences.lean",
+          "line": 62,
+          "leanCode": "theorem mainWithSequenceProperties (n : ℕ) (hn : 2 ≤ n) (c1 c2 ε β : ℝ)\n    (hc1 : 0 < c1) (hc12 : c1 < c2) (hc2 : c2 < 1)\n    (hε : ε ∈ Set.Ioo 0 1) (hβ : β ∈ Set.Ioo 0 1) :\n    ∃ s : PlanarConstruction c1 c2 β ε,\n      ∃ w : DFP.StrongWolfeCounterexample (Fin n) (1 / 2) (3 / 2)\n        (s.parameters.withStartIndex s.startIndex).c1 (s.parameters.withStartIndex s.startIndex).c2,\n        DFP.Polar.OrthogonalExtension.FinExtensionIdentity n hn s.certificate w ∧\n          Transport.CounterexampleProperties s.parameters.beta ε w\n            (DFP.Polar.OrthogonalExtension.planeEmbedding n hn) ∧\n          SequenceAsymptotics.SequenceProperties (s.parameters.withStartIndex s.startIndex) ∧\n          SequenceAsymptotics.CanonicalSequenceProperties\n            (s.parameters.withStartIndex s.startIndex) s.certificate := by\n  obtain ⟨s, w, hsource, hproperties⟩ :=\n    mainWithSource n hn c1 c2 ε β hc1 hc12 hc2 hε hβ\n  exact ⟨s, w, hsource, hproperties, s.sequenceProperties hβ⟩\n\nend DFPWolfe.Latest\n"
+        },
+        {
+          "declaration": "DFPWolfe.Latest.not_globalWeakWolfeConvergenceAt",
+          "file": "DFPWolfe/Latest/Main.lean",
+          "line": 435,
+          "leanCode": "theorem not_globalWeakWolfeConvergenceAt (c1 c2 : ℝ)\n    (hc1 : 0 < c1) (hc12 : c1 < c2) (hc2 : c2 < 1) :\n    ¬ DFP.GlobalWeakWolfeConvergenceAt c1 c2 := by\n  have hhalf : (1 / 2 : ℝ) ∈ Set.Ioo 0 1 := by norm_num\n  have hbounds : (1 / 2 : ℝ) ≤ 3 / 2 := by norm_num\n  obtain ⟨w, hproperties⟩ := main 2 le_rfl c1 c2 (1 / 2) (1 / 2) hc1 hc12 hc2 hhalf hhalf\n  exact DFP.not_globalWeakWolfeConvergenceAt_of_counterexample\n    w.toWolfeCounterexample le_rfl hhalf.1 hbounds\n\n/-- Helper for thm:main and eq:open-question: the same source witness disproves the\ninitial-level-set formulation of ordinary weak-Wolfe DFP convergence. -/\n"
+        },
+        {
+          "declaration": "DFPWolfe.Latest.not_levelSetGlobalWeakWolfeConvergenceAt",
+          "file": "DFPWolfe/Latest/Main.lean",
+          "line": 446,
+          "leanCode": "theorem not_levelSetGlobalWeakWolfeConvergenceAt (c1 c2 : ℝ)\n    (hc1 : 0 < c1) (hc12 : c1 < c2) (hc2 : c2 < 1) :\n    ¬ DFP.LevelSetGlobalWeakWolfeConvergenceAt c1 c2 := by\n  have hhalf : (1 / 2 : ℝ) ∈ Set.Ioo 0 1 := by norm_num\n  have hbounds : (1 / 2 : ℝ) ≤ 3 / 2 := by norm_num\n  obtain ⟨w, hproperties⟩ := main 2 le_rfl c1 c2 (1 / 2) (1 / 2) hc1 hc12 hc2 hhalf hhalf\n  exact DFP.not_levelSetGlobalWeakWolfeConvergenceAt_of_counterexample\n    w.toWolfeCounterexample le_rfl hhalf.1 hbounds\n\nend DFPWolfe.Latest\n"
+        }
+      ],
+      "dependencies": [
+        "latest-realization",
+        "latest-parameter-choice",
+        "latest-continuation",
+        "latest-geometry",
+        "latest-interpolation"
+      ],
+      "statementDependencies": [],
+      "proofDependencies": [],
+      "dependencyEvidence": "curated",
+      "sourceSha256": "ec5cfe390a55df503b1f339c5b9995774e7b6105ea8a68fdd6d2c86091395ee6"
+    },
+    {
+      "id": "latest-identity",
+      "label": "Corollary 11",
+      "title": "Identity initialization",
+      "type": "Corollary",
+      "section": "main",
+      "declaration": "DFPWolfe.Latest.identityInitialization",
+      "file": "DFPWolfe/Latest/Main.lean",
+      "line": 377,
+      "endLine": 397,
+      "statement": "\\label{cor:identity-initialization}\nFor every integer $n\\ge2$, $0<\\eta_1<\\eta_2<1$,\nand $\\beta\\in(0,1)$, a strongly convex objective function\n$\\widetilde f\\in C^2(\\R^n)$ with globally $\\beta$-H\\\"older continuous\nHessian admits an infinite classical DFP sequence initialized with\n$\\widetilde H_0=I$, satisfying the standard strong Wolfe conditions\nwith parameters $(\\eta_1,\\eta_2)$ and\n$\\liminf_k\\|\\nabla\\widetilde f(\\widetilde x_k)\\|>0$.\nThe origin is its unique minimizer, $\\widetilde f(0)=0$, and its Hessian\nhas positive global lower and upper bounds that may depend on the\nexample. The accumulation set is an ellipse centered at the origin\nin a two-dimensional subspace.",
+      "statementHtml": "<p><code>For every integer $n\\ge2$, $0&lt;\\eta_1&lt;\\eta_2&lt;1$, and $\\beta\\in(0,1)$, a strongly convex objective function $\\widetilde f\\in C^2(\\R^n)$ with globally $\\beta$-H\\&quot;older continuous Hessian admits an infinite classical DFP sequence initialized with $\\widetilde H_0=I$, satisfying the standard strong Wolfe conditions with parameters $(\\eta_1,\\eta_2)$ and $\\liminf_k\\|\\nabla\\widetilde f(\\widetilde x_k)\\|&gt;0$. The origin is its unique minimizer, $\\widetilde f(0)=0$, and its Hessian has positive global lower and upper bounds that may depend on the example. The accumulation set is an ellipse centered at the origin in a two-dimensional subspace.</code></p>",
+      "statementSha256": "596797a1e7f92b37ef00d666e74d711561a554d60fd7d5064fddb26da8e38b09",
+      "statementSource": {
+        "manuscript": "20251117-DFP/arXiv.tex",
+        "manuscriptSha256": "2a22ecf8e12959dd584a11732ba1836319eb16dd583059c283e4513b3dbbbdca",
+        "startLine": 1883,
+        "endLine": 1895
+      },
+      "texLabel": "cor:identity-initialization",
+      "paperMapping": "Paper-numbered result with reviewed Lean declarations and source links.",
+      "relatedDeclarations": [
+        {
+          "declaration": "DFPWolfe.Latest.identityInitialization",
+          "file": "DFPWolfe/Latest/Main.lean",
+          "line": 377
+        },
+        {
+          "declaration": "DFPWolfe.Latest.identityInitializationQuantitative",
+          "file": "DFPWolfe/Latest/Main.lean",
+          "line": 397
+        }
+      ],
+      "leanExcerpts": [
+        {
+          "declaration": "DFPWolfe.Latest.identityInitialization",
+          "file": "DFPWolfe/Latest/Main.lean",
+          "line": 377,
+          "leanCode": "theorem identityInitialization (n : ℕ) (hn : 2 ≤ n) (c1 c2 β : ℝ)\n    (hc1 : 0 < c1) (hc12 : c1 < c2) (hc2 : c2 < 1) (hβ : β ∈ Set.Ioo 0 1) :\n    ∃ m > 0, ∃ M ≥ m,\n      ∃ result : DFP.WolfeCounterexample.MatrixIdentityLiminfStrongWolfeCertificate n m M c1 c2,\n        StrongConvexOn Set.univ m result.iteration.objective ∧\n          ∃ i : EuclideanSpace ℝ (Fin 2) →ₗ[ℝ] EuclideanSpace ℝ (Fin n),\n            Transport.EllipseObjectiveProperties β result.iteration i := by\n  have hhalf : (1 / 2 : ℝ) ∈ Set.Ioo 0 1 := by norm_num\n  obtain ⟨s⟩ := planarSource c1 c2 (1 / 2) β hc1 hc12 hc2 hhalf hβ\n  obtain ⟨c, hproperties⟩ := s.existsPlanarCertificate\n  obtain ⟨P, m, M, planar, result, hP, hPullback, hExtended, hEllipse⟩ :=\n    identityExtensionOfPlanar n hn c hproperties hβ.1.le\n  exact ⟨min m 1, result.hessianLowerPos, max M 1, result.hessianLowerLeUpper, result,\n    DFPWolfe.V21.identityCertificateStrongConvexOn result,\n    (DFP.Polar.OrthogonalExtension.planeEmbedding n hn).toLinearMap.comp P.symm.toLinearMap,\n    hEllipse⟩\n\n/-- Helper for cor:identity-initialization: the same actual planar source has the exact\nsquare-root spectral Hessian and gradient-liminf bounds, before and after its identity-block\nextension, with the literal source step lengths and planar gradient norms retained. -/\n"
+        },
+        {
+          "declaration": "DFPWolfe.Latest.identityInitializationQuantitative",
+          "file": "DFPWolfe/Latest/Main.lean",
+          "line": 397,
+          "leanCode": "theorem identityInitializationQuantitative (n : ℕ) (hn : 2 ≤ n) (c1 c2 β : ℝ)\n    (hc1 : 0 < c1) (hc12 : c1 < c2) (hc2 : c2 < 1) (hβ : β ∈ Set.Ioo 0 1) :\n    ∃ source : DFP.StrongWolfeCounterexample (Fin 2) (1 / 2) (3 / 2) c1 c2,\n      Transport.CounterexampleProperties β (1 / 2) source LinearIsometry.id ∧\n        0 < initialMinEigenvalue source ∧ 0 < initialMaxEigenvalue source ∧\n          ∃ (P : EuclideanSpace ℝ (Fin 2) ≃L[ℝ] EuclideanSpace ℝ (Fin 2)) (m M : ℝ)\n            (planar : DFP.WolfeCounterexample.MatrixIdentityLiminfStrongWolfeCertificate\n              2 m M c1 c2)\n            (result : DFP.WolfeCounterexample.MatrixIdentityLiminfStrongWolfeCertificate n\n              (min m 1) (max M 1) c1 c2),\n            P = (source.iteration.inverseHessianPosDef 0).sqrtEquiv ∧\n              DFP.Polar.IdentityInitialization.PullbackData source.iteration planar.iteration P ∧\n              DFP.Polar.IdentityInitialization.DimensionExtensionData n hn\n                planar.iteration result.iteration ∧\n              Transport.EllipseObjectiveProperties β result.iteration\n                ((DFP.Polar.OrthogonalExtension.planeEmbedding n hn).toLinearMap.comp\n                  P.symm.toLinearMap) ∧\n              HasHessianBounds (initialMinEigenvalue source / 2)\n                (3 * initialMaxEigenvalue source / 2) planar.iteration.objective ∧\n              Real.sqrt (initialMinEigenvalue source) ≤\n                liminf (fun k ↦ ‖DFP.gradients planar.iteration.objective planar.iteration.point k‖)\n                  atTop ∧\n              HasHessianBounds (min (initialMinEigenvalue source / 2) 1)\n                (max (3 * initialMaxEigenvalue source / 2) 1) result.iteration.objective ∧\n              Real.sqrt (initialMinEigenvalue source) ≤\n                liminf (fun k ↦ ‖DFP.gradients result.iteration.objective result.iteration.point k‖)\n                  atTop ∧\n              result.iteration.stepLength = source.iteration.stepLength ∧\n              ∀ k, ‖DFP.gradients result.iteration.objective result.iteration.point k‖ =\n                ‖DFP.gradients planar.iteration.objective planar.iteration.point k‖ := by\n  have hhalf : (1 / 2 : ℝ) ∈ Set.Ioo 0 1 := by norm_num\n  obtain ⟨s⟩ := planarSource c1 c2 (1 / 2) β hc1 hc12 hc2 hhalf hβ\n  obtain ⟨source, hproperties⟩ := s.existsPlanarCertificate\n  exact ⟨source, hproperties,\n    IdentityQuantitative.quantitativeIdentityExtension n hn source hproperties hβ.1.le⟩\n\n/-- Helper for thm:main and eq:open-question: the actual latest source counterexample\ndisproves global weak-Wolfe convergence for every admissible Wolfe pair. -/\n"
+        }
+      ],
+      "dependencies": [
+        "latest-main"
+      ],
+      "statementDependencies": [],
+      "proofDependencies": [],
+      "dependencyEvidence": "curated",
+      "sourceSha256": "ec5cfe390a55df503b1f339c5b9995774e7b6105ea8a68fdd6d2c86091395ee6"
+    },
+    {
+      "id": "latest-degeneration",
+      "label": "Lemma 12",
+      "title": "Planar secant degeneration",
+      "type": "Lemma",
+      "section": "convergence",
+      "declaration": "DFPWolfe.Latest.planarDegeneration",
+      "file": "DFPWolfe/Latest/SecantDegeneration.lean",
+      "line": 24,
+      "endLine": 36,
+      "statement": "\\label{lem:planar-degeneration}\nLet $f\\in C^2(\\R^2)$ be $m$-strongly convex, where $m>0$.\nConsider an infinite sequence of nonstationary iterates with\n$g_k=\\nabla f(x_k)$, $s_k=-\\alpha_kH_kg_k$,\n$x_{k+1}=x_k+s_k$, and $y_k=g_{k+1}-g_k$, where $H_k\\succ0$,\n$\\alpha_k>0$, and every step satisfies \\eqref{eq:armijo} and\n\\eqref{eq:weak-curvature} for fixed $0<\\eta_1<\\eta_2<1$.\nSuppose $H_ky_{k-1}=s_{k-1}$ for $k\\ge1$. Put\n\\begin{equation}\\label{eq:planar-scalar-definition}\n\\kappa_k=\\frac{s_k^Ty_k}{\\|s_k\\|^2}\\quad(k\\ge0),\\qquad\n\\lambda_k=\\kappa_{k-1}\\det H_k\\quad(k\\ge1).\n\\end{equation}\nIf $x_k$ does not converge to the unique minimizer $x_*$, then\n\\begin{equation}\\label{eq:planar-degeneration}\n0<\\lambda_k\\le C\\|s_{k-1}\\|\\|s_k\\|\\longrightarrow0\n\\end{equation}\nfor all sufficiently large $k$, with $C$ independent of $k$.\nMoreover, $\\{H_k\\}$ is bounded and $\\lambda_{\\min}(H_k)\\to0$.",
+      "statementHtml": "<p><code>Let $f\\in C^2(\\R^2)$ be $m$-strongly convex, where $m&gt;0$. Consider an infinite sequence of nonstationary iterates with $g_k=\\nabla f(x_k)$, $s_k=-\\alpha_kH_kg_k$, $x_{k+1}=x_k+s_k$, and $y_k=g_{k+1}-g_k$, where $H_k\\succ0$, $\\alpha_k&gt;0$, and every step satisfies [eq:armijo] and [eq:weak-curvature] for fixed $0&lt;\\eta_1&lt;\\eta_2&lt;1$. Suppose $H_ky_{k-1}=s_{k-1}$ for $k\\ge1$. Put \\kappa_k=\\frac{s_k^Ty_k}{\\|s_k\\|^2}\\quad(k\\ge0),\\qquad \\lambda_k=\\kappa_{k-1}\\det H_k\\quad(k\\ge1). If $x_k$ does not converge to the unique minimizer $x_*$, then 0&lt;\\lambda_k\\le C\\|s_{k-1}\\|\\|s_k\\|\\longrightarrow0 for all sufficiently large $k$, with $C$ independent of $k$. Moreover, $\\{H_k\\}$ is bounded and $\\lambda_{\\min}(H_k)\\to0$.</code></p>",
+      "statementSha256": "097c3402deb57ac9f40f83e2c48f798995d02b1ea0e8ba3c4c90dc0feddae814",
+      "statementSource": {
+        "manuscript": "20251117-DFP/arXiv.tex",
+        "manuscriptSha256": "2a22ecf8e12959dd584a11732ba1836319eb16dd583059c283e4513b3dbbbdca",
+        "startLine": 2010,
+        "endLine": 2029
+      },
+      "texLabel": "lem:planar-degeneration",
+      "paperMapping": "Paper-numbered result with reviewed Lean declarations and source links.",
+      "relatedDeclarations": [
+        {
+          "declaration": "DFPWolfe.Latest.planarDegeneration",
+          "file": "DFPWolfe/Latest/SecantDegeneration.lean",
+          "line": 24
+        }
+      ],
+      "leanExcerpts": [
+        {
+          "declaration": "DFPWolfe.Latest.planarDegeneration",
+          "file": "DFPWolfe/Latest/SecantDegeneration.lean",
+          "line": 24,
+          "leanCode": "theorem planarDegeneration (iteration : DFP.SecantIteration 2) {μ c₁ c₂ : ℝ}\n    (hf : ContDiff ℝ 2 iteration.objective)\n    (hstrong : StrongConvexOn Set.univ μ iteration.objective)\n    (hμ : 0 < μ) (hStep : ∀ k, 0 < iteration.stepLength k)\n    (hw : ∀ k, LineSearch.IsWeakWolfe c₁ c₂ iteration.objective\n      (iteration.point k) (iteration.point (k + 1) - iteration.point k)) :\n    ∃! xstar : EuclideanSpace ℝ (Fin 2),\n      (∀ z, iteration.objective xstar ≤ iteration.objective z) ∧\n        (¬ Tendsto iteration.point atTop (𝓝 xstar) → DegenerationEstimates iteration) := by\n  exact DFPWolfe.V21.planarDegeneration iteration hf hstrong hμ hStep hw\n\nend DFPWolfe.Latest\n"
+        }
+      ],
+      "dependencies": [],
+      "statementDependencies": [],
+      "proofDependencies": [],
+      "dependencyEvidence": "curated",
+      "sourceSha256": "ac56e1ff562ab9c05bbc02d0f68c75524574574fe09c1d03512a610867600381"
+    },
+    {
+      "id": "latest-convergence",
+      "label": "Theorem 13",
+      "title": "Planar convergence",
+      "type": "Theorem",
+      "section": "main",
+      "declaration": "DFPWolfe.Latest.planarConvergenceCases",
+      "file": "DFPWolfe/Latest/PlanarConvergence.lean",
+      "line": 25,
+      "endLine": 42,
+      "statement": "\\label{thm:planar-convergence}\nLet $f\\in C^2(\\R^2)$ satisfy $\\nabla^2f(x)\\succeq m I$ for all\n$x\\in\\R^2$ and some $m>0$. Let $x_0\\in\\R^2$ and $H_0\\succ0$\nbe arbitrary, and fix $0<\\eta_1<\\eta_2<1$. Suppose $\\nabla^2f$ is locally\nLipschitz continuous on a neighborhood of the initial level set\n$\\mathcal L_0=\\{x\\in\\R^2:f(x)\\le f(x_0)\\}$.\nThen classical DFP with update \\eqref{eq:dfp-update} and positive step\nlengths satisfying \\eqref{eq:armijo} and \\eqref{eq:weak-curvature}\neither reaches the unique minimizer $x_*$ in finitely many iterations or\ngenerates an infinite sequence satisfying\n$x_k\\longrightarrow x_*$ and $\\|\\nabla f(x_k)\\|\\longrightarrow0$.",
+      "statementHtml": "<p><code>Let $f\\in C^2(\\R^2)$ satisfy $\\nabla^2f(x)\\succeq m I$ for all $x\\in\\R^2$ and some $m&gt;0$. Let $x_0\\in\\R^2$ and $H_0\\succ0$ be arbitrary, and fix $0&lt;\\eta_1&lt;\\eta_2&lt;1$. Suppose $\\nabla^2f$ is locally Lipschitz continuous on a neighborhood of the initial level set $\\mathcal L_0=\\{x\\in\\R^2:f(x)\\le f(x_0)\\}$. Then classical DFP with update [eq:dfp-update] and positive step lengths satisfying [eq:armijo] and [eq:weak-curvature] either reaches the unique minimizer $x_*$ in finitely many iterations or generates an infinite sequence satisfying $x_k\\longrightarrow x_*$ and $\\|\\nabla f(x_k)\\|\\longrightarrow0$.</code></p>",
+      "statementSha256": "432461e4513fc025ad5b137028de2b7d671e40f458a63c2cd2275b9fa133e944",
+      "statementSource": {
+        "manuscript": "20251117-DFP/arXiv.tex",
+        "manuscriptSha256": "2a22ecf8e12959dd584a11732ba1836319eb16dd583059c283e4513b3dbbbdca",
+        "startLine": 2136,
+        "endLine": 2148
+      },
+      "texLabel": "thm:planar-convergence",
+      "paperMapping": "Paper-numbered result with reviewed Lean declarations and source links.",
+      "relatedDeclarations": [
+        {
+          "declaration": "DFPWolfe.Latest.planarConvergenceCases",
+          "file": "DFPWolfe/Latest/PlanarConvergence.lean",
+          "line": 25
+        }
+      ],
+      "leanExcerpts": [
+        {
+          "declaration": "DFPWolfe.Latest.planarConvergenceCases",
+          "file": "DFPWolfe/Latest/PlanarConvergence.lean",
+          "line": 25,
+          "leanCode": "theorem planarConvergenceCases\n    {f : EuclideanSpace ℝ (Fin 2) → ℝ} {α : ℕ → ℝ}\n    {x g : ℕ → EuclideanSpace ℝ (Fin 2)} {H : ℕ → Matrix (Fin 2) (Fin 2) ℝ}\n    (orbit : DFP.IsOrbit f α x g H) {μ c₁ c₂ : ℝ}\n    (hf : ContDiff ℝ 2 f) (hμ : 0 < μ)\n    (hHessian : ∀ z v, μ * ‖v‖ ^ 2 ≤ inner ℝ (fderiv ℝ (gradient f) z v) v)\n    (hH₀ : (H 0).PosDef)\n    (hWolfe : ∀ k, LineSearch.IsWeakWolfe c₁ c₂ f (x k) (x (k + 1) - x k))\n    (hNeighborhood : ∃ U : Set (EuclideanSpace ℝ (Fin 2)), IsOpen U ∧\n      {z | f z ≤ f (x 0)} ⊆ U ∧ LocallyLipschitzOn U (fderiv ℝ (gradient f))) :\n    ∃ xstar, (∀ z, f xstar ≤ f z) ∧ (∀ y, (∀ z, f y ≤ f z) → y = xstar) ∧\n      ((∃ K : ℕ, gradient f (x K) = 0 ∧ x K = xstar ∧ ∀ k, K ≤ k → x k = xstar) ∨\n        ((∀ k, gradient f (x k) ≠ 0) ∧ Tendsto x atTop (𝓝 xstar) ∧\n          Tendsto (fun k ↦ ‖gradient f (x k)‖) atTop (𝓝 0))) := by\n  exact DFPWolfe.V21.planarConvergenceCases orbit hf hμ hHessian hH₀ hWolfe hNeighborhood\n\nend DFPWolfe.Latest\n"
+        }
+      ],
+      "dependencies": [
+        "latest-degeneration"
+      ],
+      "statementDependencies": [],
+      "proofDependencies": [],
+      "dependencyEvidence": "curated",
+      "sourceSha256": "2524bbb4436217f9bb3d653eb30b5181fcbc8f13c770335d7a7c97bbe0795b92"
+    }
+  ],
+  "generation": {
+    "mode": "curated-paper-numbered",
+    "rootModule": "DFPWolfe.Latest.Paper",
+    "curatedItemCount": 13,
+    "sourceInventoryItemCount": 13,
+    "sourceOnlyItemCount": 0,
+    "mergedItemCount": 13,
+    "dependencyCoverage": "reviewed-paper-dependencies",
+    "dependencyModel": "curated-paper-proof-v2",
+    "scope": "20251117-DFP/arXiv.tex; shared amsthm counter gives Lemmas 1–2, Proposition 3, Lemmas 4–9, Theorem 10, Corollary 11, Lemma 12 and Theorem 13.",
+    "sourceSnapshot": "97fe7b8f1a2fa524f9ce5588a4190603db93946c",
+    "manuscriptSha256": "2a22ecf8e12959dd584a11732ba1836319eb16dd583059c283e4513b3dbbbdca",
+    "numbering": "Shared theorem counter in source order; 13 theorem-like results.",
+    "edges": 19,
+    "nodes": 13
+  },
+  "edgeWitnesses": [
+    {
+      "source": "latest-direction-update",
+      "target": "latest-realization",
+      "evidence": "curated-paper-proof",
+      "manuscript": "20251117-DFP/arXiv.tex",
+      "manuscriptSha256": "2a22ecf8e12959dd584a11732ba1836319eb16dd583059c283e4513b3dbbbdca",
+      "startLine": 637,
+      "endLine": 642,
+      "reason": "Explicit use of the direction update in the orbit realization."
+    },
+    {
+      "source": "latest-endpoint-wolfe",
+      "target": "latest-realization",
+      "evidence": "curated-paper-proof",
+      "manuscript": "20251117-DFP/arXiv.tex",
+      "manuscriptSha256": "2a22ecf8e12959dd584a11732ba1836319eb16dd583059c283e4513b3dbbbdca",
+      "startLine": 637,
+      "endLine": 642,
+      "reason": "Explicit use of endpoint Wolfe ratios in the orbit realization."
+    },
+    {
+      "source": "latest-direction-update",
+      "target": "latest-limiting-cycle",
+      "evidence": "curated-paper-proof",
+      "manuscript": "20251117-DFP/arXiv.tex",
+      "manuscriptSha256": "2a22ecf8e12959dd584a11732ba1836319eb16dd583059c283e4513b3dbbbdca",
+      "startLine": 692,
+      "endLine": 741,
+      "reason": "Rescaling of the polar matrix update eq:polar-matrix-map."
+    },
+    {
+      "source": "latest-endpoint-wolfe",
+      "target": "latest-parameter-choice",
+      "evidence": "curated-paper-proof",
+      "manuscript": "20251117-DFP/arXiv.tex",
+      "manuscriptSha256": "2a22ecf8e12959dd584a11732ba1836319eb16dd583059c283e4513b3dbbbdca",
+      "startLine": 816,
+      "endLine": 825,
+      "reason": "Mathematical use of the endpoint Wolfe ratio formulas, rather than an explicit numbered citation."
+    },
+    {
+      "source": "latest-limiting-cycle",
+      "target": "latest-parameter-choice",
+      "evidence": "curated-paper-proof",
+      "manuscript": "20251117-DFP/arXiv.tex",
+      "manuscriptSha256": "2a22ecf8e12959dd584a11732ba1836319eb16dd583059c283e4513b3dbbbdca",
+      "startLine": 827,
+      "endLine": 840,
+      "reason": "Derivative of the limiting map at its two-cycle."
+    },
+    {
+      "source": "latest-limiting-cycle",
+      "target": "latest-cycle-estimates",
+      "evidence": "curated-paper-proof",
+      "manuscript": "20251117-DFP/arXiv.tex",
+      "manuscriptSha256": "2a22ecf8e12959dd584a11732ba1836319eb16dd583059c283e4513b3dbbbdca",
+      "startLine": 1210,
+      "endLine": 1210,
+      "reason": "Transformed secant of the limiting map."
+    },
+    {
+      "source": "latest-parameter-choice",
+      "target": "latest-cycle-estimates",
+      "evidence": "curated-paper-proof",
+      "manuscript": "20251117-DFP/arXiv.tex",
+      "manuscriptSha256": "2a22ecf8e12959dd584a11732ba1836319eb16dd583059c283e4513b3dbbbdca",
+      "startLine": 1262,
+      "endLine": 1279,
+      "reason": "Stable derivative at the selected base point."
+    },
+    {
+      "source": "latest-cycle-estimates",
+      "target": "latest-continuation",
+      "evidence": "curated-paper-proof",
+      "manuscript": "20251117-DFP/arXiv.tex",
+      "manuscriptSha256": "2a22ecf8e12959dd584a11732ba1836319eb16dd583059c283e4513b3dbbbdca",
+      "startLine": 1363,
+      "endLine": 1364,
+      "reason": "Explicit use of the two-cycle estimates."
+    },
+    {
+      "source": "latest-endpoint-wolfe",
+      "target": "latest-geometry",
+      "evidence": "curated-paper-proof",
+      "manuscript": "20251117-DFP/arXiv.tex",
+      "manuscriptSha256": "2a22ecf8e12959dd584a11732ba1836319eb16dd583059c283e4513b3dbbbdca",
+      "startLine": 1578,
+      "endLine": 1580,
+      "reason": "Use of the exact endpoint ratio formula."
+    },
+    {
+      "source": "latest-parameter-choice",
+      "target": "latest-geometry",
+      "evidence": "curated-paper-proof",
+      "manuscript": "20251117-DFP/arXiv.tex",
+      "manuscriptSha256": "2a22ecf8e12959dd584a11732ba1836319eb16dd583059c283e4513b3dbbbdca",
+      "startLine": 1596,
+      "endLine": 1599,
+      "reason": "Use of the selected strict Wolfe margins."
+    },
+    {
+      "source": "latest-continuation",
+      "target": "latest-geometry",
+      "evidence": "curated-paper-proof",
+      "manuscript": "20251117-DFP/arXiv.tex",
+      "manuscriptSha256": "2a22ecf8e12959dd584a11732ba1836319eb16dd583059c283e4513b3dbbbdca",
+      "startLine": 1458,
+      "endLine": 1469,
+      "reason": "Use of the continued orbit and tube estimates."
+    },
+    {
+      "source": "latest-geometry",
+      "target": "latest-interpolation",
+      "evidence": "curated-paper-proof",
+      "manuscript": "20251117-DFP/arXiv.tex",
+      "manuscriptSha256": "2a22ecf8e12959dd584a11732ba1836319eb16dd583059c283e4513b3dbbbdca",
+      "startLine": 1623,
+      "endLine": 1649,
+      "reason": "Use of the geometric separation and support bounds."
+    },
+    {
+      "source": "latest-realization",
+      "target": "latest-main",
+      "evidence": "curated-paper-proof",
+      "manuscript": "20251117-DFP/arXiv.tex",
+      "manuscriptSha256": "2a22ecf8e12959dd584a11732ba1836319eb16dd583059c283e4513b3dbbbdca",
+      "startLine": 1825,
+      "endLine": 1834,
+      "reason": "Realization as a classical DFP orbit."
+    },
+    {
+      "source": "latest-parameter-choice",
+      "target": "latest-main",
+      "evidence": "curated-paper-proof",
+      "manuscript": "20251117-DFP/arXiv.tex",
+      "manuscriptSha256": "2a22ecf8e12959dd584a11732ba1836319eb16dd583059c283e4513b3dbbbdca",
+      "startLine": 1804,
+      "endLine": 1807,
+      "reason": "Selection of admissible parameters."
+    },
+    {
+      "source": "latest-continuation",
+      "target": "latest-main",
+      "evidence": "curated-paper-proof",
+      "manuscript": "20251117-DFP/arXiv.tex",
+      "manuscriptSha256": "2a22ecf8e12959dd584a11732ba1836319eb16dd583059c283e4513b3dbbbdca",
+      "startLine": 1804,
+      "endLine": 1807,
+      "reason": "Infinite continuation of the selected construction."
+    },
+    {
+      "source": "latest-geometry",
+      "target": "latest-main",
+      "evidence": "curated-paper-proof",
+      "manuscript": "20251117-DFP/arXiv.tex",
+      "manuscriptSha256": "2a22ecf8e12959dd584a11732ba1836319eb16dd583059c283e4513b3dbbbdca",
+      "startLine": 1825,
+      "endLine": 1834,
+      "reason": "Explicit use of geometric data for the realized orbit."
+    },
+    {
+      "source": "latest-interpolation",
+      "target": "latest-main",
+      "evidence": "curated-paper-proof",
+      "manuscript": "20251117-DFP/arXiv.tex",
+      "manuscriptSha256": "2a22ecf8e12959dd584a11732ba1836319eb16dd583059c283e4513b3dbbbdca",
+      "startLine": 1804,
+      "endLine": 1834,
+      "reason": "Interpolation realizing the required objective."
+    },
+    {
+      "source": "latest-main",
+      "target": "latest-identity",
+      "evidence": "curated-paper-proof",
+      "manuscript": "20251117-DFP/arXiv.tex",
+      "manuscriptSha256": "2a22ecf8e12959dd584a11732ba1836319eb16dd583059c283e4513b3dbbbdca",
+      "startLine": 1898,
+      "endLine": 1900,
+      "reason": "Linear normalization of the constructed counterexample."
+    },
+    {
+      "source": "latest-degeneration",
+      "target": "latest-convergence",
+      "evidence": "curated-paper-proof",
+      "manuscript": "20251117-DFP/arXiv.tex",
+      "manuscriptSha256": "2a22ecf8e12959dd584a11732ba1836319eb16dd583059c283e4513b3dbbbdca",
+      "startLine": 2155,
+      "endLine": 2160,
+      "reason": "Use of the general planar secant degeneration result."
+    }
+  ]
+}

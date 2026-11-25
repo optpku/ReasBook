@@ -1,5 +1,7 @@
 (function () {
   "use strict";
+  document.getElementById(new URLSearchParams(location.search).get("view") === "lean"
+    ? "leanViewLink" : "paperViewLink").setAttribute("aria-current", "page");
 
   var SVG_NS = "http://www.w3.org/2000/svg";
   var NODE_WIDTH = 146;
@@ -1123,7 +1125,8 @@
     statementSection.appendChild(statementHeading);
     statementSection.appendChild(statement);
 
-    if (item.leanCode) {
+    var hasLeanCode = item.leanCode || (item.leanExcerpts && item.leanExcerpts.length);
+    if (hasLeanCode) {
       var codeSection = document.createElement("section");
       codeSection.className = "detail-section lean-code-section";
       var codeHeading = document.createElement("h3");
@@ -1192,7 +1195,7 @@
     leanSection.appendChild(leanHeading);
     leanSection.appendChild(facts);
     refs.detailContent.replaceChildren(header, statementSection);
-    if (item.leanCode) refs.detailContent.appendChild(codeSection);
+    if (hasLeanCode) refs.detailContent.appendChild(codeSection);
     refs.detailContent.append(relationSection, leanSection);
     refs.detailContent.parentElement.scrollTop = 0;
   }

@@ -1,1255 +1,804 @@
 {
   "generation": {
-    "compiledItemCount": 26,
-    "dependencyCoverage": "complete",
-    "dependencyModel": "checked-public-interface-contraction-v1",
-    "grouping": "Interfaces with the same primary compiled constant share a node; all aliases are listed.",
-    "interfaceCount": 30,
+    "compiledItemCount": 14,
+    "correspondence": "Reviewed explicit mapping to the revised manuscript; edges come only from compiled Lean expressions.",
+    "dependencyCoverage": "complete for all mapped proof components",
+    "dependencyModel": "compiled-paper-component-contraction-v2",
+    "edgeWitnesses": "edge-witnesses.json",
+    "mappedTheoremCount": 41,
     "mode": "lean-environment",
-    "rawDeclarationCount": 45505,
-    "rawSha256": "3b3cf6e48ac78ad3d2e3d4dff4b59168db8fa239870bbb04600b4b01c8d0e6bd",
+    "numberedResultCount": 12,
+    "rawDeclarationCount": 63543,
+    "rawSha256": "7fb9c4b510e0a81e24789982972b0d812fd75d49793034a03a7f14fea93a5020",
     "rootModule": "glowinski_admm_counterexample.Paper",
-    "sourceOnlyItemCount": 0
+    "sourceFallback": false,
+    "sourceOnlyItemCount": 0,
+    "unnumberedCertificateCount": 2
   },
   "items": [
     {
-      "declaration": "ADMM.Trajectory.admissible_spec",
-      "dependencies": [
-        "definition-2-1-1"
-      ],
-      "dependencyEvidence": "compiled",
-      "file": "GlowinskiADMM/algorithm_1_1_1.lean",
-      "id": "algorithm-1-1-1",
-      "interfaceDeclarations": [
-        "ADMM.Trajectory.admissible_spec",
-        "ADMM.Problem",
-        "ADMM.Trajectory",
-        "ADMM.IsFiniteMinimizer",
-        "ADMM.Problem.objective_apply",
-        "ADMM.Problem.isFeasible_iff",
-        "ADMM.Problem.firstBlockObjective_apply",
-        "ADMM.Problem.secondBlockObjective_apply",
-        "ADMM.Problem.multiplierUpdate_apply"
-      ],
-      "interfaces": [
+      "correspondence": "The closed updated main theorem retains arbitrary dimensions, initial states and minimizer choices. The claim definition expands to all separate image limits and the four convergence conclusions; no certificate premise remains in this theorem.",
+      "declaration": "ADMM.UpdatedTargets.mainConvergence",
+      "declarationBindings": [
         {
-          "file": "GlowinskiADMM/algorithm_1_1_1.lean",
-          "label": "Algorithm 1.1.1"
+          "file": "GlowinskiADMM/UpdatedResults.lean",
+          "kind": "theorem",
+          "line": 23,
+          "module": "glowinski_admm_counterexample.GlowinskiADMM.UpdatedResults",
+          "name": "ADMM.UpdatedTargets.mainConvergence",
+          "sourceSha256": "905b6fb41a01a4c12603698302a13c6b4f91421790599a4781225fd77ef7583f"
         }
       ],
-      "label": "Algorithm 1.1.1",
-      "line": 12,
-      "proofDependencies": [
-        "definition-2-1-1"
+      "dependencies": [
+        "appendix-c-2",
+        "lemma-3-1",
+        "lemma-3-2",
+        "lemma-c-1"
       ],
-      "section": "section-1",
-      "statement": "Algorithm 1.1.1: A trajectory of the relaxed two-block ADMM method for a\nclosed proper convex linearly constrained problem. The penalty `β` and\nmultiplier factor `γ` are positive. The first update minimizes with `y k`, the\nsecond minimizes with the already updated `x (k + 1)`, and only the multiplier\nupdate contains `γ`.",
+      "dependencyEvidence": "compiled",
+      "file": "GlowinskiADMM/UpdatedResults.lean",
+      "id": "theorem-2-1",
+      "interfaceDeclarations": [
+        "ADMM.UpdatedTargets.mainConvergence"
+      ],
+      "label": "Theorem 2.1",
+      "line": 23,
+      "module": "glowinski_admm_counterexample.GlowinskiADMM.UpdatedResults",
+      "proofDependencies": [
+        "appendix-c-2",
+        "lemma-3-1",
+        "lemma-3-2",
+        "lemma-c-1"
+      ],
+      "section": "section-2",
+      "statement": "Let f and g be closed proper convex functions on finite-dimensional spaces and suppose a KKT triple exists. For every positive penalty and 0 < gamma <= L = 1.886882470025, every well-defined exact ADMM trajectory has convergent constraint images, vanishing primal residual and second-image increment, objective values tending to the optimum, and a multiplier tending to an optimal multiplier. If both constraint maps are injective, the primal-dual trajectory converges to a KKT triple.",
       "statementDependencies": [],
-      "title": "Algorithm 1.1.1",
-      "type": "Algorithm"
-    },
-    {
-      "declaration": "ADMM.Problem.kktSet",
-      "dependencies": [
-        "algorithm-1-1-1"
-      ],
-      "dependencyEvidence": "compiled",
-      "file": "GlowinskiADMM/definition_2_1_1.lean",
-      "id": "definition-2-1-1",
-      "interfaceDeclarations": [
-        "ADMM.Problem.kktSet",
-        "ADMM.Problem.isKKT_iff",
-        "ADMM.Problem.optimalValue",
-        "ADMM.Trajectory.primalResidual_apply",
-        "ADMM.Trajectory.secondIncrement_apply",
-        "ADMM.Trajectory.spec"
-      ],
-      "interfaces": [
-        {
-          "file": "GlowinskiADMM/definition_2_1_1.lean",
-          "label": "Definition 2.1.1"
-        }
-      ],
-      "label": "Definition 2.1.1",
-      "line": 8,
-      "proofDependencies": [
-        "algorithm-1-1-1"
-      ],
-      "section": "section-2",
-      "statement": "Definition 2.1.1 (1): the KKT set and its three defining conditions.\n\nDefinition 2.1.1 (2): the optimal value of the constrained problem.\n\nDefinition 2.1.1 (3): the primal residual `A (x k) + B (y k) - b`.\n\nDefinition 2.1.1 (4): the second-block increment `B (y k - y (k - 1))` for `1 ≤ k`.\n\nDefinition 2.1.1 (5): a well-defined exact trajectory has finite attained block minima\nat every step and obeys the multiplier update. Its initialization and all choices among\nminimizers are arbitrary; nonemptiness of the KKT set does not imply block attainment.",
-      "statementDependencies": [
-        "algorithm-1-1-1"
-      ],
-      "title": "Definition 2.1.1",
-      "type": "Definition"
-    },
-    {
-      "declaration": "ADMM.leftImage_tendsto",
-      "dependencies": [
-        "algorithm-1-1-1",
-        "definition-2-1-1",
-        "definition-3-1-1",
-        "definition-3-1-4",
-        "definition-8-1-1",
-        "lemma-3-1-2",
-        "notation-3-1-6"
-      ],
-      "dependencyEvidence": "compiled",
-      "file": "GlowinskiADMM/theorem_2_1_2.lean",
-      "id": "theorem-2-1-2",
-      "interfaceDeclarations": [
-        "ADMM.leftImage_tendsto",
-        "ADMM.Problem",
-        "ADMM.IsClosedProperConvex",
-        "ADMM.Trajectory",
-        "ADMM.rightImage_tendsto",
-        "ADMM.primalResidual_tendsto_zero",
-        "ADMM.secondIncrement_tendsto_zero",
-        "ADMM.objective_tendsto",
-        "ADMM.multiplier_tendsto_optimal",
-        "ADMM.trajectory_tendsto_kkt_of_injective"
-      ],
-      "interfaces": [
-        {
-          "file": "GlowinskiADMM/theorem_2_1_2.lean",
-          "label": "Theorem 2.1.2"
-        }
-      ],
-      "label": "Theorem 2.1.2",
-      "line": 10,
-      "proofDependencies": [
-        "algorithm-1-1-1",
-        "definition-2-1-1",
-        "definition-3-1-1",
-        "definition-3-1-4",
-        "definition-8-1-1",
-        "lemma-3-1-2",
-        "notation-3-1-6"
-      ],
-      "section": "section-2",
-      "statement": "Theorem 2.1.2 (1): for an exact ADMM trajectory with closed proper convex\nobjectives, a KKT solution, `0 < β`, and `0 < γ ≤ 377 / 200`, the first\nconstraint images converge.\n\nTheorem 2.1.2 (2): under the same hypotheses, the second constraint images\nof the exact ADMM trajectory converge.\n\nTheorem 2.1.2 (3): under the same hypotheses, the primal residuals of the\nexact ADMM trajectory tend to zero.\n\nTheorem 2.1.2 (4): under the same hypotheses, the second-block image\nincrements of the exact ADMM trajectory tend to zero.\n\nTheorem 2.1.2 (5): under the same hypotheses, the objective values of the\nexact ADMM trajectory tend to the constrained optimal value.\n\nTheorem 2.1.2 (6): under the same hypotheses, the multiplier sequence of\nthe exact ADMM trajectory converges to an optimal multiplier.\n\nTheorem 2.1.2 (7): if both constraint maps are injective, then under the\nsame hypotheses the complete primal-dual trajectory converges to a KKT triple.",
-      "statementDependencies": [
-        "definition-2-1-1"
-      ],
-      "title": "Theorem 2.1.2",
+      "statementProvenance": "Reviewed summary of the revised manuscript; the separate Lean correspondence states the mapped proof components.",
+      "title": "Convergence of the constraint images and multiplier",
       "type": "Theorem"
     },
     {
+      "correspondence": "Four closed construction theorems cover the fixed-polytopes, smooth periodic, piecewise-quadratic periodic and geometric-growth cases. They are separate witnesses for the different objective pairs in the statement.",
       "declaration": "ConsensusADMM.fixedPolytopes",
+      "declarationBindings": [
+        {
+          "file": "ReasLib/ConsensusADMM/Period48/Counterexamples.lean",
+          "kind": "theorem",
+          "line": 485,
+          "module": "glowinski_admm_counterexample.ReasLib.ConsensusADMM.Period48.Counterexamples",
+          "name": "ConsensusADMM.fixedPolytopes",
+          "sourceSha256": "327316c99e094099a09c99a0c77bd7e9ff437d85d25163d2e007ba62a86d0d23"
+        },
+        {
+          "file": "ReasLib/ConsensusADMM/Period48/Counterexamples.lean",
+          "kind": "theorem",
+          "line": 820,
+          "module": "glowinski_admm_counterexample.ReasLib.ConsensusADMM.Period48.Counterexamples",
+          "name": "ConsensusADMM.smoothCounterexample",
+          "sourceSha256": "327316c99e094099a09c99a0c77bd7e9ff437d85d25163d2e007ba62a86d0d23"
+        },
+        {
+          "file": "ReasLib/ConsensusADMM/Period48/Counterexamples.lean",
+          "kind": "theorem",
+          "line": 845,
+          "module": "glowinski_admm_counterexample.ReasLib.ConsensusADMM.Period48.Counterexamples",
+          "name": "ConsensusADMM.periodicPiecewiseQuadratic",
+          "sourceSha256": "327316c99e094099a09c99a0c77bd7e9ff437d85d25163d2e007ba62a86d0d23"
+        },
+        {
+          "file": "ReasLib/ConsensusADMM/Period48/Counterexamples.lean",
+          "kind": "theorem",
+          "line": 929,
+          "module": "glowinski_admm_counterexample.ReasLib.ConsensusADMM.Period48.Counterexamples",
+          "name": "ConsensusADMM.growingPiecewiseQuadratic",
+          "sourceSha256": "327316c99e094099a09c99a0c77bd7e9ff437d85d25163d2e007ba62a86d0d23"
+        }
+      ],
       "dependencies": [
-        "algorithm-9-1-3",
-        "definition-4-1-5",
-        "lemma-4-1-2",
-        "lemma-5-1-1",
-        "notation-9-1-1",
-        "proposition-4-1-6"
+        "lemma-4-1",
+        "lemma-5-1",
+        "proposition-4-3"
       ],
       "dependencyEvidence": "compiled",
-      "file": "GlowinskiADMM/theorem_2_1_3.lean",
-      "id": "theorem-2-1-3",
+      "file": "ReasLib/ConsensusADMM/Period48/Counterexamples.lean",
+      "id": "theorem-2-2",
       "interfaceDeclarations": [
         "ConsensusADMM.fixedPolytopes",
         "ConsensusADMM.smoothCounterexample",
         "ConsensusADMM.periodicPiecewiseQuadratic",
-        "ConsensusADMM.growingPiecewiseQuadratic",
-        "ConsensusADMM.IsCompactConvexPolytope",
-        "ConsensusADMM.IsKKT",
-        "ConsensusADMM.extendedIndicator",
-        "ConsensusADMM.IsPrimalMinimizer",
-        "ConsensusADMM.criticalFactor",
-        "ConsensusADMM.IsTrajectory",
-        "ConsensusADMM.HasUniqueUpdates",
-        "ConsensusADMM.HasExactPeriod",
-        "ConsensusADMM.ofReal",
-        "ConsensusADMM.IsFiniteClosedConvexPiecewiseQuadratic"
+        "ConsensusADMM.growingPiecewiseQuadratic"
       ],
-      "interfaces": [
-        {
-          "file": "GlowinskiADMM/theorem_2_1_3.lean",
-          "label": "Theorem 2.1.3"
-        },
-        {
-          "file": "GlowinskiADMM/theorem_2_1_4.lean",
-          "label": "Theorem 2.1.4"
-        }
-      ],
-      "label": "Theorem 2.1.3 / Theorem 2.1.4",
-      "line": 11,
+      "label": "Theorem 2.2",
+      "line": 485,
+      "module": "glowinski_admm_counterexample.ReasLib.ConsensusADMM.Period48.Counterexamples",
       "proofDependencies": [
-        "algorithm-9-1-3",
-        "definition-4-1-5",
-        "lemma-4-1-2",
-        "lemma-5-1-1",
-        "notation-9-1-1",
-        "proposition-4-1-6"
+        "lemma-4-1",
+        "lemma-5-1",
+        "proposition-4-3"
       ],
       "section": "section-2",
-      "statement": "Theorem 2.1.3 (1): fixed compact convex polytopes give exact-period\ncounterexamples for every multiplier factor at least `criticalFactor`.\n\nTheorem 2.1.3 (2): at `criticalFactor`, smooth strongly convex objectives\nwith globally Lipschitz derivatives admit a period-`48` consensus ADMM\ntrajectory of constant positive objective value, while the origin is their\nunique primal optimum of value zero and forms a KKT triple.\n\nTheorem 2.1.3 (3): finite closed convex piecewise-quadratic objectives at\n`criticalFactor` admit a period-`48` consensus ADMM trajectory of constant\npositive objective value, while the origin is KKT and has optimal value zero.\n\nTheorem 2.1.3 (4): a distinct pair of finite closed convex\npiecewise-quadratic objectives gives geometric residual and objective growth.\n\nTheorem 2.1.4 (1): one fixed pair of compact convex polytopes in ℝ⁹⁶\nsupports, for every multiplier factor at least ConsensusADMM.criticalFactor,\na unique-update consensus ADMM trajectory of exact period 48 and constant\npositive residual.\n\nTheorem 2.1.4 (2): at ConsensusADMM.criticalFactor, smooth strongly\nconvex objectives on ℝ⁹⁶ with globally Lipschitz derivatives have a\nunique-update period-48 trajectory of constant positive objective value,\nwhile the origin is their unique primal optimum of value zero and forms a KKT\ntriple.\n\nTheorem 2.1.4 (3): finite closed convex piecewise-quadratic objectives at\nConsensusADMM.criticalFactor support a unique-update period-48 trajectory with\nconstant positive objective value, while the origin is KKT and has optimal\nvalue zero.\n\nTheorem 2.1.4 (4): another pair of finite closed convex\npiecewise-quadratic objectives at ConsensusADMM.criticalFactor has uniquely\nattained ADMM updates whose residual and objective values grow geometrically;\nthe origin is again KKT and has optimal value zero.",
+      "statement": "For unit-penalty consensus ADMM in dimension 96, one fixed pair of compact convex polytopes admits exact period-48 orbits with constant positive residual for every gamma >= 542407991247/287451196000. At the critical factor, smooth strongly convex objectives with globally Lipschitz gradients and finite closed convex piecewise-quadratic objectives admit period-48 orbits of positive constant objective value. The smooth pair has the origin as its unique primal optimum. A second piecewise-quadratic pair gives residual c_r chi^k and objective c_f chi^(2k), with c_r,c_f > 0 and chi > 1. The origin is KKT with optimal value zero and each block minimizer is unique.",
       "statementDependencies": [],
-      "title": "Theorem 2.1.3 / Theorem 2.1.4",
+      "statementProvenance": "Reviewed summary of the revised manuscript; the separate Lean correspondence states the mapped proof components.",
+      "title": "Periodic orbits and geometric growth",
       "type": "Theorem"
     },
     {
-      "declaration": "ADMM.UniformConvergenceAt",
-      "dependencies": [
-        "algorithm-1-1-1",
-        "definition-2-1-1",
-        "proposition-4-1-3"
-      ],
-      "dependencyEvidence": "compiled",
-      "file": "GlowinskiADMM/definition_2_1_5.lean",
-      "id": "definition-2-1-5",
-      "interfaceDeclarations": [
-        "ADMM.UniformConvergenceAt",
-        "ADMM.uniformConvergenceAt_iff",
-        "ADMM.uniformConvergenceEndpoint",
-        "ADMM.uniformConvergenceEndpoint_def"
-      ],
-      "interfaces": [
+      "correspondence": "The closed endpoint theorem proves both strict inequalities and the exact rational width. The separate strict lower-bound theorem is also linked. The upper-bound component belongs to Appendix C.3 and is not counted twice as a mapping owner.",
+      "declaration": "ADMM.UpdatedTargets.endpointBounds",
+      "declarationBindings": [
         {
-          "file": "GlowinskiADMM/definition_2_1_5.lean",
-          "label": "Definition 2.1.5"
+          "file": "GlowinskiADMM/UpdatedResults.lean",
+          "kind": "theorem",
+          "line": 31,
+          "module": "glowinski_admm_counterexample.GlowinskiADMM.UpdatedResults",
+          "name": "ADMM.UpdatedTargets.endpointBounds",
+          "sourceSha256": "905b6fb41a01a4c12603698302a13c6b4f91421790599a4781225fd77ef7583f"
+        },
+        {
+          "file": "GlowinskiADMM/UpdatedResults.lean",
+          "kind": "theorem",
+          "line": 27,
+          "module": "glowinski_admm_counterexample.GlowinskiADMM.UpdatedResults",
+          "name": "ADMM.UpdatedTargets.refinedLowerBound",
+          "sourceSha256": "905b6fb41a01a4c12603698302a13c6b4f91421790599a4781225fd77ef7583f"
         }
       ],
-      "label": "Definition 2.1.5",
-      "line": 11,
-      "proofDependencies": [
-        "algorithm-1-1-1",
-        "definition-2-1-1",
-        "proposition-4-1-3"
-      ],
-      "section": "section-2",
-      "statement": "Definition 2.1.5 (1): `ADMM.UniformConvergenceAt γ` requires the rank-free\nconvergence conclusions for every admissible exact trajectory and convergence to\na KKT triple when both constraint matrices have full column rank. Rank-free image\nconvergence is an additional conclusion and is not part of this predicate.\n\nDefinition 2.1.5 (2): `ADMM.uniformConvergenceEndpoint` is the supremum of\npositive endpoints whose strict positive prefixes satisfy uniform convergence.",
-      "statementDependencies": [
-        "algorithm-1-1-1",
-        "proposition-4-1-3"
-      ],
-      "title": "Definition 2.1.5",
-      "type": "Definition"
-    },
-    {
-      "declaration": "ADMM.uniformConvergenceEndpoint_bounds",
       "dependencies": [
-        "algorithm-1-1-1",
-        "definition-2-1-1",
-        "definition-2-1-5",
-        "definition-4-1-5",
-        "lemma-4-1-2",
-        "lemma-5-1-1",
-        "proposition-3-1-7",
-        "proposition-4-1-3",
-        "proposition-4-1-6",
-        "theorem-2-1-3"
+        "appendix-c-2",
+        "appendix-c-3",
+        "lemma-3-1",
+        "lemma-3-2",
+        "lemma-4-1",
+        "lemma-5-1",
+        "lemma-c-1",
+        "proposition-4-3"
       ],
       "dependencyEvidence": "compiled",
-      "file": "GlowinskiADMM/corollary_2_1_6.lean",
-      "id": "corollary-2-1-6",
+      "file": "GlowinskiADMM/UpdatedResults.lean",
+      "id": "corollary-2-3",
       "interfaceDeclarations": [
-        "ADMM.uniformConvergenceEndpoint_bounds"
+        "ADMM.UpdatedTargets.endpointBounds",
+        "ADMM.UpdatedTargets.refinedLowerBound"
       ],
-      "interfaces": [
-        {
-          "file": "GlowinskiADMM/corollary_2_1_6.lean",
-          "label": "Corollary 2.1.6"
-        }
-      ],
-      "label": "Corollary 2.1.6",
-      "line": 11,
+      "label": "Corollary 2.3",
+      "line": 31,
+      "module": "glowinski_admm_counterexample.GlowinskiADMM.UpdatedResults",
       "proofDependencies": [
-        "algorithm-1-1-1",
-        "definition-2-1-1",
-        "definition-2-1-5",
-        "definition-4-1-5",
-        "lemma-4-1-2",
-        "lemma-5-1-1",
-        "proposition-3-1-7",
-        "proposition-4-1-3",
-        "proposition-4-1-6",
-        "theorem-2-1-3"
+        "appendix-c-2",
+        "appendix-c-3",
+        "lemma-3-1",
+        "lemma-3-2",
+        "lemma-4-1",
+        "lemma-5-1",
+        "lemma-c-1",
+        "proposition-4-3"
       ],
       "section": "section-2",
-      "statement": "Corollary 2.1.6: The uniform-convergence endpoint lies strictly between\n`377 / 200` and the critical factor.",
-      "statementDependencies": [
-        "definition-2-1-5",
-        "theorem-2-1-3"
-      ],
-      "title": "Corollary 2.1.6",
+      "statement": "Let C_gamma require the stated convergence conclusions for every finite-dimensional problem with closed proper convex objectives and a KKT triple, every positive penalty and every well-defined exact trajectory, including primal-dual KKT convergence when both constraint maps are injective. If Gamma* is the supremum of positive c for which C_gamma holds at every 0 < gamma < c, then L < Gamma* < U, where L = 1.886882470025 and U = 1.886882643762680. The exact width is U - L = 1.7373768e-7.",
+      "statementDependencies": [],
+      "statementProvenance": "Reviewed summary of the revised manuscript; the separate Lean correspondence states the mapped proof components.",
+      "title": "Bounds on the uniform convergence interval",
       "type": "Corollary"
     },
     {
-      "declaration": "ADMM.ImageReduction.fiberInf",
-      "dependencies": [],
-      "dependencyEvidence": "compiled",
-      "file": "GlowinskiADMM/definition_3_1_1.lean",
-      "id": "definition-3-1-1",
-      "interfaceDeclarations": [
-        "ADMM.ImageReduction.fiberInf",
-        "ADMM.ImageReduction.fiberInf_apply",
-        "ADMM.ImageReduction.shiftedFiberInf",
-        "ADMM.ImageReduction.shiftedFiberInf_apply",
-        "ADMM.ImageReduction.reducedFirst",
-        "ADMM.ImageReduction.reducedFirst_apply",
-        "ERealConvex.fenchelBiconjugate",
-        "ADMM.ImageReduction.reducedSecond",
-        "ADMM.ImageReduction.reducedSecond_apply"
-      ],
-      "interfaces": [
+      "correspondence": "Nine actual proved interfaces cover the two reduced convexity results, KKT existence, the optimum, the two value identities, the two proximal updates, and the multiplier update. The old file name lemma_3_1_2 is retained as a compatibility interface; the displayed number follows the revised manuscript.",
+      "declaration": "ADMM.Problem.reducedFirst_isClosedProperConvex",
+      "declarationBindings": [
         {
-          "file": "GlowinskiADMM/definition_3_1_1.lean",
-          "label": "Definition 3.1.1"
+          "file": "ReasLib/Optimization/ADMM/ImageReduction.lean",
+          "kind": "theorem",
+          "line": 888,
+          "module": "glowinski_admm_counterexample.ReasLib.Optimization.ADMM.ImageReduction",
+          "name": "ADMM.Problem.reducedFirst_isClosedProperConvex",
+          "sourceSha256": "905c974f3a725c0c995e0e64dc56e37ccabf1452addfe394ccf6921f2b52e7e3"
+        },
+        {
+          "file": "ReasLib/Optimization/ADMM/ImageReduction.lean",
+          "kind": "theorem",
+          "line": 900,
+          "module": "glowinski_admm_counterexample.ReasLib.Optimization.ADMM.ImageReduction",
+          "name": "ADMM.Problem.reducedSecond_isClosedProperConvex",
+          "sourceSha256": "905c974f3a725c0c995e0e64dc56e37ccabf1452addfe394ccf6921f2b52e7e3"
+        },
+        {
+          "file": "ReasLib/Optimization/ADMM/ImageReduction.lean",
+          "kind": "theorem",
+          "line": 912,
+          "module": "glowinski_admm_counterexample.ReasLib.Optimization.ADMM.ImageReduction",
+          "name": "ADMM.Problem.reduced_exists_kkt",
+          "sourceSha256": "905c974f3a725c0c995e0e64dc56e37ccabf1452addfe394ccf6921f2b52e7e3"
+        },
+        {
+          "file": "ReasLib/Optimization/ADMM/ImageReduction.lean",
+          "kind": "theorem",
+          "line": 924,
+          "module": "glowinski_admm_counterexample.ReasLib.Optimization.ADMM.ImageReduction",
+          "name": "ADMM.Problem.reduced_optimalValue",
+          "sourceSha256": "905c974f3a725c0c995e0e64dc56e37ccabf1452addfe394ccf6921f2b52e7e3"
+        },
+        {
+          "file": "ReasLib/Optimization/ADMM/ImageReduction.lean",
+          "kind": "theorem",
+          "line": 1126,
+          "module": "glowinski_admm_counterexample.ReasLib.Optimization.ADMM.ImageReduction",
+          "name": "ADMM.Trajectory.firstImage_values",
+          "sourceSha256": "905c974f3a725c0c995e0e64dc56e37ccabf1452addfe394ccf6921f2b52e7e3"
+        },
+        {
+          "file": "ReasLib/Optimization/ADMM/ImageReduction.lean",
+          "kind": "theorem",
+          "line": 1142,
+          "module": "glowinski_admm_counterexample.ReasLib.Optimization.ADMM.ImageReduction",
+          "name": "ADMM.Trajectory.secondImage_values",
+          "sourceSha256": "905c974f3a725c0c995e0e64dc56e37ccabf1452addfe394ccf6921f2b52e7e3"
+        },
+        {
+          "file": "ReasLib/Optimization/ADMM/ImageReduction.lean",
+          "kind": "theorem",
+          "line": 1161,
+          "module": "glowinski_admm_counterexample.ReasLib.Optimization.ADMM.ImageReduction",
+          "name": "ADMM.Trajectory.firstImage_isProxPoint",
+          "sourceSha256": "905c974f3a725c0c995e0e64dc56e37ccabf1452addfe394ccf6921f2b52e7e3"
+        },
+        {
+          "file": "ReasLib/Optimization/ADMM/ImageReduction.lean",
+          "kind": "theorem",
+          "line": 1175,
+          "module": "glowinski_admm_counterexample.ReasLib.Optimization.ADMM.ImageReduction",
+          "name": "ADMM.Trajectory.secondImage_isProxPoint",
+          "sourceSha256": "905c974f3a725c0c995e0e64dc56e37ccabf1452addfe394ccf6921f2b52e7e3"
+        },
+        {
+          "file": "ReasLib/Optimization/ADMM/ImageReduction.lean",
+          "kind": "theorem",
+          "line": 1189,
+          "module": "glowinski_admm_counterexample.ReasLib.Optimization.ADMM.ImageReduction",
+          "name": "ADMM.Trajectory.scaledMultiplier_imageUpdate",
+          "sourceSha256": "905c974f3a725c0c995e0e64dc56e37ccabf1452addfe394ccf6921f2b52e7e3"
         }
       ],
-      "label": "Definition 3.1.1",
-      "line": 17,
-      "proofDependencies": [],
-      "section": "section-3",
-      "statement": "Definition 3.1.1. Put `q = A.mulVec x`, `v = B.mulVec y - b`, and\n`u = β⁻¹ • λ`.\nThe functions `ADMM.ImageReduction.fiberInf` and\n`ADMM.ImageReduction.shiftedFiberInf` are the image objectives on the fibers\n`A.mulVec x = q` and `B.mulVec y - b = v`, respectively. Their β-scaled Fenchel\nbiconjugates are `ADMM.ImageReduction.reducedFirst` and\n`ADMM.ImageReduction.reducedSecond`; biconjugation is needed because an image\nobjective need not be closed.",
-      "statementDependencies": [],
-      "title": "Definition 3.1.1",
-      "type": "Definition"
-    },
-    {
-      "declaration": "ADMM.Problem.reducedFirst_isClosedProperConvex",
-      "dependencies": [
-        "algorithm-1-1-1",
-        "definition-2-1-1",
-        "definition-3-1-1"
-      ],
+      "dependencies": [],
       "dependencyEvidence": "compiled",
-      "file": "GlowinskiADMM/lemma_3_1_2.lean",
-      "id": "lemma-3-1-2",
+      "file": "ReasLib/Optimization/ADMM/ImageReduction.lean",
+      "id": "lemma-3-1",
       "interfaceDeclarations": [
         "ADMM.Problem.reducedFirst_isClosedProperConvex",
-        "ADMM.Problem",
-        "ADMM.IsClosedProperConvex",
-        "ADMM.Trajectory",
         "ADMM.Problem.reducedSecond_isClosedProperConvex",
         "ADMM.Problem.reduced_exists_kkt",
         "ADMM.Problem.reduced_optimalValue",
         "ADMM.Trajectory.firstImage_values",
-        "ADMM.ImageReduction.fiberInf",
-        "ERealConvex.fenchelBiconjugate",
         "ADMM.Trajectory.secondImage_values",
-        "ADMM.ImageReduction.shiftedFiberInf",
         "ADMM.Trajectory.firstImage_isProxPoint",
-        "ADMM.IsProxPoint",
         "ADMM.Trajectory.secondImage_isProxPoint",
         "ADMM.Trajectory.scaledMultiplier_imageUpdate"
       ],
-      "interfaces": [
-        {
-          "file": "GlowinskiADMM/lemma_3_1_2.lean",
-          "label": "Lemma 3.1.2"
-        }
-      ],
-      "label": "Lemma 3.1.2",
-      "line": 8,
-      "proofDependencies": [
-        "algorithm-1-1-1",
-        "definition-2-1-1",
-        "definition-3-1-1"
-      ],
+      "label": "Lemma 3.1",
+      "line": 888,
+      "module": "glowinski_admm_counterexample.ReasLib.Optimization.ADMM.ImageReduction",
+      "proofDependencies": [],
       "section": "section-3",
-      "statement": "Lemma 3.1.2 (1): the first reduced objective is closed proper convex.\n\nLemma 3.1.2 (2): the second reduced objective is closed proper convex.\n\nLemma 3.1.2 (3): the reduced problem has a KKT triple.\n\nLemma 3.1.2 (4): the reduced optimal value is the original value divided by `β`.\n\nLemma 3.1.2 (5): first-block image values agree through biconjugation.\n\nLemma 3.1.2 (6): second-block image values agree through biconjugation.\n\nLemma 3.1.2 (7): the first image update is a relational proximal point.\n\nLemma 3.1.2 (8): the second image update is a relational proximal point.\n\nLemma 3.1.2 (9): the scaled multiplier obeys the image-update recurrence.",
-      "statementDependencies": [
-        "definition-2-1-1"
-      ],
-      "title": "Lemma 3.1.2",
+      "statement": "For closed proper convex original objectives with a KKT triple, a well-defined exact trajectory, and positive penalty beta and multiplier gamma, the image-reduced objectives are closed proper convex, the reduced KKT set is nonempty, and the reduced optimal value equals the original optimum divided by beta. At every step, both block objective values and both image updates agree with their reduced proximal counterparts, with the scaled multiplier following the reduced update.",
+      "statementDependencies": [],
+      "statementProvenance": "Reviewed summary of the revised manuscript; the separate Lean correspondence states the mapped proof components.",
+      "title": "Reduction to the constraint images",
       "type": "Lemma"
     },
     {
-      "declaration": "ERealConvex.centerAt",
-      "dependencies": [
-        "algorithm-1-1-1",
-        "definition-2-1-1",
-        "definition-3-1-1",
-        "lemma-3-1-2",
-        "proposition-4-1-3"
-      ],
-      "dependencyEvidence": "compiled",
-      "file": "GlowinskiADMM/notation_3_1_3.lean",
-      "id": "notation-3-1-3",
-      "interfaceDeclarations": [
-        "ERealConvex.centerAt",
-        "ERealConvex.reflectedCenterAt",
-        "ADMM.Scaled.residual",
-        "ADMM.Scaled.firstNormal",
-        "ADMM.Scaled.secondNormal",
-        "ADMM.Scaled.firstMargin",
-        "ADMM.Scaled.secondMargin",
-        "ADMM.KKTNormalization.firstObjective",
-        "ADMM.KKTNormalization.secondObjective",
-        "ADMM.KKTNormalization.q",
-        "ADMM.KKTNormalization.eta",
-        "ADMM.KKTNormalization.w",
-        "ADMM.KKTNormalization.firstObjective_zero",
-        "ADMM.KKTNormalization.secondObjective_zero",
-        "ADMM.KKTNormalization.firstObjective_nonneg",
-        "ADMM.KKTNormalization.secondObjective_nonneg",
-        "ADMM.KKTNormalization.firstObjective_isClosedProperConvex",
-        "ADMM.KKTNormalization.secondObjective_isClosedProperConvex",
-        "ADMM.KKTNormalization.firstProx",
-        "ADMM.KKTNormalization.secondProx",
-        "ADMM.KKTNormalization.w_succ",
-        "ADMM.KKTNormalization.firstNormal_subgradient",
-        "ADMM.KKTNormalization.secondNormal_subgradient",
-        "ADMM.KKTNormalization.firstMargin_bounds",
-        "ADMM.KKTNormalization.secondMargin_bounds",
-        "ADMM.KKTNormalization.isTrajectory"
-      ],
-      "interfaces": [
+      "correspondence": "The direct arbitrary-reduced-trajectory theorem supplies the KKT limit, both square-summability conclusions and both extended-real objective limits. The generic generated-certificate summability theorem supplies the normalized objective values relative to the KKT anchor chosen before the iteration.",
+      "declaration": "ADMM.FiniteMemory.ReducedTrajectory.interval_conclusions",
+      "declarationBindings": [
         {
-          "file": "GlowinskiADMM/notation_3_1_3.lean",
-          "label": "Notation 3.1.3"
+          "file": "GlowinskiADMM/lemma_3_2_reduced.lean",
+          "kind": "theorem",
+          "line": 219,
+          "module": "glowinski_admm_counterexample.GlowinskiADMM.lemma_3_2_reduced",
+          "name": "ADMM.FiniteMemory.ReducedTrajectory.interval_conclusions",
+          "sourceSha256": "c21a0d7a6dc1f01751974aedd787ec48729a839dd0b37890e23b25d264ff0f76"
+        },
+        {
+          "file": "ReasLib/Optimization/ADMM/Convergence/ProofSupport/GeneratedCertificate.lean",
+          "kind": "theorem",
+          "line": 98,
+          "module": "glowinski_admm_counterexample.ReasLib.Optimization.ADMM.Convergence.ProofSupport.GeneratedCertificate",
+          "name": "ADMM.ConvergenceProof.generated_certificate_summable",
+          "sourceSha256": "46f77ad455a774aaf5dea6eac1f17a19bdaad04f53fa79f18c446e8e45c639a6"
         }
       ],
-      "label": "Notation 3.1.3",
-      "line": 11,
-      "proofDependencies": [
-        "algorithm-1-1-1",
-        "definition-2-1-1",
-        "definition-3-1-1",
-        "lemma-3-1-2",
-        "proposition-4-1-3"
-      ],
-      "section": "section-3",
-      "statement": "Notation 3.1.3: the reduced KKT normalization, scaled recurrence, generated graph\nnormals, and support bounds are exposed by the following canonical declarations.",
-      "statementDependencies": [
-        "algorithm-1-1-1",
-        "lemma-3-1-2",
-        "proposition-4-1-3"
-      ],
-      "title": "Notation 3.1.3",
-      "type": "Notation"
-    },
-    {
-      "declaration": "ADMM.FiniteMemory.Certificate",
       "dependencies": [],
       "dependencyEvidence": "compiled",
-      "file": "GlowinskiADMM/definition_3_1_4.lean",
-      "id": "definition-3-1-4",
+      "file": "GlowinskiADMM/lemma_3_2_reduced.lean",
+      "id": "lemma-3-2",
       "interfaceDeclarations": [
-        "ADMM.FiniteMemory.Certificate",
-        "ADMM.FiniteMemory.supply",
-        "ADMM.FiniteMemory.storage"
+        "ADMM.FiniteMemory.ReducedTrajectory.interval_conclusions",
+        "ADMM.ConvergenceProof.generated_certificate_summable"
       ],
-      "interfaces": [
-        {
-          "file": "GlowinskiADMM/definition_3_1_4.lean",
-          "label": "Definition 3.1.4"
-        }
-      ],
-      "label": "Definition 3.1.4",
-      "line": 12,
+      "label": "Lemma 3.2",
+      "line": 219,
+      "module": "glowinski_admm_counterexample.GlowinskiADMM.lemma_3_2_reduced",
       "proofDependencies": [],
       "section": "section-3",
-      "statement": "Definition 3.1.4: An ADMM finite-memory certificate consists of its nonnegative\nlag weights, positive parameters, signed-value storage, and the descent and lower\nfinite positive-semidefiniteness tests, including all directed origin gaps.",
+      "statement": "Assume the descent and lower tests at positive distinct interval endpoints with common nonnegative weights and common positive margins. If the reduced KKT set is nonempty, every reduced trajectory at a fixed factor in the closed interval converges to a reduced KKT triple. Residuals and second-image increments are square summable, and both tilted objective values tend to zero.",
       "statementDependencies": [],
-      "title": "Definition 3.1.4",
-      "type": "Definition"
-    },
-    {
-      "declaration": "ADMM.FiniteMemory.intervalResidual_sq_summable",
-      "dependencies": [
-        "algorithm-1-1-1",
-        "definition-2-1-1",
-        "definition-3-1-1",
-        "definition-3-1-4",
-        "lemma-3-1-2",
-        "notation-3-1-6",
-        "proposition-4-1-3"
-      ],
-      "dependencyEvidence": "compiled",
-      "file": "GlowinskiADMM/lemma_3_1_5.lean",
-      "id": "lemma-3-1-5",
-      "interfaceDeclarations": [
-        "ADMM.FiniteMemory.intervalResidual_sq_summable"
-      ],
-      "interfaces": [
-        {
-          "file": "GlowinskiADMM/lemma_3_1_5.lean",
-          "label": "Lemma 3.1.5"
-        }
-      ],
-      "label": "Lemma 3.1.5",
-      "line": 36,
-      "proofDependencies": [
-        "algorithm-1-1-1",
-        "definition-2-1-1",
-        "definition-3-1-1",
-        "definition-3-1-4",
-        "lemma-3-1-2",
-        "notation-3-1-6",
-        "proposition-4-1-3"
-      ],
-      "section": "section-3",
-      "statement": "Lemma 3.1.5 (1): common finite-memory certificates at two ordered\nrelaxation endpoints force every intervening reduced image trajectory to\nconverge to a reduced KKT triple.\n\nLemma 3.1.5 (2): under common endpoint certificates, the squared primal\nresidual norms of every intervening exact trajectory are summable.\n\nLemma 3.1.5 (3): under common endpoint certificates, the squared\nsecond-image increment norms of every intervening exact trajectory are summable.\n\nLemma 3.1.5 (4): along the reduced-state limit supplied by the interval\ncertificate, the first reduced objective tilted at its KKT support tends to zero.\n\nLemma 3.1.5 (5): along the reduced-state limit supplied by the interval\ncertificate, the second reduced objective tilted at its KKT support tends to zero.",
-      "statementDependencies": [
-        "algorithm-1-1-1",
-        "definition-3-1-4",
-        "proposition-4-1-3"
-      ],
-      "title": "Lemma 3.1.5",
+      "statementProvenance": "Reviewed summary of the revised manuscript; the separate Lean correspondence states the mapped proof components.",
+      "title": "An interval certificate",
       "type": "Lemma"
     },
     {
-      "declaration": "ADMM.FiniteMemory.lowerMatrix_quadratic",
-      "dependencies": [
-        "definition-8-1-1"
-      ],
-      "dependencyEvidence": "compiled",
-      "file": "GlowinskiADMM/notation_3_1_6.lean",
-      "id": "notation-3-1-6",
-      "interfaceDeclarations": [
-        "ADMM.FiniteMemory.lowerMatrix_quadratic",
-        "ADMM.FiniteMemory.Reconstruction.endpointLower_posSemidef",
-        "ADMM.FiniteMemory.Reconstruction.caseOneValid"
-      ],
-      "interfaces": [
-        {
-          "file": "GlowinskiADMM/notation_3_1_6.lean",
-          "label": "Notation 3.1.6"
-        }
-      ],
-      "label": "Notation 3.1.6",
-      "line": 80,
-      "proofDependencies": [
-        "definition-8-1-1"
-      ],
-      "section": "section-3",
-      "statement": "Notation 3.1.6 (1): for memory two, the tail-sum formula specializes to\n`h₀ = δ₁ + δ₂` and `h₁ = δ₂`.\n\nNotation 3.1.6 (2): the exact Case 1 lag coefficients give the displayed\nfour-term value storage.\n\nNotation 3.1.6 (3): both current function values have negative coefficients\nin Case 1.\n\nNotation 3.1.6 (4): the reconstructed first-block origin-column weights are\nthe exact pair displayed in the source.\n\nNotation 3.1.6 (5): the first reconstructed flow balance is the negative\ncurrent-value coefficient `h_{F,0}`.\n\nNotation 3.1.6 (6): all Case 1 first-block interpolation weights are\nnonnegative.\n\nNotation 3.1.6 (7): the lower matrix represents the quadratic remainder.",
-      "statementDependencies": [
-        "definition-8-1-1"
-      ],
-      "title": "Notation 3.1.6",
-      "type": "Notation"
-    },
-    {
-      "declaration": "ADMM.uniformConvergenceEndpoint_gt",
-      "dependencies": [
-        "algorithm-1-1-1",
-        "definition-2-1-1",
-        "definition-2-1-5",
-        "definition-3-1-1",
-        "definition-3-1-4",
-        "definition-4-1-5",
-        "definition-8-1-1",
-        "lemma-3-1-2",
-        "lemma-4-1-2",
-        "lemma-5-1-1",
-        "notation-3-1-6",
-        "proposition-4-1-3",
-        "proposition-4-1-6",
-        "theorem-2-1-2",
-        "theorem-2-1-3"
-      ],
-      "dependencyEvidence": "compiled",
-      "file": "GlowinskiADMM/proposition_3_1_7.lean",
-      "id": "proposition-3-1-7",
-      "interfaceDeclarations": [
-        "ADMM.uniformConvergenceEndpoint_gt"
-      ],
-      "interfaces": [
-        {
-          "file": "GlowinskiADMM/proposition_3_1_7.lean",
-          "label": "Proposition 3.1.7"
-        }
-      ],
-      "label": "Proposition 3.1.7",
-      "line": 11,
-      "proofDependencies": [
-        "algorithm-1-1-1",
-        "definition-2-1-1",
-        "definition-2-1-5",
-        "definition-3-1-1",
-        "definition-3-1-4",
-        "definition-4-1-5",
-        "definition-8-1-1",
-        "lemma-3-1-2",
-        "lemma-4-1-2",
-        "lemma-5-1-1",
-        "notation-3-1-6",
-        "proposition-4-1-3",
-        "proposition-4-1-6",
-        "theorem-2-1-2",
-        "theorem-2-1-3"
-      ],
-      "section": "section-3",
-      "statement": "Proposition 3.1.7: The uniform-convergence endpoint is strictly greater than\n`377 / 200`.",
-      "statementDependencies": [
-        "definition-2-1-5"
-      ],
-      "title": "Proposition 3.1.7",
-      "type": "Proposition"
-    },
-    {
-      "declaration": "ConsensusADMM.CycleConfig.cycleData_spec",
-      "dependencies": [],
-      "dependencyEvidence": "compiled",
-      "file": "GlowinskiADMM/definition_4_1_1.lean",
-      "id": "definition-4-1-1",
-      "interfaceDeclarations": [
-        "ConsensusADMM.CycleConfig.cycleData_spec",
-        "ConsensusADMM.CycleConfig",
-        "ConsensusADMM.CycleConfig.residual",
-        "ConsensusADMM.CycleConfig.xVertex",
-        "ConsensusADMM.CycleConfig.xNormal",
-        "ConsensusADMM.CycleConfig.yNormal",
-        "ConsensusADMM.ProjectionCycle.mem_nonselfVertices",
-        "ConsensusADMM.ProjectionCycle.nonselfVertices"
-      ],
-      "interfaces": [
-        {
-          "file": "GlowinskiADMM/definition_4_1_1.lean",
-          "label": "Definition 4.1.1"
-        }
-      ],
-      "label": "Definition 4.1.1",
-      "line": 16,
-      "proofDependencies": [],
-      "section": "section-4",
-      "statement": "Definition 4.1.1 (1): for cyclic indices modulo `N ≥ 2` and `γ > 0`,\nthe families `ρ`, `ξ`, `a`, and `c` are respectively `residual`, `xVertex`,\n`xNormal`, and `yNormal`.\n\nDefinition 4.1.1 (2): a nonself support compares a phase vertex with\nthe origin or with a vertex at a distinct phase.",
-      "statementDependencies": [],
-      "title": "Definition 4.1.1",
-      "type": "Definition"
-    },
-    {
+      "correspondence": "The linked proved properties expose the trajectory, unique updates, origin optimality, failure of residual convergence and the minimal-period statement for the same projection-cycle data.",
       "declaration": "ConsensusADMM.IsProjectionCycle.isTrajectory",
-      "dependencies": [
-        "proposition-4-1-6"
+      "declarationBindings": [
+        {
+          "file": "ReasLib/Optimization/ADMM/ProjectionCycleTrajectory.lean",
+          "kind": "theorem",
+          "line": 311,
+          "module": "glowinski_admm_counterexample.ReasLib.Optimization.ADMM.ProjectionCycleTrajectory",
+          "name": "ConsensusADMM.IsProjectionCycle.isTrajectory",
+          "sourceSha256": "3e0ae4c45fb9aad8b59ce1023562197822c217a4d20d76667b64f9eb54106d4f"
+        },
+        {
+          "file": "ReasLib/Optimization/ADMM/ProjectionCycleTrajectory.lean",
+          "kind": "theorem",
+          "line": 320,
+          "module": "glowinski_admm_counterexample.ReasLib.Optimization.ADMM.ProjectionCycleTrajectory",
+          "name": "ConsensusADMM.IsProjectionCycle.hasUniqueUpdates",
+          "sourceSha256": "3e0ae4c45fb9aad8b59ce1023562197822c217a4d20d76667b64f9eb54106d4f"
+        },
+        {
+          "file": "ReasLib/Optimization/ADMM/ProjectionCycleTrajectory.lean",
+          "kind": "theorem",
+          "line": 328,
+          "module": "glowinski_admm_counterexample.ReasLib.Optimization.ADMM.ProjectionCycleTrajectory",
+          "name": "ConsensusADMM.IsProjectionCycle.isKKT",
+          "sourceSha256": "3e0ae4c45fb9aad8b59ce1023562197822c217a4d20d76667b64f9eb54106d4f"
+        },
+        {
+          "file": "ReasLib/Optimization/ADMM/ProjectionCycleTrajectory.lean",
+          "kind": "theorem",
+          "line": 344,
+          "module": "glowinski_admm_counterexample.ReasLib.Optimization.ADMM.ProjectionCycleTrajectory",
+          "name": "ConsensusADMM.IsProjectionCycle.isOptimalValueZero",
+          "sourceSha256": "3e0ae4c45fb9aad8b59ce1023562197822c217a4d20d76667b64f9eb54106d4f"
+        },
+        {
+          "file": "ReasLib/Optimization/ADMM/ProjectionCycleTrajectory.lean",
+          "kind": "theorem",
+          "line": 361,
+          "module": "glowinski_admm_counterexample.ReasLib.Optimization.ADMM.ProjectionCycleTrajectory",
+          "name": "ConsensusADMM.IsProjectionCycle.residual_not_tendsto",
+          "sourceSha256": "3e0ae4c45fb9aad8b59ce1023562197822c217a4d20d76667b64f9eb54106d4f"
+        },
+        {
+          "file": "ReasLib/Optimization/ADMM/ProjectionCycleTrajectory.lean",
+          "kind": "theorem",
+          "line": 389,
+          "module": "glowinski_admm_counterexample.ReasLib.Optimization.ADMM.ProjectionCycleTrajectory",
+          "name": "ConsensusADMM.IsProjectionCycle.minimalPeriod_dvd",
+          "sourceSha256": "3e0ae4c45fb9aad8b59ce1023562197822c217a4d20d76667b64f9eb54106d4f"
+        }
       ],
+      "dependencies": [],
       "dependencyEvidence": "compiled",
-      "file": "GlowinskiADMM/lemma_4_1_2.lean",
-      "id": "lemma-4-1-2",
+      "file": "ReasLib/Optimization/ADMM/ProjectionCycleTrajectory.lean",
+      "id": "lemma-4-1",
       "interfaceDeclarations": [
         "ConsensusADMM.IsProjectionCycle.isTrajectory",
-        "ConsensusADMM.IsProjectionCycle",
-        "ConsensusADMM.IsTrajectory",
-        "ConsensusADMM.extendedIndicator",
-        "ConsensusADMM.ProjectionCycle.xSet",
-        "ConsensusADMM.ProjectionCycle.ySet",
-        "ConsensusADMM.ProjectionCycle.xSequence",
-        "ConsensusADMM.ProjectionCycle.ySequence",
-        "ConsensusADMM.ProjectionCycle.dualSequence",
         "ConsensusADMM.IsProjectionCycle.hasUniqueUpdates",
-        "ConsensusADMM.HasUniqueUpdates",
         "ConsensusADMM.IsProjectionCycle.isKKT",
-        "ConsensusADMM.IsKKT",
         "ConsensusADMM.IsProjectionCycle.isOptimalValueZero",
-        "ConsensusADMM.IsPrimalMinimizer",
         "ConsensusADMM.IsProjectionCycle.residual_not_tendsto",
-        "ConsensusADMM.ProjectionCycle.residual",
-        "ConsensusADMM.ProjectionCycle.primalResidual",
-        "ConsensusADMM.IsProjectionCycle.minimalPeriod_dvd",
-        "ConsensusADMM.HasExactPeriod"
+        "ConsensusADMM.IsProjectionCycle.minimalPeriod_dvd"
       ],
-      "interfaces": [
-        {
-          "file": "GlowinskiADMM/lemma_4_1_2.lean",
-          "label": "Lemma 4.1.2"
-        }
-      ],
-      "label": "Lemma 4.1.2",
-      "line": 13,
-      "proofDependencies": [
-        "proposition-4-1-6"
-      ],
+      "label": "Lemma 4.1",
+      "line": 311,
+      "module": "glowinski_admm_counterexample.ReasLib.Optimization.ADMM.ProjectionCycleTrajectory",
+      "proofDependencies": [],
       "section": "section-4",
-      "statement": "Lemma 4.1.2 (1): the prescribed cyclic sequences form a unit-penalty consensus\nADMM trajectory for the indicators of the two cycle polytopes.\n\nLemma 4.1.2 (2): every block minimum along the prescribed trajectory is unique.\n\nLemma 4.1.2 (3): the origin triple satisfies the consensus KKT conditions.\n\nLemma 4.1.2 (4): the origin is primal optimal and has objective value zero.\n\nLemma 4.1.2 (5): a nonzero cycle residual prevents primal-residual convergence\nto zero.\n\nLemma 4.1.2 (6): the positive minimal period of the prescribed trajectory\ndivides the number of phases.",
+      "statement": "For the phase data and support inequalities specified in Section 4 with N >= 2 and gamma > 0, the prescribed sequences form an exact indicator-objective consensus ADMM trajectory on the two convex hulls. Updates are unique, the origin is KKT with optimal value zero, and a nonzero phase residual prevents convergence. The minimal positive period divides N.",
       "statementDependencies": [],
-      "title": "Lemma 4.1.2",
+      "statementProvenance": "Reviewed summary of the revised manuscript; the separate Lean correspondence states the mapped proof components.",
+      "title": "Projection cycles",
       "type": "Lemma"
     },
     {
+      "correspondence": "The existence theorem returns the dimension bound and IsCyclicReduction. Expanding that predicate gives the actual support inequalities, constant positive residual and circulant Gram blocks. N-periodic does not assert that the minimal period equals N.",
       "declaration": "ConsensusADMM.existsCyclicReduction",
-      "dependencies": [
-        "lemma-5-1-1",
-        "proposition-4-1-6"
-      ],
-      "dependencyEvidence": "compiled",
-      "file": "GlowinskiADMM/proposition_4_1_3.lean",
-      "id": "proposition-4-1-3",
-      "interfaceDeclarations": [
-        "ConsensusADMM.existsCyclicReduction",
-        "ADMM.IsClosedProperConvex",
-        "ConsensusADMM.IsTrajectory",
-        "ConsensusADMM.IsCyclicReduction"
-      ],
-      "interfaces": [
+      "declarationBindings": [
         {
-          "file": "GlowinskiADMM/proposition_4_1_3.lean",
-          "label": "Proposition 4.1.3"
+          "file": "ReasLib/Optimization/ADMM/CyclicReduction.lean",
+          "kind": "theorem",
+          "line": 1124,
+          "module": "glowinski_admm_counterexample.ReasLib.Optimization.ADMM.CyclicReduction",
+          "name": "ConsensusADMM.existsCyclicReduction",
+          "sourceSha256": "ce9a21679aaabe3d9a44f7eb73901dde530a49329e04b75990f9ae227eda4239"
         }
       ],
-      "label": "Proposition 4.1.3",
-      "line": 16,
-      "proofDependencies": [
-        "lemma-5-1-1",
-        "proposition-4-1-6"
+      "dependencies": [],
+      "dependencyEvidence": "compiled",
+      "file": "ReasLib/Optimization/ADMM/CyclicReduction.lean",
+      "id": "proposition-4-2",
+      "interfaceDeclarations": [
+        "ConsensusADMM.existsCyclicReduction"
       ],
+      "label": "Proposition 4.2",
+      "line": 1124,
+      "module": "glowinski_admm_counterexample.ReasLib.Optimization.ADMM.CyclicReduction",
+      "proofDependencies": [],
       "section": "section-4",
-      "statement": "Proposition 4.1.3: an `N`-periodic consensus ADMM trajectory with a nonzero\nresidual admits a cyclic projection reduction in dimension at most `2 * N - 2`,\nat the same multiplier factor.",
+      "statement": "Every N-periodic unit-penalty consensus ADMM trajectory for fixed closed proper convex objectives with a nonzero residual, for N >= 2 and gamma > 0, admits cyclic projection data at the same factor in dimension at most 2N - 2. The resulting residual norm is constant and positive, and the three Gram blocks are circulant.",
       "statementDependencies": [],
-      "title": "Proposition 4.1.3",
+      "statementProvenance": "Reviewed summary of the revised manuscript; the separate Lean correspondence states the mapped proof components.",
+      "title": "Cyclic reduction",
       "type": "Proposition"
     },
     {
-      "declaration": "ConsensusADMM.GramCycle.gramMap_inner",
-      "dependencies": [
-        "lemma-5-1-1",
-        "proposition-4-1-6"
-      ],
-      "dependencyEvidence": "compiled",
-      "file": "GlowinskiADMM/proposition_4_1_4.lean",
-      "id": "proposition-4-1-4",
-      "interfaceDeclarations": [
-        "ConsensusADMM.GramCycle.gramMap_inner",
-        "ConsensusADMM.GramCycle.gramMap",
-        "ConsensusADMM.GramCycle.supportFunctional",
-        "ConsensusADMM.GramCycle.supportLinearInGram",
-        "ConsensusADMM.GramCycle.circulantBlocks",
-        "ConsensusADMM.GramCycle.SimultaneouslyCyclic",
-        "ConsensusADMM.GramCycle.block",
-        "ConsensusADMM.GramCycle.feasible_iff_projectionCycle",
-        "ConsensusADMM.GramCycle.Feasible",
-        "ConsensusADMM.IsProjectionCycle",
-        "ConsensusADMM.GramCycle.standardEta",
-        "ConsensusADMM.GramCycle.standardNu"
-      ],
-      "interfaces": [
+      "correspondence": "The linked constants include actual Gram positivity, the fixed-hull identity, the projection cycle, exact period, positive residual, strict supports and compact-polytope properties. The construction's data and rational checks remain compiled dependencies rather than separate manuscript nodes.",
+      "declaration": "ConsensusADMM.Period48.FixedPolytopes.isProjectionCycle",
+      "declarationBindings": [
         {
-          "file": "GlowinskiADMM/proposition_4_1_4.lean",
-          "label": "Proposition 4.1.4"
+          "file": "ReasLib/ConsensusADMM/Period48/FixedPolytopes.lean",
+          "kind": "theorem",
+          "line": 210,
+          "module": "glowinski_admm_counterexample.ReasLib.ConsensusADMM.Period48.FixedPolytopes",
+          "name": "ConsensusADMM.Period48.FixedPolytopes.isProjectionCycle",
+          "sourceSha256": "40be47beb50a47ecef932c2c29f3ee1bb58755b7471dcd71801376092594a0b2"
+        },
+        {
+          "file": "ReasLib/ConsensusADMM/Period48/FixedPolytopes.lean",
+          "kind": "theorem",
+          "line": 47,
+          "module": "glowinski_admm_counterexample.ReasLib.ConsensusADMM.Period48.FixedPolytopes",
+          "name": "ConsensusADMM.Period48.FixedPolytopes.gramMatrix_posDef",
+          "sourceSha256": "40be47beb50a47ecef932c2c29f3ee1bb58755b7471dcd71801376092594a0b2"
+        },
+        {
+          "file": "ReasLib/ConsensusADMM/Period48/FixedPolytopes.lean",
+          "kind": "theorem",
+          "line": 80,
+          "module": "glowinski_admm_counterexample.ReasLib.ConsensusADMM.Period48.FixedPolytopes",
+          "name": "ConsensusADMM.Period48.FixedPolytopes.xSet_ySet_eq",
+          "sourceSha256": "40be47beb50a47ecef932c2c29f3ee1bb58755b7471dcd71801376092594a0b2"
+        },
+        {
+          "file": "ReasLib/ConsensusADMM/Period48/FixedPolytopes.lean",
+          "kind": "theorem",
+          "line": 429,
+          "module": "glowinski_admm_counterexample.ReasLib.ConsensusADMM.Period48.FixedPolytopes",
+          "name": "ConsensusADMM.Period48.FixedPolytopes.trajectory_exactPeriod",
+          "sourceSha256": "40be47beb50a47ecef932c2c29f3ee1bb58755b7471dcd71801376092594a0b2"
+        },
+        {
+          "file": "ReasLib/ConsensusADMM/Period48/FixedPolytopes.lean",
+          "kind": "theorem",
+          "line": 476,
+          "module": "glowinski_admm_counterexample.ReasLib.ConsensusADMM.Period48.FixedPolytopes",
+          "name": "ConsensusADMM.Period48.FixedPolytopes.constantPositiveResidual",
+          "sourceSha256": "40be47beb50a47ecef932c2c29f3ee1bb58755b7471dcd71801376092594a0b2"
+        },
+        {
+          "file": "ReasLib/ConsensusADMM/Period48/FixedPolytopes.lean",
+          "kind": "theorem",
+          "line": 509,
+          "module": "glowinski_admm_counterexample.ReasLib.ConsensusADMM.Period48.FixedPolytopes",
+          "name": "ConsensusADMM.Period48.FixedPolytopes.secondSupports_strict",
+          "sourceSha256": "40be47beb50a47ecef932c2c29f3ee1bb58755b7471dcd71801376092594a0b2"
+        },
+        {
+          "file": "ReasLib/ConsensusADMM/Period48/FixedPolytopes.lean",
+          "kind": "theorem",
+          "line": 530,
+          "module": "glowinski_admm_counterexample.ReasLib.ConsensusADMM.Period48.FixedPolytopes",
+          "name": "ConsensusADMM.Period48.FixedPolytopes.firstSupports_zero_iff",
+          "sourceSha256": "40be47beb50a47ecef932c2c29f3ee1bb58755b7471dcd71801376092594a0b2"
+        },
+        {
+          "file": "ReasLib/ConsensusADMM/Period48/FixedPolytopes.lean",
+          "kind": "theorem",
+          "line": 69,
+          "module": "glowinski_admm_counterexample.ReasLib.ConsensusADMM.Period48.FixedPolytopes",
+          "name": "ConsensusADMM.Period48.FixedPolytopes.xSet_ySet_isCompactConvexPolytope",
+          "sourceSha256": "40be47beb50a47ecef932c2c29f3ee1bb58755b7471dcd71801376092594a0b2"
         }
       ],
-      "label": "Proposition 4.1.4",
-      "line": 9,
-      "proofDependencies": [
-        "lemma-5-1-1",
-        "proposition-4-1-6"
-      ],
-      "section": "section-4",
-      "statement": "Proposition 4.1.4 (1): the canonical positive-semidefinite square-root map\nconverts the standard Euclidean pairing into a matrix-linear Gram pairing.\n\nProposition 4.1.4 (2): for fixed coefficient vectors, the Gram support\nfunctional is linear in the matrix argument.\n\nProposition 4.1.4 (3): simultaneous cyclic invariance makes the three\nindependent Gram blocks circulant, while positive semidefiniteness identifies\nthe fourth block as the transpose of the mixed block.\n\nProposition 4.1.4 (4): finite semidefinite feasibility is equivalent to\nthe projection-cycle conditions for the two fixed convex hulls under the\ncanonical square-root realization.",
-      "statementDependencies": [],
-      "title": "Proposition 4.1.4",
-      "type": "Proposition"
-    },
-    {
-      "declaration": "ConsensusADMM.Period48.gramMatrix",
       "dependencies": [
-        "notation-9-1-1"
+        "lemma-4-1"
       ],
       "dependencyEvidence": "compiled",
-      "file": "GlowinskiADMM/definition_4_1_5.lean",
-      "id": "definition-4-1-5",
+      "file": "ReasLib/ConsensusADMM/Period48/FixedPolytopes.lean",
+      "id": "proposition-4-3",
       "interfaceDeclarations": [
-        "ConsensusADMM.Period48.gramMatrix",
-        "ConsensusADMM.Period48.gammaZero",
-        "ConsensusADMM.Period48.sigma",
-        "ConsensusADMM.Period48.alternating",
-        "ConsensusADMM.Period48.perturbationVector",
-        "ConsensusADMM.Period48.gramMatrix_isSymm",
-        "ConsensusADMM.Period48.alternatingSupport_odd",
-        "ConsensusADMM.Period48.alternatingSupport_even",
-        "ConsensusADMM.Period48.alternatingOriginSupport_eq",
-        "ConsensusADMM.Period48.integerMatrix"
-      ],
-      "interfaces": [
-        {
-          "file": "GlowinskiADMM/definition_4_1_5.lean",
-          "label": "Definition 4.1.5"
-        }
-      ],
-      "label": "Definition 4.1.5",
-      "line": 9,
-      "proofDependencies": [
-        "notation-9-1-1"
-      ],
-      "section": "section-4",
-      "statement": "Definition 4.1.5: the exact period-48 constants, alternating vector, rank-one\nperturbation of the integer matrix, and its parity-dependent support contributions.",
-      "statementDependencies": [],
-      "title": "Definition 4.1.5",
-      "type": "Definition"
-    },
-    {
-      "declaration": "ConsensusADMM.Period48.FixedPolytopes.gramMatrix_posDef",
-      "dependencies": [
-        "algorithm-9-1-2",
-        "algorithm-9-1-3",
-        "definition-4-1-5",
-        "lemma-4-1-2",
-        "notation-9-1-1"
-      ],
-      "dependencyEvidence": "compiled",
-      "file": "GlowinskiADMM/proposition_4_1_6.lean",
-      "id": "proposition-4-1-6",
-      "interfaceDeclarations": [
-        "ConsensusADMM.Period48.FixedPolytopes.gramMatrix_posDef",
-        "ConsensusADMM.Period48.gramMatrix",
-        "ConsensusADMM.Period48.Realization.eta",
-        "ConsensusADMM.Period48.Realization.w",
-        "ConsensusADMM.Period48.Realization.rho",
-        "ConsensusADMM.Period48.Realization.xi",
-        "ConsensusADMM.Period48.Realization.nu",
-        "ConsensusADMM.Period48.Realization.xSet",
-        "ConsensusADMM.Period48.Realization.ySet",
-        "ConsensusADMM.Period48.Realization.residual_eq",
-        "ConsensusADMM.ProjectionCycle.residual",
-        "ConsensusADMM.Period48.Realization.xVertex_eq",
-        "ConsensusADMM.ProjectionCycle.xVertex",
-        "ConsensusADMM.Period48.Realization.firstNormal_eq",
-        "ConsensusADMM.ProjectionCycle.firstNormal",
-        "ConsensusADMM.Period48.Realization.secondNormal_eq",
-        "ConsensusADMM.ProjectionCycle.secondNormal",
-        "ConsensusADMM.Period48.FixedPolytopes.xSet_ySet_eq",
-        "ConsensusADMM.criticalFactor",
-        "ConsensusADMM.ProjectionCycle.xSet",
-        "ConsensusADMM.ProjectionCycle.ySet",
         "ConsensusADMM.Period48.FixedPolytopes.isProjectionCycle",
-        "ConsensusADMM.IsProjectionCycle",
+        "ConsensusADMM.Period48.FixedPolytopes.gramMatrix_posDef",
+        "ConsensusADMM.Period48.FixedPolytopes.xSet_ySet_eq",
         "ConsensusADMM.Period48.FixedPolytopes.trajectory_exactPeriod",
-        "ConsensusADMM.IsTrajectory",
-        "ConsensusADMM.extendedIndicator",
-        "ConsensusADMM.ProjectionCycle.xSequence",
-        "ConsensusADMM.ProjectionCycle.ySequence",
-        "ConsensusADMM.ProjectionCycle.dualSequence",
-        "ConsensusADMM.HasExactPeriod",
         "ConsensusADMM.Period48.FixedPolytopes.constantPositiveResidual",
         "ConsensusADMM.Period48.FixedPolytopes.secondSupports_strict",
         "ConsensusADMM.Period48.FixedPolytopes.firstSupports_zero_iff",
-        "ConsensusADMM.Period48.FixedPolytopes.xSet_ySet_isCompactConvexPolytope",
-        "ConsensusADMM.IsCompactConvexPolytope"
+        "ConsensusADMM.Period48.FixedPolytopes.xSet_ySet_isCompactConvexPolytope"
       ],
-      "interfaces": [
-        {
-          "file": "GlowinskiADMM/proposition_4_1_6.lean",
-          "label": "Proposition 4.1.6"
-        }
-      ],
-      "label": "Proposition 4.1.6",
-      "line": 11,
+      "label": "Proposition 4.3",
+      "line": 210,
+      "module": "glowinski_admm_counterexample.ReasLib.ConsensusADMM.Period48.FixedPolytopes",
       "proofDependencies": [
-        "algorithm-9-1-2",
-        "algorithm-9-1-3",
-        "definition-4-1-5",
-        "lemma-4-1-2",
-        "notation-9-1-1"
+        "lemma-4-1"
       ],
       "section": "section-4",
-      "statement": "Proposition 4.1.6 (1): the explicit period-48 Gram matrix H = 2K - I₉₆ + 3hhᵀ is positive definite.\n\nProposition 4.1.6 (2): the realized cycle data η_i = S e_i, w_i = γ₀⁻¹ S e_{48+i}, ρ_i = w_i - w_{i-1}, ξ_i = η_i + ρ_i, the multiplier vertices ν_i(γ) = γ w_i, and the two hulls.\n\nProposition 4.1.6, normal formulas: aᵢ(γ) = ηᵢ₋₁ - γ wᵢ₋₁ - ξᵢ and cᵢ(γ) = γ wᵢ₋₁ + ρᵢ.\n\nProposition 4.1.6 (3): the two convex hulls of the cycle are the fixed polytopes xSet S and ySet S on the critical half-line.\n\nProposition 4.1.6 (4): the realized families form a projection cycle for every Gram factor and every multiplier on the critical half-line.\n\nProposition 4.1.6 (5): the prescribed sequences are an indicator-objective consensus ADMM trajectory of exact period 48 on the critical half-line.\n\nProposition 4.1.6 (6): the residual norm is constant and positive on the critical half-line.\n\nProposition 4.1.6 (7): at the critical factor every second-block support against the origin or a nonself phase is strict.\n\nProposition 4.1.6 (8): first-block origin supports are strict, and among nonself phases equality occurs exactly at displacement -10.",
+      "statement": "The explicit period-48 Gram matrix is positive definite. Its realized hulls are the same compact convex polytopes for all factors at or above the critical factor and support exact period-48 trajectories with constant positive residual. At the critical factor the second block is strict, while the first-block nonself equality occurs exactly at displacement -10.",
       "statementDependencies": [],
-      "title": "Proposition 4.1.6",
+      "statementProvenance": "Reviewed summary of the revised manuscript; the separate Lean correspondence states the mapped proof components.",
+      "title": "A fixed pair of polytopes",
       "type": "Proposition"
     },
     {
+      "correspondence": "The first theorem constructs the strictified cycle with dimension and symmetry guarantees. The second proves the strict inequality for the uniform convergence endpoint.",
       "declaration": "ConsensusADMM.IsProjectionCycle.strictifyOneBlock",
-      "dependencies": [
-        "algorithm-1-1-1",
-        "definition-2-1-1",
-        "definition-2-1-5",
-        "lemma-4-1-2",
-        "proposition-4-1-3",
-        "proposition-4-1-6",
-        "theorem-2-1-3"
-      ],
-      "dependencyEvidence": "compiled",
-      "file": "GlowinskiADMM/lemma_5_1_1.lean",
-      "id": "lemma-5-1-1",
-      "interfaceDeclarations": [
-        "ConsensusADMM.IsProjectionCycle.strictifyOneBlock",
-        "ConsensusADMM.IsProjectionCycle",
-        "ConsensusADMM.ProjectionCycle.residual",
-        "ConsensusADMM.HasStrictBlock",
-        "ConsensusADMM.IsStrictProjectionCycle",
-        "ConsensusADMM.ProjectionCycle.HasOrthogonalCyclicSymmetry",
-        "ConsensusADMM.IsProjectionCycle.uniformConvergenceEndpoint_lt",
-        "ADMM.uniformConvergenceEndpoint"
-      ],
-      "interfaces": [
+      "declarationBindings": [
         {
-          "file": "GlowinskiADMM/lemma_5_1_1.lean",
-          "label": "Lemma 5.1.1"
+          "file": "ReasLib/Optimization/ADMM/ProjectionCycleStrictification.lean",
+          "kind": "theorem",
+          "line": 28,
+          "module": "glowinski_admm_counterexample.ReasLib.Optimization.ADMM.ProjectionCycleStrictification",
+          "name": "ConsensusADMM.IsProjectionCycle.strictifyOneBlock",
+          "sourceSha256": "0e2695d9927fc62a14ac11c4378486cc040e9915fdb1a8a1c8c1d2bc22b0f733"
         },
         {
-          "file": "GlowinskiADMM/lemma_5_1_2.lean",
-          "label": "Lemma 5.1.2"
-        },
-        {
-          "file": "GlowinskiADMM/lemma_5_1_3.lean",
-          "label": "Lemma 5.1.3"
+          "file": "ReasLib/Optimization/ADMM/ProjectionCycleStrictification.lean",
+          "kind": "theorem",
+          "line": 92,
+          "module": "glowinski_admm_counterexample.ReasLib.Optimization.ADMM.ProjectionCycleStrictification",
+          "name": "ConsensusADMM.IsProjectionCycle.uniformConvergenceEndpoint_lt",
+          "sourceSha256": "0e2695d9927fc62a14ac11c4378486cc040e9915fdb1a8a1c8c1d2bc22b0f733"
         }
       ],
-      "label": "Lemma 5.1.1 / Lemma 5.1.2 / Lemma 5.1.3",
-      "line": 10,
+      "dependencies": [
+        "lemma-4-1"
+      ],
+      "dependencyEvidence": "compiled",
+      "file": "ReasLib/Optimization/ADMM/ProjectionCycleStrictification.lean",
+      "id": "lemma-5-1",
+      "interfaceDeclarations": [
+        "ConsensusADMM.IsProjectionCycle.strictifyOneBlock",
+        "ConsensusADMM.IsProjectionCycle.uniformConvergenceEndpoint_lt"
+      ],
+      "label": "Lemma 5.1",
+      "line": 28,
+      "module": "glowinski_admm_counterexample.ReasLib.Optimization.ADMM.ProjectionCycleStrictification",
       "proofDependencies": [
-        "algorithm-1-1-1",
-        "definition-2-1-1",
-        "definition-2-1-5",
-        "lemma-4-1-2",
-        "proposition-4-1-3",
-        "proposition-4-1-6",
-        "theorem-2-1-3"
+        "lemma-4-1"
       ],
       "section": "section-5",
-      "statement": "Lemma 5.1.1 (1): strictification of a projection cycle with one strict block.\n\nLemma 5.1.1 (2): the uniform-convergence endpoint lies strictly below the cycle factor.\n\nLemma 5.1.2 (1): a nontrivial projection cycle with one strict block can be\nstrictified in dimension at most `2 * N`, while preserving orthogonal cyclic symmetry.\n\nLemma 5.1.2 (2): a nontrivial projection cycle with one strict block lies\nstrictly above the uniform-convergence endpoint.\n\nLemma 5.1.3 (1): strictification of a projection cycle with one strict block.\n\nLemma 5.1.3 (2): the uniform-convergence endpoint lies strictly below the cycle factor.",
+      "statement": "For 0 < gamma < 2, a projection cycle with nonzero residual and one strict block admits a cycle at the same factor in dimension at most 2N, with nonzero residual and both blocks strict. Orthogonal cyclic symmetry is preserved when present. Moreover Gamma* < gamma.",
       "statementDependencies": [],
-      "title": "Lemma 5.1.1 / Lemma 5.1.2 / Lemma 5.1.3",
+      "statementProvenance": "Reviewed summary of the revised manuscript; the separate Lean correspondence states the mapped proof components.",
+      "title": "Strict support inequalities in both blocks",
       "type": "Lemma"
     },
     {
+      "correspondence": "The actual realization theorem gives the same dimension and factor, the prescribed orbit and its minimal period, globally unique block minimizers, positive constant objective, and unique origin KKT triple.",
       "declaration": "ConsensusADMM.IsStrictProjectionCycle.smoothStronglyConvexRealization",
+      "declarationBindings": [
+        {
+          "file": "GlowinskiADMM/lemma_5_1_4.lean",
+          "kind": "theorem",
+          "line": 21,
+          "module": "glowinski_admm_counterexample.GlowinskiADMM.lemma_5_1_4",
+          "name": "ConsensusADMM.IsStrictProjectionCycle.smoothStronglyConvexRealization",
+          "sourceSha256": "7d2963330657d273e3167cd20c24ff8466bb784d93e2920beb4db70f91edd6f9"
+        }
+      ],
       "dependencies": [
-        "lemma-4-1-2",
-        "lemma-5-1-1",
-        "proposition-4-1-3",
-        "proposition-4-1-6",
-        "theorem-2-1-3"
+        "lemma-4-1"
       ],
       "dependencyEvidence": "compiled",
       "file": "GlowinskiADMM/lemma_5_1_4.lean",
-      "id": "lemma-5-1-4",
+      "id": "lemma-5-2",
       "interfaceDeclarations": [
         "ConsensusADMM.IsStrictProjectionCycle.smoothStronglyConvexRealization"
       ],
-      "interfaces": [
-        {
-          "file": "GlowinskiADMM/lemma_5_1_4.lean",
-          "label": "Lemma 5.1.4"
-        },
-        {
-          "file": "GlowinskiADMM/lemma_5_1_5.lean",
-          "label": "Lemma 5.1.5"
-        }
-      ],
-      "label": "Lemma 5.1.4 / Lemma 5.1.5",
-      "line": 15,
+      "label": "Lemma 5.2",
+      "line": 21,
+      "module": "glowinski_admm_counterexample.GlowinskiADMM.lemma_5_1_4",
       "proofDependencies": [
-        "lemma-4-1-2",
-        "lemma-5-1-1",
-        "proposition-4-1-3",
-        "proposition-4-1-6",
-        "theorem-2-1-3"
+        "lemma-4-1"
       ],
       "section": "section-5",
-      "statement": "Lemma 5.1.4: strict finite projection-cycle data with a nonzero residual admit\nsmooth strongly convex objectives whose unit-penalty consensus ADMM trajectory is the\nprescribed cycle with its exact minimal period, positive constant trajectory value,\nglobally unique block minimizers, unique KKT triple `(0, 0, 0)`, and optimal value zero.\n\nLemma 5.1.5: strict finite projection-cycle data with a nonzero residual admit\nsmooth strongly convex real objectives whose unit-penalty consensus ADMM trajectory\nreproduces the prescribed cycle and its exact minimal period, has positive constant\nobjective value and globally unique block minimizers, and has `(0, 0, 0)` as its\nunique KKT triple with optimal value zero.",
-      "statementDependencies": [
-        "lemma-4-1-2",
-        "lemma-5-1-1",
-        "proposition-4-1-3",
-        "theorem-2-1-3"
-      ],
-      "title": "Lemma 5.1.4 / Lemma 5.1.5",
+      "statement": "Strict finite projection-cycle data in dimension d with a nonzero residual admit finite strongly convex objectives on the same space with globally Lipschitz gradients that realize the prescribed ADMM orbit at the same factor. The objective is a positive constant along the orbit and the origin is the unique KKT triple with value zero.",
+      "statementDependencies": [],
+      "statementProvenance": "Reviewed summary of the revised manuscript; the separate Lean correspondence states the mapped proof components.",
+      "title": "Smooth strongly convex realization",
       "type": "Lemma"
     },
     {
-      "declaration": "ADMM.FiniteMemory.Reconstruction.RationalCase",
-      "dependencies": [
-        "definition-3-1-4",
-        "notation-3-1-6"
-      ],
-      "dependencyEvidence": "compiled",
-      "file": "GlowinskiADMM/definition_8_1_1.lean",
-      "id": "definition-8-1-1",
-      "interfaceDeclarations": [
-        "ADMM.FiniteMemory.Reconstruction.RationalCase",
-        "ADMM.FiniteMemory.Reconstruction.RationalCase.ofNumerators",
-        "ADMM.FiniteMemory.Reconstruction.reconstructMu",
-        "ADMM.FiniteMemory.Reconstruction.reconstructMu_diag",
-        "ADMM.FiniteMemory.Reconstruction.reconstructMu_balance",
-        "ADMM.FiniteMemory.Reconstruction.supplyMatrix",
-        "ADMM.FiniteMemory.Reconstruction.supplyMatrix_quadratic",
-        "ADMM.FiniteMemory.Reconstruction.storageMatrix",
-        "ADMM.FiniteMemory.Reconstruction.storageMatrix_mul_constantModes",
-        "ADMM.FiniteMemory.Reconstruction.descentMatrix",
-        "ADMM.FiniteMemory.Reconstruction.descentMatrix_quadratic",
-        "ADMM.FiniteMemory.Reconstruction.lowerMatrix",
-        "ADMM.FiniteMemory.Reconstruction.lowerMatrix_quadratic",
-        "ADMM.FiniteMemory.Reconstruction.ldl",
-        "ADMM.FiniteMemory.Reconstruction.PositivePivots",
-        "ADMM.FiniteMemory.Reconstruction.ldl_unitDiagonal",
-        "ADMM.FiniteMemory.Reconstruction.ldl_pivot",
-        "ADMM.FiniteMemory.Reconstruction.ldl_lower",
-        "ADMM.FiniteMemory.Reconstruction.ldl_factorization",
-        "ADMM.FiniteMemory.Reconstruction.posSemidef_of_positivePivots",
-        "ADMM.FiniteMemory.Reconstruction.posSemidef_of_kernel_and_principalPivots",
-        "ADMM.FiniteMemory.Reconstruction.Valid",
-        "ADMM.FiniteMemory.Reconstruction.cast_descentMatrix",
-        "ADMM.FiniteMemory.Reconstruction.cast_lowerMatrix",
-        "ADMM.FiniteMemory.Reconstruction.endpointDescent_posSemidef",
-        "ADMM.FiniteMemory.Reconstruction.endpointLower_posSemidef",
-        "ADMM.FiniteMemory.Reconstruction.intervalDescentMatrix_eq_affine",
-        "ADMM.FiniteMemory.Reconstruction.intervalLowerMatrix_eq_affine",
-        "ADMM.FiniteMemory.Reconstruction.intervalDescent_posSemidef",
-        "ADMM.FiniteMemory.Reconstruction.intervalLower_posSemidef",
-        "ADMM.FiniteMemory.Reconstruction.toEndpointCertificate",
-        "ADMM.FiniteMemory.Reconstruction.toIntervalCertificate"
-      ],
-      "interfaces": [
-        {
-          "file": "GlowinskiADMM/definition_8_1_1.lean",
-          "label": "Definition 8.1.1"
-        }
-      ],
-      "label": "Definition 8.1.1",
-      "line": 9,
-      "proofDependencies": [
-        "definition-3-1-4",
-        "notation-3-1-6"
-      ],
-      "section": "section-8",
-      "statement": "Definition 8.1.1 (1): exact rational cases store the common coefficients,\nlag tables, packed interpolation weights, endpoint parameters, and packed endpoint blocks.\n\nDefinition 8.1.1 (2): the packed interpolation data reconstruct all weights,\nincluding zero diagonals and the omitted origin column satisfying value balance.\n\nDefinition 8.1.1 (3): exact supply matrices and endpoint principal blocks determine\nthe completed storage matrices through their action on constant histories.\n\nDefinition 8.1.1 (4): the exact descent and lower matrices are checked by the\ndisplayed unpivoted `LDLᵀ` recurrence and its strict rational pivot bounds.\n\nDefinition 8.1.1 (5): valid endpoint checks produce canonical finite-memory\ncertificates throughout the closed interval by affine interpolation of `P`.",
-      "statementDependencies": [
-        "definition-3-1-4"
-      ],
-      "title": "Definition 8.1.1",
-      "type": "Definition"
-    },
-    {
-      "declaration": "ConsensusADMM.Period48.integerMatrix",
-      "dependencies": [],
-      "dependencyEvidence": "compiled",
-      "file": "GlowinskiADMM/notation_9_1_1.lean",
-      "id": "notation-9-1-1",
-      "interfaceDeclarations": [
-        "ConsensusADMM.Period48.integerMatrix",
-        "ConsensusADMM.Period48.circulant",
-        "ConsensusADMM.Period48.circulant_apply",
-        "ConsensusADMM.Period48.p",
-        "ConsensusADMM.Period48.q",
-        "ConsensusADMM.Period48.c",
-        "ConsensusADMM.Period48.p_reflect",
-        "ConsensusADMM.Period48.q_reflect",
-        "ConsensusADMM.Period48.integerMatrix_apply",
-        "ConsensusADMM.Period48.integerMatrix_transpose"
-      ],
-      "interfaces": [
-        {
-          "file": "GlowinskiADMM/notation_9_1_1.lean",
-          "label": "Notation 9.1.1"
-        }
-      ],
-      "label": "Notation 9.1.1",
-      "line": 10,
-      "proofDependencies": [],
-      "section": "section-9",
-      "statement": "Notation 9.1.1: the unscaled integer matrix `K` uses the period-48 convention\n`Circ(t) i j = t (j - i)`, the displayed rows `p`, `q`, and `c`, and blocks\n`Circ(p)`, `Circ(c)`, `Circ(c)ᵀ`, and `Circ(q)`, with no scaling.",
-      "statementDependencies": [],
-      "title": "Notation 9.1.1",
-      "type": "Notation"
-    },
-    {
-      "declaration": "ConsensusADMM.Period48.j0",
-      "dependencies": [
-        "notation-9-1-1"
-      ],
-      "dependencyEvidence": "compiled",
-      "file": "GlowinskiADMM/algorithm_9_1_2.lean",
-      "id": "algorithm-9-1-2",
-      "interfaceDeclarations": [
-        "ConsensusADMM.Period48.j0",
-        "ConsensusADMM.Period48.j0_apply",
-        "ConsensusADMM.Period48.j0_blocks",
-        "ConsensusADMM.Period48.j0_isSymm",
-        "ConsensusADMM.Period48.FractionFree.stage",
-        "ConsensusADMM.Period48.FractionFree.previousPivot",
-        "ConsensusADMM.Period48.FractionFree.pivot",
-        "ConsensusADMM.Period48.FractionFree.principal",
-        "ConsensusADMM.Period48.FractionFree.stage_zero",
-        "ConsensusADMM.Period48.FractionFree.stage_succ_apply",
-        "ConsensusADMM.Period48.FractionFree.previousPivot_zero",
-        "ConsensusADMM.Period48.FractionFree.previousPivot_succ",
-        "ConsensusADMM.Period48.FractionFree.pivot_apply",
-        "ConsensusADMM.Period48.FractionFree.principal_apply",
-        "ConsensusADMM.Period48.FractionFree.previousPivot_dvd_update",
-        "ConsensusADMM.Period48.FractionFree.pivot_eq_det",
-        "ConsensusADMM.Period48.FractionFree.one_le_pivot",
-        "ConsensusADMM.Period48.j0_posDef"
-      ],
-      "interfaces": [
-        {
-          "file": "GlowinskiADMM/algorithm_9_1_2.lean",
-          "label": "Algorithm 9.1.2"
-        }
-      ],
-      "label": "Algorithm 9.1.2",
-      "line": 14,
-      "proofDependencies": [
-        "notation-9-1-1"
-      ],
-      "section": "section-9",
-      "statement": "Algorithm 9.1.2: for J₀ = 2K - I₉₆ with K the period-48 two-block integer\nmatrix, fraction-free elimination starts from B⁽⁰⁾ = J₀ and b₋₁ = 1, and for\nk = 0,…,94 updates the trailing entries by\nB⁽ᵏ⁺¹⁾ᵢⱼ = (b_k · B⁽ᵏ⁾ᵢⱼ - B⁽ᵏ⁾ᵢₖ · B⁽ᵏ⁾ₖⱼ) / b_{k-1} with b_k = B⁽ᵏ⁾ₖₖ,\nwhere each division is exact in ℤ. The 96 leading principal determinants are\nb_0,…,b_94, B⁽⁹⁵⁾₉₅,₉₅, each at least 1, so Sylvester's criterion gives J₀ ≻ 0.",
-      "statementDependencies": [
-        "notation-9-1-1"
-      ],
-      "title": "Algorithm 9.1.2",
-      "type": "Algorithm"
-    },
-    {
-      "declaration": "ConsensusADMM.Period48.Coefficient.support",
-      "dependencies": [
-        "definition-4-1-5",
-        "notation-9-1-1"
-      ],
-      "dependencyEvidence": "compiled",
-      "file": "GlowinskiADMM/algorithm_9_1_3.lean",
-      "id": "algorithm-9-1-3",
-      "interfaceDeclarations": [
-        "ConsensusADMM.Period48.Coefficient.support",
-        "ConsensusADMM.Period48.Coefficient.eta",
-        "ConsensusADMM.Period48.Coefficient.nu",
-        "ConsensusADMM.Period48.Coefficient.w",
-        "ConsensusADMM.Period48.Coefficient.rho",
-        "ConsensusADMM.Period48.Coefficient.xi",
-        "ConsensusADMM.Period48.Coefficient.firstNormal",
-        "ConsensusADMM.Period48.Coefficient.secondNormal",
-        "ConsensusADMM.Period48.Coefficient.vertex",
-        "ConsensusADMM.Period48.Coefficient.normal",
-        "ConsensusADMM.Period48.Coefficient.testVector",
-        "ConsensusADMM.Period48.Coefficient.supportAtCritical",
-        "ConsensusADMM.Period48.Coefficient.supportSlope",
-        "ConsensusADMM.Period48.Coefficient.support_def",
-        "ConsensusADMM.Period48.Coefficient.supportCyclic",
-        "ConsensusADMM.Period48.Coefficient.phaseZeroTest_card",
-        "ConsensusADMM.Period48.Coefficient.supportTest_card",
-        "ConsensusADMM.Period48.Coefficient.support_affine",
-        "ConsensusADMM.Period48.Coefficient.firstSlopeBound",
-        "ConsensusADMM.Period48.Coefficient.secondSlopeBound",
-        "ConsensusADMM.Period48.Coefficient.firstValueBound",
-        "ConsensusADMM.Period48.Coefficient.secondValueBound",
-        "ConsensusADMM.Period48.Coefficient.activeSupport",
-        "ConsensusADMM.Period48.Coefficient.allSupportsNonneg",
-        "ConsensusADMM.Period48.Coefficient.support_nonneg_iff_pairing",
-        "ConsensusADMM.Period48.Coefficient.support_eq_inner",
-        "ConsensusADMM.Period48.gramMatrix",
-        "ConsensusADMM.Period48.gammaZero",
-        "ConsensusADMM.criticalFactor"
-      ],
-      "interfaces": [
-        {
-          "file": "GlowinskiADMM/algorithm_9_1_3.lean",
-          "label": "Algorithm 9.1.3"
-        }
-      ],
-      "label": "Algorithm 9.1.3",
-      "line": 18,
-      "proofDependencies": [
-        "definition-4-1-5",
-        "notation-9-1-1"
-      ],
-      "section": "section-9",
-      "statement": "Algorithm 9.1.3: for the support tests, form `H = 2K - I₉₆ + 3hhᵀ` by eq:H,\nwork with the coefficient vectors `ηᵢ = eᵢ` and `wᵢ = e₄₈₊ᵢ / γ₀`, and interpret\nevery inner product as `zᵀHw`. Set `ρᵢ = wᵢ - wᵢ₋₁`, `ξᵢ = ηᵢ + ρᵢ`, and use the\naffine normals `aᵢ(γ) = ηᵢ₋₁ - γ wᵢ₋₁ - ξᵢ` and `cᵢ(γ) = γ wᵢ₋₁ + ρᵢ` of Proposition\nprop:fixed. At phase zero the support is evaluated against the origin and against\nevery other phase, for both blocks. These `96` rational affine expressions give\nall `4608` supports by cyclic shifts; their slopes and endpoint values satisfy\nTable 2 and the single exceptional expression is eq:active, so the displayed\ninputs determine every check needed for Proposition prop:fixed.",
-      "statementDependencies": [],
-      "title": "Algorithm 9.1.3",
-      "type": "Algorithm"
-    },
-    {
+      "correspondence": "The combined existence theorem supplies both objective pairs, exact trajectory and geometric-growth formulas, finite polyhedral/quadratic representations and unique finite block minimizers. Its compatibility source name finite_objectives_and_growth is retained.",
       "declaration": "ConsensusADMM.IsStrictProjectionCycle.finiteObjectivesAndGrowth",
+      "declarationBindings": [
+        {
+          "file": "GlowinskiADMM/finite_objectives_and_growth.lean",
+          "kind": "theorem",
+          "line": 40,
+          "module": "glowinski_admm_counterexample.GlowinskiADMM.finite_objectives_and_growth",
+          "name": "ConsensusADMM.IsStrictProjectionCycle.finiteObjectivesAndGrowth",
+          "sourceSha256": "f4e44f93a05cadb3165123e2a719fe312f89f99da8aec225d3c8586ca05fa234"
+        }
+      ],
       "dependencies": [
-        "lemma-4-1-2",
-        "lemma-5-1-1",
-        "proposition-4-1-3",
-        "proposition-4-1-6",
-        "theorem-2-1-3"
+        "lemma-4-1"
       ],
       "dependencyEvidence": "compiled",
       "file": "GlowinskiADMM/finite_objectives_and_growth.lean",
-      "id": "proposition-finite",
+      "id": "proposition-5-3",
       "interfaceDeclarations": [
         "ConsensusADMM.IsStrictProjectionCycle.finiteObjectivesAndGrowth"
       ],
-      "interfaces": [
+      "label": "Proposition 5.3",
+      "line": 40,
+      "module": "glowinski_admm_counterexample.GlowinskiADMM.finite_objectives_and_growth",
+      "proofDependencies": [
+        "lemma-4-1"
+      ],
+      "section": "section-5",
+      "statement": "Suppose a projection cycle has nonzero residual, strict supports in both blocks and an orthogonal map advancing both vertex families. At the same factor, one pair of finite closed convex piecewise-quadratic objectives realizes the cycle with positive constant objective. Another such pair gives residual c_r chi^k and objective c_f chi^(2k), for positive constants and chi > 1. Both pairs have the origin as a zero-valued KKT triple.",
+      "statementDependencies": [],
+      "statementProvenance": "Reviewed summary of the revised manuscript; the separate Lean correspondence states the mapped proof components.",
+      "title": "Piecewise-quadratic realizations",
+      "type": "Proposition"
+    },
+    {
+      "correspondence": "The closed analytic implication establishes the discount membership, coercivity and boundary estimates rather than assuming them. The additional linked theorem proves the tilted objective limits relative to every KKT anchor fixed before the trajectory.",
+      "declaration": "ADMM.UpdatedTargets.unitCircleConvergence",
+      "declarationBindings": [
         {
-          "file": "GlowinskiADMM/finite_objectives_and_growth.lean",
-          "label": "Proposition prop:finite"
+          "file": "GlowinskiADMM/UnitCircleConvergence.lean",
+          "kind": "theorem",
+          "line": 20,
+          "module": "glowinski_admm_counterexample.GlowinskiADMM.UnitCircleConvergence",
+          "name": "ADMM.UpdatedTargets.unitCircleConvergence",
+          "sourceSha256": "8c52039221b70239a59a1f020e49a1212dabe2fc5a41bfc49175348269beb2a2"
+        },
+        {
+          "file": "GlowinskiADMM/UnitCircleTiltedValues.lean",
+          "kind": "theorem",
+          "line": 27,
+          "module": "glowinski_admm_counterexample.GlowinskiADMM.UnitCircleTiltedValues",
+          "name": "ADMM.FiniteMemory.ReducedTrajectory.circle_fixedAnchor_tiltedValues",
+          "sourceSha256": "eb7a1119faafd33653aa6a39f889ce56a9c05aacba0ea696224f8e803f428ff8"
         }
       ],
-      "label": "Proposition prop:finite",
-      "line": 34,
+      "dependencies": [],
+      "dependencyEvidence": "compiled",
+      "file": "GlowinskiADMM/UnitCircleConvergence.lean",
+      "id": "lemma-c-1",
+      "interfaceDeclarations": [
+        "ADMM.UpdatedTargets.unitCircleConvergence",
+        "ADMM.FiniteMemory.ReducedTrajectory.circle_fixedAnchor_tiltedValues"
+      ],
+      "label": "Lemma C.1",
+      "line": 20,
+      "module": "glowinski_admm_counterexample.GlowinskiADMM.UnitCircleConvergence",
+      "proofDependencies": [],
+      "section": "section-C",
+      "statement": "For a reduced convex problem with a KKT triple, fix 1 < gamma < 2 and nonnegative lag weights of integer length ell >= 1 with equal block first moments and positive origin and residual margins. If the Hermitian symbol satisfies Q_1(z) >= kappa |1 - z^(-1)|^2 I on the entire unit circle for some kappa > 0, every reduced trajectory from every initial state converges to a fixed point, its residual tends to zero and both tilted objective values tend to zero.",
+      "statementDependencies": [],
+      "statementProvenance": "Reviewed summary of the revised manuscript; the separate Lean correspondence states the mapped proof components.",
+      "title": "Convergence from a unit-circle bound",
+      "type": "Lemma"
+    },
+    {
+      "correspondence": "The closed concrete lower-circle theorem connects the actual weights, divisions and determinant polynomials to fully covered positivity certificates and returns a positive continuation delta. This is an unnumbered appendix certificate, not an additional numbered lemma.",
+      "declaration": "ADMM.UpdatedTargets.lowerCircleCertificate",
+      "declarationBindings": [
+        {
+          "file": "GlowinskiADMM/RefinedLowerCertificate.lean",
+          "kind": "theorem",
+          "line": 28,
+          "module": "glowinski_admm_counterexample.GlowinskiADMM.RefinedLowerCertificate",
+          "name": "ADMM.UpdatedTargets.lowerCircleCertificate",
+          "sourceSha256": "f5f78259e73617e585e3efb6a132d9144b09c8b4cdd800e2ddf6365077f4fba6"
+        }
+      ],
+      "dependencies": [],
+      "dependencyEvidence": "compiled",
+      "file": "GlowinskiADMM/RefinedLowerCertificate.lean",
+      "id": "appendix-c-2",
+      "interfaceDeclarations": [
+        "ADMM.UpdatedTargets.lowerCircleCertificate"
+      ],
+      "label": "Appendix C.2",
+      "line": 28,
+      "module": "glowinski_admm_counterexample.GlowinskiADMM.RefinedLowerCertificate",
+      "proofDependencies": [],
+      "section": "section-C",
+      "statement": "The exact 256-lag rational data, with epsilon = kappa = 1e-14, satisfy the unit-circle bound for every factor from 377/200 through L and on a positive extension beyond L. Laurent divisions have zero remainder and the Bernstein tests cover the entire real frequency interval, including the zero-frequency quotient at z = 1. The strict extension preserves the same kappa.",
+      "statementDependencies": [],
+      "statementProvenance": "Reviewed summary of the revised manuscript; the separate Lean correspondence states the mapped proof components.",
+      "title": "Verification of the lower bound",
+      "type": "Certificate"
+    },
+    {
+      "correspondence": "The closed upper theorem uses the actual normalized Fourier orbit, root enclosures, Gram bounds and strict supports. The final endpoint inequality has no unproved numerical-certificate premise. This is the unnumbered Appendix C.3 task.",
+      "declaration": "ADMM.UpdatedTargets.refinedUpperBound",
+      "declarationBindings": [
+        {
+          "file": "GlowinskiADMM/UpdatedAssembly.lean",
+          "kind": "theorem",
+          "line": 176,
+          "module": "glowinski_admm_counterexample.GlowinskiADMM.UpdatedAssembly",
+          "name": "ADMM.UpdatedTargets.refinedUpperBound",
+          "sourceSha256": "36546317d3c81996eb2cbb8a7d22e7e419c8771edd575afad5392eec85e666b6"
+        }
+      ],
+      "dependencies": [
+        "lemma-5-1"
+      ],
+      "dependencyEvidence": "compiled",
+      "file": "GlowinskiADMM/UpdatedAssembly.lean",
+      "id": "appendix-c-3",
+      "interfaceDeclarations": [
+        "ADMM.UpdatedTargets.refinedUpperBound"
+      ],
+      "label": "Appendix C.3",
+      "line": 176,
+      "module": "glowinski_admm_counterexample.GlowinskiADMM.UpdatedAssembly",
       "proofDependencies": [
-        "lemma-4-1-2",
-        "lemma-5-1-1",
-        "proposition-4-1-3",
-        "proposition-4-1-6",
-        "theorem-2-1-3"
+        "lemma-5-1"
       ],
-      "section": "section-finite",
-      "statement": "The paper's proposition `prop:finite`, including both fixed objective pairs:\nthe original periodic cycle and the perturbed phase rays with geometric growth.\nEach pair has unique finite block minimizers at every input, a zero-valued\norigin KKT triple, and the origin as a primal optimum.",
-      "statementDependencies": [
-        "lemma-4-1-2",
-        "lemma-5-1-1",
-        "proposition-4-1-3",
-        "theorem-2-1-3"
-      ],
-      "title": "Proposition prop:finite",
-      "type": "Proposition"
+      "section": "section-C",
+      "statement": "The 75 exact rational complex Fourier factors realize a 1024-phase orbit. Rational outward intervals certify all 2048 phase-zero strict supports and a positive residual at U. These strict inequalities persist at some positive factor below U, yielding Gamma* < U.",
+      "statementDependencies": [],
+      "statementProvenance": "Reviewed summary of the revised manuscript; the separate Lean correspondence states the mapped proof components.",
+      "title": "A periodic counterexample for the upper bound",
+      "type": "Certificate"
     }
   ],
   "project": {
     "branch": "v4.32.0",
-    "commit": "14bc30298cd39f63898a3e88c75b2977235fefe6",
+    "commit": "uncommitted-7e9e0937e54ca2a9f55f2f4cce3f9089566f18c500e0f755e94ae1fb80a787fa",
     "id": "glowinski_admm_counterexample",
     "kind": "papers",
+    "localSourceRoot": "../",
+    "paper": "https://arxiv.org/abs/2611.09169",
+    "publicationPending": true,
     "repository": "https://github.com/optpku/ReasBook",
     "sourceRoot": "ReasBook/Papers/glowinski_admm_counterexample/",
-    "title": "The multiplier step size of two-block ADMM: convergence and counterexamples"
+    "sourceSnapshotSha256": "7e9e0937e54ca2a9f55f2f4cce3f9089566f18c500e0f755e94ae1fb80a787fa",
+    "title": "The multiplier step size in classical two-block ADMM: convergence and counterexamples"
   },
   "schemaVersion": 2,
   "sections": [
     {
       "color": "#315fb5",
-      "id": "section-1",
-      "label": "Section 1",
-      "short": "Section 1",
+      "id": "section-2",
+      "label": "Section 2",
+      "short": "Section 2",
       "wash": "#e9effa"
     },
     {
       "color": "#23745d",
-      "id": "section-2",
-      "label": "Section 2",
-      "short": "Section 2",
+      "id": "section-3",
+      "label": "Section 3",
+      "short": "Section 3",
       "wash": "#e4f2ed"
     },
     {
       "color": "#a14d3d",
-      "id": "section-3",
-      "label": "Section 3",
-      "short": "Section 3",
+      "id": "section-4",
+      "label": "Section 4",
+      "short": "Section 4",
       "wash": "#f8eae6"
     },
     {
       "color": "#9a6a12",
-      "id": "section-4",
-      "label": "Section 4",
-      "short": "Section 4",
+      "id": "section-5",
+      "label": "Section 5",
+      "short": "Section 5",
       "wash": "#fbf1d8"
     },
     {
       "color": "#7654a6",
-      "id": "section-5",
-      "label": "Section 5",
-      "short": "Section 5",
+      "id": "section-C",
+      "label": "Appendix C",
+      "short": "Appendix C",
       "wash": "#eee8f8"
-    },
-    {
-      "color": "#28768a",
-      "id": "section-8",
-      "label": "Section 8",
-      "short": "Section 8",
-      "wash": "#e2f1f4"
-    },
-    {
-      "color": "#315fb5",
-      "id": "section-9",
-      "label": "Section 9",
-      "short": "Section 9",
-      "wash": "#e9effa"
-    },
-    {
-      "color": "#23745d",
-      "id": "section-finite",
-      "label": "Finite objectives",
-      "short": "Finite objectives",
-      "wash": "#e4f2ed"
     }
   ]
 }

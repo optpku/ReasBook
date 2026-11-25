@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "project": {
+    "id": "DFP_wolfe_local",
+    "title": "DFP 20251117 polar proof",
+    "kind": "papers",
+    "branch": "latest-20251117",
+    "commit": "97fe7b8f1a2fa524f9ce5588a4190603db93946c",
+    "repository": "https://github.com/imathwy/DFP_wolfe_local",
+    "sourceRoot": ""
+  },
+  "nodes": 13,
+  "edges": 19,
+  "generation": {
+    "mode": "curated-paper-numbered",
+    "rootModule": "DFPWolfe.Latest.Paper",
+    "curatedItemCount": 13,
+    "sourceInventoryItemCount": 13,
+    "sourceOnlyItemCount": 0,
+    "mergedItemCount": 13,
+    "dependencyCoverage": "reviewed-paper-dependencies",
+    "dependencyModel": "curated-paper-proof-v2",
+    "scope": "20251117-DFP/arXiv.tex; shared amsthm counter gives Lemmas 1–2, Proposition 3, Lemmas 4–9, Theorem 10, Corollary 11, Lemma 12 and Theorem 13.",
+    "sourceSnapshot": "97fe7b8f1a2fa524f9ce5588a4190603db93946c",
+    "manuscriptSha256": "2a22ecf8e12959dd584a11732ba1836319eb16dd583059c283e4513b3dbbbdca",
+    "numbering": "Shared theorem counter in source order; 13 theorem-like results.",
+    "edges": 19,
+    "nodes": 13
+  }
+}
