@@ -6,16 +6,22 @@ Authors: Zichen Wang
 module
 
 public import DFPWolfe.MP20251124.Results
+public import DFPWolfe.MP20251124.SingleStepLimit
+public import DFPWolfe.MP20251124.FixedCycle
+public import DFPWolfe.MP20251124.FixedRecurrence
 
 /-!
 # DFP counterexample — the 20251124 polar proof
 
-This export follows `20251124-DFP/MP.zip`.  Its shared theorem counter is
-Theorem 1, Theorem 2, Lemmas 3, 5–11, Corollary 12, Lemma 13, with the fixed
-construction recorded as Theorem 4.  The declarations in `Results` reuse the
-fully proved general polar infrastructure while keeping the paper's order and
-labels available to documentation and theorem-map tooling.
+The manuscript uses one counter for Theorems 1, 2 and 4, Lemmas 3 and 5–11,
+Corollary 12 and Lemma 13. `Results` contains the general counterexample,
+planar convergence, and the polar search criterion and uniqueness in Lemma 3.
+`SingleStepLimit.singleStepLimitMatrix` gives Lemma 5 for arbitrary gradient
+factors tending to one from the right in the scale parameter.
 
-The earlier center-manifold route, the October 2026 polar snapshot, and the
-20251117 polar route remain separate exports.
+`FixedRecurrence` implements the equal-angle recurrence and its scaled form.
+`FixedCycle` proves the fixed reference cycle, the restoring derivative and
+the transverse contraction at the reference point. The uniform nonlinear
+tube estimates, geometry and objective realization for this specific recurrence
+are still needed for Theorem 4.
 -/
