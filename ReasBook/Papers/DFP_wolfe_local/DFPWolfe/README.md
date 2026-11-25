@@ -1,21 +1,16 @@
 # Paper correspondence
 
-The current source archive is `20251124-DFP/MP.zip`.  Its paper-numbered
-interface is exported by [`DFPWolfe.MP20251124.Paper`](MP20251124/Paper.lean).
-The 20251117 route remains available as a separate `Latest` snapshot.
-
-The 20251124 source order is shown in the [paper-numbered DAG](../theorem-map/mp20251124/index.html?view=paper).  The paper-facing declarations are in
-[`MP20251124/Results.lean`](MP20251124/Results.lean) and preserve the paper's
-labels while reusing the general polar declarations.
-
-**Center-manifold proof:** [Verso](https://optpku.github.io/ReasBook/versions/v4.32.0/papers/dfp_wolfe_local/sections/main-theorems/) · [Documentation](https://optpku.github.io/ReasBook/versions/v4.32.0/docs/ReasBook/DFPWolfe/Paper.html) · [Theorem map](https://optpku.github.io/ReasBook/versions/v4.32.0/theorem-maps/papers/dfp_wolfe_local/?view=paper)
-
-Formalization contributor: Zichen Wang. See the [project roster](../README.md#contributor).
-
 The numbering below follows the shared theorem counter in `main-new.tex`:
 Theorems 1 and 3, Corollary 2, Proposition 4, and Lemmas 5–11.
 The LaTeX labels identify statements independently of their printed numbers.
 Import `DFPWolfe` (or `DFPWolfe.Paper`) to access all the results below.
+
+The 20251124 manuscript is exported separately through
+[`MP20251124/Paper.lean`](MP20251124/Paper.lean).  Its paper-numbered
+interface keeps the current general polar proofs and exposes the fixed
+construction, limiting map, continuation, geometry, interpolation, identity
+initialization, and planar degeneration under the manuscript's 13-result
+counter.
 
 Each numbered paper statement has its own `.lean` file directly in this
 directory. The first column links to that file; the last column links to the
@@ -71,6 +66,10 @@ definiteness, without assuming the DFP matrix update. Its zero-based Lean
 coefficient `lam k` corresponds to the paper's `λₖ₊₁`.
 
 ## Source organization
+
+`MP20251124/Results.lean` is the source-facing export for the latest
+`20251124-DFP/MP.zip` manuscript.  The older center-manifold, October 2026,
+and 20251117 polar routes remain available through their existing exports.
 
 `Main.lean` contains the public convergence and nonconvergence interfaces.
 `Paper.lean` imports all eleven numbered navigation files and preserves the

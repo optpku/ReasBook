@@ -64,15 +64,35 @@ theorem lemma3_matrixStep (p : Parameters) (hβ : 0 < p.beta)
   exact Parameters.matrix_step p hβ hstart k
 
 /-- Theorem 4 of `20251124-DFP/MP.zip`: the fixed `(1/4,1/2)` and
-`beta=1/2` construction is an instance of the fully retained planar source. -/
+`beta=1/2` construction exposes its actual objective, Wolfe orbit, and
+regularity certificate. -/
 theorem theorem4_concrete :
-    Nonempty (DFPWolfe.Latest.PlanarConstruction (1 / 4) (1 / 2) (1 / 2) (1 / 2)) := by
-  apply DFPWolfe.Latest.planarSource
-  · norm_num
-  · norm_num
-  · norm_num
-  · norm_num
-  · norm_num
+    ∃ s : DFPWolfe.Latest.PlanarConstruction (1 / 4) (1 / 2) (1 / 2) (1 / 2),
+      0 < s.supportScale ∧
+        s.sourceData.objectiveEstimates.contDiff ∧
+        s.sourceData.objectiveEstimates.hessian_bounds ∧
+        s.sourceData.objectiveEstimates.strongConvex ∧
+        s.sourceData.objectiveEstimates.hessian_holder ∧
+        s.sourceData.clusterSet = Metric.sphere 0 1 ∧
+        s.sourceData.gradientNorm_tendsto ∧
+        (∀ k, LineSearch.IsStrongWolfe (1 / 4) (1 / 2)
+          ((s.parameters.withStartIndex s.startIndex).objective s.supportScale)
+          ((s.parameters.withStartIndex s.startIndex).point k)
+          ((s.parameters.withStartIndex s.startIndex).point (k + 1) -
+            (s.parameters.withStartIndex s.startIndex).point k) := by
+  obtain ⟨s⟩ := DFPWolfe.Latest.planarSource (1 / 4) (1 / 2) (1 / 2) (1 / 2)
+    (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num)
+  refine ⟨s, s.supportScale_pos, s.sourceData.objectiveEstimates.contDiff,
+    s.sourceData.objectiveEstimates.hessian_bounds,
+    s.sourceData.objectiveEstimates.strongConvex,
+    s.sourceData.objectiveEstimates.hessian_holder, s.sourceData.clusterSet,
+    s.sourceData.gradientNorm_tendsto, ?_⟩
+  intro k
+  have hc1 := s.parameters.withStartIndex_c1 s.startIndex
+  have hc2 := s.parameters.withStartIndex_c2 s.startIndex
+  simpa only [hc1, hc2, s.c1_eq, s.c2_eq,
+    s.sourceIdentity.objective, s.sourceIdentity.point] using
+    s.certificate.strongWolfe k
 
 /-- Lemma 5 of `20251124-DFP/MP.zip`: the fixed limiting polar stages close
 the explicit even and odd reference states. -/
@@ -85,6 +105,24 @@ theorem lemma5_fixedSingleLimit :
     constructor <;> norm_num
   have hmatch := And.intro (evenToOdd hcycle) (oddToEven hcycle)
   simpa only [Parameters.leadingStage_eq_original] using hmatch
+
+/-- Lemma 5 of `20251124-DFP/MP.zip`: the one-step normalized map has the
+explicit limiting formula for every nonzero angular coefficient and regular
+positive off-diagonal state. -/
+theorem lemma5_fixedSingleLimit_general (a : ℝ) (x : ℝ × ℝ × ℝ)
+    (ha : a ≠ 0) (hC : x.2.1 ≠ 0) :
+    Tendsto (fun t : ℝ ↦ Normalized.stage a t x 1 1) (𝓝 0)
+      (𝓝 (Normalized.leadingStage a x)) := by
+  have hAnalytic : AnalyticAt ℝ (fun t : ℝ ↦ Normalized.stage a t x 1 1) 0 := by
+    have h := Normalized.stageAlong_analyticAt
+      (a := fun _ : ℝ ↦ a) (t := fun y : ℝ ↦ y) (X := fun _ : ℝ ↦ x)
+      (ζ := fun _ : ℝ ↦ 1) (η := fun _ : ℝ ↦ 1) (z := 0)
+      analyticAt_const analyticAt_id analyticAt_const analyticAt_const
+      analyticAt_const ha rfl hC (by
+        simp [Normalized.stageSigma_def, Normalized.stepV_def,
+          Normalized.stepW_def])
+    simpa only using h
+  simpa only [Normalized.stage_zero] using hAnalytic.continuousAt
 
 /-- Helper for lem:fixed-single-limit: the canceled normalized stage at zero
 scale is the explicit limiting map used in the manuscript. -/
@@ -127,12 +165,24 @@ for every later index and its odd phase has a uniform transverse estimate. -/
 theorem lemma7_fixedContinuation (p : Parameters) (hβ : 0 < p.beta) (hβone : p.beta < 1) :
     ∃ N > 0, ∃ M > 0, ∃ K : ℝ, 0 < K ∧ ∃ J : ℕ, 0 < J ∧ ∀ j0 : ℕ, J ≤ j0 →
       Continuation.TrajectoryBounds p j0 N M ∧
+        (∀ j : ℕ,
+          Continuation.fastSize p (Continuation.stateAt p j0 j) ≤
+              N / ((j0 + j : ℕ) : ℝ) ∧
+            |Continuation.slowError p (Continuation.stateAt p j0 j)| ≤
+              M * scale p.beta j0 j ^ (1 - p.beta)) ∧
         (∀ k : ℕ, Continuation.RawFeasible (p.withStartIndex j0) k) ∧
         ∀ j : ℕ,
           ‖(p.withStartIndex j0).normalizedOddState j -
               p.oddReference (Continuation.stateAt p j0 j).1‖ ≤
             K / ((j0 + j : ℕ) : ℝ) := by
-  exact Continuation.existsContinuationEstimates p hβ hβone
+  obtain ⟨N, hN, M, hM, K, hK, J, hJ, h⟩ :=
+    Continuation.existsContinuationEstimates p hβ hβone
+  refine ⟨N, hN, M, hM, K, hK, J, hJ, ?_⟩
+  intro j0 hj0
+  obtain ⟨htrajectory, hraw, hodd⟩ := h j0 hj0
+  refine ⟨htrajectory, ?_, hraw, hodd⟩
+  intro j
+  exact ⟨htrajectory.fast_bound j, htrajectory.slow_bound j⟩
 
 /-- Lemma 8 of `20251124-DFP/MP.zip`: the actual points have uniform
 separation, linear step bounds and the complete unit-circle cluster set. -/
@@ -166,13 +216,20 @@ theorem lemma11_generalContinuation (p : Parameters) (hβ : 0 < p.beta)
     (hβone : p.beta < 1) :
     ∃ N > 0, ∃ M > 0, ∃ K : ℝ, 0 < K ∧ ∃ J : ℕ, 0 < J ∧ ∀ j0 : ℕ, J ≤ j0 →
       Continuation.TrajectoryBounds p j0 N M ∧
+        (∀ j : ℕ,
+          Continuation.fastSize p (Continuation.stateAt p j0 j) ≤
+              N / ((j0 + j : ℕ) : ℝ) ∧
+            |Continuation.slowError p (Continuation.stateAt p j0 j)| ≤
+              M * scale p.beta j0 j ^ (1 - p.beta)) ∧
         (∀ k : ℕ, Continuation.RawFeasible (p.withStartIndex j0) k) := by
   obtain ⟨N, hN, M, hM, K, hK, J, hJ, h⟩ :=
     Continuation.existsContinuationEstimates p hβ hβone
   refine ⟨N, hN, M, hM, K, hK, J, hJ, ?_⟩
   intro j0 hj0
   have hdata := h j0 hj0
-  exact ⟨hdata.1, hdata.2.1⟩
+  refine ⟨hdata.1, ?_, hdata.2.1⟩
+  intro j
+  exact ⟨hdata.1.fast_bound j, hdata.1.slow_bound j⟩
 
 /-- Corollary 12 of `20251124-DFP/MP.zip`: identity initialization in every
 finite dimension at least two. -/
