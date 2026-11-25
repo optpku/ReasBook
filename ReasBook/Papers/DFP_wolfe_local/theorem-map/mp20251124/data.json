@@ -5,7 +5,7 @@
     "title": "DFP 20251124 polar proof",
     "kind": "papers",
     "branch": "paper/dfp-20251124-sync",
-    "commit": "433b706b233124ef219e748dcaeaf70c37266e3f",
+    "commit": "87a640598bf3d3abbbcc634f9d8ac5540b862599",
     "repository": "https://github.com/optpku/ReasBook",
     "sourceRoot": "ReasBook"
   },
@@ -60,7 +60,7 @@
         "endLine": 211
       },
       "texLabel": "thm:main",
-      "paperMapping": "Paper-numbered result with a source-facing Lean declaration.",
+      "paperMapping": "Paper-numbered result with a source-facing Lean declaration; some entries are generalized support interfaces pending the fixed-cycle bridge.",
       "relatedDeclarations": [
         {
           "declaration": "DFPWolfe.MP20251124.theorem1",
@@ -106,7 +106,7 @@
         "endLine": 232
       },
       "texLabel": "thm:planar-convergence",
-      "paperMapping": "Paper-numbered result with a source-facing Lean declaration.",
+      "paperMapping": "Paper-numbered result with a source-facing Lean declaration; some entries are generalized support interfaces pending the fixed-cycle bridge.",
       "relatedDeclarations": [
         {
           "declaration": "DFPWolfe.MP20251124.theorem2",
@@ -150,7 +150,7 @@
         "endLine": 355
       },
       "texLabel": "lem:polar-dfp",
-      "paperMapping": "Paper-numbered result with a source-facing Lean declaration.",
+      "paperMapping": "Paper-numbered result with a source-facing Lean declaration; some entries are generalized support interfaces pending the fixed-cycle bridge.",
       "relatedDeclarations": [
         {
           "declaration": "DFPWolfe.MP20251124.lemma3_matrixStep",
@@ -175,7 +175,7 @@
     {
       "id": "mp24-theorem-4",
       "label": "Theorem 4",
-      "title": "Source witness for the fixed Wolfe pair and exponent",
+      "title": "General source witness interface for the Wolfe pair and exponent",
       "type": "Theorem",
       "section": "main",
       "declaration": "DFPWolfe.MP20251124.theorem4_concrete",
@@ -192,7 +192,7 @@
         "endLine": 502
       },
       "texLabel": "thm:concrete",
-      "paperMapping": "Paper-numbered result with a source-facing Lean declaration.",
+      "paperMapping": "Paper-numbered result with a source-facing Lean declaration; some entries are generalized support interfaces pending the fixed-cycle bridge.",
       "relatedDeclarations": [
         {
           "declaration": "DFPWolfe.MP20251124.theorem4_concrete",
@@ -224,7 +224,7 @@
     {
       "id": "mp24-lemma-5",
       "label": "Lemma 5",
-      "title": "Analytic one-step polar limit",
+      "title": "Generalized analytic one-step polar support",
       "type": "Lemma",
       "section": "construction",
       "declaration": "DFPWolfe.MP20251124.lemma5_analyticPathLimit",
@@ -241,7 +241,7 @@
         "endLine": 586
       },
       "texLabel": "lem:fixed-single-limit",
-      "paperMapping": "Paper-numbered result with a source-facing Lean declaration.",
+      "paperMapping": "Paper-numbered result with a source-facing Lean declaration; some entries are generalized support interfaces pending the fixed-cycle bridge.",
       "relatedDeclarations": [
         {
           "declaration": "DFPWolfe.MP20251124.lemma5_analyticPathLimit",
@@ -266,7 +266,7 @@
     {
       "id": "mp24-lemma-6",
       "label": "Lemma 6",
-      "title": "Local two-step continuation bounds",
+      "title": "Generalized local two-step continuation support",
       "type": "Lemma",
       "section": "construction",
       "declaration": "DFPWolfe.MP20251124.lemma6_localCycleBounds",
@@ -283,7 +283,7 @@
         "endLine": 699
       },
       "texLabel": "lem:fixed-cycle",
-      "paperMapping": "Paper-numbered result with a source-facing Lean declaration.",
+      "paperMapping": "Paper-numbered result with a source-facing Lean declaration; some entries are generalized support interfaces pending the fixed-cycle bridge.",
       "relatedDeclarations": [
         {
           "declaration": "DFPWolfe.MP20251124.lemma6_localCycleBounds",
@@ -310,7 +310,7 @@
     {
       "id": "mp24-lemma-7",
       "label": "Lemma 7",
-      "title": "Fixed polar continuation",
+      "title": "Generalized polar continuation support",
       "type": "Lemma",
       "section": "construction",
       "declaration": "DFPWolfe.MP20251124.lemma7_fixedContinuation",
@@ -327,7 +327,7 @@
         "endLine": 822
       },
       "texLabel": "lem:fixed-continuation",
-      "paperMapping": "Paper-numbered result with a source-facing Lean declaration.",
+      "paperMapping": "Paper-numbered result with a source-facing Lean declaration; some entries are generalized support interfaces pending the fixed-cycle bridge.",
       "relatedDeclarations": [
         {
           "declaration": "DFPWolfe.MP20251124.lemma7_fixedContinuation",
@@ -354,7 +354,7 @@
     {
       "id": "mp24-lemma-8",
       "label": "Lemma 8",
-      "title": "Fixed geometry and Wolfe verification",
+      "title": "Generalized geometry and Wolfe support",
       "type": "Lemma",
       "section": "construction",
       "declaration": "DFPWolfe.MP20251124.lemma8_fixedGeometry",
@@ -371,7 +371,7 @@
         "endLine": 892
       },
       "texLabel": "lem:fixed-geometry",
-      "paperMapping": "Paper-numbered result with a source-facing Lean declaration.",
+      "paperMapping": "Paper-numbered result with a source-facing Lean declaration; some entries are generalized support interfaces pending the fixed-cycle bridge.",
       "relatedDeclarations": [
         {
           "declaration": "DFPWolfe.MP20251124.lemma8_fixedGeometry",
@@ -399,7 +399,7 @@
     {
       "id": "mp24-lemma-9",
       "label": "Lemma 9",
-      "title": "Fixed objective realization",
+      "title": "Generalized objective realization support",
       "type": "Lemma",
       "section": "construction",
       "declaration": "DFPWolfe.MP20251124.lemma9_fixedRealization",
@@ -416,7 +416,7 @@
         "endLine": 1103
       },
       "texLabel": "lem:fixed-realization",
-      "paperMapping": "Paper-numbered result with a source-facing Lean declaration.",
+      "paperMapping": "Paper-numbered result with a source-facing Lean declaration; some entries are generalized support interfaces pending the fixed-cycle bridge.",
       "relatedDeclarations": [
         {
           "declaration": "DFPWolfe.MP20251124.lemma9_fixedRealization",
@@ -460,7 +460,7 @@
         "endLine": 1280
       },
       "texLabel": "lem:general-reference",
-      "paperMapping": "Paper-numbered result with a source-facing Lean declaration.",
+      "paperMapping": "Paper-numbered result with a source-facing Lean declaration; some entries are generalized support interfaces pending the fixed-cycle bridge.",
       "relatedDeclarations": [
         {
           "declaration": "DFPWolfe.MP20251124.lemma10_generalReference",
@@ -504,7 +504,7 @@
         "endLine": 1385
       },
       "texLabel": "lem:general-continuation",
-      "paperMapping": "Paper-numbered result with a source-facing Lean declaration.",
+      "paperMapping": "Paper-numbered result with a source-facing Lean declaration; some entries are generalized support interfaces pending the fixed-cycle bridge.",
       "relatedDeclarations": [
         {
           "declaration": "DFPWolfe.MP20251124.lemma11_generalContinuation",
@@ -549,7 +549,7 @@
         "endLine": 1604
       },
       "texLabel": "cor:identity-initialization",
-      "paperMapping": "Paper-numbered result with a source-facing Lean declaration.",
+      "paperMapping": "Paper-numbered result with a source-facing Lean declaration; some entries are generalized support interfaces pending the fixed-cycle bridge.",
       "relatedDeclarations": [
         {
           "declaration": "DFPWolfe.MP20251124.corollary12_identityInitialization",
@@ -593,7 +593,7 @@
         "endLine": 1672
       },
       "texLabel": "lem:planar-degeneration",
-      "paperMapping": "Paper-numbered result with a source-facing Lean declaration.",
+      "paperMapping": "Paper-numbered result with a source-facing Lean declaration; some entries are generalized support interfaces pending the fixed-cycle bridge.",
       "relatedDeclarations": [
         {
           "declaration": "DFPWolfe.MP20251124.lemma13_planarDegeneration",
@@ -626,7 +626,7 @@
     "dependencyCoverage": "reviewed-paper-dependencies",
     "dependencyModel": "curated-paper-proof-v2",
     "scope": "20251124-DFP/MP.zip; theorem-like blocks follow the manuscript source order.",
-    "sourceSnapshot": "433b706b233124ef219e748dcaeaf70c37266e3f",
+    "sourceSnapshot": "87a640598bf3d3abbbcc634f9d8ac5540b862599",
     "manuscriptSha256": "6a35c7bb5e2ffc6d5ede723ca8ebcc6909bf16bac10f27980e4fabb40ca23a2c",
     "numbering": "Shared theorem counter in the manuscript source order; 13 theorem-like results.",
     "edges": 19,
