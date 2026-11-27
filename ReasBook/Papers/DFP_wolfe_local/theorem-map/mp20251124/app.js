@@ -537,9 +537,9 @@
   function buildReviewerGraphDot(model, highlight) {
     var lines = [
       "digraph G {",
-      '  graph [rankdir="TB", bgcolor="transparent", pad="0.25", nodesep="0.28", ranksep="0.72", outputorder="edgesfirst", splines="spline"];',
-      '  node [style="rounded,filled", fontname="Arial", fontsize="13", margin="0.15,0.09"];',
-      '  edge [arrowhead="normal", arrowsize="0.7", tailport="s", headport="n"];'
+      '  graph [rankdir="LR", bgcolor="transparent", pad="0.25", nodesep="0.28", ranksep="0.72", outputorder="edgesfirst", splines="spline"];',
+      '  node [style="rounded,filled", fontname="Segoe UI", fontsize="10", margin="0.15,0.09"];',
+      '  edge [arrowhead="normal", arrowsize="0.7"];'
     ];
     model.ids.forEach(function (id) {
       var item = itemById.get(id);
