@@ -68,8 +68,6 @@ project-defined axioms.
 [Theorem map](https://optpku.github.io/ReasBook/versions/v4.32.0/theorem-maps/papers/glowinski_admm_counterexample/) ·
 [Reviewer](https://reasbook.reaslab.io/review/books/glowinski_admm_counterexample/)
 
-These published resources describe the earlier merged source, including its
-11 numbered manuscript results. Documentation for the revised twelve-result
-source is pending a maintainer release after the source update is merged. The
-existing resource links are retained for reading the earlier formalization;
-they do not claim that the strengthened results are already published there.
+Docs, Verso, and the theorem map cover the revised formalization, including
+all twelve numbered results and the certificates in Appendices C.2 and C.3.
+The Reviewer service is published separately.
