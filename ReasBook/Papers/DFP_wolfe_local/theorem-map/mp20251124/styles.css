@@ -595,7 +595,17 @@ path.graph-edge {
 
 path.graph-edge.dependency-statement {
   stroke: #7654a6;
-  stroke-dasharray: 7 4;
+}
+
+g.edge.dependency-statement path,
+path.graph-edge.dependency-statement {
+  stroke-dasharray: 5 5;
+  stroke-linecap: round;
+}
+
+g.edge.dependency-statement polygon {
+  stroke-dasharray: none;
+  stroke-linejoin: round;
 }
 
 path.graph-edge.dependency-proof {
@@ -615,6 +625,20 @@ path.graph-edge.active {
   stroke: #315fc0;
   stroke-width: 2.2;
   marker-end: url(#arrowActive);
+}
+
+.dependency-graph marker path {
+  fill: context-stroke;
+}
+
+g.edge.dependency-unclassified.active path,
+g.edge.dependency-unclassified.active polygon,
+path.graph-edge.dependency-unclassified.active {
+  stroke: #61778b;
+}
+
+g.edge.dependency-unclassified.active polygon {
+  fill: #61778b;
 }
 
 .graph-node {
