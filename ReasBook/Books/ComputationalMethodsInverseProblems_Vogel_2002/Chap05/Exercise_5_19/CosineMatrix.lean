@@ -15,7 +15,7 @@ public section
 
 /-- The explicit real cosine matrix with first column `1 / √n` and remaining columns
 `√(2 / n) * cos (((2 * i + 1) * j * π) / (2 * n))` in zero-based `Fin n` coordinates. -/
-noncomputable def cosineMatrix (n : ℕ) : Matrix (Fin n) (Fin n) ℝ :=
+@[expose] noncomputable def cosineMatrix (n : ℕ) : Matrix (Fin n) (Fin n) ℝ :=
   fun i j ↦
     if j.1 = 0 then
       1 / Real.sqrt n

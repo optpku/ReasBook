@@ -8,20 +8,30 @@ module
 
 public import ComputationalMethodsInverseProblems_Vogel_2002.Chap01.Exercise_1_11.Operator
 public import ComputationalMethodsInverseProblems_Vogel_2002.Chap01.Exercise_1_11.Regularity
+public import ComputationalMethodsInverseProblems_Vogel_2002.Chap01.Exercise_1_11.SourceCondition
 
 public section
 
 /-
-The current source item is blocked in this repository snapshot.
+Exercise 1.11 (source-faithful form).
 
-`Book/Ch1/Remark_1_1.lean` identifies source equation `(1.1)` with
-`Fredholm1D.operator_apply`, while `Book/Ch1/Exercise_1_11/Operator.lean`
-currently provides only the Gaussian specialization
-`Fredholm1D.gaussianBlurL2_realizesOperator` together with the bundled adjoint
-fact `Fredholm1D.gaussianBlurL2_adjoint_eq`.
+Vogel, *Computational Methods for Inverse Problems*: for the continuous Gaussian Fredholm
+operator `(1.1)`, the source condition `f_true = K^* z` with `z ∈ L²(0, 1)` implies that
+`f_true` is smooth.
 
-A source-faithful statement here requires either a bundled `L²(0, 1)` owner
-with adjoint API for the general operator `Fredholm1D.operator`, or a verified
-local theorem identifying the exercise's `(1.1)` itself with
-`Fredholm1D.gaussianBlurL2`.
+The item is organized as follows.
+
+* `Operator.lean` bundles `(1.1)` with the Gaussian kernel as the continuous linear operator
+  `Fredholm1D.gaussianBlurL2` on `L²(0, 1)`, shows it realizes the pointwise source operator
+  `(1.1)` (`gaussianBlurL2_realizesOperator`) and that it is self-adjoint
+  (`gaussianBlurL2_adjoint_eq`).
+* `Regularity.lean` shows that the blur is infinitely differentiable, i.e. that the values of
+  `K` are smooth (`gaussianBlurL2_hasSmoothRepresentative`).
+* `SourceCondition.lean` derives the exercise's conclusion: the source condition forces the
+  true solution to be smooth (`sourceCondition_hasSmoothRepresentative`).
 -/
+
+#check Fredholm1D.gaussianBlurL2_realizesOperator
+#check Fredholm1D.gaussianBlurL2_adjoint_eq
+#check Fredholm1D.gaussianBlurL2_hasSmoothRepresentative
+#check Fredholm1D.sourceCondition_hasSmoothRepresentative

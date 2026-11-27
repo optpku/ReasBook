@@ -6,47 +6,9 @@ Project-level attribution: optpku/ReasBook@f40e785158f79d8f0e645890825b840af912e
 
 module
 
-public import Mathlib.Analysis.InnerProductSpace.Basic
-public import Mathlib.Data.EReal.Basic
+public import ComputationalMethodsInverseProblems_Vogel_2002.Chap08.Definition_8_4.Conjugate
 
-public section
-
-noncomputable section
-
-namespace VariationalRegularization
-
-variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
-
-/-- Definition 8.4 (2). The conjugate functional of `φ` on `C` is
-`y ↦ sSup ((fun x ↦ ((inner ℝ x y - φ x : ℝ) : EReal)) '' C)`. -/
-@[expose]
-def conjugateFunctional (C : Set E) (φ : E → ℝ) : E → EReal :=
-  fun y ↦ sSup ((fun x : E ↦ ((inner ℝ x y - φ x : ℝ) : EReal)) '' C)
-
-/-- Helper for Definition 8.4: this records the defining supremum formula for
-`conjugateFunctional`. -/
-theorem conjugateFunctional_def (C : Set E) (φ : E → ℝ) (y : E) :
-    conjugateFunctional C φ y =
-      sSup ((fun x : E ↦ ((inner ℝ x y - φ x : ℝ) : EReal)) '' C) :=
-  rfl
-
-/-- Helper for Definition 8.4: on `Set.univ`, the conjugate functional is the
-supremum over all `x`. -/
-theorem conjugateFunctional_univ_eq_sSup_range (φ : E → ℝ) (y : E) :
-    conjugateFunctional Set.univ φ y =
-      sSup (Set.range fun x : E ↦ ((inner ℝ x y - φ x : ℝ) : EReal)) := by
-  simp [conjugateFunctional_def]
-
-/-- Definition 8.4 (1). The conjugate set `conjugateSet C φ` is the set of
-`y` where `conjugateFunctional C φ y` is finite. -/
-@[expose]
-def conjugateSet (C : Set E) (φ : E → ℝ) : Set E :=
-  {y | conjugateFunctional C φ y < ⊤}
-
-/-- Helper for Definition 8.4: membership in `conjugateSet C φ` is exactly the
-finiteness of `conjugateFunctional C φ`. -/
-theorem mem_conjugateSet_iff (C : Set E) (φ : E → ℝ) (y : E) :
-    y ∈ conjugateSet C φ ↔ conjugateFunctional C φ y < ⊤ :=
-  Iff.rfl
-
-end VariationalRegularization
+/-!
+Definition 8.4: the source-facing conjugate functional and conjugate set are
+provided by the shared `Definition_8_4.Conjugate` module.
+-/

@@ -22,7 +22,7 @@ variable {d : ℕ}
 
 This item-owned helper is reused by later Chapter 8 approximation files; it is
 not asserted here to be the exact source owner of `(8.73)`. -/
-def regularizedLeastSquaresFunctional
+@[expose] def regularizedLeastSquaresFunctional
     {Ω : TopologicalSpace.Opens (EuclideanSpace ℝ (Fin d))}
     {p : ENNReal} [Fact ((1 : ENNReal) ≤ p)]
     [MeasureTheory.IsFiniteMeasure (domainMeasure Ω)]
@@ -46,11 +46,11 @@ theorem regularizedLeastSquaresFunctional_def
     (J : MeasureTheory.Lp ℝ 1 (domainMeasure Ω) → EReal)
     (f : MeasureTheory.Lp ℝ p (domainMeasure Ω)) :
     regularizedLeastSquaresFunctional K g α J f =
-      ((‖K f - g‖ ^ 2 / 2 : ℝ) : EReal) + (α : EReal) * J (lpToL1 f) := sorry
+      ((‖K f - g‖ ^ 2 / 2 : ℝ) : EReal) + (α : EReal) * J (lpToL1 f) := rfl
 
 /-- The specialization of `regularizedLeastSquaresFunctional` with
 `J = totalVariation`. -/
-def tvRegularizedLeastSquaresFunctional
+@[expose] def tvRegularizedLeastSquaresFunctional
     {Ω : TopologicalSpace.Opens (EuclideanSpace ℝ (Fin d))}
     {p : ENNReal} [Fact ((1 : ENNReal) ≤ p)]
     [MeasureTheory.IsFiniteMeasure (domainMeasure Ω)]
@@ -74,6 +74,6 @@ theorem tvRegularizedLeastSquaresFunctional_def
     (f : MeasureTheory.Lp ℝ p (domainMeasure Ω)) :
     tvRegularizedLeastSquaresFunctional K g α f =
       ((‖K f - g‖ ^ 2 / 2 : ℝ) : EReal) +
-        (α : EReal) * totalVariation (lpToL1 f) := sorry
+        (α : EReal) * totalVariation (lpToL1 f) := rfl
 
 end VariationalRegularization

@@ -11,6 +11,9 @@ public import Mathlib.Analysis.LocallyConvex.WeakSpace
 public import Mathlib.Analysis.Normed.Module.WeakDual
 public import Mathlib.Analysis.LocallyConvex.Bounded
 public import ComputationalMethodsInverseProblems_Vogel_2002.Chap08.Theorem_8_16.Embedding
+public import ComputationalMethodsInverseProblems_Vogel_2002.Chap08.Theorem_8_16.HilbertBidual
+public import ComputationalMethodsInverseProblems_Vogel_2002.Chap08.Theorem_8_16.L1Compactness
+public import ComputationalMethodsInverseProblems_Vogel_2002.Chap08.Theorem_8_16.LpDual
 
 public section
 
@@ -144,7 +147,7 @@ lemma criticalLpPairing_norm_le
               (B := ContinuousLinearMap.mul ℝ ℝ) (r := (1 : ENNReal)) f g)
     _ ≤ 1 * ‖f‖ * ‖g‖ := by
           gcongr
-          simpa using (ContinuousLinearMap.opNorm_mul_le (𝕜 := ℝ) (R := ℝ))
+          exact ContinuousLinearMap.opNorm_mul_le (𝕜 := ℝ) (R := ℝ)
     _ = ‖f‖ * ‖g‖ := by ring
 
 /-- Helper for Theorem 8.16: the critical `Lᵖ` closed ball maps into one weak-* closed ball in the
@@ -181,6 +184,9 @@ lemma criticalLpPairingClosedBall_compact
     {Ω : TopologicalSpace.Opens (EuclideanSpace ℝ (Fin d))}
     [MeasureTheory.IsFiniteMeasure (domainMeasure Ω)]
     (h1d : 1 < d)
+    [Fact (1 ≤ (d : ENNReal))]
+    [Fact (1 ≤ criticalExponent d)]
+    [(criticalExponent d).HolderConjugate (d : ENNReal)]
     (C : ℝ) :
     IsCompact
       (closure
@@ -189,10 +195,6 @@ lemma criticalLpPairingClosedBall_compact
             (((ContinuousLinearMap.mul ℝ ℝ).lpPairing
               (domainMeasure Ω) (criticalExponent d) (d : ENNReal) f))) ''
           Metric.closedBall (0 : criticalLpSpace Ω (Nat.le_of_lt h1d)) C)) := by
-  letI : Fact (1 ≤ (d : ENNReal)) := ⟨by exact_mod_cast (Nat.le_of_lt h1d)⟩
-  letI : Fact (1 ≤ criticalExponent d) := factOneLeCriticalExponent (Nat.le_of_lt h1d)
-  letI : (criticalExponent d).HolderConjugate (d : ENNReal) :=
-    criticalExponent_holderConjugate (d := d) h1d
   have hsubset :
       ((fun f : criticalLpSpace Ω (Nat.le_of_lt h1d) ↦
         StrongDual.toWeakDual
@@ -243,6 +245,9 @@ lemma criticalLpPairingWeakMap_image_closedBall
     {Ω : TopologicalSpace.Opens (EuclideanSpace ℝ (Fin d))}
     [MeasureTheory.IsFiniteMeasure (domainMeasure Ω)]
     (h1d : 1 < d)
+    [Fact (1 ≤ (d : ENNReal))]
+    [Fact (1 ≤ criticalExponent d)]
+    [(criticalExponent d).HolderConjugate (d : ENNReal)]
     (C : ℝ) :
     criticalLpPairingWeakMap (d := d) (Ω := Ω) (hd := Nat.le_of_lt h1d) ''
         (toWeakSpace ℝ (criticalLpSpace Ω (Nat.le_of_lt h1d)) ''
@@ -252,10 +257,6 @@ lemma criticalLpPairingWeakMap_image_closedBall
           (((ContinuousLinearMap.mul ℝ ℝ).lpPairing
             (domainMeasure Ω) (criticalExponent d) (d : ENNReal) f))) ''
         Metric.closedBall (0 : criticalLpSpace Ω (Nat.le_of_lt h1d)) C := by
-  letI : Fact (1 ≤ (d : ENNReal)) := ⟨by exact_mod_cast (Nat.le_of_lt h1d)⟩
-  letI : Fact (1 ≤ criticalExponent d) := factOneLeCriticalExponent (Nat.le_of_lt h1d)
-  letI : (criticalExponent d).HolderConjugate (d : ENNReal) :=
-    criticalExponent_holderConjugate (d := d) h1d
   ext y
   constructor
   · intro hy
@@ -278,10 +279,18 @@ lemma criticalLpRange_isClosed
       (Set.range
         (NormedSpace.inclusionInDoubleDualWeak ℝ
           (criticalLpSpace Ω (Nat.le_of_lt h1d)))) := by
-  -- TODO: package reflexivity of `criticalLpSpace Ω (Nat.le_of_lt h1d)` through the Hölder
-  -- pairing with `L^d(Ω)`, then apply the closed-range criterion to
-  -- `NormedSpace.inclusionInDoubleDualWeak`.
-  sorry
+  letI : Fact (1 ≤ criticalExponent d) := factOneLeCriticalExponent (Nat.le_of_lt h1d)
+  letI : Fact (1 ≤ (d : ENNReal)) := ⟨by exact_mod_cast (Nat.le_of_lt h1d)⟩
+  letI : (criticalExponent d).HolderConjugate (d : ENNReal) :=
+    criticalExponent_holderConjugate h1d
+  have hreal : (criticalExponent d).toReal.HolderConjugate (d : ENNReal).toReal :=
+    (criticalExponent_toReal_holderConjugate h1d).symm
+  have hp : criticalExponent d ≠ ⊤ := by
+    intro h
+    have hpos := hreal.pos
+    simp only [h, ENNReal.toReal_top, lt_self_iff_false] at hpos
+  exact LpDual.inclusionInDoubleDualWeak_range_isClosed (domainMeasure Ω)
+    (criticalExponent d) (d : ENNReal) hp (by finiteness) hreal
 
 /-- Helper for Theorem 8.16: the critical weak closed ball will be compact once the closure of its
 double-dual image is known to stay inside the canonical range. -/
@@ -341,118 +350,6 @@ lemma criticalLpClosedBall_weakCompact
       (criticalLpClosedBall_preimage_bounded (d := d) (Ω := Ω) h1d C)
       (criticalLpClosedBall_doubleDualRange (d := d) (Ω := Ω) h1d C))
 
-/-- Helper for Theorem 8.16: a metric set is totally bounded once every `ε`-neighborhood is
-captured by one compact approximation set. -/
-lemma totallyBounded_of_compactApproximation
-    {α : Type*}
-    [PseudoMetricSpace α]
-    {s : Set α}
-    (happrox :
-      ∀ ε > 0, ∃ K : Set α, IsCompact K ∧ ∀ ⦃x : α⦄, x ∈ s → ∃ y ∈ K, dist x y < ε) :
-    TotallyBounded s := by
-  rw [Metric.totallyBounded_iff]
-  intro ε hε
-  have hε_half : 0 < ε / 2 := by positivity
-  rcases happrox (ε / 2) hε_half with ⟨K, hK_compact, hKapprox⟩
-  rcases
-      Metric.finite_approx_of_totallyBounded
-        hK_compact.totallyBounded (ε / 2) hε_half with
-    ⟨t, _ht_subset, ht_finite, ht_cover⟩
-  refine ⟨t, ht_finite, ?_⟩
-  intro x hx
-  rcases hKapprox hx with ⟨y, hyK, hxy⟩
-  rcases Set.mem_iUnion.1 (ht_cover hyK) with ⟨z, hz⟩
-  rcases Set.mem_iUnion.1 hz with ⟨hzT, hyz⟩
-  refine Set.mem_iUnion.2 ⟨z, Set.mem_iUnion.2 ⟨hzT, ?_⟩⟩
-  calc
-    dist x z ≤ dist x y + dist y z := dist_triangle _ _ _
-    _ < ε / 2 + ε / 2 := add_lt_add hxy hyz
-    _ = ε := by ring
-
-/-- Helper for Theorem 8.16: a direct finite `ε`-net on `BV.toL1 '' closedBall` is the natural
-theorem-local owner for the `L¹` compactness route. -/
-lemma toL1ClosedBall_finiteApprox
-    {Ω : TopologicalSpace.Opens (EuclideanSpace ℝ (Fin d))}
-    [MeasureTheory.IsFiniteMeasure (domainMeasure Ω)]
-    (hΩ : Bornology.IsBounded (Ω : Set (EuclideanSpace ℝ (Fin d))))
-    (R : ℝ) :
-    ∀ ε > 0,
-      ∃ t : Set (MeasureTheory.Lp ℝ 1 (domainMeasure Ω)),
-        t.Finite ∧
-        ∀ ⦃u : BV Ω⦄, u ∈ Metric.closedBall (0 : BV Ω) R →
-          ∃ v ∈ t, dist u.toL1 v < ε := by
-  -- Route correction: the downstream metric arguments only consume finite `ε`-nets, so the
-  -- remaining theorem-local blocker is the fixed-grid finite approximation itself rather than a
-  -- stronger compact-family witness.
-  let _ := hΩ
-  let _ := R
-  -- TODO: fix one bounding cube from `hΩ`, approximate every BV point by a compactly supported
-  -- smooth witness with budgets `(ε / 3, 1)`, project that smooth family to one finite-dimensional
-  -- step-function space, then take a finite coefficient net and close the final `ε` estimate by
-  -- the triangle inequality.
-  sorry
-
-/-- Helper for Theorem 8.16: one compact approximation wrapper is recovered immediately from the
-finite `ε`-net owner by viewing a finite set as compact. -/
-lemma toL1ClosedBall_compactApproximation
-    {Ω : TopologicalSpace.Opens (EuclideanSpace ℝ (Fin d))}
-    [MeasureTheory.IsFiniteMeasure (domainMeasure Ω)]
-    (hΩ : Bornology.IsBounded (Ω : Set (EuclideanSpace ℝ (Fin d))))
-    (R : ℝ) :
-    ∀ ε > 0,
-      ∃ K : Set (MeasureTheory.Lp ℝ 1 (domainMeasure Ω)),
-        IsCompact K ∧
-        ∀ ⦃u : BV Ω⦄, u ∈ Metric.closedBall (0 : BV Ω) R →
-          ∃ v ∈ K, dist u.toL1 v < ε := by
-  intro ε hε
-  rcases toL1ClosedBall_finiteApprox (d := d) (Ω := Ω) hΩ R ε hε with ⟨t, ht_finite, ht_cover⟩
-  refine ⟨t, ht_finite.isCompact, ?_⟩
-  intro u hu
-  exact ht_cover hu
-
-/-- Helper for Theorem 8.16: the image of a BV closed ball in `L¹(Ω)` still needs the direct
-total-boundedness owner before the compactness wrapper can close. -/
-lemma toL1ClosedBall_totallyBounded
-    {Ω : TopologicalSpace.Opens (EuclideanSpace ℝ (Fin d))}
-    [MeasureTheory.IsFiniteMeasure (domainMeasure Ω)]
-    (hΩ : Bornology.IsBounded (Ω : Set (EuclideanSpace ℝ (Fin d))))
-    (R : ℝ) :
-    TotallyBounded (BV.toL1 '' Metric.closedBall (0 : BV Ω) R) := by
-  by_cases hR : R < 0
-  · -- A negative-radius closed ball is empty, so its `L¹` image is trivially totally bounded.
-    simpa [Metric.closedBall_eq_empty.2 hR]
-  · have hR_nonneg : 0 ≤ R := le_of_not_gt hR
-    -- Route correction: after discarding the empty-ball branch, the remaining blocker is the
-    -- bounded-domain BV compactness argument on the exposed `BV.toL1 '' closedBall` surface.
-    -- Once the owner-side compact approximation family exists, the final step is just the metric
-    -- compact-approximation criterion proved immediately above.
-    let _ := hR_nonneg
-    refine
-      totallyBounded_of_compactApproximation
-        (s := BV.toL1 '' Metric.closedBall (0 : BV Ω) R) ?_
-    intro ε hε
-    rcases toL1ClosedBall_compactApproximation (d := d) (Ω := Ω) hΩ R ε hε with
-      ⟨K, hK_compact, hKapprox⟩
-    refine ⟨K, hK_compact, ?_⟩
-    intro x hx
-    rcases hx with ⟨u, hu, rfl⟩
-    exact hKapprox hu
-
-/-- Helper for Theorem 8.16: one still needs the canonical `L¹(Ω)` compactness owner for the
-image of a BV closed ball under `BV.toL1`. -/
-lemma toL1ClosedBall_compact
-    {Ω : TopologicalSpace.Opens (EuclideanSpace ℝ (Fin d))}
-    [MeasureTheory.IsFiniteMeasure (domainMeasure Ω)]
-    (hΩ : Bornology.IsBounded (Ω : Set (EuclideanSpace ℝ (Fin d))))
-    (R : ℝ) :
-    IsCompact (closure (BV.toL1 '' Metric.closedBall (0 : BV Ω) R)) := by
-  -- Route correction: the direct total-boundedness theorem is the real owner; compactness is just
-  -- the standard quasi-complete closure wrapper on the `L¹(Ω)` surface.
-  exact
-    isCompact_closure_of_totallyBounded_quasiComplete
-      (𝕜 := ℝ)
-      (s := BV.toL1 '' Metric.closedBall (0 : BV Ω) R)
-      (toL1ClosedBall_totallyBounded (d := d) (Ω := Ω) hΩ R)
 
 end BVCompactness
 

@@ -22,9 +22,9 @@ section
 
 variable {Ω : Type u} [MeasurableSpace Ω]
 variable {H : Type v} {F : Type w}
-variable [NormedAddCommGroup H] [InnerProductSpace ℝ H] [CompleteSpace H]
-variable [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
-variable (μ : MeasureTheory.Measure Ω) [MeasureTheory.IsProbabilityMeasure μ]
+variable [NormedAddCommGroup H] [InnerProductSpace ℝ H]
+variable [NormedAddCommGroup F] [InnerProductSpace ℝ F]
+variable (μ : MeasureTheory.Measure Ω)
 variable (K : ℕ → H →L[ℝ] F)
 variable (Rtikh : ℕ → ℝ → F →L[ℝ] H)
 variable (fTrue : H) (η : ℕ → Ω → F)

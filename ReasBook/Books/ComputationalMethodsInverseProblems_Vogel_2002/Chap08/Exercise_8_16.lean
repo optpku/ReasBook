@@ -30,26 +30,6 @@ lemma admissibleTestField_negNormLeOne
   intro x hx
   simpa using v.norm_le_one x hx
 
-namespace AdmissibleTestField
-
-/-- Helper for Exercise 8.16: the pointwise negative of an admissible test field is admissible. -/
-def neg
-    {Ω : TopologicalSpace.Opens (EuclideanSpace ℝ (Fin d))}
-    (v : AdmissibleTestField Ω) :
-    AdmissibleTestField Ω :=
-  ofTestFunction (-v.toTestFunction) (admissibleTestField_negNormLeOne v)
-
-/-- Helper for Exercise 8.16: the underlying test function of `v.neg` is `-v.toTestFunction`. -/
-@[simp] theorem neg_toTestFunction
-    {Ω : TopologicalSpace.Opens (EuclideanSpace ℝ (Fin d))}
-    (v : AdmissibleTestField Ω) :
-    v.neg.toTestFunction = -v.toTestFunction := by
-  -- The constructor `ofTestFunction` records the supplied negated test function verbatim.
-  exact AdmissibleTestField.ofTestFunction_toTestFunction
-    (-v.toTestFunction) (admissibleTestField_negNormLeOne v)
-
-end AdmissibleTestField
-
 namespace ApproximationUniformConvergence
 
 /-- Helper for Exercise 8.16: the admissible divergence is continuous. -/
@@ -110,7 +90,7 @@ lemma negPairingIntegral_eq_pairing_neg
       admissibleDivergencePairing f v.neg := by
   -- Rewrite the negated divergence through `v.neg` and simplify the pointwise product.
   rw [admissibleDivergencePairing_def]
-  simp [admissibleDivergence_neg, mul_comm]
+  simp [mul_comm]
 
 /-- Helper for Exercise 8.16: the smooth penalty integrand is integrable on the finite domain. -/
 lemma smoothPenaltyIntegrable
@@ -284,7 +264,7 @@ lemma totalVariation_nonneg
   rw [totalVariation_def]
   refine le_sSup ?_
   refine ⟨AdmissibleTestField.zero Ω, by
-    simp [admissibleDivergencePairing_def, admissibleDivergence_zero]⟩
+    simp [admissibleDivergencePairing_def]⟩
 
 /-- Helper for Exercise 8.16: the Huber approximation is nonnegative. -/
 lemma huberApproxTotalVariation_nonneg
@@ -296,7 +276,7 @@ lemma huberApproxTotalVariation_nonneg
   rw [huberApproxTotalVariation_def]
   refine le_sSup ?_
   refine ⟨AdmissibleTestField.zero Ω, ?_⟩
-  simp [AdmissibleTestField.zero_toTestFunction, admissibleDivergence_zero]
+  simp [AdmissibleTestField.zero_toTestFunction]
 
 /-- Helper for Exercise 8.16: ordered nonnegative `EReal` distance is the nonnegative
 difference. -/
@@ -420,7 +400,7 @@ lemma smoothNormApproxTotalVariation_orderBounds
       congr 1
       refine MeasureTheory.integral_congr_ae ?_
       filter_upwards with x
-      simp [admissibleDivergence_neg, mul_comm]
+      simp [mul_comm]
     calc
       (admissibleDivergencePairing f v : EReal)
           = (((∫ x, f x * admissibleDivergence v x ∂domainMeasure Ω) : ℝ) : EReal) := by
@@ -530,7 +510,7 @@ lemma huberApproxTotalVariation_orderBounds
                     congr 1
                     refine MeasureTheory.integral_congr_ae ?_
                     filter_upwards with x
-                    simp [admissibleDivergence_neg, sub_eq_add_neg, add_assoc, mul_comm]
+                    simp [sub_eq_add_neg, add_assoc, mul_comm]
           _ = (((∫ x, (-(f x)) * admissibleDivergence v.neg x -
                     (ε / 2) * ‖v.neg.toTestFunction x‖ ^ 2
                   ∂domainMeasure Ω) : ℝ) : EReal) +

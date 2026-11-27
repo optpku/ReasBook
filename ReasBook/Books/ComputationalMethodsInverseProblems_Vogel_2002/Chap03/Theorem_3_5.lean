@@ -18,93 +18,7 @@ noncomputable section
 open scoped Matrix.Energy
 open QuadraticOptimization
 
-namespace Matrix.IsHermitian
 
-universe u
-
-variable {n : Type u} [Fintype n] [DecidableEq n]
-
-/-- Helper for Theorem 3.5: every eigenvalue of a Hermitian real matrix lies in the
-closed interval between `λ_min(A)` and `λ_max(A)`. -/
-theorem eigenvalue_mem_Icc_lambdaMin_lambdaMax [Nonempty n]
-    {A : Matrix n n ℝ} (hA : A.IsHermitian) (i : n) :
-    λ_min(A) ≤ hA.eigenvalues i ∧ hA.eigenvalues i ≤ λ_max(A) := by
-  have hspectrum_bddBelow : BddBelow (spectrum ℝ A) := by
-    simpa [hA.spectrum_real_eq_range_eigenvalues] using
-      (Set.finite_range hA.eigenvalues).bddBelow
-  have hspectrum_bddAbove : BddAbove (spectrum ℝ A) := by
-    simpa [hA.spectrum_real_eq_range_eigenvalues] using
-      (Set.finite_range hA.eigenvalues).bddAbove
-  have hmem : hA.eigenvalues i ∈ spectrum ℝ A := hA.eigenvalues_mem_spectrum_real i
-  constructor
-  · -- The spectral infimum is a lower bound for every eigenvalue.
-    simpa [Matrix.lambdaMin_eq_sInf_spectrum] using csInf_le hspectrum_bddBelow hmem
-  · -- The spectral supremum is an upper bound for every eigenvalue.
-    simpa [Matrix.lambdaMax_eq_sSup_spectrum] using le_csSup hspectrum_bddAbove hmem
-
-/-- Helper for Theorem 3.5: in the orthonormal eigenbasis of a Hermitian matrix,
-applying `A` multiplies the `i`-th coordinate by the `i`-th eigenvalue. -/
-theorem repr_toEuclideanLin_eq_eigenvalue_mul_repr
-    {A : Matrix n n ℝ} (hA : A.IsHermitian)
-    (x : EuclideanSpace ℝ n) (i : n) :
-    (hA.eigenvectorBasis.repr (A.toEuclideanLin x)) i =
-      hA.eigenvalues i * (hA.eigenvectorBasis.repr x i) := by
-  have hsymm : A.toEuclideanLin.IsSymmetric :=
-    Matrix.isSymmetric_toEuclideanLin_iff.mpr hA
-  have heig :
-      A.toEuclideanLin (hA.eigenvectorBasis i) =
-        hA.eigenvalues i • hA.eigenvectorBasis i := by
-    ext j
-    simpa [Matrix.toEuclideanLin_apply] using congrFun (hA.mulVec_eigenvectorBasis i) j
-  -- Move `A` onto the eigenvector basis element, then use the eigenvector equation.
-  calc
-    (hA.eigenvectorBasis.repr (A.toEuclideanLin x)) i
-        = inner ℝ (hA.eigenvectorBasis i) (A.toEuclideanLin x) := by
-            rw [OrthonormalBasis.repr_apply_apply]
-    _ = inner ℝ (A.toEuclideanLin (hA.eigenvectorBasis i)) x := by
-          symm
-          exact hsymm (hA.eigenvectorBasis i) x
-    _ = inner ℝ (hA.eigenvalues i • hA.eigenvectorBasis i) x := by rw [heig]
-    _ = hA.eigenvalues i * (hA.eigenvectorBasis.repr x i) := by
-          rw [OrthonormalBasis.repr_apply_apply, real_inner_smul_left]
-
-/-- Helper for Theorem 3.5: the quadratic form of a Hermitian real matrix is the
-eigenvalue-weighted sum of squared coordinates in an orthonormal eigenbasis. -/
-theorem inner_toEuclideanLin_eq_sum_eigenvalues_mul_sq_repr
-    {A : Matrix n n ℝ} (hA : A.IsHermitian)
-    (x : EuclideanSpace ℝ n) :
-    inner ℝ (A.toEuclideanLin x) x =
-      ∑ i, hA.eigenvalues i * (hA.eigenvectorBasis.repr x i) ^ 2 := by
-  -- Expand the inner product in the orthonormal eigenbasis and collapse cross terms.
-  calc
-    inner ℝ (A.toEuclideanLin x) x =
-        ∑ i,
-          inner ℝ (A.toEuclideanLin x) (hA.eigenvectorBasis i) *
-            inner ℝ (hA.eigenvectorBasis i) x := by
-          symm
-          simpa using hA.eigenvectorBasis.sum_inner_mul_inner (A.toEuclideanLin x) x
-    _ =
-        ∑ i,
-          (hA.eigenvalues i * (hA.eigenvectorBasis.repr x i)) *
-            (hA.eigenvectorBasis.repr x i) := by
-          refine Finset.sum_congr rfl ?_
-          intro i hi
-          have hcoord :
-              inner ℝ (hA.eigenvectorBasis i) (A.toEuclideanLin x) =
-                hA.eigenvalues i * (hA.eigenvectorBasis.repr x i) := by
-            calc
-              inner ℝ (hA.eigenvectorBasis i) (A.toEuclideanLin x)
-                  = (hA.eigenvectorBasis.repr (A.toEuclideanLin x)) i := by
-                      rw [OrthonormalBasis.repr_apply_apply]
-              _ = hA.eigenvalues i * (hA.eigenvectorBasis.repr x i) :=
-                    hA.repr_toEuclideanLin_eq_eigenvalue_mul_repr x i
-          rw [real_inner_comm, hcoord, OrthonormalBasis.repr_apply_apply]
-    _ = ∑ i, hA.eigenvalues i * (hA.eigenvectorBasis.repr x i) ^ 2 := by
-          refine Finset.sum_congr rfl ?_
-          intro i hi
-          ring
-
-end Matrix.IsHermitian
 
 namespace SteepestDescent
 
@@ -548,7 +462,8 @@ theorem candidateExactStep_energyNormSq_le_conditionRatioSq
           αStar := by
       -- Reuse the closed-form exact line-search minimizer for the quadratic profile.
       simpa [g, αStar] using
-        QuadraticOptimization.exactLineSearchStep_quadraticFunctional c b A hA f
+        (QuadraticOptimization.exactLineSearchStep_quadraticFunctional c b A hA f).on_subset
+          Set.Ioi_subset_Ici_self
     have hobjective_compare :
         quadraticFunctional c b A (update (quadraticFunctional c b A) αStar f) ≤
           quadraticFunctional c b A (update (quadraticFunctional c b A) β f) := by

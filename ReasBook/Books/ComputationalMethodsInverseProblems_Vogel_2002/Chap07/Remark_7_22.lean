@@ -120,124 +120,39 @@ lemma orderOptimalWith_of_pos_and_isEquivalent
   -- reopening the wrapper definition locally.
   exact (ParameterChoice.IsOrderOptimalWith_iff r α αopt).2 h
 
-/-- Helper for Remark 7.22: the kernel moment `KernelMoment.integral p 3 s` is
-strictly positive under the Proposition 7.20 admissibility inequalities. -/
-lemma kernelMomentIntegralPos_j3
-    {p s : ℝ}
-    (h_p : 0 < p) (h_s : 0 < s + 1) (h_decay : 0 < 3 * p - s - 1) :
-    0 < KernelMoment.integral p 3 s := by
-  -- Rewrite the kernel moment using Proposition 7.20's gamma-ratio formula.
-  rw [KernelMoment.integral_eq_gamma_mul_gamma_div_gamma (p := p) (s := s) (j := 3) h_s h_decay]
-  -- Every gamma factor is positive because its argument is positive.
-  have hGammaDecay : 0 < Real.Gamma (((3 : ℝ) * p - s - 1) / p) := by
-    apply Real.Gamma_pos_of_pos
-    exact div_pos h_decay h_p
-  have hGammaSource : 0 < Real.Gamma ((s + 1) / p) := by
-    apply Real.Gamma_pos_of_pos
-    exact div_pos h_s h_p
-  have hGammaThree : 0 < Real.Gamma (3 : ℝ) := by
-    norm_num [Real.Gamma_nat_eq_factorial]
-  -- The displayed quotient is therefore positive.
-  exact div_pos (mul_pos hGammaDecay hGammaSource) (mul_pos h_p hGammaThree)
-
-/-- Helper for Remark 7.22: the nonsaturated Tikhonov order constant
-`parameterConstantC1 b c p q` is positive. -/
-lemma parameterConstantC1_pos
-    (h_b : 0 < b) (h_c : 0 < c) (h_p : 1 < p) (h_q : 1 < q)
-    (h_nonsaturated : 2 * p - q > -1) :
-    0 < parameterConstantC1 b c p q := by
-  -- Route correction: the earlier blocker assumed `Prop_7_20` was unavailable,
-  -- but the existing gamma-ratio theorem already gives the needed positivity.
-  have h_p0 : 0 < p := by
-    linarith
-  have hIntegralMain : 0 < KernelMoment.integral p 3 (2 * p) := by
-    -- At `s = 2 * p`, the source inequalities reduce to `p > 1`.
-    apply kernelMomentIntegralPos_j3
-    · exact h_p0
-    · linarith
-    · linarith
-  have hIntegralTail : 0 < KernelMoment.integral p 3 (2 * p - q) := by
-    -- At `s = 2 * p - q`, use the nonsaturated condition and `p + q > 2`.
-    apply kernelMomentIntegralPos_j3
-    · exact h_p0
-    · linarith
-    · linarith
-  rw [parameterConstantC1_def]
-  have hBasePos :
-      0 <
-        (c ^ (q / p) * KernelMoment.integral p 3 (2 * p)) /
-          (b * KernelMoment.integral p 3 (2 * p - q)) := by
-    -- The ratio inside the outer real power has positive numerator and denominator.
-    exact div_pos
-      (mul_pos (Real.rpow_pos_of_pos h_c (q / p)) hIntegralMain)
-      (mul_pos h_b hIntegralTail)
-  -- Positive bases stay positive under arbitrary real powers.
-  exact Real.rpow_pos_of_pos hBasePos (p / (p + q))
-
-/-- Helper for Remark 7.22: Theorem 7.21's nonsaturated benchmark is
-definitionally the explicit scaled power-law rate used in the order-optimal
-comparison. -/
+omit [MeasureTheory.IsProbabilityMeasure μ] [CompleteSpace F] in
+/-- The nonsaturated parameter formula, written as a constant times a rate. -/
 lemma optimalFamily_nonsaturated_isEquivalent_scaledRate
-    (h_nonsaturated : 2 * p - q > -1) :
-    Asymptotics.IsEquivalent Filter.atTop alphaE
-      (fun n : ℕ ↦ parameterConstantC1 b c p q * (((σ ^ 2) / (n : ℝ)) ^ (p / (p + q)))) := by
-  -- Rewrite the benchmark owner to the explicit rate appearing in Remark 7.22.
-  have hBenchmarkEq :
-      nonsaturatedParameterBenchmark b c p q σ =
-        (fun n : ℕ ↦ parameterConstantC1 b c p q * (((σ ^ 2) / (n : ℝ)) ^ (p / (p + q)))) := by
-    funext n
-    simp [nonsaturatedParameterBenchmark_apply]
-  rw [← hBenchmarkEq]
-  exact
-    ParameterChoice.IsAsymptoticallyOptimal.isEquivalent
-      (optimalFamily_nonsaturated_isAsymptoticallyOptimal
-        b c p q σ alphaE h_nonsaturated)
-
-/-- Remark 7.22, nonsaturated companion bridge. In the regime `2 * p - q > -1`,
-the Tikhonov estimation-error minimizing family from `(7.80)` is order-optimal
-for the same raw power-law rate that `Remark 7.17` already uses for the TSVD
-optimal filter parameter from `(7.65)`. -/
-theorem optimalFamily_nonsaturated_isOrderOptimalWith
+    (h_model : PowerRisk.HasPowerRiskModel
+      (expectedObjective μ K Rtikh fTrue η) (nullspaceErrorFloor K fTrue) b c p q σ)
+    (h_alphaE : ParameterChoice.IsOptimalParameterFamily
+      (expectedObjective μ K Rtikh fTrue η) admissibleParameters alphaE)
+    (h_alphaE_pos : ∀ᶠ n in Filter.atTop, 0 < alphaE n)
     (h_b : 0 < b) (h_c : 0 < c) (h_p : 1 < p) (h_q : 1 < q) (h_σ : 0 < σ)
-    (h_expectedObjective_decomposition :
-      ∀ n α,
-        expectedObjective μ K Rtikh fTrue η n α =
-          tsum (fun i : ℕ+ ↦
-            (1 - SpectralFilter.tikhonov α ((S n).singularValueSequence (h_length n) i ^ 2)) ^ 2 *
-              ((S n).generalizedFourierCoefficientSequence (h_length n)
-                (fTrue - FilterRegularization.nullspaceComponent (K n) fTrue) i) ^ 2) +
-            nullspaceErrorFloor K fTrue n +
-            σ ^ 2 * tsum (fun i : ℕ+ ↦
-              SpectralFilter.tikhonov α ((S n).singularValueSequence (h_length n) i ^ 2) ^ 2 /
-                ((S n).singularValueSequence (h_length n) i ^ 2)))
-    (h_singularDecay :
-      ∀ n, (S n).HasAlgebraicSingularValueSquareDecay (h_length n) c p)
-    (h_fourierCoefficientSquareDecay :
-      ∀ n, (S n).HasAlgebraicFourierCoefficientSquareDecay (h_length n) fTrue b q)
-    (h_vanishingNullspaceComponent :
-      FilterRegularization.HasVanishingNullspaceComponent K fTrue)
-    (h_tikhonov : IsTikhonovReconstructionFamily K S Rtikh)
-    (h_alphaE :
-      ParameterChoice.IsOptimalParameterFamily
-        (expectedObjective μ K Rtikh fTrue η)
-        admissibleParameters
-        alphaE)
-    (h_nonsaturated : 2 * p - q > -1) :
-    ParameterChoice.IsOrderOptimalWith
-      (parameterConstantC1 b c p q)
-      alphaE
+    (h_nonsaturated : -1 < 2 * p - q) :
+    Asymptotics.IsEquivalent Filter.atTop alphaE
+      (fun n : ℕ ↦ parameterConstantC1 b c p q * (((σ ^ 2) / (n : ℝ)) ^ (p / (p + q)))) :=
+  optimalFamily_nonsaturated_isAsymptoticallyOptimal μ K fTrue b c p q σ η Rtikh alphaE
+    h_model h_alphaE h_alphaE_pos h_b h_c h_p h_q h_σ h_nonsaturated
+
+omit [MeasureTheory.IsProbabilityMeasure μ] [CompleteSpace F] in
+/-- Remark 7.22: the nonsaturated Tikhonov minimizer has the same parameter
+rate as TSVD, with the explicit constant from (7.80). -/
+theorem optimalFamily_nonsaturated_isOrderOptimalWith
+    (h_model : PowerRisk.HasPowerRiskModel
+      (expectedObjective μ K Rtikh fTrue η) (nullspaceErrorFloor K fTrue) b c p q σ)
+    (h_alphaE : ParameterChoice.IsOptimalParameterFamily
+      (expectedObjective μ K Rtikh fTrue η) admissibleParameters alphaE)
+    (h_alphaE_pos : ∀ᶠ n in Filter.atTop, 0 < alphaE n)
+    (h_b : 0 < b) (h_c : 0 < c) (h_p : 1 < p) (h_q : 1 < q) (h_σ : 0 < σ)
+    (h_nonsaturated : -1 < 2 * p - q) :
+    ParameterChoice.IsOrderOptimalWith (parameterConstantC1 b c p q) alphaE
       (fun n ↦ ((σ ^ 2) / (n : ℝ)) ^ (p / (p + q))) := by
-  -- Route correction: package the two already separated ingredients directly,
-  -- instead of unfolding the owner at the theorem site.
-  have hEquivalent :
-      Asymptotics.IsEquivalent Filter.atTop alphaE
-        (fun n : ℕ ↦ parameterConstantC1 b c p q * (((σ ^ 2) / (n : ℝ)) ^ (p / (p + q)))) :=
-    optimalFamily_nonsaturated_isEquivalent_scaledRate
-      (b := b) (c := c) (p := p) (q := q) (σ := σ) (alphaE := alphaE) h_nonsaturated
-  -- Combine positivity of the order constant with the scaled equivalence.
   exact orderOptimalWith_of_pos_and_isEquivalent
-    ⟨parameterConstantC1_pos (b := b) (c := c) (p := p) (q := q) h_b h_c h_p h_q h_nonsaturated,
-      hEquivalent⟩
+    ⟨parameterConstantC1_pos (b := b) (c := c) (p := p) (q := q)
+      h_b h_c h_p h_q h_nonsaturated,
+    optimalFamily_nonsaturated_isEquivalent_scaledRate μ K fTrue b c p q σ η Rtikh alphaE
+      h_model h_alphaE h_alphaE_pos h_b h_c h_p h_q h_σ h_nonsaturated⟩
 
 end
 

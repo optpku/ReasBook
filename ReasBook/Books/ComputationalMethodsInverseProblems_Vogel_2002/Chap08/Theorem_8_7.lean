@@ -10,6 +10,7 @@ public import Mathlib.Analysis.Calculus.Gradient.Basic
 public import Mathlib.Analysis.InnerProductSpace.PiL2
 public import Mathlib.Topology.OpenPartialHomeomorph.Continuity
 public import ComputationalMethodsInverseProblems_Vogel_2002.Chap08.Definition_8_4.Conjugate
+public import ComputationalMethodsInverseProblems_Vogel_2002.Chap08.Theorem_8_7.Representation
 
 public section
 
@@ -42,7 +43,8 @@ lemma eventually_toReal_conjugateRepresentation
 
 /-- thm_8_7 (Theorem 8.7). If `x₀ ∈ C`, `φ` is differentiable near `x₀` with
 local gradient map `F`, `F` has a local inverse branch near `x₀`, and near
-`F x₀` the conjugate functional is attained at `F.symm y`, then near `F x₀`
+`F x₀` that inverse branch lies in `C` and attains the conjugate functional,
+then near `F x₀`
 the real-valued local representative of `conjugateFunctional C φ` is Fréchet
 differentiable with gradient `F.symm y`. The local `EReal` representation
 supplied by `hrepr` already guarantees the finiteness needed to pass to
@@ -53,30 +55,19 @@ theorem hasGradientAt_conjugateFunctionalToReal_of_gradient_localInverse
     (F :
       OpenPartialHomeomorph (EuclideanSpace ℝ (Fin d)) (EuclideanSpace ℝ (Fin d)))
     (x₀ : EuclideanSpace ℝ (Fin d))
-    (hx₀C : x₀ ∈ C)
+    (_hx₀C : x₀ ∈ C)
     (hx₀ : x₀ ∈ F.source)
-    (hφ : ∀ᶠ x in 𝓝 x₀, HasGradientAt φ (F x) x)
+    (_hφ : ∀ᶠ x in 𝓝 x₀, HasGradientAt φ (F x) x)
+    (hmem : ∀ᶠ y in 𝓝 (F x₀), F.symm y ∈ C)
     (hrepr : ∀ᶠ y in 𝓝 (F x₀),
       conjugateFunctional C φ y =
         ((inner ℝ (F.symm y) y - φ (F.symm y) : ℝ) : EReal)) :
     ∀ᶠ y in 𝓝 (F x₀),
       HasGradientAt (fun y ↦ (conjugateFunctional C φ y).toReal) (F.symm y) y := by
-  have hreprReal :
-      ∀ᶠ y in 𝓝 (F x₀),
-        (conjugateFunctional C φ y).toReal = inner ℝ (F.symm y) y - φ (F.symm y) :=
-    eventually_toReal_conjugateRepresentation C φ F x₀ hrepr
-  -- Route correction: differentiating the explicit representative still needs local
-  -- `IsBigO` control of `F.symm`, so the source-faithful route is a sandwich proof
-  -- from the supremum defining `conjugateFunctional`.
-  -- That route needs the local admissibility `∀ᶠ y in 𝓝 (F x₀), F.symm y ∈ C` in order
-  -- to test the supremum at `F.symm y` and `F.symm z`.
-  -- The current Lean header weakens the source-side neighborhood hypothesis on `C` to
-  -- the single point assumption `hx₀C : x₀ ∈ C`; the representation identity `hrepr`
-  -- only identifies the value of the supremum, and does not certify that `F.symm y`
-  -- itself lies in `C`.
-  -- TODO: after repairing the statement with a local admissibility hypothesis for the
-  -- inverse branch, prove the pointwise remainder sandwich and conclude via
-  -- `hasGradientAt_iff_isLittleO`.
-  sorry
+  -- Continuity of the admissible maximizing branch suffices for the supremum sandwich.
+  filter_upwards [F.open_target.eventually_mem (F.map_source hx₀),
+    hmem.eventually_nhds, hrepr.eventually_nhds] with y hyTarget hymem hyrepr
+  exact hasGradientAt_conjugateFunctionalToReal_of_continuous_optimizer C φ F.symm y
+    (F.continuousAt_symm hyTarget) hymem hyrepr
 
 end VariationalRegularization

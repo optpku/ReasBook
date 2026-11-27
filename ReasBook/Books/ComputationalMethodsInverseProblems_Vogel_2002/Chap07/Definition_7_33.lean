@@ -34,7 +34,7 @@ parameter sequence `α` is asymptotically optimal relative to a benchmark
 sequence `αopt` when `α` and `αopt` are asymptotically equivalent as
 `n → ∞`. Choosing `αopt = αₑ` gives asymptotic e-optimality, and
 `αopt = αₚ` gives the analogous p-optimality notion. -/
-def IsAsymptoticallyOptimal (α αopt : ℕ → ℝ) : Prop :=
+@[expose] def IsAsymptoticallyOptimal (α αopt : ℕ → ℝ) : Prop :=
   Asymptotics.IsEquivalent Filter.atTop α αopt
 
 /-- An asymptotically optimal parameter sequence is asymptotically equivalent

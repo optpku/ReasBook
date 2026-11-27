@@ -6,7 +6,8 @@ Project-level attribution: optpku/ReasBook@f40e785158f79d8f0e645890825b840af912e
 
 module
 
-public import ComputationalMethodsInverseProblems_Vogel_2002.Chap08.Definition_8_9
+public import ComputationalMethodsInverseProblems_Vogel_2002.Chap08.Theorem_8_15.Normed
+public import ComputationalMethodsInverseProblems_Vogel_2002.Chap08.Theorem_8_18.Comparison
 public import Mathlib.MeasureTheory.Function.LpSeminorm.Basic
 public import Mathlib.MeasureTheory.Function.Holder
 public import Mathlib.Topology.Algebra.Module.Spaces.WeakDual
@@ -23,35 +24,6 @@ open scoped BigOperators
 
 variable {d : ℕ}
 
-/-- The canonical inclusion from `L^p(Ω)` to `L¹(Ω)` on a finite-measure domain. -/
-def lpToL1
-    {Ω : TopologicalSpace.Opens (EuclideanSpace ℝ (Fin d))}
-    {p : ENNReal} [Fact (1 ≤ p)] [MeasureTheory.IsFiniteMeasure (domainMeasure Ω)]
-    (f : MeasureTheory.Lp ℝ p (domainMeasure Ω)) :
-    MeasureTheory.Lp ℝ 1 (domainMeasure Ω) :=
-  ⟨(f : (EuclideanSpace ℝ (Fin d)) →ₘ[domainMeasure Ω] ℝ),
-    MeasureTheory.Lp.antitone (E := ℝ) (μ := domainMeasure Ω)
-      (show (1 : ENNReal) ≤ p from Fact.out) f.2⟩
-
-/-- `lpToL1` preserves the underlying almost-everywhere equivalence class. -/
-@[simp] theorem lpToL1_toAEEqFun
-    {Ω : TopologicalSpace.Opens (EuclideanSpace ℝ (Fin d))}
-    {p : ENNReal} [Fact (1 ≤ p)] [MeasureTheory.IsFiniteMeasure (domainMeasure Ω)]
-    (f : MeasureTheory.Lp ℝ p (domainMeasure Ω)) :
-    ((lpToL1 f : MeasureTheory.Lp ℝ 1 (domainMeasure Ω)) :
-        (EuclideanSpace ℝ (Fin d)) →ₘ[domainMeasure Ω] ℝ) =
-      (f : (EuclideanSpace ℝ (Fin d)) →ₘ[domainMeasure Ω] ℝ) := by
-  simp [lpToL1]
-
-/-- The `L¹(Ω)` image produced by `lpToL1` agrees almost everywhere with the original
-`L^p(Ω)` representative. -/
-theorem lpToL1_ae_eq
-    {Ω : TopologicalSpace.Opens (EuclideanSpace ℝ (Fin d))}
-    {p : ENNReal} [Fact (1 ≤ p)] [MeasureTheory.IsFiniteMeasure (domainMeasure Ω)]
-    (f : MeasureTheory.Lp ℝ p (domainMeasure Ω)) :
-    lpToL1 f =ᵐ[domainMeasure Ω] f := by
-  simp [lpToL1]
-
 /-- Helper for Theorem 8.18: rewrite the divergence in the stable projection spelling used by the
 continuity and compact-support APIs. -/
 lemma admissibleDivergence_eq_sum_projFDeriv
@@ -65,177 +37,6 @@ lemma admissibleDivergence_eq_sum_projFDeriv
   rw [admissibleDivergence_def]
   refine Finset.sum_congr rfl fun i _ ↦ ?_
   rfl
-
-/-- Helper for Theorem 8.18: rewrite the divergence in the kernel-stable `PiLp` coordinate spelling
-used by the derivative regularity lemmas. -/
-lemma admissibleDivergence_eq_sum_ofLpFDeriv
-    {Ω : TopologicalSpace.Opens (EuclideanSpace ℝ (Fin d))}
-    (v : AdmissibleTestField Ω)
-    (x : EuclideanSpace ℝ (Fin d)) :
-    admissibleDivergence v x =
-      ∑ i : Fin d,
-        (fderiv ℝ v.toTestFunction x (PiLp.single 2 i (1 : ℝ))).ofLp i := by
-  -- This is the same divergence formula, spelled in the `PiLp` normal form used by the kernel.
-  rw [admissibleDivergence_def]
-
-/-- Helper for Theorem 8.18: each coordinate summand in the divergence formula is continuous. -/
-lemma admissibleDivergenceSummandContinuous
-    {Ω : TopologicalSpace.Opens (EuclideanSpace ℝ (Fin d))}
-    (v : AdmissibleTestField Ω)
-    (i : Fin d) :
-    Continuous
-      (fun x ↦
-        (fderiv ℝ v.toTestFunction x (PiLp.single 2 i (1 : ℝ))).ofLp i) := by
-  -- Route correction: Lean normalizes Euclidean coordinates to the direct coordinate spelling here,
-  -- so we prove continuity in that canonical form.
-  -- The bundled derivative-evaluation map is continuous for `C¹` test fields.
-  have hderiv :
-      Continuous
-        (fun x : EuclideanSpace ℝ (Fin d) ↦
-          fderiv ℝ v.toTestFunction x (PiLp.single 2 i (1 : ℝ))) := by
-    have happly :
-        Continuous
-          (fun p : EuclideanSpace ℝ (Fin d) × EuclideanSpace ℝ (Fin d) ↦
-            (fderiv ℝ v.toTestFunction p.1) p.2) :=
-      v.toTestFunction.contDiff.continuous_fderiv_apply (by simp)
-    -- Freeze the derivative direction to the `i`th basis vector.
-    have hfreeze :
-        Continuous
-          (fun x : EuclideanSpace ℝ (Fin d) ↦
-            (fun p : EuclideanSpace ℝ (Fin d) × EuclideanSpace ℝ (Fin d) ↦
-              (fderiv ℝ v.toTestFunction p.1) p.2)
-              (x, WithLp.toLp 2 (Pi.single i (1 : ℝ)))) :=
-      happly.comp (continuous_id.prodMk continuous_const)
-    simpa [PiLp.toLp_single] using hfreeze
-  -- Postcompose with the continuous coordinate projection.
-  have happly :
-      Continuous (fun y : EuclideanSpace ℝ (Fin d) ↦ y.ofLp i) :=
-    PiLp.continuous_apply (p := 2) (β := fun _ : Fin d => ℝ) i
-  have hcoord :
-      Continuous
-        (fun x : EuclideanSpace ℝ (Fin d) ↦
-          (fun y : EuclideanSpace ℝ (Fin d) ↦ y.ofLp i)
-            (fderiv ℝ v.toTestFunction x (PiLp.single 2 i (1 : ℝ)))) :=
-    happly.comp hderiv
-  simpa using hcoord
-
-/-- Helper for Theorem 8.18: each coordinate summand in the divergence formula has compact
-support. -/
-lemma admissibleDivergenceSummandHasCompactSupport
-    {Ω : TopologicalSpace.Opens (EuclideanSpace ℝ (Fin d))}
-    (v : AdmissibleTestField Ω)
-    (i : Fin d) :
-    HasCompactSupport
-      (fun x ↦
-        (fderiv ℝ v.toTestFunction x (PiLp.single 2 i (1 : ℝ))).ofLp i) := by
-  -- Route correction: the support lemma should use the same direct coordinate spelling as the
-  -- main divergence formula, avoiding another projection-vs-coordinate normalization step.
-  -- First keep the derivative evaluation in the stable fixed-direction spelling.
-  have hderiv :
-      HasCompactSupport
-        (fun x : EuclideanSpace ℝ (Fin d) ↦
-          fderiv ℝ v.toTestFunction x (PiLp.single 2 i (1 : ℝ))) := by
-    simpa using
-      (v.toTestFunction.hasCompactSupport.fderiv_apply ℝ (WithLp.toLp 2 (Pi.single i (1 : ℝ))))
-  -- Then push compact support through the zero-preserving coordinate projection.
-  have hcoord :
-      HasCompactSupport
-        (fun x : EuclideanSpace ℝ (Fin d) ↦
-          (fun y : EuclideanSpace ℝ (Fin d) ↦ y.ofLp i)
-            (fderiv ℝ v.toTestFunction x (PiLp.single 2 i (1 : ℝ)))) :=
-    hderiv.comp_left (g := fun y : EuclideanSpace ℝ (Fin d) ↦ y.ofLp i) rfl
-  simpa using hcoord
-
-/-- Helper for Theorem 8.18: the admissible divergence is continuous. -/
-lemma admissibleDivergenceContinuous
-    {Ω : TopologicalSpace.Opens (EuclideanSpace ℝ (Fin d))}
-    (v : AdmissibleTestField Ω) :
-    Continuous (admissibleDivergence v) := by
-  have hsum :
-      admissibleDivergence v =
-        fun x : EuclideanSpace ℝ (Fin d) ↦
-          ∑ i : Fin d, (fderiv ℝ v.toTestFunction x (PiLp.single 2 i (1 : ℝ))).ofLp i := by
-    -- Use the dedicated normalization lemma once at function level.
-    funext x
-    exact admissibleDivergence_eq_sum_ofLpFDeriv v x
-  -- Rewrite once to the kernel-stable `PiLp` normal form and sum the coordinate lemmas there.
-  rw [hsum]
-  exact continuous_finsetSum Finset.univ fun i _ ↦ admissibleDivergenceSummandContinuous v i
-
-/-- Helper for Theorem 8.18: the normalized `PiLp` divergence sum has compact support. -/
-lemma admissibleDivergenceNormalizedHasCompactSupport
-    {Ω : TopologicalSpace.Opens (EuclideanSpace ℝ (Fin d))}
-    (v : AdmissibleTestField Ω) :
-    HasCompactSupport
-      (fun x : EuclideanSpace ℝ (Fin d) ↦
-        ∑ i : Fin d, (fderiv ℝ v.toTestFunction x (PiLp.single 2 i (1 : ℝ))).ofLp i) := by
-  let φ : Fin d → EuclideanSpace ℝ (Fin d) → ℝ := fun i x ↦
-    (fderiv ℝ v.toTestFunction x (PiLp.single 2 i (1 : ℝ))).ofLp i
-  have hφ : ∀ i ∈ Finset.univ, HasCompactSupport (φ i) := by
-    intro i _
-    simpa [φ] using admissibleDivergenceSummandHasCompactSupport v i
-  have hsum :
-      (∑ i : Fin d, φ i) =
-        fun x : EuclideanSpace ℝ (Fin d) ↦
-          ∑ i : Fin d, (fderiv ℝ v.toTestFunction x (PiLp.single 2 i (1 : ℝ))).ofLp i := by
-    -- Normalize the sum of functions to the pointwise finite sum.
-    funext x
-    simp [φ]
-  -- Sum the coordinate support lemmas before transporting back to the source-facing divergence.
-  rw [← hsum]
-  exact HasCompactSupport.finset_sum (s := Finset.univ) hφ
-
-/-- Helper for Theorem 8.18: the admissible divergence has compact support. -/
-lemma admissibleDivergenceHasCompactSupport
-    {Ω : TopologicalSpace.Opens (EuclideanSpace ℝ (Fin d))}
-    (v : AdmissibleTestField Ω) :
-    HasCompactSupport (admissibleDivergence v) := by
-  have hsum :
-      admissibleDivergence v =
-        fun x : EuclideanSpace ℝ (Fin d) ↦
-          ∑ i : Fin d, (fderiv ℝ v.toTestFunction x (PiLp.single 2 i (1 : ℝ))).ofLp i := by
-    -- Use the dedicated normalization lemma once at function level.
-    funext x
-    exact admissibleDivergence_eq_sum_ofLpFDeriv v x
-  -- Transport the normalized compact-support statement back to `admissibleDivergence`.
-  rw [hsum]
-  exact admissibleDivergenceNormalizedHasCompactSupport v
-
-/-- Helper for Theorem 8.18: the admissible divergence belongs to `L∞(Ω)`. -/
-lemma admissibleDivergenceMemLpTop
-    {Ω : TopologicalSpace.Opens (EuclideanSpace ℝ (Fin d))}
-    (v : AdmissibleTestField Ω) :
-    MeasureTheory.MemLp (admissibleDivergence v) ⊤ (domainMeasure Ω) :=
-  (admissibleDivergenceContinuous v).memLp_top_of_hasCompactSupport
-    (admissibleDivergenceHasCompactSupport v) (domainMeasure Ω)
-
-/-- Helper for Theorem 8.18: pairing against a fixed admissible divergence defines a continuous
-linear functional on `L¹(Ω)`. -/
-def totalVariationPairingCLM
-    {Ω : TopologicalSpace.Opens (EuclideanSpace ℝ (Fin d))}
-    (v : AdmissibleTestField Ω) :
-    MeasureTheory.Lp ℝ 1 (domainMeasure Ω) →L[ℝ] ℝ :=
-  let divLp : MeasureTheory.Lp ℝ ⊤ (domainMeasure Ω) :=
-    MeasureTheory.MemLp.toLp (admissibleDivergence v) (admissibleDivergenceMemLpTop v)
-  ((ContinuousLinearMap.apply ℝ ℝ) divLp).comp
-    (ContinuousLinearMap.lpPairing (μ := domainMeasure Ω) (p := (1 : ENNReal))
-      (q := (⊤ : ENNReal)) (ContinuousLinearMap.mul ℝ ℝ))
-
-/-- Helper for Theorem 8.18: the pairing continuous linear map evaluates to the original
-divergence pairing. -/
-lemma totalVariationPairingCLM_apply
-    {Ω : TopologicalSpace.Opens (EuclideanSpace ℝ (Fin d))}
-    (v : AdmissibleTestField Ω)
-    (f : MeasureTheory.Lp ℝ 1 (domainMeasure Ω)) :
-    totalVariationPairingCLM v f = admissibleDivergencePairing f v := by
-  -- Unfold the packaging once, then use the canonical `Lp` pairing integral formula.
-  rw [admissibleDivergencePairing_def, totalVariationPairingCLM]
-  simp only [ContinuousLinearMap.comp_apply, ContinuousLinearMap.apply_apply]
-  rw [ContinuousLinearMap.lpPairing_eq_integral]
-  -- Normalize the `L∞` witness back to the original divergence function.
-  refine MeasureTheory.integral_congr_ae ?_
-  filter_upwards [MeasureTheory.MemLp.coeFn_toLp (admissibleDivergenceMemLpTop v)] with x hx
-  simp [hx]
 
 /-- Helper for Theorem 8.18: continuous linear functionals remain continuous on the weak space. -/
 lemma continuousEvalOnWeakSpace
@@ -292,8 +93,10 @@ lemma lpToL1_add
     lpToL1 (f + g) = lpToL1 f + lpToL1 g := by
   -- Both sides are represented by the same almost-everywhere sum.
   refine MeasureTheory.Lp.ext ?_
-  filter_upwards with x
-  rfl
+  filter_upwards [lpToL1_ae_eq (f + g), lpToL1_ae_eq f, lpToL1_ae_eq g,
+    MeasureTheory.Lp.coeFn_add f g, MeasureTheory.Lp.coeFn_add (lpToL1 f) (lpToL1 g)]
+      with x hsum hf hg hfg hfg1
+  simp_all
 
 /-- Helper for Theorem 8.18: `lpToL1` preserves scalar multiplication. -/
 lemma lpToL1_smul
@@ -304,8 +107,10 @@ lemma lpToL1_smul
     lpToL1 (c • f) = c • lpToL1 f := by
   -- Both sides are represented by the same almost-everywhere scalar multiple.
   refine MeasureTheory.Lp.ext ?_
-  filter_upwards with x
-  rfl
+  filter_upwards [lpToL1_ae_eq (c • f), lpToL1_ae_eq f,
+    MeasureTheory.Lp.coeFn_smul c f, MeasureTheory.Lp.coeFn_smul c (lpToL1 f)]
+      with x hsmul hf hc hc1
+  simp_all
 
 /-- Helper for Theorem 8.18: the canonical inclusion `lpToL1` satisfies the standard finite-measure
 norm bound. -/

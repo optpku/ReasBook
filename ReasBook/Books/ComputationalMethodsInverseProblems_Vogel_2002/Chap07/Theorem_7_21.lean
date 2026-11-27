@@ -11,6 +11,8 @@ public import ComputationalMethodsInverseProblems_Vogel_2002.Chap07.Notation_7_7
 public import ComputationalMethodsInverseProblems_Vogel_2002.Chap07.Prop_7_20
 public import ComputationalMethodsInverseProblems_Vogel_2002.Chap07.Remark_7_12.Nullspace
 public import ComputationalMethodsInverseProblems_Vogel_2002.Chap07.Theorem_7_21.ExpectedError
+public import ComputationalMethodsInverseProblems_Vogel_2002.Chap07.Exercise_7_17
+public import ComputationalMethodsInverseProblems_Vogel_2002.Chap07.Theorem_7_21.Asymptotics
 public import Mathlib.Analysis.MeanInequalities
 public import Mathlib.Analysis.SpecialFunctions.Pow.Asymptotics
 
@@ -23,7 +25,7 @@ Theorem 7.21 (Minimizer of Estimation Error for Tikhonov Regularization).
 
 The source theorem gives two displayed asymptotic formulas: the parameter
 asymptotics `(7.80)` and the expected estimation-error asymptotics `(7.81)`.
-In Lean these are recorded as six regime-specific theorem skeletons using the
+In Lean these are proved as six regime-specific theorems using the
 existing Chapter 7 owners for the expected estimation objective, admissible
 parameter families, the critical benchmark sequence, and the nullspace/error
 benchmark terms. The source-side noise/objective setup from the preceding
@@ -38,7 +40,7 @@ universe u v w
 section
 
 variable {Ω : Type u} [MeasurableSpace Ω]
-variable (μ : MeasureTheory.Measure Ω) [MeasureTheory.IsProbabilityMeasure μ]
+variable (μ : MeasureTheory.Measure Ω)
 variable {H : Type v} {F : Type w}
 variable [NormedAddCommGroup H] [InnerProductSpace ℝ H] [CompleteSpace H]
 variable [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
@@ -50,26 +52,6 @@ variable (fTrue : H) (b c p q σ : ℝ)
 variable (η : ℕ → Ω → F)
 variable (Rtikh : ℕ → ℝ → F →L[ℝ] H)
 variable (alphaE betaE : ℕ → ℝ)
-
-variable (h_b : 0 < b) (h_c : 0 < c) (h_p : 1 < p) (h_q : 1 < q) (h_σ : 0 < σ)
-variable (h_expectedObjective_decomposition :
-  ∀ n α,
-    expectedObjective μ K Rtikh fTrue η n α =
-      tsum (fun i : ℕ+ ↦
-        (1 - SpectralFilter.tikhonov α ((S n).singularValueSequence (h_length n) i ^ 2)) ^ 2 *
-          ((S n).generalizedFourierCoefficientSequence (h_length n)
-            (fTrue - FilterRegularization.nullspaceComponent (K n) fTrue) i) ^ 2) +
-        nullspaceErrorFloor K fTrue n +
-        σ ^ 2 * tsum (fun i : ℕ+ ↦
-          SpectralFilter.tikhonov α ((S n).singularValueSequence (h_length n) i ^ 2) ^ 2 /
-            ((S n).singularValueSequence (h_length n) i ^ 2)))
-variable (h_singularDecay :
-  ∀ n, (S n).HasAlgebraicSingularValueSquareDecay (h_length n) c p)
-variable (h_fourierCoefficientSquareDecay :
-  ∀ n, (S n).HasAlgebraicFourierCoefficientSquareDecay (h_length n) fTrue b q)
-variable (h_vanishingNullspaceComponent :
-  FilterRegularization.HasVanishingNullspaceComponent K fTrue)
-variable (h_tikhonov : IsTikhonovReconstructionFamily K S Rtikh)
 
 /-- Helper for Theorem 7.21: reindexing the Chapter 7 quadrature series from
 `ℕ` to `ℕ+` matches the positive-mode singular-system indexing used in the
@@ -426,12 +408,12 @@ lemma criticalRootRhs_pos
         (by nlinarith [h_p]) (by nlinarith [h_p])
   have hScalePos : 0 < (σ ^ 2) / (n : ℝ) := by
     exact div_pos (by nlinarith [sq_pos_of_pos h_σ]) (show 0 < (n : ℝ) by exact_mod_cast n.2)
-  have hRestPos : 0 < b ^ (-1 : ℝ) * c ^ 2 * p * KernelMoment.integral p 3 (2 * p) := by
+  have hRestPos : 0 < b ^ (-1 : ℝ) * c ^ 2 * c ^ (1 / p) * p * KernelMoment.integral p 3 (2 * p) := by
     have hLeftPos : 0 < b ^ (-1 : ℝ) * c ^ 2 := by
       exact mul_pos (Real.rpow_pos_of_pos h_b (-1 : ℝ)) (sq_pos_of_pos h_c)
     have hRightPos : 0 < p * KernelMoment.integral p 3 (2 * p) := by
       exact mul_pos h_p0 hIntegralMain
-    simpa [mul_assoc] using mul_pos hLeftPos hRightPos
+    simpa [mul_assoc] using mul_pos (mul_pos hLeftPos (Real.rpow_pos_of_pos h_c _)) hRightPos
   -- Every factor in the explicit root-equation right-hand side is positive.
   unfold criticalRootRhs
   simpa [mul_assoc] using mul_pos hScalePos hRestPos
@@ -451,7 +433,7 @@ lemma criticalProfile_scaleExact
 below by its value at `t = 1`. -/
 lemma weightedPowerProfile_ge
     {A B a b t : ℝ}
-    (hA : 0 < A) (hB : 0 < B) (ha : 0 < a) (hb : 0 < b)
+    (hA : 0 < A) (hB : 0 < B) (_ha : 0 < a) (_hb : 0 < b)
     (h_balance : A * a = B * b) (ht : 0 < t) :
     A + B ≤ A * t ^ a + B * t ^ (-b) := by
   have hAB_pos : 0 < A + B := add_pos hA hB
@@ -862,7 +844,7 @@ lemma tikhonovBiasCore_normalForm
     have hApow2 :
         (((c * (i : ℝ) ^ (-p)) ^ (2 : ℕ)) : ℝ) =
           (c * (i : ℝ) ^ (-p)) ^ (2 : ℝ) := by
-      simpa [Real.rpow_natCast]
+      simp
     have hpowi :
         ((i : ℝ) ^ (-p)) ^ (-(2 : ℝ)) = (i : ℝ) ^ (2 * p) := by
       calc
@@ -970,7 +952,7 @@ lemma rescaledBiasCoefficient_eq_sqInv
           rw [← Real.rpow_add hc (-(q - 1) / p) (-((2 * p - q + 1) / p))]
           rw [← Real.rpow_add hα ((q - 1) / p) ((2 * p - q + 1) / p)]
           rw [hcexp, hαexp]
-          simpa [Real.rpow_natCast] using mul_comm (c ^ (-(2 : ℝ))) (α ^ (2 : ℝ))
+          simpa only [Real.rpow_two] using mul_comm (c ^ (-(2 : ℝ))) (α ^ (2 : ℝ))
 
 /-- Helper for Theorem 7.21: the Tikhonov bias summand rewrites exactly to the
 `j = 2`, `s = 2p - q` kernel-moment integrand after the step rescaling
@@ -1184,7 +1166,7 @@ lemma expectedObjective_eq_estimationQuadratureProfile
             ((S n).generalizedFourierCoefficientSequence (h_length n)
               (fTrue - FilterRegularization.nullspaceComponent (K n) fTrue) i) ^ 2) +
           nullspaceErrorFloor K fTrue n +
-          σ ^ 2 * tsum (fun i : ℕ+ ↦
+          (σ ^ 2 / (n : ℝ)) * tsum (fun i : ℕ+ ↦
             SpectralFilter.tikhonov α ((S n).singularValueSequence (h_length n) i ^ 2) ^ 2 /
               ((S n).singularValueSequence (h_length n) i ^ 2)))
     (h_singular : (S n).HasAlgebraicSingularValueSquareDecay (h_length n) c p)
@@ -1193,7 +1175,7 @@ lemma expectedObjective_eq_estimationQuadratureProfile
       nullspaceErrorFloor K fTrue n +
         b * c ^ (-(q - 1) / p) * α ^ ((q - 1) / p) *
           KernelMoment.quadratureSeries p 2 (2 * p - q) ((α / c) ^ (1 / p)) +
-        σ ^ 2 * c ^ (1 / p) * α ^ (-(p + 1) / p) *
+        (σ ^ 2 / (n : ℝ)) * c ^ (1 / p) * α ^ (-(p + 1) / p) *
           KernelMoment.quadratureSeries p 2 p ((α / c) ^ (1 / p)) := by
   let h : ℝ := (α / c) ^ (1 / p)
   have hbias :
@@ -1272,7 +1254,7 @@ lemma expectedObjective_eq_estimationQuadratureProfile
           ((S n).generalizedFourierCoefficientSequence (h_length n)
             (fTrue - FilterRegularization.nullspaceComponent (K n) fTrue) i) ^ 2) +
         nullspaceErrorFloor K fTrue n +
-        σ ^ 2 *
+        (σ ^ 2 / (n : ℝ)) *
           (∑' i : ℕ+,
             SpectralFilter.tikhonov α ((S n).singularValueSequence (h_length n) i ^ 2) ^ 2 /
               ((S n).singularValueSequence (h_length n) i ^ 2)) := by
@@ -1283,7 +1265,7 @@ lemma expectedObjective_eq_estimationQuadratureProfile
         (1 - SpectralFilter.tikhonov α ((S n).singularValueSequence (h_length n) i ^ 2)) ^ 2 *
           ((S n).generalizedFourierCoefficientSequence (h_length n)
               (fTrue - FilterRegularization.nullspaceComponent (K n) fTrue) i) ^ 2) +
-        σ ^ 2 *
+        (σ ^ 2 / (n : ℝ)) *
           (∑' i : ℕ+,
             SpectralFilter.tikhonov α ((S n).singularValueSequence (h_length n) i ^ 2) ^ 2 /
               ((S n).singularValueSequence (h_length n) i ^ 2)) := by
@@ -1292,7 +1274,7 @@ lemma expectedObjective_eq_estimationQuadratureProfile
       nullspaceErrorFloor K fTrue n +
         b * c ^ (-(q - 1) / p) * α ^ ((q - 1) / p) *
           KernelMoment.quadratureSeries p 2 (2 * p - q) h +
-        σ ^ 2 *
+        (σ ^ 2 / (n : ℝ)) *
           (c ^ (1 / p) * α ^ (-(p + 1) / p) *
             KernelMoment.quadratureSeries p 2 p h) := by
             rw [hbias, hvariance]
@@ -1300,10 +1282,88 @@ lemma expectedObjective_eq_estimationQuadratureProfile
       nullspaceErrorFloor K fTrue n +
         b * c ^ (-(q - 1) / p) * α ^ ((q - 1) / p) *
           KernelMoment.quadratureSeries p 2 (2 * p - q) ((α / c) ^ (1 / p)) +
-        σ ^ 2 * c ^ (1 / p) * α ^ (-(p + 1) / p) *
+        (σ ^ 2 / (n : ℝ)) * c ^ (1 / p) * α ^ (-(p + 1) / p) *
           KernelMoment.quadratureSeries p 2 p ((α / c) ^ (1 / p)) := by
             simp [h, mul_assoc, mul_left_comm, mul_comm]
 
+/-- The original spectral error decomposition, with variance `σ²/n`, implies
+`HasPowerRiskModel`. The identity is only required for positive parameters. -/
+lemma hasPowerRiskModel_of_spectralDecomposition
+    (h_b : 0 < b) (h_c : 0 < c) (h_p : 1 < p) (h_q : 1 < q)
+    (h_singular : ∀ n, (S n).HasAlgebraicSingularValueSquareDecay (h_length n) c p)
+    (h_fourier : ∀ n, (S n).HasAlgebraicFourierCoefficientSquareDecay
+      (h_length n) fTrue b q)
+    (h_decomposition : ∀ᶠ n in Filter.atTop, ∀ α, 0 < α →
+      expectedObjective μ K Rtikh fTrue η n α =
+        (∑' i : ℕ+, (1 - SpectralFilter.tikhonov α
+          ((S n).singularValueSequence (h_length n) i ^ 2)) ^ 2 *
+          ((S n).generalizedFourierCoefficientSequence (h_length n)
+            (fTrue - FilterRegularization.nullspaceComponent (K n) fTrue) i) ^ 2) +
+        nullspaceErrorFloor K fTrue n +
+        (σ ^ 2 / (n : ℝ)) * ∑' i : ℕ+,
+          SpectralFilter.tikhonov α ((S n).singularValueSequence (h_length n) i ^ 2) ^ 2 /
+            ((S n).singularValueSequence (h_length n) i ^ 2)) :
+    PowerRisk.HasPowerRiskModel (expectedObjective μ K Rtikh fTrue η)
+      (nullspaceErrorFloor K fTrue) b c p q σ := by
+  filter_upwards [h_decomposition] with n hn
+  intro α hα
+  have hαd (i : ℕ+) : 0 < c * (i : ℝ) ^ (-p) + α := by
+    have hi : 0 < (i : ℝ) := by exact_mod_cast i.2
+    positivity
+  have hbias :
+      (∑' i : ℕ+, (1 - SpectralFilter.tikhonov α
+          ((S n).singularValueSequence (h_length n) i ^ 2)) ^ 2 *
+          ((S n).generalizedFourierCoefficientSequence (h_length n)
+            (fTrue - FilterRegularization.nullspaceComponent (K n) fTrue) i) ^ 2) =
+      α ^ 2 * ∑' k : ℕ, PowerRisk.coeff b q k /
+        (PowerRisk.eigenvalue c p k + α) ^ 2 := by
+    calc
+      _ = ∑' i : ℕ+, α ^ 2 * (b * (i : ℝ) ^ (-q) /
+          (c * (i : ℝ) ^ (-p) + α) ^ 2) := by
+        apply tsum_congr
+        intro i
+        rw [fourierCoeffSq_sub_nullspaceComponent_eq K S h_length fTrue,
+          h_fourier n i, h_singular n i]
+        unfold SpectralFilter.tikhonov
+        field_simp [(hαd i).ne']
+        ring
+      _ = α ^ 2 * ∑' i : ℕ+, b * (i : ℝ) ^ (-q) /
+          (c * (i : ℝ) ^ (-p) + α) ^ 2 := by rw [tsum_mul_left]
+      _ = _ := by
+        congr 1
+        simpa [PowerRisk.coeff, PowerRisk.eigenvalue] using
+          (Equiv.pnatEquivNat.tsum_eq (fun k : ℕ ↦
+            b * (((k + 1 : ℕ) : ℝ)) ^ (-q) /
+              (c * (((k + 1 : ℕ) : ℝ)) ^ (-p) + α) ^ 2))
+  have hvariance :
+      (∑' i : ℕ+, SpectralFilter.tikhonov α
+          ((S n).singularValueSequence (h_length n) i ^ 2) ^ 2 /
+          ((S n).singularValueSequence (h_length n) i ^ 2)) =
+      SeriesRisk.varianceMoment (PowerRisk.eigenvalue c p) 2 α := by
+    calc
+      _ = ∑' i : ℕ+, c * (i : ℝ) ^ (-p) / (c * (i : ℝ) ^ (-p) + α) ^ 2 := by
+        apply tsum_congr
+        intro i
+        have hi : 0 < (i : ℝ) := by exact_mod_cast i.2
+        have h_lam : 0 < c * (i : ℝ) ^ (-p) := by positivity
+        rw [h_singular n i]
+        unfold SpectralFilter.tikhonov
+        field_simp [h_lam.ne', (hαd i).ne']
+        ring
+      _ = _ := by
+        simpa [SeriesRisk.varianceMoment, PowerRisk.eigenvalue] using
+          (Equiv.pnatEquivNat.tsum_eq (fun k : ℕ ↦
+            c * (((k + 1 : ℕ) : ℝ)) ^ (-p) /
+              (c * (((k + 1 : ℕ) : ℝ)) ^ (-p) + α) ^ 2))
+  rw [hn α hα, hbias, hvariance,
+    SeriesRisk.risk_eq_split
+      (fun k ↦ show 0 ≤ PowerRisk.coeff b q k by dsimp [PowerRisk.coeff]; positivity)
+      (fun k ↦ show 0 ≤ PowerRisk.eigenvalue c p k by dsimp [PowerRisk.eigenvalue]; positivity)
+      (PowerRisk.coeff_summable h_q) (PowerRisk.eigenvalue_summable h_p) hα]
+  dsimp [PowerRisk.noiseLevel]
+  ring
+
+omit [CompleteSpace H] [CompleteSpace F] in
 /-- Helper for Theorem 7.21: once a positive benchmark `β` has a uniform
 off-neighborhood objective gap, any optimal family has ratio `alphaE / β`
 tending to `1`. -/
@@ -1372,6 +1432,7 @@ lemma ratioTendstoOne_of_optimality_gap
     exact min_le_left _ _
   exact lt_of_lt_of_le h_dist_lt_δ h_δ_le_ε
 
+omit [CompleteSpace H] [CompleteSpace F] in
 /-- Helper for Theorem 7.21: the generic ratio-to-one bridge packages the
 eventual gap argument into `Asymptotics.IsEquivalent`. -/
 lemma isEquivalent_of_optimality_gap
@@ -1408,13 +1469,8 @@ wrapper `ParameterChoice.IsAsymptoticallyOptimal`. -/
 lemma isAsymptoticallyOptimal_of_isEquivalent_local
     {α αopt : ℕ → ℝ}
     (h : Asymptotics.IsEquivalent Filter.atTop α αopt) :
-    ParameterChoice.IsAsymptoticallyOptimal α αopt := by
-  -- TODO: this `module` file cannot access the non-`module` bridge import, and
-  -- the exposed equation theorem for `IsAsymptoticallyOptimal` is not usable
-  -- here. Restore the canonical owner bridge once the wrapper is exported to a
-  -- `module`-safe dependency.
-  let _ := h
-  sorry
+    ParameterChoice.IsAsymptoticallyOptimal α αopt :=
+  h
 
 /-- The regime-split parameter asymptotics from Theorem 7.21 `(7.80)`. -/
 def OptimalFamilyParameterAsymptotics : Prop :=
@@ -1442,338 +1498,239 @@ def OptimalFamilyExpectedErrorAsymptotics : Prop :=
         (objectiveAlong (expectedObjective μ K Rtikh fTrue η) alphaE)
         (fun n ↦
           nullspaceErrorFloor K fTrue n +
-            criticalErrorBenchmark c p betaE n)) ∧
+            criticalErrorBenchmark c p σ betaE n)) ∧
     (2 * p - q < -1 →
       Asymptotics.IsEquivalent Filter.atTop
         (objectiveAlong (expectedObjective μ K Rtikh fTrue η) alphaE)
         (fun n ↦
           nullspaceErrorFloor K fTrue n +
-            saturatedErrorBenchmark p σ n))
+            saturatedErrorBenchmark b c p q σ n))
 
-/-- Theorem 7.21 `(7.80)`, nonsaturated branch. In the regime `2 * p - q > -1`,
-any Chapter 7 Tikhonov estimation-error minimizing family `alphaE` is
-asymptotically equivalent to the explicit nonsaturated benchmark sequence. -/
--- TODO: Rewrite `expectedObjective` into the quadrature-profile normal form,
--- normalize at `α = t * nonsaturatedParameterBenchmark ... n`, and use the
--- positive-`s` quadrature asymptotics to show the limiting scalar profile is
--- uniquely minimized at `t = 1`.
+/-!
+The six conclusions below use the exact infinite sequence model, with noise
+variance `σ²/n`, and an eventually positive minimizing family. Positivity is
+an interior-point condition, not an asymptotic rate assumption. The proofs
+establish `alphaE → 0`, differentiate the convergent spectral series, and use
+Proposition 7.19 to evaluate the resulting first-order condition.
+-/
+
+omit [CompleteSpace F] in
+/-- The nonsaturated parameter formula in (7.80). -/
 theorem optimalFamily_nonsaturated_isAsymptoticallyOptimal
-    (h_alphaE :
-      ParameterChoice.IsOptimalParameterFamily
-        (expectedObjective μ K Rtikh fTrue η)
-        admissibleParameters
-        alphaE)
-    (h_alphaE_admissible : ∀ n, alphaE n ∈ admissibleParameters n)
-    (h_nonsaturated : 2 * p - q > -1) :
+    (h_model : PowerRisk.HasPowerRiskModel
+      (expectedObjective μ K Rtikh fTrue η) (nullspaceErrorFloor K fTrue) b c p q σ)
+    (h_alphaE : ParameterChoice.IsOptimalParameterFamily
+      (expectedObjective μ K Rtikh fTrue η) admissibleParameters alphaE)
+    (h_alphaE_pos : ∀ᶠ n in Filter.atTop, 0 < alphaE n)
+    (h_b : 0 < b) (h_c : 0 < c) (h_p : 1 < p) (h_q : 1 < q) (h_σ : 0 < σ)
+    (h_nonsaturated : -1 < 2 * p - q) :
     ParameterChoice.IsAsymptoticallyOptimal alphaE
-      (nonsaturatedParameterBenchmark b c p q σ) := by
-  have h_beta_pos :
-      ∀ᶠ n : ℕ in Filter.atTop, 0 < nonsaturatedParameterBenchmark b c p q σ n :=
-    by
-      -- TODO: this branch needs the standing positivity hypotheses
-      -- `h_b`, `h_c`, `h_p`, `h_q`, `h_σ`, but they are not present in the
-      -- theorem-local context, so the benchmark positivity lemma cannot be
-      -- instantiated here.
-      sorry
-  have h_equiv :
-      Asymptotics.IsEquivalent Filter.atTop alphaE
-        (nonsaturatedParameterBenchmark b c p q σ) := by
-    -- Route correction: once positivity and the fixed-scale gap are available,
-    -- the generic equivalence bridge closes the branch after one gap estimate.
-    exact
-      isEquivalent_of_optimality_gap
-        (μ := μ) (K := K) (Rtikh := Rtikh) (fTrue := fTrue) (η := η)
-        (alphaE := alphaE)
-        (β := nonsaturatedParameterBenchmark b c p q σ)
-        (h_alphaE := h_alphaE)
-        (h_alphaE_admissible := h_alphaE_admissible)
-        (h_beta_pos := h_beta_pos) (by
-          intro ε h_ε h_ε_lt_one
-          -- TODO: rewrite `expectedObjective` at `α = t * α_ns n`, use the exact
-          -- quadrature profile and the Proposition 7.19 asymptotics in the regime
-          -- `2 * p - q > -1`, and show the limiting carrier is strictly larger than
-          -- its value at `t = 1` whenever `ε ≤ dist t 1`.
-          sorry)
-  -- The remaining branch-specific content is exactly the off-neighborhood gap.
-  exact isAsymptoticallyOptimal_of_isEquivalent_local h_equiv
+      (nonsaturatedParameterBenchmark b c p q σ) :=
+  PowerRisk.parameter_nonsaturated h_b h_c h_p h_q h_σ h_model h_alphaE h_alphaE_pos h_nonsaturated
 
-/-- Theorem 7.21 `(7.80)`, critical branch. In the regime `2 * p - q = -1`,
-any Chapter 7 Tikhonov estimation-error minimizing family `alphaE` is
-asymptotically equivalent to the benchmark sequence `betaE` satisfying the
-displayed critical root equation and converging to `0`, which selects the
-source-side small-root branch `β_e`. -/
--- TODO: Normalize the objective along `α = t * betaE n`, combine the
--- logarithmic quadrature asymptotics with the critical root equation, and
--- show the normalized limiting bracket has unique minimizer `t = 1`.
+omit [CompleteSpace F] in
+/-- The critical, small-root parameter formula in (7.80). -/
 theorem optimalFamily_critical_isAsymptoticallyOptimal
-    (h_alphaE :
-      ParameterChoice.IsOptimalParameterFamily
-        (expectedObjective μ K Rtikh fTrue η)
-        admissibleParameters
-        alphaE)
-    (h_alphaE_admissible : ∀ n, alphaE n ∈ admissibleParameters n)
+    (h_model : PowerRisk.HasPowerRiskModel
+      (expectedObjective μ K Rtikh fTrue η) (nullspaceErrorFloor K fTrue) b c p q σ)
+    (h_alphaE : ParameterChoice.IsOptimalParameterFamily
+      (expectedObjective μ K Rtikh fTrue η) admissibleParameters alphaE)
+    (h_alphaE_pos : ∀ᶠ n in Filter.atTop, 0 < alphaE n)
+    (h_b : 0 < b) (h_c : 0 < c) (h_p : 1 < p) (h_q : 1 < q) (h_σ : 0 < σ)
     (h_critical : 2 * p - q = -1)
-    (h_betaE : IsCriticalBenchmark b c p σ betaE)
-    (h_betaE_pos : ∀ n, 0 < betaE n)
-    (h_betaE_tendsto_zero : Filter.Tendsto betaE Filter.atTop (nhds 0)) :
-    ParameterChoice.IsAsymptoticallyOptimal alphaE betaE := by
-  have h_beta_pos : ∀ᶠ n : ℕ in Filter.atTop, 0 < betaE n :=
-    Filter.Eventually.of_forall h_betaE_pos
-  have h_equiv : Asymptotics.IsEquivalent Filter.atTop alphaE betaE := by
-    -- Route correction: the generic ratio lemma leaves only the critical
-    -- fixed-scale gap as the real analytic content.
-    exact
-      isEquivalent_of_optimality_gap
-        (μ := μ) (K := K) (Rtikh := Rtikh) (fTrue := fTrue) (η := η)
-        (alphaE := alphaE) (β := betaE)
-        (h_alphaE := h_alphaE)
-        (h_alphaE_admissible := h_alphaE_admissible)
-        (h_beta_pos := h_beta_pos) (by
-          intro ε h_ε h_ε_lt_one
-          -- TODO: normalize `expectedObjective` on the `betaE` scale, combine the
-          -- critical root equation with the logarithmic quadrature asymptotic, and
-          -- show the resulting scalar carrier has its unique minimum at `t = 1`.
-          let _ := h_betaE_tendsto_zero
-          let _ := h_betaE
-          sorry)
-  -- The remaining branch-specific content is exactly the critical gap estimate.
-  exact isAsymptoticallyOptimal_of_isEquivalent_local h_equiv
-
-/-- Theorem 7.21 `(7.80)`, saturated branch. In the regime `2 * p - q < -1`,
-any Chapter 7 Tikhonov estimation-error minimizing family `alphaE` is
-asymptotically equivalent to the saturated benchmark built from the pointwise
-source term `‖f_true‖_{K_n^* K_n}^2`. -/
--- TODO: After the exact quadrature rewrite, compare the objective at
--- `α = t * saturatedParameterBenchmark ... n`; the source-condition term and
--- variance term are dominant, while the `q`-dependent bias is lower order in
--- the saturated regime.
-theorem optimalFamily_saturated_isAsymptoticallyOptimal
-    (h_alphaE :
-      ParameterChoice.IsOptimalParameterFamily
-        (expectedObjective μ K Rtikh fTrue η)
-        admissibleParameters
-        alphaE)
-    (h_alphaE_admissible : ∀ n, alphaE n ∈ admissibleParameters n)
-    (h_saturated : 2 * p - q < -1)
-    (h_sourceNormSq_pos :
-      ∀ n, 0 < adjointCompSourceNormSq (S n) (h_length n) fTrue) :
-    ParameterChoice.IsAsymptoticallyOptimal alphaE
-      (fun n ↦
-        saturatedParameterBenchmark c p σ
-          (adjointCompSourceNormSq (S n) (h_length n) fTrue) n) := by
-  have h_beta_pos :
-      ∀ᶠ n : ℕ in Filter.atTop,
-        0 <
-          saturatedParameterBenchmark c p σ
-            (adjointCompSourceNormSq (S n) (h_length n) fTrue) n :=
-    by
-      -- TODO: this branch needs the standing positivity hypotheses
-      -- `h_c`, `h_p`, `h_σ`, but they are not present in the theorem-local
-      -- context, so the benchmark positivity lemma cannot be instantiated here.
-      sorry
-  have h_equiv :
-      Asymptotics.IsEquivalent Filter.atTop alphaE
-        (fun n ↦
-          saturatedParameterBenchmark c p σ
-            (adjointCompSourceNormSq (S n) (h_length n) fTrue) n) := by
-    -- Route correction: after the positivity step, the generic ratio bridge
-    -- leaves only the saturated fixed-scale gap to prove.
-    exact
-      isEquivalent_of_optimality_gap
-        (μ := μ) (K := K) (Rtikh := Rtikh) (fTrue := fTrue) (η := η)
-        (alphaE := alphaE)
-        (β := fun n ↦
-          saturatedParameterBenchmark c p σ
-            (adjointCompSourceNormSq (S n) (h_length n) fTrue) n)
-        (h_alphaE := h_alphaE)
-        (h_alphaE_admissible := h_alphaE_admissible)
-        (h_beta_pos := h_beta_pos) (by
-          intro ε h_ε h_ε_lt_one
-          -- TODO: isolate the dominant `adjointCompSourceNormSq * α^2` bias term and
-          -- the variance asymptotic on the saturated benchmark scale, then show the
-          -- normalized carrier is strictly larger away from `t = 1`.
-          let _ := h_saturated
-          sorry)
-  -- The remaining branch-specific content is exactly the saturated gap estimate.
-  exact isAsymptoticallyOptimal_of_isEquivalent_local h_equiv
-
-/-- Theorem 7.21 `(7.81)`, nonsaturated branch. In the regime `2 * p - q > -1`,
-the expected estimation error evaluated along an optimal family `alphaE` is
-asymptotically equivalent to the nullspace floor plus the explicit
-nonsaturated benchmark term. -/
--- TODO: Combine the nonsaturated parameter asymptotic with the exact
--- quadrature-profile rewrite of `expectedObjective`, then identify the leading
--- `j = 2` bias/variance bracket with `nonsaturatedErrorBenchmark`.
-theorem expectedObjectiveAlongOptimalFamily_nonsaturated_isEquivalent
-    (h_alphaE :
-      ParameterChoice.IsOptimalParameterFamily
-        (expectedObjective μ K Rtikh fTrue η)
-        admissibleParameters
-        alphaE)
-    (h_alphaE_admissible : ∀ n, alphaE n ∈ admissibleParameters n)
-    (h_nonsaturated : 2 * p - q > -1) :
-    Asymptotics.IsEquivalent Filter.atTop
-      (objectiveAlong (expectedObjective μ K Rtikh fTrue η) alphaE)
-      (fun n ↦
-        nullspaceErrorFloor K fTrue n +
-          nonsaturatedErrorBenchmark b c p q σ n) := by
-  have h_alpha_equiv :
-      ParameterChoice.IsAsymptoticallyOptimal alphaE
-        (nonsaturatedParameterBenchmark b c p q σ) :=
-    optimalFamily_nonsaturated_isAsymptoticallyOptimal
-      (b := b) (c := c) (σ := σ)
-      (h_alphaE := h_alphaE)
-      (h_alphaE_admissible := h_alphaE_admissible)
-      (h_nonsaturated := h_nonsaturated)
-  -- Route correction: the parameter asymptotic is now available as the only input from `(7.80)`.
-  -- TODO: combine `h_alpha_equiv` with the exact objective quadrature profile and identify
-  -- the leading normalized bias-variance bracket as `nonsaturatedErrorBenchmark`.
-  sorry
-
-/-- Theorem 7.21 `(7.81)`, critical branch. In the regime `2 * p - q = -1`,
-the expected estimation error evaluated along an optimal family `alphaE` is
-asymptotically equivalent to the nullspace floor plus the critical benchmark
-term defined by the positive sequence `betaE`, with `betaE → 0` selecting the
-source-side small-root branch. -/
--- TODO: Use the critical parameter asymptotic and the logarithmic
--- `j = 2` quadrature expansion to rewrite `objectiveAlong` into the nullspace
--- floor plus the critical benchmark profile.
-theorem expectedObjectiveAlongOptimalFamily_critical_isEquivalent
-    (h_alphaE :
-      ParameterChoice.IsOptimalParameterFamily
-        (expectedObjective μ K Rtikh fTrue η)
-        admissibleParameters
-        alphaE)
-    (h_alphaE_admissible : ∀ n, alphaE n ∈ admissibleParameters n)
-    (h_critical : 2 * p - q = -1)
-    (h_betaE : IsCriticalBenchmark b c p σ betaE)
-    (h_betaE_pos : ∀ n, 0 < betaE n)
-    (h_betaE_tendsto_zero : Filter.Tendsto betaE Filter.atTop (nhds 0)) :
-    Asymptotics.IsEquivalent Filter.atTop
-      (objectiveAlong (expectedObjective μ K Rtikh fTrue η) alphaE)
-      (fun n ↦
-        nullspaceErrorFloor K fTrue n +
-          criticalErrorBenchmark c p betaE n) := by
-  have h_alpha_equiv :
-      ParameterChoice.IsAsymptoticallyOptimal alphaE betaE :=
-    optimalFamily_critical_isAsymptoticallyOptimal
-      (h_alphaE := h_alphaE)
-      (h_alphaE_admissible := h_alphaE_admissible)
-      (h_critical := h_critical)
-      (h_betaE := h_betaE)
-      (h_betaE_pos := h_betaE_pos)
-      (h_betaE_tendsto_zero := h_betaE_tendsto_zero)
-  -- Route correction: the critical parameter comparison is factored out; the remaining gap is
-  -- the logarithmic expected-objective normalization on the `betaE` scale.
-  -- TODO: rewrite `objectiveAlong` with the exact profile and transport along `h_alpha_equiv`.
-  sorry
-
-/-- Theorem 7.21 `(7.81)`, saturated branch. In the regime `2 * p - q < -1`,
-the expected estimation error evaluated along an optimal family `alphaE` is
-asymptotically equivalent to the nullspace floor plus the explicit saturated
-benchmark term. -/
--- TODO: Use the saturated parameter asymptotic together with the exact
--- objective decomposition to isolate the dominant variance/source-condition
--- contribution and match it with `saturatedErrorBenchmark`.
-theorem expectedObjectiveAlongOptimalFamily_saturated_isEquivalent
-    (h_alphaE :
-      ParameterChoice.IsOptimalParameterFamily
-        (expectedObjective μ K Rtikh fTrue η)
-        admissibleParameters
-        alphaE)
-    (h_alphaE_admissible : ∀ n, alphaE n ∈ admissibleParameters n)
-    (h_saturated : 2 * p - q < -1)
-    (h_sourceNormSq_pos :
-      ∀ n, 0 < adjointCompSourceNormSq (S n) (h_length n) fTrue) :
-    Asymptotics.IsEquivalent Filter.atTop
-      (objectiveAlong (expectedObjective μ K Rtikh fTrue η) alphaE)
-      (fun n ↦
-        nullspaceErrorFloor K fTrue n +
-          saturatedErrorBenchmark p σ n) := by
-  -- Route correction: unlike the `(7.80)` saturated parameter theorem, the `(7.81)` saturated
-  -- expected-error statement does not retain the benchmark parameter family itself. The remaining
-  -- proof therefore has to work directly from the exact objective decomposition and isolate the
-  -- dominant source-condition/variance terms without reintroducing the hidden `c`-dependent scale.
-  -- TODO: rewrite `objectiveAlong` via the exact profile and identify the saturated leading term
-  -- directly at the objective level.
-  sorry
-
-/-- thm_7_21. Theorem 7.21 `(7.80)` and `(7.81)`. Main labeled source-facing
-entry.
-
-The source theorem is recorded as the pair of regime-split asymptotic clauses
-`OptimalFamilyParameterAsymptotics` and `OptimalFamilyExpectedErrorAsymptotics`.
-The critical benchmark sequence `betaE` keeps the displayed root equation and
-the source-side positive branch, and additionally tends to `0` so that it
-selects the small-root branch intended by `β_e`. The six theorem skeletons
-above expose the corresponding atomic regime-specific components for later
-proof stages and downstream reuse. -/
-theorem optimalFamilyParameterAndExpectedErrorAsymptotics
-    (h_alphaE :
-      ParameterChoice.IsOptimalParameterFamily
-        (expectedObjective μ K Rtikh fTrue η)
-        admissibleParameters
-        alphaE)
-    -- `IsMinOn` only stores the comparison inequality on the admissible set,
-    -- so the source-side `arg min_{α ≥ 0}` also requires explicit admissibility.
-    (h_alphaE_admissible : ∀ n, alphaE n ∈ admissibleParameters n)
     (h_betaE : IsCriticalBenchmark b c p σ betaE)
     (h_betaE_pos : ∀ n, 0 < betaE n)
     (h_betaE_tendsto_zero : Filter.Tendsto betaE Filter.atTop (nhds 0))
-    (h_sourceNormSq_pos :
-      ∀ n, 0 < adjointCompSourceNormSq (S n) (h_length n) fTrue) :
-    OptimalFamilyParameterAsymptotics
-      K S h_length fTrue b c p q σ alphaE betaE ∧
-      OptimalFamilyExpectedErrorAsymptotics
-        μ K fTrue b c p q σ η Rtikh alphaE betaE := by
-  -- Package the six regime-specific branches without reopening the asymptotic analysis here.
+    : ParameterChoice.IsAsymptoticallyOptimal alphaE betaE :=
+  PowerRisk.parameter_critical h_b h_c h_p h_q h_σ h_model h_alphaE h_alphaE_pos h_critical
+    h_betaE h_betaE_pos h_betaE_tendsto_zero
+
+/-- The saturated parameter formula in (7.80), including its source norm. -/
+theorem optimalFamily_saturated_isAsymptoticallyOptimal
+    (h_model : PowerRisk.HasPowerRiskModel
+      (expectedObjective μ K Rtikh fTrue η) (nullspaceErrorFloor K fTrue) b c p q σ)
+    (h_alphaE : ParameterChoice.IsOptimalParameterFamily
+      (expectedObjective μ K Rtikh fTrue η) admissibleParameters alphaE)
+    (h_alphaE_pos : ∀ᶠ n in Filter.atTop, 0 < alphaE n)
+    (h_b : 0 < b) (h_c : 0 < c) (h_p : 1 < p) (h_q : 1 < q) (h_σ : 0 < σ)
+    (h_singular : ∀ n, (S n).HasAlgebraicSingularValueSquareDecay (h_length n) c p)
+    (h_fourier : ∀ n, (S n).HasAlgebraicFourierCoefficientSquareDecay
+      (h_length n) fTrue b q)
+    (h_saturated : 2 * p - q < -1) :
+    ParameterChoice.IsAsymptoticallyOptimal alphaE
+      (fun n ↦ saturatedParameterBenchmark c p σ
+        (adjointCompSourceNormSq (S n) (h_length n) fTrue) n) := by
+  have h := PowerRisk.parameter_saturated h_b h_c h_p h_q h_σ h_model h_alphaE h_alphaE_pos h_saturated
+  apply h.congr_right
+  apply Filter.Eventually.of_forall
+  intro n
+  change saturatedParameterBenchmark c p σ (PowerRisk.source b c p q) n =
+    saturatedParameterBenchmark c p σ (adjointCompSourceNormSq (S n) (h_length n) fTrue) n
+  rw [adjointCompSourceNormSq_eq_of_algebraicDecay
+    (S n) (h_length n) fTrue (h_singular n) (h_fourier n)]
+  rfl
+
+omit [CompleteSpace F] in
+/-- Adding the nonnegative nullspace floor preserves the risk equivalence. -/
+lemma expectedObjectiveAlong_isEquivalent_of_risk
+    {benchmark : ℕ → ℝ}
+    (h_model : PowerRisk.HasPowerRiskModel
+      (expectedObjective μ K Rtikh fTrue η) (nullspaceErrorFloor K fTrue) b c p q σ)
+    (h_alphaE_pos : ∀ᶠ n in Filter.atTop, 0 < alphaE n)
+    (h_nonneg : ∀ n, 0 ≤ benchmark n)
+    (h_risk : Asymptotics.IsEquivalent Filter.atTop
+      (fun n ↦ SeriesRisk.risk (PowerRisk.coeff b q) (PowerRisk.eigenvalue c p)
+        (PowerRisk.noiseLevel σ n) (alphaE n)) benchmark) :
+    Asymptotics.IsEquivalent Filter.atTop
+      (objectiveAlong (expectedObjective μ K Rtikh fTrue η) alphaE)
+      (fun n ↦ nullspaceErrorFloor K fTrue n + benchmark n) := by
+  have h := Asymptotics.IsEquivalent.add_add_of_nonneg
+    (show 0 ≤ nullspaceErrorFloor K fTrue from fun n ↦ sq_nonneg _)
+    h_nonneg Asymptotics.IsEquivalent.refl h_risk
+  apply h.congr_left
+  filter_upwards [h_model, h_alphaE_pos] with n hn hpos
+  exact (hn (alphaE n) hpos).symm
+
+omit [CompleteSpace F] in
+/-- The nonsaturated expected-error formula in (7.81). -/
+theorem expectedObjectiveAlongOptimalFamily_nonsaturated_isEquivalent
+    (h_model : PowerRisk.HasPowerRiskModel
+      (expectedObjective μ K Rtikh fTrue η) (nullspaceErrorFloor K fTrue) b c p q σ)
+    (h_alphaE : ParameterChoice.IsOptimalParameterFamily
+      (expectedObjective μ K Rtikh fTrue η) admissibleParameters alphaE)
+    (h_alphaE_pos : ∀ᶠ n in Filter.atTop, 0 < alphaE n)
+    (h_b : 0 < b) (h_c : 0 < c) (h_p : 1 < p) (h_q : 1 < q) (h_σ : 0 < σ)
+    (h_nonsaturated : -1 < 2 * p - q) :
+    Asymptotics.IsEquivalent Filter.atTop
+      (objectiveAlong (expectedObjective μ K Rtikh fTrue η) alphaE)
+      (fun n ↦ nullspaceErrorFloor K fTrue n + nonsaturatedErrorBenchmark b c p q σ n) := by
+  apply expectedObjectiveAlong_isEquivalent_of_risk
+    (μ := μ) (K := K) (Rtikh := Rtikh) (fTrue := fTrue) (η := η)
+    (alphaE := alphaE) (b := b) (c := c) (p := p) (q := q) (σ := σ)
+    (h_model := h_model) (h_alphaE_pos := h_alphaE_pos)
+  · intro n
+    apply mul_nonneg
+    · unfold errorConstantC3
+      have hI₂ := PowerRisk.integral_pos (by linarith : 0 < p)
+        (s := p) (j := 2) (by linarith) (by norm_num; linarith)
+      have hI₃ := PowerRisk.integral_pos (by linarith : 0 < p)
+        (s := 2 * p) (j := 3) (by linarith) (by norm_num; linarith)
+      have hB₂ := PowerRisk.integral_pos (by linarith : 0 < p)
+        (j := 2) h_nonsaturated (by norm_num; linarith)
+      have hB₃ := PowerRisk.integral_pos (by linarith : 0 < p)
+        (j := 3) h_nonsaturated (by norm_num; linarith)
+      exact mul_nonneg (mul_nonneg (Real.rpow_pos_of_pos h_c _).le
+        (Real.rpow_nonneg (parameterConstantC1_pos (b := b) (c := c) (p := p) (q := q) h_b h_c h_p h_q h_nonsaturated).le _))
+        (add_pos hI₂ (mul_pos hI₃ (div_pos hB₂ hB₃))).le
+    · exact Real.rpow_nonneg (div_nonneg (sq_nonneg σ) (Nat.cast_nonneg n)) _
+  · exact PowerRisk.risk_nonsaturated h_b h_c h_p h_q h_σ h_model h_alphaE h_alphaE_pos h_nonsaturated
+
+omit [CompleteSpace F] in
+/-- The critical expected-error formula in (7.81). -/
+theorem expectedObjectiveAlongOptimalFamily_critical_isEquivalent
+    (h_model : PowerRisk.HasPowerRiskModel
+      (expectedObjective μ K Rtikh fTrue η) (nullspaceErrorFloor K fTrue) b c p q σ)
+    (h_alphaE : ParameterChoice.IsOptimalParameterFamily
+      (expectedObjective μ K Rtikh fTrue η) admissibleParameters alphaE)
+    (h_alphaE_pos : ∀ᶠ n in Filter.atTop, 0 < alphaE n)
+    (h_b : 0 < b) (h_c : 0 < c) (h_p : 1 < p) (h_q : 1 < q) (h_σ : 0 < σ)
+    (h_critical : 2 * p - q = -1)
+    (h_betaE : IsCriticalBenchmark b c p σ betaE)
+    (h_betaE_pos : ∀ n, 0 < betaE n)
+    (h_betaE_tendsto_zero : Filter.Tendsto betaE Filter.atTop (nhds 0))
+    : Asymptotics.IsEquivalent Filter.atTop
+      (objectiveAlong (expectedObjective μ K Rtikh fTrue η) alphaE)
+      (fun n ↦ nullspaceErrorFloor K fTrue n + criticalErrorBenchmark c p σ betaE n) := by
+  apply expectedObjectiveAlong_isEquivalent_of_risk
+    (μ := μ) (K := K) (Rtikh := Rtikh) (fTrue := fTrue) (η := η)
+    (alphaE := alphaE) (b := b) (c := c) (p := p) (q := q) (σ := σ)
+    (h_model := h_model) (h_alphaE_pos := h_alphaE_pos)
+  · intro n
+    have h₂ := PowerRisk.varianceConstant_pos h_c h_p 2 (Or.inl rfl)
+    have h₃ := PowerRisk.varianceConstant_pos h_c h_p 3 (Or.inr rfl)
+    have hC : 0 < errorConstantC4 c p := by
+      simpa only [errorConstantC4, PowerRisk.varianceConstant, Nat.cast_ofNat,
+        show ((2 : ℝ) - 1) * p = p by ring,
+        show ((3 : ℝ) - 1) * p = 2 * p by ring, mul_add] using add_pos h₂ h₃
+    exact mul_nonneg (mul_nonneg hC.le (PowerRisk.noiseLevel_nonneg σ n))
+      (Real.rpow_nonneg (h_betaE_pos n).le _)
+  · exact PowerRisk.risk_critical h_b h_c h_p h_q h_σ h_model h_alphaE h_alphaE_pos h_critical
+      h_betaE h_betaE_pos h_betaE_tendsto_zero
+
+omit [CompleteSpace F] in
+/-- The saturated expected-error formula in (7.81). -/
+theorem expectedObjectiveAlongOptimalFamily_saturated_isEquivalent
+    (h_model : PowerRisk.HasPowerRiskModel
+      (expectedObjective μ K Rtikh fTrue η) (nullspaceErrorFloor K fTrue) b c p q σ)
+    (h_alphaE : ParameterChoice.IsOptimalParameterFamily
+      (expectedObjective μ K Rtikh fTrue η) admissibleParameters alphaE)
+    (h_alphaE_pos : ∀ᶠ n in Filter.atTop, 0 < alphaE n)
+    (h_b : 0 < b) (h_c : 0 < c) (h_p : 1 < p) (h_q : 1 < q) (h_σ : 0 < σ)
+    (h_saturated : 2 * p - q < -1) :
+    Asymptotics.IsEquivalent Filter.atTop
+      (objectiveAlong (expectedObjective μ K Rtikh fTrue η) alphaE)
+      (fun n ↦ nullspaceErrorFloor K fTrue n + saturatedErrorBenchmark b c p q σ n) := by
+  apply expectedObjectiveAlong_isEquivalent_of_risk
+    (μ := μ) (K := K) (Rtikh := Rtikh) (fTrue := fTrue) (η := η)
+    (alphaE := alphaE) (b := b) (c := c) (p := p) (q := q) (σ := σ)
+    (h_model := h_model) (h_alphaE_pos := h_alphaE_pos)
+  · intro n
+    apply mul_nonneg
+    · unfold errorConstantC5
+      have h₂ := PowerRisk.varianceConstant_pos h_c h_p 2 (Or.inl rfl)
+      have h₃ := PowerRisk.varianceConstant_pos h_c h_p 3 (Or.inr rfl)
+      have hC : 0 < c ^ (1 / p) *
+          (KernelMoment.integral p 2 p + KernelMoment.integral p 3 (2 * p)) := by
+        simpa only [PowerRisk.varianceConstant, Nat.cast_ofNat,
+          show ((2 : ℝ) - 1) * p = p by ring,
+          show ((3 : ℝ) - 1) * p = 2 * p by ring, mul_add] using add_pos h₂ h₃
+      have hA := PowerRisk.source_pos h_b h_c h_saturated
+      have hAp : 0 < parameterConstantC2 c p (scalarSourceNormSq b c p q) := by
+        apply parameterConstantC2_pos (c := c) (p := p) h_c h_p
+        exact hA
+      nlinarith [mul_nonneg hC.le (Real.rpow_pos_of_pos hAp (-(p + 1) / p)).le]
+    · exact Real.rpow_nonneg (div_nonneg (sq_nonneg σ) (Nat.cast_nonneg n)) _
+  · exact PowerRisk.risk_saturated h_b h_c h_p h_q h_σ h_model h_alphaE h_alphaE_pos h_saturated
+
+/-- thm_7_21. The three parameter and three error asymptotics for the exact
+power-decay sequence model, under an interior minimizing family. -/
+theorem optimalFamilyParameterAndExpectedErrorAsymptotics
+    (h_model : PowerRisk.HasPowerRiskModel
+      (expectedObjective μ K Rtikh fTrue η) (nullspaceErrorFloor K fTrue) b c p q σ)
+    (h_alphaE : ParameterChoice.IsOptimalParameterFamily
+      (expectedObjective μ K Rtikh fTrue η) admissibleParameters alphaE)
+    (h_alphaE_pos : ∀ᶠ n in Filter.atTop, 0 < alphaE n)
+    (h_b : 0 < b) (h_c : 0 < c) (h_p : 1 < p) (h_q : 1 < q) (h_σ : 0 < σ)
+    (h_singular : ∀ n, (S n).HasAlgebraicSingularValueSquareDecay (h_length n) c p)
+    (h_fourier : ∀ n, (S n).HasAlgebraicFourierCoefficientSquareDecay
+      (h_length n) fTrue b q)
+    (h_betaE : IsCriticalBenchmark b c p σ betaE)
+    (h_betaE_pos : ∀ n, 0 < betaE n)
+    (h_betaE_tendsto_zero : Filter.Tendsto betaE Filter.atTop (nhds 0)) :
+    OptimalFamilyParameterAsymptotics K S h_length fTrue b c p q σ alphaE betaE ∧
+      OptimalFamilyExpectedErrorAsymptotics μ K fTrue b c p q σ η Rtikh alphaE betaE := by
   constructor
-  · constructor
-    · intro h_nonsaturated
-      exact optimalFamily_nonsaturated_isAsymptoticallyOptimal
-        (b := b) (c := c) (σ := σ)
-        (h_alphaE := h_alphaE)
-        (h_alphaE_admissible := h_alphaE_admissible)
-        (h_nonsaturated := h_nonsaturated)
-    · constructor
-      · intro h_critical
-        exact optimalFamily_critical_isAsymptoticallyOptimal
-          (h_alphaE := h_alphaE)
-          (h_alphaE_admissible := h_alphaE_admissible)
-          (h_critical := h_critical)
-          (h_betaE := h_betaE)
-          (h_betaE_pos := h_betaE_pos)
-          (h_betaE_tendsto_zero := h_betaE_tendsto_zero)
-      · intro h_saturated
-        exact optimalFamily_saturated_isAsymptoticallyOptimal
-          (c := c) (σ := σ)
-          (h_alphaE := h_alphaE)
-          (h_alphaE_admissible := h_alphaE_admissible)
-          (h_saturated := h_saturated)
-          (h_sourceNormSq_pos := h_sourceNormSq_pos)
-  · constructor
-    · intro h_nonsaturated
-      exact expectedObjectiveAlongOptimalFamily_nonsaturated_isEquivalent
-        (b := b) (c := c) (σ := σ)
-        (h_alphaE := h_alphaE)
-        (h_alphaE_admissible := h_alphaE_admissible)
-        (h_nonsaturated := h_nonsaturated)
-    · constructor
-      · intro h_critical
-        exact expectedObjectiveAlongOptimalFamily_critical_isEquivalent
-          (h_alphaE := h_alphaE)
-          (h_alphaE_admissible := h_alphaE_admissible)
-          (h_critical := h_critical)
-          (h_betaE := h_betaE)
-          (h_betaE_pos := h_betaE_pos)
-          (h_betaE_tendsto_zero := h_betaE_tendsto_zero)
-      · intro h_saturated
-        exact expectedObjectiveAlongOptimalFamily_saturated_isEquivalent
-          (σ := σ)
-          (h_alphaE := h_alphaE)
-          (h_alphaE_admissible := h_alphaE_admissible)
-          (h_saturated := h_saturated)
-          (h_sourceNormSq_pos := h_sourceNormSq_pos)
+  · refine ⟨?_, ?_, ?_⟩
+    · exact fun hs ↦ optimalFamily_nonsaturated_isAsymptoticallyOptimal
+        μ K fTrue b c p q σ η Rtikh alphaE h_model h_alphaE h_alphaE_pos h_b h_c h_p h_q h_σ hs
+    · exact fun hs ↦ optimalFamily_critical_isAsymptoticallyOptimal
+        μ K fTrue b c p q σ η Rtikh alphaE betaE
+        h_model h_alphaE h_alphaE_pos h_b h_c h_p h_q h_σ hs
+        h_betaE h_betaE_pos h_betaE_tendsto_zero
+    · exact fun hs ↦ optimalFamily_saturated_isAsymptoticallyOptimal
+        μ K S h_length fTrue b c p q σ η Rtikh alphaE
+        h_model h_alphaE h_alphaE_pos h_b h_c h_p h_q h_σ h_singular h_fourier hs
+  · refine ⟨?_, ?_, ?_⟩
+    · exact fun hs ↦ expectedObjectiveAlongOptimalFamily_nonsaturated_isEquivalent
+        μ K fTrue b c p q σ η Rtikh alphaE
+        h_model h_alphaE h_alphaE_pos h_b h_c h_p h_q h_σ hs
+    · exact fun hs ↦ expectedObjectiveAlongOptimalFamily_critical_isEquivalent
+        μ K fTrue b c p q σ η Rtikh alphaE betaE
+        h_model h_alphaE h_alphaE_pos h_b h_c h_p h_q h_σ hs
+        h_betaE h_betaE_pos h_betaE_tendsto_zero
+    · exact fun hs ↦ expectedObjectiveAlongOptimalFamily_saturated_isEquivalent
+        μ K fTrue b c p q σ η Rtikh alphaE
+        h_model h_alphaE h_alphaE_pos h_b h_c h_p h_q h_σ hs
 
 end
 

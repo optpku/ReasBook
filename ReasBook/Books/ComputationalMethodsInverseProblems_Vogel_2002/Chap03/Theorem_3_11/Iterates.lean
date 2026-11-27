@@ -21,20 +21,20 @@ variable {H : Type u} [NormedAddCommGroup H] [InnerProductSpace ℝ H] [Complete
 
 /-- `IsIterateSequence J f` means that each increment `f (v + 1) - f v` is a Newton
 step for `J` at `f v`. -/
-def IsIterateSequence (J : H → ℝ) (f : ℕ → H) : Prop :=
+@[expose] def IsIterateSequence (J : H → ℝ) (f : ℕ → H) : Prop :=
   ∀ v : ℕ, IsStep J (f v) (f (v + 1) - f v)
 
 /-- The Newton convergence constant associated to a Hessian Lipschitz constant `K`
 and an explicit lower spectral bound `μ`. -/
-def convergenceConstant (K : NNReal) (μ : ℝ) : ℝ :=
+@[expose] def convergenceConstant (K : NNReal) (μ : ℝ) : ℝ :=
   (K : ℝ) / μ
 
 /-- Specification lemma for `Newton.IsIterateSequence`. -/
 theorem isIterateSequence_iff (J : H → ℝ) (f : ℕ → H) :
-    IsIterateSequence J f ↔ ∀ v : ℕ, IsStep J (f v) (f (v + 1) - f v) := sorry
+    IsIterateSequence J f ↔ ∀ v : ℕ, IsStep J (f v) (f (v + 1) - f v) := Iff.rfl
 
 /-- Unfolding lemma for `Newton.convergenceConstant`. -/
 theorem convergenceConstant_eq (K : NNReal) (μ : ℝ) :
-    convergenceConstant K μ = (K : ℝ) / μ := sorry
+    convergenceConstant K μ = (K : ℝ) / μ := rfl
 
 end Newton

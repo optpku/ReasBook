@@ -28,7 +28,7 @@ theorem optimalIndexProfile_def (b c p q σ : ℝ) (n : ℕ) :
   rfl
 
 /-- The real-valued TSVD index profile tends to `+∞`. -/
-private theorem optimalIndexProfile_tendstoAtTop
+theorem optimalIndexProfile_tendstoAtTop
     (b c p q σ : ℝ)
     (h_b : 0 < b) (h_c : 0 < c) (h_p : 1 < p) (h_q : 1 < q) (h_σ : 0 < σ) :
     Filter.Tendsto (optimalIndexProfile b c p q σ) Filter.atTop Filter.atTop := by

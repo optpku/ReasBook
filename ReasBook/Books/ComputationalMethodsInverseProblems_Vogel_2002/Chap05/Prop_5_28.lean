@@ -6,7 +6,7 @@ Project-level attribution: optpku/ReasBook@f40e785158f79d8f0e645890825b840af912e
 
 module
 
-public import ComputationalMethodsInverseProblems_Vogel_2002.Chap05.Definition_5_9.PeriodicExtension
+public import ComputationalMethodsInverseProblems_Vogel_2002.Chap05.Prop_5_28.HTTB
 public import ComputationalMethodsInverseProblems_Vogel_2002.Chap05.Definition_5_24.HTTB
 public import ComputationalMethodsInverseProblems_Vogel_2002.Chap05.Definition_5_27.BCCB
 
@@ -19,17 +19,6 @@ universe u
 namespace Matrix
 
 variable {α : Type u}
-
-/-- Helper for Proposition 5.28: periodic reduction of an integer difference agrees with the
-corresponding `Fin` subtraction. -/
-theorem periodicIndex_sub_eq_finSub {n : ℕ}
-    (h : 0 < n) (i k : Fin n) :
-    DiscreteSignal.periodicIndex n h (((i : ℕ) : ℤ) - ((k : ℕ) : ℤ)) = i - k := by
-  -- Compare both reduced indices through their residue representatives in `ℤ`.
-  apply Fin.ext
-  have hsub : ((i - k : Fin n) : ℤ) = ((i : ℤ) - (k : ℤ)) % n :=
-    Fin.coe_int_sub_eq_mod i k
-  simpa [DiscreteSignal.periodicIndex_val] using congrArg Int.toNat hsub.symm
 
 /-- Proposition 5.28 (1). If `C = Matrix.httb n_x n_y (Matrix.periodicExtension h_x h_y c)`,
 then `C` is exactly the BCCB matrix `Matrix.bccb c`. -/

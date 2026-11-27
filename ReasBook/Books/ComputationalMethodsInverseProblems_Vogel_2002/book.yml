@@ -18,11 +18,11 @@ contributors:
 - name: Zichen Wang
 coverage: "Inverse problems, regularization, iterative methods, spectral filters, parameter choice, variational methods, and iterative solution methods across Chapters 1–9."
 statistics:
-  declarations: 3916
-  theorem_lemma_example: 3109
-  other_declarations: 807
-  lean_files: 683
-  lean_lines: 114644
-  proof_completion: 3811/3916
-  sorry: 105
+  declarations: 4449
+  theorem_lemma_example: 3580
+  other_declarations: 869
+  lean_files: 722
+  lean_lines: 121494
+  proof_completion: 4449/4449
+  sorry: 0
   admit: 0

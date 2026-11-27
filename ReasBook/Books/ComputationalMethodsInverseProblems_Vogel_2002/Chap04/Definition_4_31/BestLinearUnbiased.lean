@@ -24,7 +24,7 @@ universe u v w
 section
 
 variable {Ω : Type u} [MeasurableSpace Ω]
-variable {n : Type v} [Fintype n]
+variable {n : Type v} [Fintype n] [DecidableEq n]
 variable {m : Type w} [Fintype m] [DecidableEq m]
 
 /-- The BLUE objective `J(Xhat) = μ[fun ω ↦ ‖Xhat ω - x‖ ^ 2]`. -/
@@ -39,19 +39,22 @@ theorem blueObjective_def (μ : MeasureTheory.Measure Ω) (x : EuclideanSpace �
   -- Unfold the objective to expose the defining expectation formula.
   simp [blueObjective]
 
-/-- The admissible class of linear unbiased estimators with finite second moment. -/
-def blueAdmissibleSet (μ : MeasureTheory.Measure Ω) (x : EuclideanSpace ℝ n)
+/-- The admissible class of linear estimators with finite second moment whose coefficient
+matrix is unbiased for every `x`, i.e. `B * K = 1`. -/
+def blueAdmissibleSet (K : Matrix m n ℝ) (μ : MeasureTheory.Measure Ω)
+    (x : EuclideanSpace ℝ n)
     (Z : Ω → EuclideanSpace ℝ m) : Set (Ω → EuclideanSpace ℝ n) :=
-  { Xhat | (∃ B : Matrix n m ℝ, Xhat = linearEstimator B Z) ∧
+  { Xhat | (∃ B : Matrix n m ℝ, Xhat = linearEstimator B Z ∧ B * K = 1) ∧
       μ[Xhat] = x ∧
       MeasureTheory.MemLp Xhat 2 μ }
 
-/-- Membership in `blueAdmissibleSet` means linearity in `Z`, unbiasedness for `x`, and finite
-second moment. -/
-theorem mem_blueAdmissibleSet_iff (μ : MeasureTheory.Measure Ω) (x : EuclideanSpace ℝ n)
+/-- Membership in `blueAdmissibleSet` means linearity in `Z` with an everywhere unbiased
+coefficient matrix, unbiasedness for `x`, and finite second moment. -/
+theorem mem_blueAdmissibleSet_iff (K : Matrix m n ℝ) (μ : MeasureTheory.Measure Ω)
+    (x : EuclideanSpace ℝ n)
     (Z : Ω → EuclideanSpace ℝ m) (Xhat : Ω → EuclideanSpace ℝ n) :
-    Xhat ∈ blueAdmissibleSet μ x Z ↔
-      (∃ B : Matrix n m ℝ, Xhat = linearEstimator B Z) ∧
+    Xhat ∈ blueAdmissibleSet K μ x Z ↔
+      (∃ B : Matrix n m ℝ, Xhat = linearEstimator B Z ∧ B * K = 1) ∧
         μ[Xhat] = x ∧
         MeasureTheory.MemLp Xhat 2 μ := by
   -- Membership is definitionally the conjunction of the three admissibility conditions.
@@ -60,21 +63,22 @@ theorem mem_blueAdmissibleSet_iff (μ : MeasureTheory.Measure Ω) (x : Euclidean
 /-- A candidate estimator is BLUE when it is admissible and minimizes `blueObjective` on the
 admissible class. -/
 structure IsBestLinearUnbiasedEstimator
-    (μ : MeasureTheory.Measure Ω) (x : EuclideanSpace ℝ n) (Z : Ω → EuclideanSpace ℝ m)
-    (Xhat : Ω → EuclideanSpace ℝ n) : Prop where
+    (K : Matrix m n ℝ) (μ : MeasureTheory.Measure Ω) (x : EuclideanSpace ℝ n)
+    (Z : Ω → EuclideanSpace ℝ m) (Xhat : Ω → EuclideanSpace ℝ n) : Prop where
   /-- The estimator belongs to the admissible BLUE class. -/
-  mem_admissible : Xhat ∈ blueAdmissibleSet μ x Z
+  mem_admissible : Xhat ∈ blueAdmissibleSet K μ x Z
   /-- The estimator minimizes the mean squared error on the admissible BLUE class. -/
-  optimal : IsMinOn (blueObjective μ x) (blueAdmissibleSet μ x Z) Xhat
+  optimal : IsMinOn (blueObjective μ x) (blueAdmissibleSet K μ x Z) Xhat
 
 /-- `IsBestLinearUnbiasedEstimator μ x Z Xhat` means that `Xhat` is admissible and minimizes
 `blueObjective μ x` on `blueAdmissibleSet μ x Z`. -/
 theorem isBestLinearUnbiasedEstimator_iff
-    (μ : MeasureTheory.Measure Ω) (x : EuclideanSpace ℝ n) (Z : Ω → EuclideanSpace ℝ m)
+    (K : Matrix m n ℝ) (μ : MeasureTheory.Measure Ω) (x : EuclideanSpace ℝ n)
+    (Z : Ω → EuclideanSpace ℝ m)
     (Xhat : Ω → EuclideanSpace ℝ n) :
-    IsBestLinearUnbiasedEstimator μ x Z Xhat ↔
-      Xhat ∈ blueAdmissibleSet μ x Z ∧
-      IsMinOn (blueObjective μ x) (blueAdmissibleSet μ x Z) Xhat :=
+    IsBestLinearUnbiasedEstimator K μ x Z Xhat ↔
+      Xhat ∈ blueAdmissibleSet K μ x Z ∧
+      IsMinOn (blueObjective μ x) (blueAdmissibleSet K μ x Z) Xhat :=
   by
     constructor
     · intro h
@@ -86,11 +90,11 @@ namespace IsBestLinearUnbiasedEstimator
 
 set_option linter.defProp false in
 /-- Construct a BLUE certificate from admissibility and optimality data. -/
-def ofMemOptimal (μ : MeasureTheory.Measure Ω) (x : EuclideanSpace ℝ n)
+def ofMemOptimal (K : Matrix m n ℝ) (μ : MeasureTheory.Measure Ω) (x : EuclideanSpace ℝ n)
     (Z : Ω → EuclideanSpace ℝ m) (Xhat : Ω → EuclideanSpace ℝ n)
-    (h_mem : Xhat ∈ blueAdmissibleSet μ x Z)
-    (h_opt : IsMinOn (blueObjective μ x) (blueAdmissibleSet μ x Z) Xhat) :
-    IsBestLinearUnbiasedEstimator μ x Z Xhat :=
+    (h_mem : Xhat ∈ blueAdmissibleSet K μ x Z)
+    (h_opt : IsMinOn (blueObjective μ x) (blueAdmissibleSet K μ x Z) Xhat) :
+    IsBestLinearUnbiasedEstimator K μ x Z Xhat :=
   { mem_admissible := h_mem
     optimal := h_opt }
 

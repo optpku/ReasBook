@@ -33,10 +33,12 @@ require MD4Lean from git "https://github.com/acmepjz/md4lean" @ "main"
 lean_lib «ReasBook» where
 
 -- Books from ALLBOOKS (sources live under Books/<LibName>/)
--- lean_lib ComputationalMethodsInverseProblems_Vogel_2002 where
---   srcDir := "Books"
--- (Vogel book commented out: 57 mathlib v4.32.0 API incompatibilities;
---  needs contributor adaptation.)
+@[default_target]
+lean_lib ComputationalMethodsInverseProblems_Vogel_2002 where
+  srcDir := "Books"
+  roots := #[`ComputationalMethodsInverseProblems_Vogel_2002.Book]
+  globs := #[.submodules `ComputationalMethodsInverseProblems_Vogel_2002]
+  weakLeanArgs := #["-j1"]
 
 /-- Reusable infrastructure for the DFP Wolfe counterexample formalization. -/
 lean_lib «DFP_wolfe_ReasLib» where

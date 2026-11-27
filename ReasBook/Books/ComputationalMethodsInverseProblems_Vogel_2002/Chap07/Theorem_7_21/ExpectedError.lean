@@ -171,33 +171,40 @@ theorem parameterConstantC2_def (c p kStarKNormSq : ℝ) :
 
 /-- The right-hand side of the critical root equation defining `β_e`. -/
 @[expose] def criticalRootRhs (b c p σ : ℝ) (n : ℕ) : ℝ :=
-  ((σ ^ 2) / (n : ℝ)) * b ^ ((-1 : ℝ)) * c ^ 2 * p * KernelMoment.integral p 3 (2 * p)
+  ((σ ^ 2) / (n : ℝ)) * b ^ ((-1 : ℝ)) * c ^ 2 * c ^ (1 / p) * p * KernelMoment.integral p 3 (2 * p)
 
 /-- The explicit nonsaturated constant `C₃` from equation `(7.81)`. -/
 @[expose] def errorConstantC3 (b c p q : ℝ) : ℝ :=
-  b * c ^ (-(q - 1) / p) * KernelMoment.integral p 2 (2 * p - q)
+  c ^ (1 / p) * (parameterConstantC1 b c p q) ^ (-(p + 1) / p) *
+    (KernelMoment.integral p 2 p + KernelMoment.integral p 3 (2 * p) *
+      (KernelMoment.integral p 2 (2 * p - q) / KernelMoment.integral p 3 (2 * p - q)))
 
 /-- The explicit critical constant `C₄` from equation `(7.81)`. -/
 @[expose] def errorConstantC4 (c p : ℝ) : ℝ :=
-  c ^ (1 / p) * KernelMoment.integral p 2 p
+  c ^ (1 / p) * (KernelMoment.integral p 2 p + KernelMoment.integral p 3 (2 * p))
 
-/-- The explicit saturated constant `C₅` from equation `(7.81)`. -/
-@[expose] def errorConstantC5 : ℝ :=
-  1
+/-- The convergent source series in the saturated regime. -/
+@[expose] def scalarSourceNormSq (b c p q : ℝ) : ℝ :=
+  (b / c ^ 2) * ∑' k : ℕ, ((k : ℝ) + 1) ^ (2 * p - q)
+
+/-- The saturated error constant retains the source norm and spectral scale. -/
+@[expose] def errorConstantC5 (c p sourceNormSq : ℝ) : ℝ :=
+  c ^ (1 / p) * (parameterConstantC2 c p sourceNormSq) ^ (-(p + 1) / p) *
+    (KernelMoment.integral p 2 p + KernelMoment.integral p 3 (2 * p))
 
 /-- The displayed critical root equation for the benchmark sequence `β_e`. -/
 @[expose] def SatisfiesCriticalRootEquation (b c p σ : ℝ) (n : ℕ) (β : ℝ) : Prop :=
   -(β ^ ((3 * p + 1) / p)) * Real.log β = criticalRootRhs b c p σ n
 
 /-- A benchmark sequence `β_e` satisfies the source root equation from
-Theorem 7.21 at every index `n`. -/
+Theorem 7.21 for all sufficiently large `n`. -/
 @[expose] def IsCriticalBenchmark (b c p σ : ℝ) (βe : ℕ → ℝ) : Prop :=
-  ∀ n, SatisfiesCriticalRootEquation b c p σ n (βe n)
+  ∀ᶠ n in Filter.atTop, SatisfiesCriticalRootEquation b c p σ n (βe n)
 
 @[simp] theorem isCriticalBenchmark_iff
     (b c p σ : ℝ) (βe : ℕ → ℝ) :
     IsCriticalBenchmark b c p σ βe ↔
-      ∀ n, SatisfiesCriticalRootEquation b c p σ n (βe n) :=
+      ∀ᶠ n in Filter.atTop, SatisfiesCriticalRootEquation b c p σ n (βe n) :=
   Iff.rfl
 
 /-- The nonsaturated benchmark sequence from equation `(7.80)`. -/
@@ -215,12 +222,13 @@ Theorem 7.21 at every index `n`. -/
     errorConstantC3 b c p q * (((σ ^ 2) / (n : ℝ)) ^ ((q - 1) / (p + q)))
 
 /-- The critical benchmark sequence from equation `(7.81)`. -/
-@[expose] def criticalErrorBenchmark (c p : ℝ) (βe : ℕ → ℝ) : ℕ → ℝ :=
-  fun n ↦ errorConstantC4 c p * (βe n ^ (-p - 1))
+@[expose] def criticalErrorBenchmark (c p σ : ℝ) (βe : ℕ → ℝ) : ℕ → ℝ :=
+  fun n ↦ errorConstantC4 c p * (σ ^ 2 / (n : ℝ)) * (βe n ^ (-(p + 1) / p))
 
 /-- The saturated benchmark sequence from equation `(7.81)`. -/
-@[expose] def saturatedErrorBenchmark (p σ : ℝ) : ℕ → ℝ :=
-  fun n ↦ errorConstantC5 * (((σ ^ 2) / (n : ℝ)) ^ (2 * p / (3 * p + 1)))
+@[expose] def saturatedErrorBenchmark (b c p q σ : ℝ) : ℕ → ℝ :=
+  fun n ↦ errorConstantC5 c p (scalarSourceNormSq b c p q) *
+    (((σ ^ 2) / (n : ℝ)) ^ (2 * p / (3 * p + 1)))
 
 @[simp] theorem nonsaturatedParameterBenchmark_apply
     (b c p q σ : ℝ) (n : ℕ) :
@@ -241,15 +249,15 @@ Theorem 7.21 at every index `n`. -/
   rfl
 
 @[simp] theorem criticalErrorBenchmark_apply
-    (c p : ℝ) (βe : ℕ → ℝ) (n : ℕ) :
-    criticalErrorBenchmark c p βe n =
-      errorConstantC4 c p * (βe n ^ (-p - 1)) :=
+    (c p σ : ℝ) (βe : ℕ → ℝ) (n : ℕ) :
+    criticalErrorBenchmark c p σ βe n =
+      errorConstantC4 c p * (σ ^ 2 / (n : ℝ)) * (βe n ^ (-(p + 1) / p)) :=
   rfl
 
 @[simp] theorem saturatedErrorBenchmark_apply
-    (p σ : ℝ) (n : ℕ) :
-    saturatedErrorBenchmark p σ n =
-      errorConstantC5 * (((σ ^ 2) / (n : ℝ)) ^ (2 * p / (3 * p + 1))) :=
+    (b c p q σ : ℝ) (n : ℕ) :
+    saturatedErrorBenchmark b c p q σ n =
+      errorConstantC5 c p (scalarSourceNormSq b c p q) * (((σ ^ 2) / (n : ℝ)) ^ (2 * p / (3 * p + 1))) :=
   rfl
 
 end Benchmarks

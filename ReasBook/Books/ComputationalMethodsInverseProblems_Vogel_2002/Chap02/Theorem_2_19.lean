@@ -2788,11 +2788,97 @@ theorem laterInitialSegmentHeadBoundFromTransportBudget
     _ = (1 / 4 : ℝ) ^ n / 2 := by
           ring
 
+/-- Helper for Theorem 2.19: a uniform bound `M` on the filter (uniform in the parameter and in
+the singular value) replaces the operator norm of the reconstruction family in the fixed-operator
+transport between the exact datum and a canonical finite head. -/
+theorem norm_reconstructionFamily_sub_map_initialSegment_le
+    (S : SingularSystem K) (w : ι → ℝ → ℝ)
+    (h_bound : ∀ α, ∃ C ≥ 0, ∀ s > 0, |w α (s ^ 2) / s| ≤ C)
+    (M : ℝ) (hM0 : 0 ≤ M) (hM : ∀ α (s : ℝ), |w α (s ^ 2)| ≤ M)
+    (g : K.range) (h_length : S.length = ⊤) (α : ι) (N : ℕ) :
+    ‖S.reconstructionFamily w h_bound α (g : H₂) -
+        S.reconstructionFamily w h_bound α
+          (K (S.initialSegmentRangePseudoInverse g h_length N : H₁))‖ ≤
+      M * ‖(K.kerOrthogonalEquivRange.symm g : H₁) -
+        (S.initialSegmentRangePseudoInverse g h_length N : H₁)‖ := by
+  let xN : K.kerᗮ := S.initialSegmentRangePseudoInverse g h_length N
+  let xpad : K.kerᗮ := K.kerOrthogonalEquivRange.symm g
+  let z : K.kerᗮ := xpad - xN
+  have hKz : K (z : H₁) = (g : H₂) - K (xN : H₁) := by
+    have h1 : K (xpad : H₁) = (g : H₂) := map_partialPseudoInverseOnRange g
+    simp only [z, Submodule.coe_sub, map_sub, h1]
+  let e := S.rightBasis.repr
+  let c : lp (fun _ : S.Index ↦ ℝ) 2 := e z
+  have hmul : ∀ j : S.Index,
+      ‖ContinuousLinearMap.mul ℝ ℝ (w α (S.singularValue j ^ 2))‖ ≤ M := by
+    intro j
+    rw [ContinuousLinearMap.opNorm_mul_apply]
+    simpa [Real.norm_eq_abs] using hM α (S.singularValue j)
+  let D : lp (fun _ : S.Index ↦ ℝ) 2 →L[ℝ] lp (fun _ : S.Index ↦ ℝ) 2 :=
+    lp.mapCLM 2 (fun j ↦ ContinuousLinearMap.mul ℝ ℝ (w α (S.singularValue j ^ 2))) hM0 hmul
+  let y : K.kerᗮ := e.symm (D c)
+  have hdiag : HasSum
+      (fun j : S.Index ↦ ((w α (S.singularValue j ^ 2) * c j) • (S.rightBasis j : H₁)))
+      ((y : K.kerᗮ) : H₁) := by
+    have hbase : HasSum (fun j : S.Index ↦ (D c j) • (S.rightBasis j : K.kerᗮ)) y := by
+      -- Diagonal multiplier output expanded in the right Hilbert basis.
+      simpa [e, y] using S.rightBasis.hasSum_repr_symm (D c)
+    refine HasSum.congr_fun (hbase.mapL K.kerᗮ.subtypeL) ?_
+    intro j
+    apply congrArg (fun a : ℝ ↦ a • (S.rightBasis j : H₁))
+    simp [D]
+  have hfilter : HasSum
+      (fun j : S.Index ↦ ((w α (S.singularValue j ^ 2) * c j) • (S.rightBasis j : H₁)))
+      (S.reconstructionFamily w h_bound α (K (z : H₁))) := by
+    have htail : HasSum (S.filterSeries (w α) (K (z : H₁)))
+        (S.reconstructionFamily w h_bound α (K (z : H₁))) := by
+      -- The filter series of `K z` converges to the reconstruction of `K z`.
+      simpa [reconstructionFamily_apply] using
+        (S.hasFilterRepresentation_reconstructionOperator (w α) (h_bound α)).hasSum (K (z : H₁))
+    refine HasSum.congr_fun htail ?_
+    intro j
+    have hinner : inner ℝ (S.leftBasis j : H₂) (K (z : H₁)) =
+        S.singularValue j * c j := by
+      have h1 := inner_leftBasis_map_eq_singularValue_mul_inner_rightBasis S (z : H₁) j
+      have h2 : inner ℝ (S.rightBasis j : H₁) (z : H₁) = c j := by
+        change inner ℝ (S.rightBasis j : H₁) (z : H₁) = e z j
+        rw [S.rightBasis.repr_apply_apply z j]
+        simp
+      rw [h1, h2]
+    rw [filterSeries_apply, hinner]
+    apply congrArg (fun a : ℝ ↦ a • (S.rightBasis j : H₁))
+    have hs : S.singularValue j ≠ 0 := ne_of_gt (S.singularValue_pos j)
+    field_simp
+  have hEq : S.reconstructionFamily w h_bound α (K (z : H₁)) = ((y : K.kerᗮ) : H₁) :=
+    hfilter.unique hdiag
+  have hDnorm : ‖D‖ ≤ M :=
+    lp.norm_mapCLM_le 2
+      (fun j ↦ ContinuousLinearMap.mul ℝ ℝ (w α (S.singularValue j ^ 2))) hM0 hmul
+  have hc : ‖c‖ = ‖(z : H₁)‖ := by
+    simp [c, e]
+  have hz : ‖(z : H₁)‖ = ‖(K.kerOrthogonalEquivRange.symm g : H₁) -
+        (S.initialSegmentRangePseudoInverse g h_length N : H₁)‖ := by
+    simp only [z, xpad, xN, Submodule.coe_sub]
+  calc
+    ‖S.reconstructionFamily w h_bound α (g : H₂) -
+        S.reconstructionFamily w h_bound α (K (xN : H₁))‖
+        = ‖S.reconstructionFamily w h_bound α (K (z : H₁))‖ := by
+          rw [← map_sub, ← hKz]
+    _ = ‖((y : K.kerᗮ) : H₁)‖ := by rw [hEq]
+    _ = ‖y‖ := rfl
+    _ = ‖D c‖ := by simp [y]
+    _ ≤ ‖D‖ * ‖c‖ := D.le_opNorm c
+    _ ≤ M * ‖c‖ := mul_le_mul_of_nonneg_right hDnorm (norm_nonneg c)
+    _ = M * ‖(K.kerOrthogonalEquivRange.symm g : H₁) -
+        (S.initialSegmentRangePseudoInverse g h_length N : H₁)‖ := by rw [hc, hz]
+
 /-- Helper for Theorem 2.19: the infinite branch only needs one exact-data block for each
-geometric budget, stated directly in the quantities consumed by the block recursion. -/
+geometric budget. A uniform bound `M` on the filter lets the transport term be paid for by the
+canonical head approximation, instead of the operator norm of the reconstruction family. -/
 theorem existsInfiniteLengthExactDataBlock
     (S : SingularSystem K) (w : ι → ℝ → ℝ)
     (h_bound : ∀ α, ∃ C ≥ 0, ∀ s > 0, |w α (s ^ 2) / s| ≤ C)
+    (M : ℝ) (hM0 : 0 ≤ M) (hM : ∀ α (s : ℝ), |w α (s ^ 2)| ≤ M)
     (lα : Filter ι)
     (αChoice : ℝ → ι)
     (h_choice :
@@ -2813,31 +2899,56 @@ theorem existsInfiniteLengthExactDataBlock
         (1 / 4 : ℝ) ^ n / 4 ∧
       ‖S.reconstructionFamily w h_bound αBlock (K (xBlock : H₁)) - (xBlock : H₁)‖ ≤
         (1 / 4 : ℝ) ^ n / 2 := by
-  -- Route correction: the exact-data block is the true owner surface for the infinite branch.
-  obtain ⟨δCore, hδCorePos, NCore, happroxCore, hheadCore, hnormCore⟩ :=
-    existsInfiniteLengthExactDataRadius
-      S w h_bound lα αChoice h_choice h_pointwise h_norm g h_length n
-  let αCore : ι := αChoice δCore
-  let xCore : K.kerᗮ := S.initialSegmentRangePseudoInverse g h_length NCore
-  have happroxCore' :
-      ‖(K.kerOrthogonalEquivRange.symm g : H₁) - (xCore : H₁)‖ ≤
-        (1 / 4 : ℝ) ^ n / 8 := by
-    -- Freeze one canonical exact-data core stage as the starting point for the direct block route.
-    simpa [xCore] using happroxCore
-  have hheadCore' :
-      ‖S.reconstructionFamily w h_bound αCore (K (xCore : H₁)) - (xCore : H₁)‖ ≤
-        (1 / 4 : ℝ) ^ n / 4 := by
-    -- The same core stage already carries the desired exact-data head bound on the core head.
-    simpa [αCore, xCore] using hheadCore
-  have hnormCore' :
-      ‖S.reconstructionFamily w h_bound αCore‖ * δCore ≤
-        (1 / 4 : ℝ) ^ n / 4 := by
-    -- Its norm-product control is also already normalized at the geometric block scale.
-    simpa [αCore] using hnormCore
-  -- TODO: complete the direct exact-data block route by choosing a same-stage head whose datum
-  -- defect is admissible for `αCore`, then combine `hnormCore'` with the fixed-stage transfer
-  -- lemmas to obtain the transport and exact-data head bounds required below.
-  sorry
+  have hε2 : 0 < (1 / 4 : ℝ) ^ n / 2 := by positivity
+  have hη : 0 < min ((1 / 4 : ℝ) ^ n / 2) ((1 / 4 : ℝ) ^ n / (4 * (M + 1))) := by
+    refine lt_min hε2 ?_
+    positivity
+  -- Choose the canonical head first; the transport budget only involves `M`, not the parameter.
+  obtain ⟨N₀, hN₀⟩ :=
+    initialSegmentRangePseudoInverseApproxEventually S g h_length
+      (η := min ((1 / 4 : ℝ) ^ n / 2) ((1 / 4 : ℝ) ^ n / (4 * (M + 1)))) hη
+  have hN := hN₀ N₀ le_rfl
+  -- Then pick the filter parameter inside the exact-data window of that fixed head.
+  obtain ⟨u, hu, hwin⟩ :=
+    existsInitialSegmentExactDataWindow
+      S w h_bound lα αChoice h_choice h_pointwise h_norm g h_length N₀
+      (ε := (1 / 4 : ℝ) ^ n / 2) hε2
+  let δ : ℝ := u / 2
+  have hδ : δ ∈ Set.Ioo (0 : ℝ) u := by
+    refine ⟨by positivity, ?_⟩
+    have hpos : 0 < u := hu
+    simp only [δ]
+    linarith
+  refine ⟨αChoice δ, S.initialSegmentRangePseudoInverse g h_length N₀, ?_, ?_, ?_⟩
+  · -- Ambient approximation budget.
+    exact le_trans hN.1 (min_le_left _ _)
+  · -- The transport term is controlled by the uniform filter bound times the approximation.
+    calc
+      ‖S.reconstructionFamily w h_bound (αChoice δ) (g : H₂) -
+          S.reconstructionFamily w h_bound (αChoice δ)
+            (K (S.initialSegmentRangePseudoInverse g h_length N₀ : H₁))‖
+          ≤ M * ‖(K.kerOrthogonalEquivRange.symm g : H₁) -
+              (S.initialSegmentRangePseudoInverse g h_length N₀ : H₁)‖ :=
+            norm_reconstructionFamily_sub_map_initialSegment_le
+              S w h_bound M hM0 hM g h_length (αChoice δ) N₀
+      _ ≤ M * ((1 / 4 : ℝ) ^ n / (4 * (M + 1))) := by
+            have hb : ‖(K.kerOrthogonalEquivRange.symm g : H₁) -
+                (S.initialSegmentRangePseudoInverse g h_length N₀ : H₁)‖
+                ≤ min ((1 / 4 : ℝ) ^ n / 2) ((1 / 4 : ℝ) ^ n / (4 * (M + 1))) := hN.1
+            exact mul_le_mul_of_nonneg_left (le_trans hb (min_le_right _ _)) hM0
+      _ ≤ (1 / 4 : ℝ) ^ n / 4 := by
+            have hM1 : (0 : ℝ) < M + 1 := by linarith
+            have hle : M / (M + 1) ≤ 1 := by
+              rw [div_le_one hM1]
+              linarith
+            calc
+              M * ((1 / 4 : ℝ) ^ n / (4 * (M + 1)))
+                  = (M / (M + 1)) * ((1 / 4 : ℝ) ^ n / 4) := by
+                    field_simp
+              _ ≤ 1 * ((1 / 4 : ℝ) ^ n / 4) := by gcongr
+              _ = (1 / 4 : ℝ) ^ n / 4 := by ring
+  · -- The exact-data head bound comes from the window at the chosen head.
+    exact (hwin hδ).1
 
 /-- Helper for Theorem 2.19: one infinite-branch block should choose a later cutoff, one filter
 parameter, and one `K.kerᗮ` head so the approximation, exact-data head error, and noisy-to-head
@@ -2845,6 +2956,7 @@ transport term all fit the geometric stage budget. -/
 theorem existsInfiniteLengthChoiceBlock
     (S : SingularSystem K) (w : ι → ℝ → ℝ)
     (h_bound : ∀ α, ∃ C ≥ 0, ∀ s > 0, |w α (s ^ 2) / s| ≤ C)
+    (M : ℝ) (hM0 : 0 ≤ M) (hM : ∀ α (s : ℝ), |w α (s ^ 2)| ≤ M)
     (lα : Filter ι)
     (αChoice : ℝ → ι)
     (h_choice :
@@ -2875,7 +2987,7 @@ theorem existsInfiniteLengthChoiceBlock
   -- fixed chosen operator, instead of routing through the dead stage-package family.
   obtain ⟨αBlock, xBlock, happrox, hexactTail, hhead⟩ :=
     existsInfiniteLengthExactDataBlock
-      S w h_bound lα αChoice h_choice h_pointwise h_norm g h_length n
+      S w h_bound M hM0 hM lα αChoice h_choice h_pointwise h_norm g h_length n
   obtain ⟨cut, hcutGt, hcutTail⟩ :=
     existsFixedOperatorTailCutoff
       S w h_bound g gSeq hgSeq αBlock m n
@@ -2936,6 +3048,7 @@ strictly increasing cutoff sequence together with blockwise parameters and heads
 theorem existsInfiniteLengthChoiceBlocks
     (S : SingularSystem K) (w : ι → ℝ → ℝ)
     (h_bound : ∀ α, ∃ C ≥ 0, ∀ s > 0, |w α (s ^ 2) / s| ≤ C)
+    (M : ℝ) (hM0 : 0 ≤ M) (hM : ∀ α (s : ℝ), |w α (s ^ 2)| ≤ M)
     (lα : Filter ι)
     (αChoice : ℝ → ι)
     (h_choice :
@@ -2966,7 +3079,7 @@ theorem existsInfiniteLengthChoiceBlocks
   choose cutChoice αChoiceBlock xChoiceBlock hlt happrox hhead hnoise using
     fun m n ↦
       existsInfiniteLengthChoiceBlock
-        S w h_bound lα αChoice h_choice h_pointwise h_norm g gSeq hgSeq h_length m n
+        S w h_bound M hM0 hM lα αChoice h_choice h_pointwise h_norm g gSeq hgSeq h_length m n
   let cut : ℕ → ℕ :=
     Nat.rec (cutChoice 0 0) fun n prev ↦ cutChoice prev (n + 1)
   let αBlock : ℕ → ι :=
@@ -3180,6 +3293,7 @@ package. -/
 theorem existsChoiceSequenceForSeqClause_infinite
     (S : SingularSystem K) (w : ι → ℝ → ℝ)
     (h_bound : ∀ α, ∃ C ≥ 0, ∀ s > 0, |w α (s ^ 2) / s| ≤ C)
+    (M : ℝ) (hM0 : 0 ≤ M) (hM : ∀ α (s : ℝ), |w α (s ^ 2)| ≤ M)
     (lα : Filter ι)
     (αChoice : ℝ → ι)
     (h_choice :
@@ -3204,7 +3318,7 @@ theorem existsChoiceSequenceForSeqClause_infinite
   -- `existsInfiniteLengthExactDataBlock`.
   obtain ⟨cut, αBlock, xBlock, hcutMono, happrox, hhead, hnoise⟩ :=
     existsInfiniteLengthChoiceBlocks
-      S w h_bound lα αChoice h_choice h_pointwise h_norm g gSeq hgSeq h_length
+      S w h_bound M hM0 hM lα αChoice h_choice h_pointwise h_norm g gSeq hgSeq h_length
   -- Package the recursive blocks into the `seq`-clause parameter choice on the original data.
   exact
     infiniteLengthChoiceSequenceFromBlocks
@@ -3398,6 +3512,7 @@ realizing the `seq` clause from Definition 2.18. -/
 theorem existsChoiceSequenceForSeqClause
     (S : SingularSystem K) (w : ι → ℝ → ℝ)
     (h_bound : ∀ α, ∃ C ≥ 0, ∀ s > 0, |w α (s ^ 2) / s| ≤ C)
+    (M : ℝ) (hM0 : 0 ≤ M) (hM : ∀ α (s : ℝ), |w α (s ^ 2)| ≤ M)
     (lα : Filter ι)
     (αChoice : ℝ → ι)
     (h_choice :
@@ -3421,7 +3536,7 @@ theorem existsChoiceSequenceForSeqClause
     -- branch should be handled by a dedicated exact-data diagonal theorem.
     exact
       existsChoiceSequenceForSeqClause_infinite
-        S w h_bound lα αChoice h_choice h_pointwise h_norm g gSeq hgSeq h_length
+        S w h_bound M hM0 hM lα αChoice h_choice h_pointwise h_norm g gSeq hgSeq h_length
   · let δBuf : ℕ → ℝ := fun n ↦ ‖gSeq n - (g : H₂)‖ + (1 / 4 : ℝ) ^ n
     let αSeq : ℕ → ι := fun n ↦ αChoice (δBuf n)
     refine ⟨αSeq, ?_⟩
@@ -3456,10 +3571,18 @@ Assume `sup_s |w α (s ^ 2) / s| < ∞` for each `α`, that
 that `αChoice δ` tends to `lα` as `δ → 0+`, and that
 `‖S.reconstructionFamily w h_bound (αChoice δ)‖ * δ → 0` as `δ → 0+`. Then the reconstruction
 family from `(2.24)` converges to `K†` on `K.range`, realized here by the canonical
-range inverse `fun g ↦ (K.kerOrthogonalEquivRange.symm g : H₁)` on exact data in `K.range`. -/
+range inverse `fun g ↦ (K.kerOrthogonalEquivRange.symm g : H₁)` on exact data in `K.range`.
+
+The scalar filter additionally carries a uniform bound `|w α (s ^ 2)| ≤ M`. This is the standard
+boundedness of a regularization filter (the multiplier of `K^* K` is bounded by `1`); it holds
+with `M = 1` for the TSVD filter `(1.11)`, the Tikhonov filter `(1.13)` and the Landweber filter
+`(1.38)`. It is used only in the infinite-length branch, where it replaces the operator norm of
+the reconstruction family by the fixed constant `M` in the transport estimate between the exact
+datum and the canonical finite heads. -/
 theorem reconstructionOperator_convergesToCanonicalInverseOnRange
     (S : SingularSystem K) (w : ι → ℝ → ℝ)
     (h_bound : ∀ α, ∃ C ≥ 0, ∀ s > 0, |w α (s ^ 2) / s| ≤ C)
+    (M : ℝ) (hM0 : 0 ≤ M) (hM : ∀ α (s : ℝ), |w α (s ^ 2)| ≤ M)
     (lα : Filter ι)
     (αChoice : ℝ → ι)
     (h_choice :
@@ -3493,6 +3616,6 @@ theorem reconstructionOperator_convergesToCanonicalInverseOnRange
     -- dedicated parameter-choice theorem rather than a raw buffered exact-data theorem.
     exact
       existsChoiceSequenceForSeqClause
-        S w h_bound lα αChoice h_choice h_pointwise h_norm g gSeq hgSeq
+        S w h_bound M hM0 hM lα αChoice h_choice h_pointwise h_norm g gSeq hgSeq
 
 end ContinuousLinearMap.SingularSystem

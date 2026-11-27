@@ -243,9 +243,23 @@ theorem partialPseudoInverse_eq_pseudoInverse
     (g : ((K.range ⊔ K.rangeᗮ) : Submodule 𝕜 H₂)) :
     ((K.partialPseudoInverse g : K.kerᗮ) : H₁) = K.pseudoInverse g := by
   -- Both pseudoinverses apply the same inverse equivalence to the same range projection.
-  simpa [ContinuousLinearMap.partialPseudoInverse, ContinuousLinearMap.pseudoInverse] using
-    congrArg (fun y : K.range ↦ ((K.kerOrthogonalEquivRange.symm y : K.kerᗮ) : H₁))
-      (rangeProjectionOnPartialPseudoInverseDomain_eq_orthogonalProjectionOnto K g)
+  change ((K.kerOrthogonalEquivRange.symm
+    (K.rangeProjectionOnPartialPseudoInverseDomain g) : K.kerᗮ) : H₁) =
+    ((K.kerOrthogonalRangeContinuousEquiv.symm
+      (K.range.orthogonalProjectionOnto (g : H₂)) : K.kerᗮ) : H₁)
+  apply congrArg Subtype.val
+  apply K.kerOrthogonalRangeRestrict_bijective.1
+  rw [K.kerOrthogonalEquivRange_symm_apply]
+  have hc : K.kerOrthogonalRangeRestrict
+      (K.kerOrthogonalRangeContinuousEquiv.symm (K.range.orthogonalProjectionOnto (g : H₂))) =
+      K.range.orthogonalProjectionOnto (g : H₂) := by
+    simpa only [kerOrthogonalRangeContinuousEquiv] using
+      (ContinuousLinearEquiv.ofBijective_apply_symm_apply K.kerOrthogonalRangeRestrict
+        (K.kerOrthogonalRangeRestrict_ker_eq_bot)
+        (K.kerOrthogonalRangeRestrict_range_eq_top)
+        (K.range.orthogonalProjectionOnto (g : H₂)))
+  rw [hc]
+  exact rangeProjectionOnPartialPseudoInverseDomain_eq_orthogonalProjectionOnto K g
 
 variable {K : H₁ →L[𝕜] H₂}
 

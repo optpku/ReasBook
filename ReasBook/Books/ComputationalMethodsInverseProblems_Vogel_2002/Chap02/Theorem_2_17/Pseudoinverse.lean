@@ -108,6 +108,7 @@ theorem kerOrthogonalRangeRestrict_bijective
 
 /-- Helper for Theorem 2.17: when `K.range` is complete, the restriction of `K` to `K.kerᗮ`
 is a continuous linear equivalence onto `K.range`. -/
+@[expose]
 noncomputable def kerOrthogonalRangeContinuousEquiv
     (K : H₁ →L[𝕜] H₂) [CompleteSpace K.range] :
     K.kerᗮ ≃L[𝕜] K.range :=

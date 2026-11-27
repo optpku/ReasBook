@@ -25,6 +25,12 @@ finite-critical weak relative compactness for `1 < d`, and the one-dimensional
 weak-* `L∞(Ω)` endpoint obtained from the source convention
 `d / (d - 1) = ∞` when `d = 1`, viewed through the canonical pairing with
 `L¹(Ω)`.
+
+The BV embeddings and compactness clauses assume `HasBoundedBVExtension Ω`
+in addition to boundedness and finite measure. This is the analytic extension
+property available on bounded Lipschitz domains; boundedness of an arbitrary
+open set alone does not suffice. It supplies a continuous linear ambient BV
+extension with uniformly compact support, not a compactness assumption.
 -/
 
 namespace VariationalRegularization
@@ -82,6 +88,7 @@ lemma toSubcriticalLp_sub_toAEEqFun
     [Fact (1 ≤ p)]
     (hd : 1 ≤ d)
     (hΩ : Bornology.IsBounded (Ω : Set (EuclideanSpace ℝ (Fin d))))
+    [HasBoundedBVExtension Ω]
     (hp : p < criticalExponent d)
     (u v : BV Ω) :
     (((toSubcriticalLp (d := d) (Ω := Ω) (p := p) hd hΩ hp u -
@@ -104,6 +111,7 @@ lemma toLp_eq_toSubcriticalLp
     [Fact (1 ≤ p)]
     (hd : 1 ≤ d)
     (hΩ : Bornology.IsBounded (Ω : Set (EuclideanSpace ℝ (Fin d))))
+    [HasBoundedBVExtension Ω]
     (hp : p < criticalExponent d)
     (u : BV Ω) :
     toLp (d := d) (Ω := Ω) (p := p) hd hΩ (le_of_lt hp) u =
@@ -129,6 +137,7 @@ lemma subcriticalDifference_uniformCriticalBound
     [MeasureTheory.IsFiniteMeasure (domainMeasure Ω)]
     (h1d : 1 < d)
     (hΩ : Bornology.IsBounded (Ω : Set (EuclideanSpace ℝ (Fin d))))
+    [HasBoundedBVExtension Ω]
     (R : ℝ) :
     ∃ C : ℝ,
       0 ≤ C ∧
@@ -149,6 +158,7 @@ lemma subcriticalDifference_uniformEndpointBound
     {Ω : TopologicalSpace.Opens (EuclideanSpace ℝ (Fin 1))}
     [MeasureTheory.IsFiniteMeasure (domainMeasure Ω)]
     (hΩ : Bornology.IsBounded (Ω : Set (EuclideanSpace ℝ (Fin 1))))
+    [HasBoundedBVExtension Ω]
     (R : ℝ) :
     ∃ C : ℝ,
       0 ≤ C ∧
@@ -228,6 +238,7 @@ lemma subcriticalDifference_dist_eq_eLpNorm
     [Fact (1 ≤ p)]
     (hd : 1 ≤ d)
     (hΩ : Bornology.IsBounded (Ω : Set (EuclideanSpace ℝ (Fin d))))
+    [HasBoundedBVExtension Ω]
     (hp : p < criticalExponent d)
     (u v : BV Ω) :
     dist (toSubcriticalLp (d := d) (Ω := Ω) (p := p) hd hΩ hp u)
@@ -362,6 +373,7 @@ lemma subcriticalDifference_small_of_l1_small_endpoint
     {p : ENNReal}
     [Fact (1 ≤ p)]
     (hΩ : Bornology.IsBounded (Ω : Set (EuclideanSpace ℝ (Fin 1))))
+    [HasBoundedBVExtension Ω]
     (hp : p < criticalExponent 1)
     (R : ℝ) :
     ∀ ε > 0, ∃ δ > 0, ∀ ⦃u v : BV Ω⦄,
@@ -786,6 +798,7 @@ lemma subcriticalDifference_small_of_l1_small
     [Fact (1 ≤ p)]
     (hd : 1 ≤ d)
     (hΩ : Bornology.IsBounded (Ω : Set (EuclideanSpace ℝ (Fin d))))
+    [HasBoundedBVExtension Ω]
     (hp : p < criticalExponent d)
     (R : ℝ) :
     ∀ ε > 0, ∃ δ > 0, ∀ ⦃u v : BV Ω⦄,
@@ -881,6 +894,7 @@ lemma subcriticalClosedBall_totallyBounded
     [Fact (1 ≤ p)]
     (hd : 1 ≤ d)
     (hΩ : Bornology.IsBounded (Ω : Set (EuclideanSpace ℝ (Fin d))))
+    [HasBoundedBVExtension Ω]
     (hp : p < criticalExponent d)
     (R : ℝ) :
     TotallyBounded (subcriticalLpImage hd hΩ hp (Metric.closedBall (0 : BV Ω) R)) := by
@@ -928,6 +942,7 @@ lemma subcriticalClosedBall_compact
     [Fact (1 ≤ p)]
     (hd : 1 ≤ d)
     (hΩ : Bornology.IsBounded (Ω : Set (EuclideanSpace ℝ (Fin d))))
+    [HasBoundedBVExtension Ω]
     (hp : p < criticalExponent d)
     (R : ℝ) :
     IsCompact (closure (subcriticalLpImage hd hΩ hp (Metric.closedBall (0 : BV Ω) R))) := by
@@ -945,6 +960,7 @@ lemma criticalWeakImage_subset_toWeakSpace_closedBall_of_exactBound
     [MeasureTheory.IsFiniteMeasure (domainMeasure Ω)]
     (h1d : 1 < d)
     (hΩ : Bornology.IsBounded (Ω : Set (EuclideanSpace ℝ (Fin d))))
+    [HasBoundedBVExtension Ω]
     (R : ℝ) :
     ∃ C : ℝ,
       0 ≤ C ∧
@@ -993,6 +1009,7 @@ lemma criticalWeakImage_preimage_bounded_of_exactBound
     [MeasureTheory.IsFiniteMeasure (domainMeasure Ω)]
     (h1d : 1 < d)
     (hΩ : Bornology.IsBounded (Ω : Set (EuclideanSpace ℝ (Fin d))))
+    [HasBoundedBVExtension Ω]
     (R : ℝ) :
     Bornology.IsBounded
       (((toWeakSpace ℝ (criticalLpSpace Ω (Nat.le_of_lt h1d))) ⁻¹'
@@ -1029,6 +1046,7 @@ lemma criticalClosedBall_weakCompact
     [MeasureTheory.IsFiniteMeasure (domainMeasure Ω)]
     (h1d : 1 < d)
     (hΩ : Bornology.IsBounded (Ω : Set (EuclideanSpace ℝ (Fin d))))
+    [HasBoundedBVExtension Ω]
     (R : ℝ) :
     IsCompact
       (closure
@@ -1044,7 +1062,8 @@ lemma criticalClosedBall_weakCompact
       isClosed_closure (closure_mono hsubset)
 
 /-- Theorem 8.16 (1). Under the standing finite-measure hypothesis on
-`domainMeasure Ω`, a BV-bounded family on bounded `Ω` is relatively compact in
+`domainMeasure Ω` and the bounded BV extension hypothesis, a BV-bounded family
+on bounded `Ω` is relatively compact in
 `Lᵖ(Ω)` for every exponent `p` with `1 ≤ p < criticalExponent d`. -/
 theorem subcriticalLp
     [MeasureTheory.IsFiniteMeasure (domainMeasure Ω)]
@@ -1052,6 +1071,7 @@ theorem subcriticalLp
     [Fact (1 ≤ p)]
     (hd : 1 ≤ d)
     (hΩ : Bornology.IsBounded (Ω : Set (EuclideanSpace ℝ (Fin d))))
+    [HasBoundedBVExtension Ω]
     (S : Set (BV Ω))
     (hS : IsBVBounded (BV.toL1 '' S))
     (hp : p < criticalExponent d) :
@@ -1070,12 +1090,14 @@ theorem subcriticalLp
       isClosed_closure (closure_mono hmono)
 
 /-- Theorem 8.16 (2). Under the standing finite-measure hypothesis on
-`domainMeasure Ω`, if `1 < d` then a BV-bounded family on bounded `Ω` is weakly
+`domainMeasure Ω` and the bounded BV extension hypothesis, if `1 < d` then a
+BV-bounded family on bounded `Ω` is weakly
 relatively compact in `L^(criticalExponent d)(Ω)`. -/
 theorem criticalWeakLp
     [MeasureTheory.IsFiniteMeasure (domainMeasure Ω)]
     (h1d : 1 < d)
     (hΩ : Bornology.IsBounded (Ω : Set (EuclideanSpace ℝ (Fin d))))
+    [HasBoundedBVExtension Ω]
     (S : Set (BV Ω))
     (hS : IsBVBounded (BV.toL1 '' S)) :
     IsCompact (closure (criticalWeakImage h1d hΩ S)) := by
@@ -1103,6 +1125,7 @@ the weak-* image inside one weak-* closed ball. -/
 lemma endpointWeakStarImage_subset_closedBall_of_dualBound
     [MeasureTheory.IsFiniteMeasure (domainMeasure Ω)]
     (hΩ : Bornology.IsBounded (Ω : Set (EuclideanSpace ℝ (Fin 1))))
+    [HasBoundedBVExtension Ω]
     {S : Set (BV Ω)}
     {R : ℝ}
     (hR :
@@ -1123,6 +1146,7 @@ contained in a single weak-* closed ball. -/
 lemma endpointWeakStarImage_compact_of_subset_closedBall
     [MeasureTheory.IsFiniteMeasure (domainMeasure Ω)]
     (hΩ : Bornology.IsBounded (Ω : Set (EuclideanSpace ℝ (Fin 1))))
+    [HasBoundedBVExtension Ω]
     {S : Set (BV Ω)}
     {R : ℝ}
     (hsubset :
@@ -1193,6 +1217,7 @@ norm bound once the quantitative `L∞` owner is available. -/
 lemma endpointClosedBall_dualBound
     [MeasureTheory.IsFiniteMeasure (domainMeasure Ω)]
     (hΩ : Bornology.IsBounded (Ω : Set (EuclideanSpace ℝ (Fin 1))))
+    [HasBoundedBVExtension Ω]
     (R : ℝ) :
     ∃ C : ℝ,
       0 ≤ C ∧
@@ -1232,6 +1257,7 @@ the endpoint pairing map is shown to land in a weak-* closed ball. -/
 lemma endpointClosedBall_weakStarCompact
     [MeasureTheory.IsFiniteMeasure (domainMeasure Ω)]
     (hΩ : Bornology.IsBounded (Ω : Set (EuclideanSpace ℝ (Fin 1))))
+    [HasBoundedBVExtension Ω]
     (R : ℝ) :
     IsCompact
       (closure
@@ -1246,11 +1272,12 @@ lemma endpointClosedBall_weakStarCompact
 
 /-- Theorem 8.16 (3). When `d = 1`, the source convention
 `d / (d - 1) = ∞` yields weak-* relative compactness in `L∞(Ω)` for a
-BV-bounded family on bounded `Ω`, expressed on the canonical `L¹(Ω)` predual
-surface. -/
+BV-bounded family on bounded `Ω` with `HasBoundedBVExtension Ω`, expressed on
+the canonical `L¹(Ω)` predual surface. -/
 theorem endpointWeakStarLp
     [MeasureTheory.IsFiniteMeasure (domainMeasure Ω)]
     (hΩ : Bornology.IsBounded (Ω : Set (EuclideanSpace ℝ (Fin 1))))
+    [HasBoundedBVExtension Ω]
     (S : Set (BV Ω))
     (hS : IsBVBounded (BV.toL1 '' S)) :
     IsCompact (closure (endpointWeakStarImage hΩ S)) := by

@@ -103,13 +103,7 @@ lemma criticalRatio_tendsto_one_of_isEquivalent_local
 /-- Helper for Remark 7.28: reduce the critical discrepancy comparison to the
 normalized ratio `alphaDiscrep / betaDiscrep`. -/
 theorem criticalRatio_tendsto_one_local
-    (h_standing :
-      FilterRegularization.StandingAssumptions
-        K S h_length fTrue c p b q d η
-        (fun n ↦ Rtikh n (alphaDiscrep n)) alphaDiscrep)
-    (h_tikhonov : TikhonovEstimation.IsTikhonovReconstructionFamily K S Rtikh)
-    (h_alphaDiscrep :
-      IsTikhonovDiscrepancyParameterFamily K d Rtikh σ alphaDiscrep)
+    (h_balance : TikhonovDiscrepancy.SequenceModel.HasBalance b c p q σ alphaDiscrep)
     (h_b : 0 < b) (h_c : 0 < c) (h_p : 1 < p) (h_q : 1 < q)
     (h_σ : 0 < σ) (h_critical : p - q = -1) :
     Filter.Tendsto
@@ -127,8 +121,8 @@ theorem criticalRatio_tendsto_one_local
     -- limit needed by Remark 7.28.
     exact
       TikhonovDiscrepancy.isEquivalent_critical
-        K S h_length fTrue b c p q σ d η Rtikh alphaDiscrep
-        h_standing h_tikhonov h_alphaDiscrep h_b h_c h_p h_q h_σ h_critical
+        b c p q σ alphaDiscrep
+        h_balance h_b h_c h_p h_q h_σ h_critical
   -- Once the asymptotic equivalence is available, repackage it as the ratio limit.
   exact
     criticalRatio_tendsto_one_of_isEquivalent_local
@@ -139,13 +133,7 @@ theorem criticalRatio_tendsto_one_local
 the discrepancy family is asymptotically equivalent to the canonical critical
 benchmark. -/
 theorem discrepancyFamily_isEquivalent_criticalBenchmark_local
-    (h_standing :
-      FilterRegularization.StandingAssumptions
-        K S h_length fTrue c p b q d η
-        (fun n ↦ Rtikh n (alphaDiscrep n)) alphaDiscrep)
-    (h_tikhonov : TikhonovEstimation.IsTikhonovReconstructionFamily K S Rtikh)
-    (h_alphaDiscrep :
-      IsTikhonovDiscrepancyParameterFamily K d Rtikh σ alphaDiscrep)
+    (h_balance : TikhonovDiscrepancy.SequenceModel.HasBalance b c p q σ alphaDiscrep)
     (h_b : 0 < b) (h_c : 0 < c) (h_p : 1 < p) (h_q : 1 < q)
     (h_σ : 0 < σ) (h_critical : p - q = -1) :
     Asymptotics.IsEquivalent Filter.atTop alphaDiscrep (betaDiscrep b c p σ) := by
@@ -164,8 +152,8 @@ theorem discrepancyFamily_isEquivalent_criticalBenchmark_local
   -- Delegate the remaining work to the theorem-local ratio limit interface.
   exact
     criticalRatio_tendsto_one_local
-      K S h_length fTrue b c p q σ d η Rtikh alphaDiscrep
-      h_standing h_tikhonov h_alphaDiscrep h_b h_c h_p h_q h_σ h_critical
+      b c p q σ alphaDiscrep
+      h_balance h_b h_c h_p h_q h_σ h_critical
 
 end
 
