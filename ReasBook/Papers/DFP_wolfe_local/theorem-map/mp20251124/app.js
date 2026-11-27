@@ -1454,7 +1454,7 @@
     populateFilters();
     renderLegend();
     var hashId = decodeURIComponent(window.location.hash.replace(/^#/, ""));
-    state.selectedId = itemById.has(hashId) ? hashId : "latest-main";
+    state.selectedId = itemById.has(hashId) ? hashId : (items.length ? items[0].id : "");
     var savedLayout = readPreference("layout-mode");
     state.layoutMode = savedLayout === "layered" ? "layered" : "natural";
     window.dispatchEvent(new CustomEvent("reasbook-layoutchange", {
