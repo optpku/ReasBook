@@ -618,7 +618,7 @@ path.graph-edge.dependency-both {
 }
 
 .graph-edge.dim {
-  opacity: 0.6;
+  opacity: 0.22;
 }
 
 path.graph-edge.active {
@@ -631,16 +631,6 @@ path.graph-edge.active {
   fill: context-stroke;
 }
 
-g.edge.dependency-unclassified.active path,
-g.edge.dependency-unclassified.active polygon,
-path.graph-edge.dependency-unclassified.active {
-  stroke: #61778b;
-}
-
-g.edge.dependency-unclassified.active polygon {
-  fill: #61778b;
-}
-
 .graph-node {
   --section-color: var(--accent);
   --section-wash: var(--accent-wash);
@@ -650,7 +640,7 @@ g.edge.dependency-unclassified.active polygon {
 }
 
 .graph-node.dim {
-  opacity: 0.7;
+  opacity: 0.34;
 }
 
 .graph-node .node-box {
