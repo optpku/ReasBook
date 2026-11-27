@@ -974,7 +974,102 @@
     });
   }
 
+  function readablePaperStatement(source) {
+    var text = String(source || "").replace(/^\s*\\label\{[^}]*\}\s*/, "");
+    text = text
+      .replace(/\\eqref\{([^}]+)\}/g, "[$1]")
+      .replace(/\\ref\{([^}]+)\}/g, "[$1]")
+      .replace(/\\item(?:\[[^\]]*\])?/g, "\\n• ")
+      .replace(/\\label\{[^}]*\}/g, "")
+      .replace(/\\begin\{(?:equation\*?|align\*?|itemize)\}/g, "")
+      .replace(/\\end\{(?:equation\*?|align\*?|itemize)\}/g, "")
+      .replace(/\^\{([^{}]*)\}/g, "^$1")
+      .replace(/_\{([^{}]*)\}/g, "_$1")
+      .replace(/\$+/g, "")
+      .replace(/\\\[/g, "")
+      .replace(/\\\]/g, "");
+    [
+      ["\\mathbb{R}", "ℝ"],
+      ["\\R", "ℝ"],
+      ["\\mathbb R", "ℝ"],
+      ["\\mathcal", ""],
+      ["\\textup", ""],
+      ["\\text", ""],
+      ["\\operatorname", ""],
+      ["\\nabla", "∇"],
+      ["\\partial", "∂"],
+      ["\\infty", "∞"],
+      ["\\notin", "∉"],
+      ["\\in", "∈"],
+      ["\\preceq", "≼"],
+      ["\\succeq", "≽"],
+      ["\\succ", "≻"],
+      ["\\prec", "≺"],
+      ["\\leq", "≤"],
+      ["\\le", "≤"],
+      ["\\geq", "≥"],
+      ["\\ge", "≥"],
+      ["\\to", "→"],
+      ["\\pi", "π"],
+      ["\\sum", "Σ"],
+      ["\\prod", "Π"],
+      ["\\cdot", "·"],
+      ["\\times", "×"],
+      ["\\pm", "±"],
+      ["\\ell", "ℓ"],
+      ["\\varepsilon", "ε"],
+      ["\\beta", "β"],
+      ["\\alpha", "α"],
+      ["\\rho", "ρ"],
+      ["\\delta", "δ"],
+      ["\\gamma", "γ"],
+      ["\\zeta", "ζ"],
+      ["\\eta", "η"],
+      ["\\tau", "τ"],
+      ["\\xi", "ξ"],
+      ["\\nu", "ν"],
+      ["\\kappa", "κ"],
+      ["\\mathbb", ""],
+      ["\\quad", " "],
+      ["\\qquad", " "],
+      ["\\,", " "],
+      ["\\;", " "]
+    ].forEach(function (pair) {
+      text = text.split(pair[0]).join(pair[1]);
+    });
+    text = text
+      .replace(/\\frac\{([^{}]*)\}\{([^{}]*)\}/g, "($1)/($2)")
+      .replace(/\\left|\\right/g, "")
+      .replace(/H["\\]older/g, "Hölder")
+      .replace(/~+/g, " ")
+      .split("\\").join("")
+      .replace(/H"older/g, "Hölder")
+      .replace(/[ \t]+/g, " ")
+      .replace(/\n(?!•)/g, " ")
+      .trim();
+    return text;
+  }
+
+  function renderPaperStatement(container, item) {
+    container.replaceChildren();
+    readablePaperStatement(item.statement).split(/\n+/).forEach(function (line) {
+      var value = line.trim();
+      if (!value) {
+        return;
+      }
+      var paragraph = document.createElement("p");
+      paragraph.className = value[0] === "•" ? "paper-list-item" : "paper-paragraph";
+      paragraph.textContent = value;
+      container.appendChild(paragraph);
+    });
+  }
+
   function renderStatement(container, item) {
+    if (item.paperMapping && item.statement && item.statementHtml &&
+        item.statementHtml.indexOf("<code>") >= 0) {
+      renderPaperStatement(container, item);
+      return;
+    }
     if (item.statementHtml) {
       container.innerHTML = item.statementHtml;
       return;
