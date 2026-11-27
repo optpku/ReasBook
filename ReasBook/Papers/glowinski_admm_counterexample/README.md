@@ -116,11 +116,8 @@ this paper library.
 [Theorem map](https://optpku.github.io/ReasBook/versions/v4.32.0/theorem-maps/papers/glowinski_admm_counterexample/) |
 [arXiv](https://arxiv.org/abs/2611.09169)
 
-The published reading resources currently describe the earlier source release.
-Updated API documentation, Verso pages, and the theorem map are regenerated
-for this source change and require a new verified release before the published
-links describe this revision. Source and catalog changes are prepared on
-separate version and main branches.
+The published API documentation, Verso pages, and theorem map cover the
+revised formalization, including Appendices C.2 and C.3.
 
 The [numbered theorem map data](theorem-map/data.json) groups the actual
 compiled declarations into 14 manuscript nodes, including
