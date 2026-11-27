@@ -974,7 +974,81 @@
     });
   }
 
+  function readablePaperStatement(source) {
+    var text = String(source || "").replace(/^s*\label{[^}]*}s*/, "");
+    text = text
+      .replace(/\eqref{([^}]+)}/g, "[$1]")
+      .replace(/\ref{([^}]+)}/g, "[$1]")
+      .replace(/\textup{([^{}]*)}/g, "$1")
+      .replace(/\text(?:rm|it|bf)?{([^{}]*)}/g, "$1")
+      .replace(/\operatorname{([^{}]*)}/g, "$1")
+      .replace(/\mathbbs*{R}/g, "ℝ")
+      .replace(/\mathbbs+R/g, "ℝ")
+      .replace(/\mathcals*{([^{}]*)}/g, "$1")
+      .replace(/\begin{(?:equation*?|align*?|itemize)}/g, "")
+      .replace(/\end{(?:equation*?|align*?|itemize)}/g, "")
+      .replace(/\item(?:[[^]]*])?/g, "
+• ")
+      .replace(/\label{[^}]*}/g, "")
+      .replace(/\left|\right/g, "")
+      .replace(/\quad|\qquad|\,|\;/g, " ")
+      .replace(/\frac{([^{}]*)}{([^{}]*)}/g, "($1)/($2)")
+      .replace(/^{([^{}]*)}/g, "^$1")
+      .replace(/_{([^{}]*)}/g, "_$1")
+      .replace(/\nabla/g, "∇")
+      .replace(/\partial/g, "∂")
+      .replace(/\in/g, "∈")
+      .replace(/\notin/g, "∉")
+      .replace(/\preceq/g, "≼")
+      .replace(/\succeq/g, "≽")
+      .replace(/\succ/g, "≻")
+      .replace(/\prec/g, "≺")
+      .replace(/\leq?|\le/g, "≤")
+      .replace(/\geq?|\ge/g, "≥")
+      .replace(/\to/g, "→")
+      .replace(/\infty/g, "∞")
+      .replace(/\pi/g, "π")
+      .replace(/\sum/g, "Σ")
+      .replace(/\prod/g, "Π")
+      .replace(/\cdot/g, "·")
+      .replace(/\times/g, "×")
+      .replace(/\pm/g, "±")
+      .replace(/\ell/g, "ℓ")
+      .replace(/\mathbb/g, "")
+      .replace(/\[A-Za-z]+/g, "")
+      .replace(/$+/g, "")
+      .replace(/\[/g, "")
+      .replace(/\]/g, "")
+      .replace(/~+/g, " ")
+      .replace(/[ 	]+/g, " ")
+      .replace(/[ 	]*
+[ 	]*/g, "
+")
+      .trim();
+    return text;
+  }
+
+  function renderPaperStatement(container, item) {
+    container.replaceChildren();
+    readablePaperStatement(item.statement).split(/
++/).forEach(function (line) {
+      var value = line.trim();
+      if (!value) {
+        return;
+      }
+      var paragraph = document.createElement("p");
+      paragraph.className = value[0] === "•" ? "paper-list-item" : "paper-paragraph";
+      paragraph.textContent = value;
+      container.appendChild(paragraph);
+    });
+  }
+
   function renderStatement(container, item) {
+    if (item.paperMapping && item.statement && item.statementHtml &&
+        item.statementHtml.indexOf("<code>") >= 0) {
+      renderPaperStatement(container, item);
+      return;
+    }
     if (item.statementHtml) {
       container.innerHTML = item.statementHtml;
       return;
