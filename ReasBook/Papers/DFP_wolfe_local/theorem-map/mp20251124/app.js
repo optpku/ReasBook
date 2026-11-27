@@ -975,63 +975,84 @@
   }
 
   function readablePaperStatement(source) {
-    var text = String(source || "").replace(/^s*\label{[^}]*}s*/, "");
+    var text = String(source || "").replace(/^\s*\\label\{[^}]*\}\s*/, "");
     text = text
-      .replace(/\eqref{([^}]+)}/g, "[$1]")
-      .replace(/\ref{([^}]+)}/g, "[$1]")
-      .replace(/\textup{([^{}]*)}/g, "$1")
-      .replace(/\text(?:rm|it|bf)?{([^{}]*)}/g, "$1")
-      .replace(/\operatorname{([^{}]*)}/g, "$1")
-      .replace(/\mathbbs*{R}/g, "ℝ")
-      .replace(/\mathbbs+R/g, "ℝ")
-      .replace(/\mathcals*{([^{}]*)}/g, "$1")
-      .replace(/\begin{(?:equation*?|align*?|itemize)}/g, "")
-      .replace(/\end{(?:equation*?|align*?|itemize)}/g, "")
-      .replace(/\item(?:[[^]]*])?/g, "
-• ")
-      .replace(/\label{[^}]*}/g, "")
-      .replace(/\left|\right/g, "")
-      .replace(/\quad|\qquad|\,|\;/g, " ")
-      .replace(/\frac{([^{}]*)}{([^{}]*)}/g, "($1)/($2)")
-      .replace(/^{([^{}]*)}/g, "^$1")
-      .replace(/_{([^{}]*)}/g, "_$1")
-      .replace(/\nabla/g, "∇")
-      .replace(/\partial/g, "∂")
-      .replace(/\in/g, "∈")
-      .replace(/\notin/g, "∉")
-      .replace(/\preceq/g, "≼")
-      .replace(/\succeq/g, "≽")
-      .replace(/\succ/g, "≻")
-      .replace(/\prec/g, "≺")
-      .replace(/\leq?|\le/g, "≤")
-      .replace(/\geq?|\ge/g, "≥")
-      .replace(/\to/g, "→")
-      .replace(/\infty/g, "∞")
-      .replace(/\pi/g, "π")
-      .replace(/\sum/g, "Σ")
-      .replace(/\prod/g, "Π")
-      .replace(/\cdot/g, "·")
-      .replace(/\times/g, "×")
-      .replace(/\pm/g, "±")
-      .replace(/\ell/g, "ℓ")
-      .replace(/\mathbb/g, "")
-      .replace(/\[A-Za-z]+/g, "")
-      .replace(/$+/g, "")
-      .replace(/\[/g, "")
-      .replace(/\]/g, "")
+      .replace(/\\eqref\{([^}]+)\}/g, "[$1]")
+      .replace(/\\ref\{([^}]+)\}/g, "[$1]")
+      .replace(/\\item(?:\[[^\]]*\])?/g, "\\n• ")
+      .replace(/\\label\{[^}]*\}/g, "")
+      .replace(/\\begin\{(?:equation\*?|align\*?|itemize)\}/g, "")
+      .replace(/\\end\{(?:equation\*?|align\*?|itemize)\}/g, "")
+      .replace(/\^\{([^{}]*)\}/g, "^$1")
+      .replace(/_\{([^{}]*)\}/g, "_$1")
+      .replace(/\$+/g, "")
+      .replace(/\\\[/g, "")
+      .replace(/\\\]/g, "");
+    [
+      ["\\mathbb{R}", "ℝ"],
+      ["\\R", "ℝ"],
+      ["\\mathbb R", "ℝ"],
+      ["\\mathcal", ""],
+      ["\\textup", ""],
+      ["\\text", ""],
+      ["\\operatorname", ""],
+      ["\\nabla", "∇"],
+      ["\\partial", "∂"],
+      ["\\infty", "∞"],
+      ["\\notin", "∉"],
+      ["\\in", "∈"],
+      ["\\preceq", "≼"],
+      ["\\succeq", "≽"],
+      ["\\succ", "≻"],
+      ["\\prec", "≺"],
+      ["\\leq", "≤"],
+      ["\\le", "≤"],
+      ["\\geq", "≥"],
+      ["\\ge", "≥"],
+      ["\\to", "→"],
+      ["\\pi", "π"],
+      ["\\sum", "Σ"],
+      ["\\prod", "Π"],
+      ["\\cdot", "·"],
+      ["\\times", "×"],
+      ["\\pm", "±"],
+      ["\\ell", "ℓ"],
+      ["\\varepsilon", "ε"],
+      ["\\beta", "β"],
+      ["\\alpha", "α"],
+      ["\\rho", "ρ"],
+      ["\\delta", "δ"],
+      ["\\gamma", "γ"],
+      ["\\zeta", "ζ"],
+      ["\\eta", "η"],
+      ["\\tau", "τ"],
+      ["\\xi", "ξ"],
+      ["\\nu", "ν"],
+      ["\\kappa", "κ"],
+      ["\\mathbb", ""],
+      ["\\quad", " "],
+      ["\\qquad", " "],
+      ["\\,", " "],
+      ["\\;", " "]
+    ].forEach(function (pair) {
+      text = text.split(pair[0]).join(pair[1]);
+    });
+    text = text
+      .replace(/\\frac\{([^{}]*)\}\{([^{}]*)\}/g, "($1)/($2)")
+      .replace(/\\left|\\right/g, "")
+      .replace(/H["\\]older/g, "Hölder")
       .replace(/~+/g, " ")
-      .replace(/[ 	]+/g, " ")
-      .replace(/[ 	]*
-[ 	]*/g, "
-")
+      .split("\\").join("")
+      .replace(/H"older/g, "Hölder")
+      .replace(/[ \t]+/g, " ")
+      .replace(/\n(?!•)/g, " ")
       .trim();
     return text;
   }
 
   function renderPaperStatement(container, item) {
     container.replaceChildren();
-    readablePaperStatement(item.statement).split(/
-+/).forEach(function (line) {
+    readablePaperStatement(item.statement).split(/\n+/).forEach(function (line) {
       var value = line.trim();
       if (!value) {
         return;
