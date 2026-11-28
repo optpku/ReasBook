@@ -5,10 +5,11 @@ from __future__ import annotations
 
 import argparse
 import hashlib
-import html
 import json
 import re
 from pathlib import Path
+
+from extract_paper_statements import extract, render
 
 
 RESULTS = [
@@ -51,38 +52,28 @@ def locate_decl(path: Path, short_name: str) -> tuple[int, str]:
     raise ValueError(f"declaration not found: {short_name}")
 
 
-def statement_html(statement: str) -> str:
-    cleaned = re.sub(r"\\label\{[^}]+\}", "", statement)
-    cleaned = re.sub(r"\\begin\{[^}]+\}|\\end\{[^}]+\}", "", cleaned)
-    cleaned = re.sub(r"\\(?:ref|eqref)\{([^}]+)\}", r"[\1]", cleaned)
-    cleaned = re.sub(r"\s+", " ", cleaned).strip()
-    return "<p><code>" + html.escape(cleaned) + "</code></p>"
-
-
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--manuscript", type=Path, required=True)
     parser.add_argument("--source-root", type=Path, required=True)
     parser.add_argument("--commit", required=True)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--aux", type=Path, required=True, help="LaTeX label numbers for this manuscript")
+    parser.add_argument("--renderer", nargs="+", required=True, help="KaTeX renderer command")
     args = parser.parse_args()
 
     manuscript = args.manuscript.read_text()
-    blocks = list(re.finditer(r"\\begin\{(theorem|lemma|corollary)\}([\s\S]*?)\\end\{\1\}", manuscript))
-    if len(blocks) != len(RESULTS):
-        raise SystemExit(f"expected {len(RESULTS)} theorem-like blocks, got {len(blocks)}")
-    labels = [re.findall(r"\\label\{([^}]+)\}", block.group(2))[0] for block in blocks]
-    expected = [item[3] for item in RESULTS]
-    if labels != expected:
-        raise SystemExit(f"label order mismatch: {labels}")
+    mapping = {"items": [{"id": row[0], "label": row[1], "texLabel": row[3]} for row in RESULTS]}
+    statements = extract(manuscript, args.aux.read_text(), mapping)
+    formula_count = render(statements, args.renderer)
 
     manuscript_digest = hashlib.sha256(args.manuscript.read_bytes()).hexdigest()
     items = []
     for index, (item_id, label, title, tex_label, section, declaration, dependencies, filename, short_name) in enumerate(RESULTS):
-        block = blocks[index]
-        statement = block.group(2).strip()
-        start_line = manuscript.count("\n", 0, block.start()) + 1
-        end_line = manuscript.count("\n", 0, block.end()) + 1
+        typeset = statements[index]
+        statement = typeset["statementLatex"]
+        start_line = typeset["sourceStartLine"]
+        end_line = typeset["sourceEndLine"]
         source_file = args.source_root / "Papers/DFP_wolfe_local/DFPWolfe/MP20251124" / filename
         line, code = locate_decl(source_file, short_name)
         relative_file = source_file.relative_to(args.source_root).as_posix()
@@ -111,7 +102,7 @@ def main() -> None:
             "line": line,
             "endLine": line + code.count("\n"),
             "statement": statement,
-            "statementHtml": statement_html(statement),
+            "statementHtml": typeset["statementHtml"],
             "statementSha256": hashlib.sha256(statement.encode()).hexdigest(),
             "statementSource": {"manuscript": "20251124-DFP/MP.zip/main.tex", "manuscriptSha256": manuscript_digest, "startLine": start_line, "endLine": end_line},
             "texLabel": tex_label,
@@ -155,7 +146,7 @@ def main() -> None:
     (args.output / "metadata.json").write_text(json.dumps({"schemaVersion": 1, "project": project, "nodes": len(items), "edges": len(edge_witnesses), "generation": generation}, ensure_ascii=False, indent=2) + "\n")
     (args.output / "release-context.json").write_text(json.dumps({"schemaVersion": 1, "project": project, "generation": generation}, ensure_ascii=False, indent=2) + "\n")
     (args.output / "numbering.json").write_text(json.dumps({"manuscript": "20251124-DFP/MP.zip/main.tex", "manuscriptSha256": manuscript_digest, "counter": "shared theorem counter in source order", "results": [[item["label"], item["texLabel"]] for item in items]}, ensure_ascii=False, indent=2) + "\n")
-    paper = {"schemaVersion": 1, "manuscriptName": "20251124-DFP/MP.zip/main.tex", "manuscriptSha256": manuscript_digest, "referenceNumbering": "Shared theorem counter in source order.", "formulaCount": 0, "rendering": "Verbatim statement excerpts with raw LaTeX preserved for reproducibility.", "items": [{"id": item["id"], "label": item["label"], "texLabel": item["texLabel"], "statementLatex": item["statement"], "statementSha256": item["statementSha256"], "sourceStartLine": item["statementSource"]["startLine"], "sourceEndLine": item["statementSource"]["endLine"], "references": {}, "equationNumbers": {}, "statementHtml": item["statementHtml"], "formulaCount": 0} for item in items]}
+    paper = {"schemaVersion": 1, "manuscriptName": "20251124-DFP/MP.zip/main.tex", "manuscriptSha256": manuscript_digest, "referenceNumbering": "Shared theorem counter in source order.", "formulaCount": formula_count, "rendering": "Pandoc with static KaTeX HTML and MathML.", "items": statements}
     (args.output / "paper-statements.json").write_text(json.dumps(paper, ensure_ascii=False, indent=2) + "\n")
     print(json.dumps({"nodes": len(items), "edges": len(edge_witnesses), "manuscriptSha256": manuscript_digest}, ensure_ascii=False))
 
