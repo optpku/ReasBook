@@ -444,17 +444,20 @@
     groups.forEach(function (group) { group.sort(itemSort); });
     var maximumRows = 1;
     groups.forEach(function (group) { maximumRows = Math.max(maximumRows, group.length); });
+    var width = 80 + (maximumLevel + 1) * NODE_WIDTH + maximumLevel * LEVEL_GAP;
+    var height = Math.max(390, 70 + maximumRows * NODE_HEIGHT + (maximumRows - 1) * ROW_GAP);
     var positions = new Map();
     groups.forEach(function (group, level) {
+      var groupHeight = group.length * NODE_HEIGHT + Math.max(0, group.length - 1) * ROW_GAP;
+      var startY = Math.max(35, (height - groupHeight) / 2);
       group.forEach(function (id, row) {
         positions.set(id, {
-          x: 40 + row * (NODE_WIDTH + LEVEL_GAP),
-          y: 35 + level * (NODE_HEIGHT + LEVEL_GAP)
+          x: 40 + level * (NODE_WIDTH + LEVEL_GAP),
+          y: startY + row * (NODE_HEIGHT + ROW_GAP)
         });
       });
     });
-    return { positions: positions, width: 80 + maximumRows * (NODE_WIDTH + LEVEL_GAP),
-      height: 70 + (maximumLevel + 1) * (NODE_HEIGHT + LEVEL_GAP) };
+    return { positions: positions, width: width, height: height };
   }
 
   function escapeReviewerDot(value) {
@@ -537,20 +540,19 @@
   function buildReviewerGraphDot(model, highlight) {
     var lines = [
       "digraph G {",
-      '  graph [rankdir="LR", bgcolor="transparent", pad="0.25", nodesep="0.28", ranksep="0.72", outputorder="edgesfirst", splines="spline"];',
-      '  node [style="rounded,filled", fontname="Segoe UI", fontsize="10", margin="0.15,0.09"];',
+      '  graph [rankdir="LR", bgcolor="transparent", pad="0.25", nodesep="0.28", ranksep="0.34", outputorder="edgesfirst", splines="spline"];',
+      '  node [style="rounded,filled", fontname="Segoe UI", fontsize="15", margin="0.10,0.06"];',
       '  edge [arrowhead="normal", arrowsize="0.7"];'
     ];
     model.ids.forEach(function (id) {
       var item = itemById.get(id);
       var style = reviewerGraphNodeStyle(item, highlight);
-      var shape = item.type === "Theorem" || item.type === "Proposition" ? "ellipse" : "box";
       lines.push(
         '  "' + escapeReviewerDot(id) + '" ' +
         '[id="node-' + escapeReviewerDot(reviewerGraphDomId(id)) + '" ' +
         'label="' + escapeReviewerDot(item.label) + '" ' +
         'tooltip="' + escapeReviewerDot(item.label + " - " + item.title) + '" ' +
-        'shape="' + shape + '" ' +
+        'shape="ellipse" ' +
         'style="' + (item.dependencyEvidence === "source-only" ? "rounded,dashed,filled" : "rounded,filled") + '" ' +
         'fillcolor="' + style.fill + '" ' +
         'color="' + style.stroke + '" ' +
@@ -809,14 +811,14 @@
   }
 
   function edgePath(source, target) {
-    var startX = source.x + NODE_WIDTH / 2;
-    var startY = source.y + NODE_HEIGHT;
-    var endX = target.x + NODE_WIDTH / 2;
-    var endY = target.y;
-    var control = Math.max(25, (endY - startY) * 0.48);
+    var startX = source.x + NODE_WIDTH;
+    var startY = source.y + NODE_HEIGHT / 2;
+    var endX = target.x;
+    var endY = target.y + NODE_HEIGHT / 2;
+    var control = Math.max(30, (endX - startX) * 0.48);
     return "M " + startX + " " + startY + " C " +
-      startX + " " + (startY + control) + ", " +
-      endX + " " + (endY - control) + ", " + endX + " " + endY;
+      (startX + control) + " " + startY + ", " +
+      (endX - control) + " " + endY + ", " + endX + " " + endY;
   }
 
   function renderGraph(options) {
@@ -887,12 +889,12 @@
       }
       var title = svgElement("title");
       title.textContent = item.label + " - " + item.title;
-      var box = svgElement("rect", {
+      var box = svgElement("ellipse", {
         class: "node-box",
-        width: NODE_WIDTH,
-        height: NODE_HEIGHT,
-        rx: "5",
-        ry: "5"
+        cx: NODE_WIDTH / 2,
+        cy: NODE_HEIGHT / 2,
+        rx: NODE_WIDTH / 2,
+        ry: NODE_HEIGHT / 2
       });
       var label = svgElement("text", {
         class: "node-label",
@@ -974,102 +976,7 @@
     });
   }
 
-  function readablePaperStatement(source) {
-    var text = String(source || "").replace(/^\s*\\label\{[^}]*\}\s*/, "");
-    text = text
-      .replace(/\\eqref\{([^}]+)\}/g, "[$1]")
-      .replace(/\\ref\{([^}]+)\}/g, "[$1]")
-      .replace(/\\item(?:\[[^\]]*\])?/g, "\\n• ")
-      .replace(/\\label\{[^}]*\}/g, "")
-      .replace(/\\begin\{(?:equation\*?|align\*?|itemize)\}/g, "")
-      .replace(/\\end\{(?:equation\*?|align\*?|itemize)\}/g, "")
-      .replace(/\^\{([^{}]*)\}/g, "^$1")
-      .replace(/_\{([^{}]*)\}/g, "_$1")
-      .replace(/\$+/g, "")
-      .replace(/\\\[/g, "")
-      .replace(/\\\]/g, "");
-    [
-      ["\\mathbb{R}", "ℝ"],
-      ["\\R", "ℝ"],
-      ["\\mathbb R", "ℝ"],
-      ["\\mathcal", ""],
-      ["\\textup", ""],
-      ["\\text", ""],
-      ["\\operatorname", ""],
-      ["\\nabla", "∇"],
-      ["\\partial", "∂"],
-      ["\\infty", "∞"],
-      ["\\notin", "∉"],
-      ["\\in", "∈"],
-      ["\\preceq", "≼"],
-      ["\\succeq", "≽"],
-      ["\\succ", "≻"],
-      ["\\prec", "≺"],
-      ["\\leq", "≤"],
-      ["\\le", "≤"],
-      ["\\geq", "≥"],
-      ["\\ge", "≥"],
-      ["\\to", "→"],
-      ["\\pi", "π"],
-      ["\\sum", "Σ"],
-      ["\\prod", "Π"],
-      ["\\cdot", "·"],
-      ["\\times", "×"],
-      ["\\pm", "±"],
-      ["\\ell", "ℓ"],
-      ["\\varepsilon", "ε"],
-      ["\\beta", "β"],
-      ["\\alpha", "α"],
-      ["\\rho", "ρ"],
-      ["\\delta", "δ"],
-      ["\\gamma", "γ"],
-      ["\\zeta", "ζ"],
-      ["\\eta", "η"],
-      ["\\tau", "τ"],
-      ["\\xi", "ξ"],
-      ["\\nu", "ν"],
-      ["\\kappa", "κ"],
-      ["\\mathbb", ""],
-      ["\\quad", " "],
-      ["\\qquad", " "],
-      ["\\,", " "],
-      ["\\;", " "]
-    ].forEach(function (pair) {
-      text = text.split(pair[0]).join(pair[1]);
-    });
-    text = text
-      .replace(/\\frac\{([^{}]*)\}\{([^{}]*)\}/g, "($1)/($2)")
-      .replace(/\\left|\\right/g, "")
-      .replace(/H["\\]older/g, "Hölder")
-      .replace(/~+/g, " ")
-      .split("\\").join("")
-      .replace(/H"older/g, "Hölder")
-      .replace(/[ \t]+/g, " ")
-      .replace(/\n(?!•)/g, " ")
-      .trim();
-    return text;
-  }
-
-  function renderPaperStatement(container, item) {
-    container.replaceChildren();
-    readablePaperStatement(item.statement).split(/\n+/).forEach(function (line) {
-      var value = line.trim();
-      if (!value) {
-        return;
-      }
-      var paragraph = document.createElement("p");
-      paragraph.className = value[0] === "•" ? "paper-list-item" : "paper-paragraph";
-      paragraph.textContent = value;
-      container.appendChild(paragraph);
-    });
-  }
-
   function renderStatement(container, item) {
-    if (item.paperMapping && item.statement && item.statementHtml &&
-        item.statementHtml.indexOf("<code>") >= 0) {
-      renderPaperStatement(container, item);
-      return;
-    }
     if (item.statementHtml) {
       container.innerHTML = item.statementHtml;
       return;

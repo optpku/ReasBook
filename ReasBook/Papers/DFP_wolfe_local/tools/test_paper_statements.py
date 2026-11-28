@@ -31,6 +31,17 @@ class StatementTests(unittest.TestCase):
         self.assertIn('y&=2', rendered)
         self.assertNotIn(r'\label', rendered)
 
+    def test_mp_lemma_six_math_in_both_views(self):
+        root = Path(__file__).resolve().parents[1] / 'theorem-map/mp20251124'
+        for name in ('data.json', 'overview-data.json', 'paper-statements.json'):
+            items = json.loads((root / name).read_text())['items']
+            self.assertTrue(all('<math ' in item['statementHtml'] for item in items))
+            statement = next(item['statementHtml'] for item in items if item['id'] == 'mp24-lemma-6')
+            self.assertIn('defined in (26)', statement)
+            self.assertIn('<mfrac><mn>4</mn><mn>3</mn></mfrac>', statement)
+            for number in (27, 28):
+                self.assertIn(r'\tag{' + str(number) + '}', statement)
+
     def test_all_checked_in_excerpts_are_bound_to_nodes(self):
         root = Path(__file__).resolve().parents[1]
         excerpts = json.loads((root / 'theorem-map/paper-statements.json').read_text())
